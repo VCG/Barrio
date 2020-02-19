@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="abstractionspace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="datacontainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dbscan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glycogen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glycogenanalysismanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glycogencluster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grid3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inputform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainopengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mousepad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="octree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="openglmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="performancerate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rendervertexdata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="skeletonbranch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spatialhash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spatialhash3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="abstractionspace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="datacontainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dbscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glsluniform_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="glwidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="glycogen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glycogenanalysismanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glycogencluster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grid3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="inputform.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="mainopengl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="mousepad.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="octree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="performancerate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rendervertexdata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="skeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="skeletonbranch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spatialhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spatialhash3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ssbo_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    
+    
+    
+    
+    
+    
+    
+    
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    
+    
+    
+    
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="inputform.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="mainwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\abstract_skeleton_line_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\abstract_skeleton_node_2D_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\abstract_skeleton_node_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\abstract_skeleton_node_transition_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\common.glslh">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\extrafiles_path_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\glycogen_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\glycogen_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\glycogen_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\hvgx_selection_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\mesh_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\mesh_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\mesh_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\metadata_hvgx_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_tex_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_tex_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_tex_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_2DHeatMap_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\nodes_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\options_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\path_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\path_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\path_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\points_3d_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\points_passthrough_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\proximity_astro_mito_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\proximity_astrocyte_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\proximity_gly_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\proximity_neu_mito_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <QtRcc Include="resources.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <None Include="shaders\selection_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\selection_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\selection_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\skeleton_point_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\skeleton_point_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\skeleton_point_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space2d_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space2d_grid_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space2d_grid_points_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space2d_grid_triangle_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space2d_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space_pointer_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space_pointer_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\space_pointer_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\text_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\text_geom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\text_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="doc\xml_help.html">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
