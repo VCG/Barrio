@@ -15,30 +15,30 @@
 #define GRAPH_H
 
 struct FDR_param {
-    float Cr /*1.5*/;           // repulsion constant
-    float Ca /*0.5*/;           // attraction constant
-    float AABBdim /*0.15*/;      // the area to include nodes for repulsion
-    float max_distance /*0.1*/; // max edge distance for attraction force
-    int iterations /*10000*/;
-    float max_vertex_movement /*0.01*/;  // max movment for vertex after applying the force
-    float slow_factor /*0.01*/;          // force slowing factor
-    float max_force /*1.0*/;            // max force to appy
-    float originalPosAttraction;
+  float Cr /*1.5*/;           // repulsion constant
+  float Ca /*0.5*/;           // attraction constant
+  float AABBdim /*0.15*/;      // the area to include nodes for repulsion
+  float max_distance /*0.1*/; // max edge distance for attraction force
+  int iterations /*10000*/;
+  float max_vertex_movement /*0.01*/;  // max movment for vertex after applying the force
+  float slow_factor /*0.01*/;          // force slowing factor
+  float max_force /*1.0*/;            // max force to appy
+  float originalPosAttraction;
 };
 
 struct GEM_param {
-    float   nrm;            // normalization factor
-    double  gravity;        // gravitational constant
-    float   edge_size;      // desired edge size
-    int     Tmin;           // min temperature
-    int     Tmax;
-    float   a_r;            // PI/6
-    float   a_o;            // PI/2
-    float   s_r;            // 1/2n
-    float   s_o;            // 1/3
-    float   Tinit;          // initial temperature for a vertex
-    float   Tglobal;        // Tinit * n (temperature sum)
-    int     rounds;         // max number of rounds
+  float   nrm;            // normalization factor
+  double  gravity;        // gravitational constant
+  float   edge_size;      // desired edge size
+  int     Tmin;           // min temperature
+  int     Tmax;
+  float   a_r;            // PI/6
+  float   a_o;            // PI/2
+  float   s_r;            // 1/2n
+  float   s_o;            // 1/3
+  float   Tinit;          // initial temperature for a vertex
+  float   Tglobal;        // Tinit * n (temperature sum)
+  int     rounds;         // max number of rounds
 
 };
 
@@ -96,117 +96,117 @@ struct GEM_param {
  * update: Skeleton_Node->layout 3
  *
  */
-enum class Graph_t { NODE_NODE = 0, NODE_SKELETON = 1,  ALL_SKELETONS = 2, NEURITE_SKELETONS =3};
+enum class Graph_t { NODE_NODE = 0, NODE_SKELETON = 1, ALL_SKELETONS = 2, NEURITE_SKELETONS = 3 };
 
 class Node;
 class Graph
 {
 public:
-    Graph(Graph_t graphType,  OpenGLManager *opengl_mnger, int gridCol);
-    ~Graph();
+  Graph(Graph_t graphType, OpenGLManager* opengl_mnger, int gridCol);
+  ~Graph();
 
-    bool parseNODE_NODE(std::vector<Node*> neurites_nodes, std::vector<QVector2D> neurites_edges);
-    bool parseSKELETON(std::vector<Node*> neurites_skeletons_nodes, std::vector<QVector4D> neurites_skeletons_edges);
+  bool parseNODE_NODE(std::vector<Node*> neurites_nodes, std::vector<QVector2D> neurites_edges);
+  bool parseSKELETON(std::vector<Node*> neurites_skeletons_nodes, std::vector<QVector4D> neurites_skeletons_edges);
 
-    Node* addNode(std::pair<int, int> id_tuple, float x, float y, float z, Node_t node_type);
-    Edge* addEdge(int eID, int hvgxID, int nID1, int nID2);
+  Node* addNode(std::pair<int, int> id_tuple, float x, float y, float z, Node_t node_type);
+  Edge* addEdge(int eID, int hvgxID, int nID1, int nID2);
 
-    Node* getNode(std::pair<int, int> id_tuple);
-    Edge* getEdge(int eID);
+  Node* getNode(std::pair<int, int> id_tuple);
+  Edge* getEdge(int eID);
 
-    struct FDR_param getFDRParams()                 { return m_fdr_params; }
-    void updateFDRParamts(struct FDR_param params)  { m_fdr_params = params; }
+  struct FDR_param getFDRParams() { return m_fdr_params; }
+  void updateFDRParamts(struct FDR_param params) { m_fdr_params = params; }
 
-    std::map<std::pair<int, int>, Node*> getNodes() { return m_nodes; }
-    std::map<int, Edge*> getEdges() { return m_edges; }
+  std::map<std::pair<int, int>, Node*> getNodes() { return m_nodes; }
+  std::map<int, Edge*> getEdges() { return m_edges; }
 
-    int getNodesCount(){ return m_nodes.size(); }
-    int getEdgesCount() { return m_edges.size(); }
-    int getDupEdgesCount() { return m_dupEdges; }
+  int getNodesCount() { return m_nodes.size(); }
+  int getEdgesCount() { return m_edges.size(); }
+  int getDupEdgesCount() { return m_dupEdges; }
 
-    std::map<std::pair<int, int>, Node*>::iterator getNodesBegin()  { return m_nodes.begin(); }
-    std::map<std::pair<int, int>, Node*>::iterator getNodesEnd()    { return m_nodes.end(); }
-    std::map<int, Edge*>::iterator getEdgesBegin()  { return m_edges.begin(); }
-    std::map<int, Edge*>::iterator getEdgesEnd()    { return m_edges.end(); }
+  std::map<std::pair<int, int>, Node*>::iterator getNodesBegin() { return m_nodes.begin(); }
+  std::map<std::pair<int, int>, Node*>::iterator getNodesEnd() { return m_nodes.end(); }
+  std::map<int, Edge*>::iterator getEdgesBegin() { return m_edges.begin(); }
+  std::map<int, Edge*>::iterator getEdgesEnd() { return m_edges.end(); }
 
-    // force directed layout functions
-    void FDL_initParameters();
-    void runforceDirectedLayout();
-    void attractConnectedNodes(Edge *edge, float k);
-    void repulseNodes(Node *node1, Node *node2, float k);
-    QVector2D attractionForce(float x1, float y1, float x2, float y2, float k);
-    QVector2D repulsiveForce(float x1, float y1, float x2, float y2, float k);
-    void resetCoordinates();
-    void attractToOriginalPosition(Node *node, float k);
-    void update_node_data(Node* node);
+  // force directed layout functions
+  void FDL_initParameters();
+  void runforceDirectedLayout();
+  void attractConnectedNodes(Edge* edge, float k);
+  void repulseNodes(Node* node1, Node* node2, float k);
+  QVector2D attractionForce(float x1, float y1, float x2, float y2, float k);
+  QVector2D repulsiveForce(float x1, float y1, float x2, float y2, float k);
+  void resetCoordinates();
+  void attractToOriginalPosition(Node* node, float k);
+  void update_node_data(Node* node);
 
-    void terminateFDL()  { m_FDL_terminate = true; }
+  void terminateFDL() { m_FDL_terminate = true; }
 
-    // spatial hashing
-    void updateNode(Node *node);
-    void updateUniforms(struct GlobalUniforms uniforms) {m_uniforms = uniforms;}
+  // spatial hashing
+  void updateNode(Node* node);
+  void updateUniforms(struct GlobalUniforms uniforms) { m_uniforms = uniforms; }
 
 
-    // GEM
-    void GEM_initParameters();
-    void GEM_run();
-    QVector2D GEM_computeImpulse(Node *node);
-    double GEM_function_growing(Node *node);
-    void GEM_update_node(Node *node, QVector2D impulse);
-    double GEM_get_angle(QVector2D u, QVector2D v);
+  // GEM
+  void GEM_initParameters();
+  void GEM_run();
+  QVector2D GEM_computeImpulse(Node* node);
+  double GEM_function_growing(Node* node);
+  void GEM_update_node(Node* node, QVector2D impulse);
+  double GEM_get_angle(QVector2D u, QVector2D v);
 
 protected:
-    struct pair_hash {
-        template <class T1, class T2>
-        std::size_t operator () (const std::pair<T1,T2> &p) const {
-            auto h1 = std::hash<T1>{}(p.first);
-            auto h2 = std::hash<T2>{}(p.second);
-            return h1 ^ h2;
-        }
-    };
+  struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator () (const std::pair<T1, T2>& p) const {
+      auto h1 = std::hash<T1>{}(p.first);
+      auto h2 = std::hash<T2>{}(p.second);
+      return h1 ^ h2;
+    }
+  };
 
-    Graph_t                         m_gType;
+  Graph_t                         m_gType;
 
-    struct GlobalUniforms           m_uniforms;
+  struct GlobalUniforms           m_uniforms;
 
-    OpenGLManager                   *m_opengl_mngr;
+  OpenGLManager* m_opengl_mngr;
 
-    // I need a way to filter out nodes based on if they are shown or not
-    std::map<std::pair<int, int>, Node*>     m_nodes;    // IDs are unique to identify nodes
-                                                // if more than a skeleton
-                                                // IDs for skeleton are offsets, that is later
-                                                // stored in the skeleton itself
+  // I need a way to filter out nodes based on if they are shown or not
+  std::map<std::pair<int, int>, Node*>     m_nodes;    // IDs are unique to identify nodes
+                                              // if more than a skeleton
+                                              // IDs for skeleton are offsets, that is later
+                                              // stored in the skeleton itself
 
-    std::map<int, Edge*>            m_edges;    // IDs refer to m_nodes IDs
+  std::map<int, Edge*>            m_edges;    // IDs refer to m_nodes IDs
 
-    int m_dupEdges;
-
-
-    bool                            m_FDL_terminate;
-
-    // spatial hashing
-    SpatialHash                     *hashGrid;
+  int m_dupEdges;
 
 
-    // force directed laout
-    struct FDR_param                m_fdr_params;
+  bool                            m_FDL_terminate;
 
-    // GEM constants
-    float                           m_nrm;  // normalization factor
-    double                          m_gravity;  // gravitational constant
-    float                           m_edge_size;    // desired edge size
-    float                           m_edge_sizesquared;
-    int                             m_Tmin;         // min temperature
-    int                             m_Tmax;
-    float                           m_a_r;          // PI/6
-    float                           m_a_o;          // PI/2
-    float                           m_s_r;          // 1/2n
-    float                           m_s_o;          // 1/3
-    float                           m_Tinit;        // initial temperature for a vertex
-    float                           m_Tglobal;      // Tinit * n (temperature sum)
-    int                             m_rounds;       // max number of rounds
-    QVector2D                       m_barycentric;
-    std::map<int, int>              m_FilteredHVGX;
+  // spatial hashing
+  SpatialHash* hashGrid;
+
+
+  // force directed laout
+  struct FDR_param                m_fdr_params;
+
+  // GEM constants
+  float                           m_nrm;  // normalization factor
+  double                          m_gravity;  // gravitational constant
+  float                           m_edge_size;    // desired edge size
+  float                           m_edge_sizesquared;
+  int                             m_Tmin;         // min temperature
+  int                             m_Tmax;
+  float                           m_a_r;          // PI/6
+  float                           m_a_o;          // PI/2
+  float                           m_s_r;          // 1/2n
+  float                           m_s_o;          // 1/3
+  float                           m_Tinit;        // initial temperature for a vertex
+  float                           m_Tglobal;      // Tinit * n (temperature sum)
+  int                             m_rounds;       // max number of rounds
+  QVector2D                       m_barycentric;
+  std::map<int, int>              m_FilteredHVGX;
 };
 
 #endif // GRAPH_H

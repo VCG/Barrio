@@ -12,136 +12,136 @@
 
 //------------------------------------------------------
 //
-MainWindow::MainWindow(QWidget *parent, InputForm *input_form) :
-    QMainWindow(parent),
-    mainwindow_ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
+  QMainWindow(parent),
+  mainwindow_ui(new Ui::MainWindow)
 {
-    mainwindow_ui->setupUi(this);
-    getGLWidget()->init(input_form);
+  mainwindow_ui->setupUi(this);
+  getGLWidget()->init(input_form);
 
-    setupSignalsNSlots();
+  setupSignalsNSlots();
 
-    m_currentSelectedCluster = 0;
-    m_clusters = 0;
+  m_currentSelectedCluster = 0;
+  m_clusters = 0;
 
-    // setup the table view
-    tableView = new QStandardItemModel(0, 2, this); //0 Rows and 2 Columns
-    tableView->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
-    tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
+  // setup the table view
+  tableView = new QStandardItemModel(0, 2, this); //0 Rows and 2 Columns
+  tableView->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
+  tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
 
-    mainwindow_ui->tableView->setModel(tableView);
+  mainwindow_ui->tableView->setModel(tableView);
 
-	//rotate astrocytes label of the abstraction space
-	QPixmap myPixmap(QSize(20, 210));
-	myPixmap.fill(Qt::transparent);
-	QPainter painter(&myPixmap);
-	painter.translate(12, 140);
-	painter.rotate(-90);
-	painter.drawText(0, 0, "Astrocytes");
-	mainwindow_ui->label_44->setPixmap(myPixmap);
- }
+  //rotate astrocytes label of the abstraction space
+  QPixmap myPixmap(QSize(20, 210));
+  myPixmap.fill(Qt::transparent);
+  QPainter painter(&myPixmap);
+  painter.translate(12, 140);
+  painter.rotate(-90);
+  painter.drawText(0, 0, "Astrocytes");
+  mainwindow_ui->label_44->setPixmap(myPixmap);
+}
 
 //------------------------------------------------------
 //
 MainWindow::~MainWindow()
 {
-    delete mainwindow_ui;
-    delete tableView;
-    delete m_currentSelectedCluster;
-    delete m_clusters;
+  delete mainwindow_ui;
+  delete tableView;
+  delete m_currentSelectedCluster;
+  delete m_clusters;
 }
 
 //------------------------------------------------------
 //
 void MainWindow::setupSignalsNSlots()
 {
-    QObject::connect(getGLWidget(), SIGNAL(object_clicked(QList<QStandardItem*>)),
-                     this, SLOT(on_object_clicked(QList<QStandardItem*>)));
+  QObject::connect(getGLWidget(), SIGNAL(object_clicked(QList<QStandardItem*>)),
+    this, SLOT(on_object_clicked(QList<QStandardItem*>)));
 
-    QObject::connect(getGLWidget(), SIGNAL(clearRowsTable()),
-                     this, SLOT(clearTable()));
+  QObject::connect(getGLWidget(), SIGNAL(clearRowsTable()),
+    this, SLOT(clearTable()));
 
-    QObject::connect(getGLWidget(), SIGNAL(RemoveRowAt_GL(QModelIndex)),
-                     this, SLOT(RemoveRowAt(QModelIndex)));
+  QObject::connect(getGLWidget(), SIGNAL(RemoveRowAt_GL(QModelIndex)),
+    this, SLOT(RemoveRowAt(QModelIndex)));
 
-    QObject::connect(this, SIGNAL(getDeletedData(int)),
-                     getGLWidget(), SLOT(getDeletedHVGXID(int)));
+  QObject::connect(this, SIGNAL(getDeletedData(int)),
+    getGLWidget(), SLOT(getDeletedHVGXID(int)));
 
-    QObject::connect(getGLWidget(), SIGNAL(checkAllListWidget_GL()),
-                     this, SLOT(checkAllListWidget()));
+  QObject::connect(getGLWidget(), SIGNAL(checkAllListWidget_GL()),
+    this, SLOT(checkAllListWidget()));
 
-    QObject::connect(getGLWidget(), SIGNAL(GetIDFrom(QModelIndex)),
-                     this, SLOT(getIDAt(QModelIndex)));
+  QObject::connect(getGLWidget(), SIGNAL(GetIDFrom(QModelIndex)),
+    this, SLOT(getIDAt(QModelIndex)));
 
-    QObject::connect(this, SIGNAL(getIDAtSelectedRow(int)),
-                     getGLWidget(), SLOT(getHVGXIDAtSelectedRow(int)));
+  QObject::connect(this, SIGNAL(getIDAtSelectedRow(int)),
+    getGLWidget(), SLOT(getHVGXIDAtSelectedRow(int)));
 
-    QObject::connect(getMousePad(), SIGNAL(addPathtoList(QString)),
-                     this, SLOT(getPath(QString)));
+  QObject::connect(getMousePad(), SIGNAL(addPathtoList(QString)),
+    this, SLOT(getPath(QString)));
 
-    QObject::connect(getMousePad(), SIGNAL(signalSelectedPath(QModelIndex)),
-                     this, SLOT(getSelectedPathIndex(QModelIndex)));
+  QObject::connect(getMousePad(), SIGNAL(signalSelectedPath(QModelIndex)),
+    this, SLOT(getSelectedPathIndex(QModelIndex)));
 
-    QObject::connect(this, SIGNAL(signalPathLabel(QString)),
-                     getMousePad(), SLOT(getSelectedPathLabel(QString)));
+  QObject::connect(this, SIGNAL(signalPathLabel(QString)),
+    getMousePad(), SLOT(getSelectedPathLabel(QString)));
 
-    QObject::connect(getMousePad(), SIGNAL(signalDeletePath(QModelIndex)),
-                     this, SLOT(deleteSelectedPath(QModelIndex)));
+  QObject::connect(getMousePad(), SIGNAL(signalDeletePath(QModelIndex)),
+    this, SLOT(deleteSelectedPath(QModelIndex)));
 
-    QObject::connect(this, SIGNAL(signalDeletedPathLabel(QString)),
-                     getMousePad(), SLOT(getSelectedPathLabelToDelete(QString)));
+  QObject::connect(this, SIGNAL(signalDeletedPathLabel(QString)),
+    getMousePad(), SLOT(getSelectedPathLabelToDelete(QString)));
 
-    QObject::connect(this, SIGNAL(glycogenMappedSelectedState(QString, bool)),
-                     getGLWidget(), SLOT(getglycogenMappedSelectedState(QString, bool)));
+  QObject::connect(this, SIGNAL(glycogenMappedSelectedState(QString, bool)),
+    getGLWidget(), SLOT(getglycogenMappedSelectedState(QString, bool)));
 
-    QObject::connect(this, SIGNAL(signalProximityTypeState(QString, bool)),
-                     getGLWidget(), SLOT(getProximityTypeState(QString, bool)));
-
-
-    QObject::connect(getGLWidget(), SIGNAL(signalCheckByType(std::map<QString, int>)),
-                     this, SLOT(checkByType(std::map<QString, int>)));
+  QObject::connect(this, SIGNAL(signalProximityTypeState(QString, bool)),
+    getGLWidget(), SLOT(getProximityTypeState(QString, bool)));
 
 
-    QObject::connect(this, SIGNAL(signalMappingTreeWidget(QTreeWidget *)),
-                     getGLWidget(), SLOT(getMappingTreeWidget(QTreeWidget *)));
-
-    QObject::connect(this, SIGNAL(update_glycogen_clustering_timing(QString)),
-                     mainwindow_ui->glycogen_clustering_ms, SLOT(setText(QString)));
+  QObject::connect(getGLWidget(), SIGNAL(signalCheckByType(std::map<QString, int>)),
+    this, SLOT(checkByType(std::map<QString, int>)));
 
 
-    QObject::connect(this, SIGNAL(update_glycogen_cluter_mapping_timing(QString)),
-                     mainwindow_ui->glycogen_cluster_mapping_ms, SLOT(setText(QString)));
+  QObject::connect(this, SIGNAL(signalMappingTreeWidget(QTreeWidget*)),
+    getGLWidget(), SLOT(getMappingTreeWidget(QTreeWidget*)));
 
-    QObject::connect(this, SIGNAL(update_glycogen_granules_mapping_timing(QString)),
-                     mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
+  QObject::connect(this, SIGNAL(update_glycogen_clustering_timing(QString)),
+    mainwindow_ui->glycogen_clustering_ms, SLOT(setText(QString)));
+
+
+  QObject::connect(this, SIGNAL(update_glycogen_cluter_mapping_timing(QString)),
+    mainwindow_ui->glycogen_cluster_mapping_ms, SLOT(setText(QString)));
+
+  QObject::connect(this, SIGNAL(update_glycogen_granules_mapping_timing(QString)),
+    mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
 }
 
 //------------------------------------------------------
 //
 GLWidget* MainWindow::getGLWidget()
 {
-    return mainwindow_ui->openGLWidget;
+  return mainwindow_ui->openGLWidget;
 }
 
 //------------------------------------------------------
 //
 MousePad* MainWindow::getMousePad()
 {
-    return mainwindow_ui->openGLWidget_2;
+  return mainwindow_ui->openGLWidget_2;
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_object_clicked(QList<QStandardItem*> items)
 {
-    tableView->appendRow(items);
+  tableView->appendRow(items);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::clearTable()
 {
-    tableView->removeRows(0, tableView->rowCount(), QModelIndex());
+  tableView->removeRows(0, tableView->rowCount(), QModelIndex());
 
 }
 
@@ -149,418 +149,420 @@ void MainWindow::clearTable()
 //
 void MainWindow::checkAllListWidget()
 {
-    qDebug() << "checkAllListWidget";
-    for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
-        QListWidgetItem *item = mainwindow_ui->listWidget->item(row);
-        qDebug() << item->text();
-        item->setCheckState(Qt::Checked);
-    }
+  qDebug() << "checkAllListWidget";
+  for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
+    QListWidgetItem* item = mainwindow_ui->listWidget->item(row);
+    qDebug() << item->text();
+    item->setCheckState(Qt::Checked);
+  }
 }
 
 void MainWindow::checkByType(std::map<QString, int> checkStateByType)
 {
-    bool oldState =  mainwindow_ui->listWidget->blockSignals(true);
+  bool oldState = mainwindow_ui->listWidget->blockSignals(true);
 
-    for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
-        QListWidgetItem *item = mainwindow_ui->listWidget->item(row);
-        int flag = checkStateByType[item->text()];
+  for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
+    QListWidgetItem* item = mainwindow_ui->listWidget->item(row);
+    int flag = checkStateByType[item->text()];
 
-        if (flag == 0) {
-            item->setCheckState(Qt::Unchecked);
-        } else if (flag == 1) {
-            item->setCheckState(Qt::Checked);
-        } else {
-            item->setCheckState(Qt::PartiallyChecked);
-        }
+    if (flag == 0) {
+      item->setCheckState(Qt::Unchecked);
     }
+    else if (flag == 1) {
+      item->setCheckState(Qt::Checked);
+    }
+    else {
+      item->setCheckState(Qt::PartiallyChecked);
+    }
+  }
 
-    mainwindow_ui->listWidget->blockSignals(oldState);
+  mainwindow_ui->listWidget->blockSignals(oldState);
 
-    // SEND THIS LSIT WIDGET TO GLWIDGET
-     signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
+  // SEND THIS LSIT WIDGET TO GLWIDGET
+  signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::RemoveRowAt(QModelIndex selectedIndex)
 {
-    QModelIndex hvgxID_index = tableView->index(selectedIndex.row() , 0);
-    QVariant hvgxID_item =  tableView->data(hvgxID_index);
-    int hvgxID = hvgxID_item.toInt();
-    getDeletedData(hvgxID);
-    tableView->removeRows(selectedIndex.row(), 1, QModelIndex());
+  QModelIndex hvgxID_index = tableView->index(selectedIndex.row(), 0);
+  QVariant hvgxID_item = tableView->data(hvgxID_index);
+  int hvgxID = hvgxID_item.toInt();
+  getDeletedData(hvgxID);
+  tableView->removeRows(selectedIndex.row(), 1, QModelIndex());
 }
 
 void MainWindow::getIDAt(QModelIndex selectedIndex)
 {
-    qDebug() << "getIDAt";
-    QModelIndex hvgxID_index = tableView->index(selectedIndex.row() , 0);
-    QVariant hvgxID_item =  tableView->data(hvgxID_index);
-    int hvgxID = hvgxID_item.toInt();
+  qDebug() << "getIDAt";
+  QModelIndex hvgxID_index = tableView->index(selectedIndex.row(), 0);
+  QVariant hvgxID_item = tableView->data(hvgxID_index);
+  int hvgxID = hvgxID_item.toInt();
 
-    getIDAtSelectedRow(hvgxID);
+  getIDAtSelectedRow(hvgxID);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_glycogenVisibilityCheckBox_toggled(bool checked)
 {
-    //qDebug() << "glycogen visibility toggled";
+  //qDebug() << "glycogen visibility toggled";
 
-    getGLWidget()->getOpenGLManager()->setRenderGlycogenGranules(checked);
+  getGLWidget()->getOpenGLManager()->setRenderGlycogenGranules(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_clusterButton_clicked()
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
+  auto t1 = std::chrono::high_resolution_clock::now();
 
-    mainwindow_ui->glycogenClustersTreeWidget->clear();
-    if (m_clusters)
-        m_clusters->clear();
+  mainwindow_ui->glycogenClustersTreeWidget->clear();
+  if (m_clusters)
+    m_clusters->clear();
 
-    //qDebug() << "cluster button clicked";
-    GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
-    double eps = mainwindow_ui->epsDoubleSpinBox->value();
-    int minPts = mainwindow_ui->minPtsSpinBox->value();
-    //run clustering
-    m_clusters = gam->runDBScan(eps, minPts);
+  //qDebug() << "cluster button clicked";
+  GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
+  double eps = mainwindow_ui->epsDoubleSpinBox->value();
+  int minPts = mainwindow_ui->minPtsSpinBox->value();
+  //run clustering
+  m_clusters = gam->runDBScan(eps, minPts);
 
 
-    mainwindow_ui->glycogenClustersTreeWidget->setColumnCount(3);
-    QStringList headerLabels;
-    headerLabels.push_back(tr("ClusterID"));
-    headerLabels.push_back(tr("Count"));
-    headerLabels.push_back(tr("Volume"));
-    mainwindow_ui->glycogenClustersTreeWidget->setHeaderLabels(headerLabels);
+  mainwindow_ui->glycogenClustersTreeWidget->setColumnCount(3);
+  QStringList headerLabels;
+  headerLabels.push_back(tr("ClusterID"));
+  headerLabels.push_back(tr("Count"));
+  headerLabels.push_back(tr("Volume"));
+  mainwindow_ui->glycogenClustersTreeWidget->setHeaderLabels(headerLabels);
 
-    mainwindow_ui->glycogenClustersTreeWidget->setSortingEnabled(false);
+  mainwindow_ui->glycogenClustersTreeWidget->setSortingEnabled(false);
 
-    //fill clustering tree widget
-    for (auto iter = m_clusters->begin(); iter != m_clusters->end(); iter++)
-    {
-        Clustering::GlycogenCluster* cluster = (*iter).second;
-        //create cluster parent
-        QTreeWidgetItem* cluster_item = new QTreeWidgetItem(mainwindow_ui->glycogenClustersTreeWidget);
-        cluster_item->setText(0, QString::number(cluster->getID()));
-        cluster_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-        cluster_item->setCheckState(0, Qt::Checked);
+  //fill clustering tree widget
+  for (auto iter = m_clusters->begin(); iter != m_clusters->end(); iter++)
+  {
+    Clustering::GlycogenCluster* cluster = (*iter).second;
+    //create cluster parent
+    QTreeWidgetItem* cluster_item = new QTreeWidgetItem(mainwindow_ui->glycogenClustersTreeWidget);
+    cluster_item->setText(0, QString::number(cluster->getID()));
+    cluster_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    cluster_item->setCheckState(0, Qt::Checked);
 
-        cluster_item->setText(1, QString::number(cluster->getClusterSize()));
-        cluster_item->setText(2, QString::number(cluster->getTotalVolume() , 'f', 4));
-    }
-    mainwindow_ui->glycogenClustersTreeWidget->setSortingEnabled(true);
-    mainwindow_ui->glycogenClustersTreeWidget->sortByColumn(2, Qt::SortOrder::DescendingOrder);
-    getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
+    cluster_item->setText(1, QString::number(cluster->getClusterSize()));
+    cluster_item->setText(2, QString::number(cluster->getTotalVolume(), 'f', 4));
+  }
+  mainwindow_ui->glycogenClustersTreeWidget->setSortingEnabled(true);
+  mainwindow_ui->glycogenClustersTreeWidget->sortByColumn(2, Qt::SortOrder::DescendingOrder);
+  getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
 
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> ms = t2 - t1;
+  auto t2 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> ms = t2 - t1;
 
-    float duration =  ms.count()/1000.0;
-    update_glycogen_clustering_timing(QString::number(duration));
+  float duration = ms.count() / 1000.0;
+  update_glycogen_clustering_timing(QString::number(duration));
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_glycogenClustersTreeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
-    //qDebug() << "item changed " << item->text(column);
-    if (item)
+  //qDebug() << "item changed " << item->text(column);
+  if (item)
+  {
+    int id = item->text(0).toInt();
+    if (m_currentSelectedCluster)
     {
-        int id = item->text(0).toInt();
-        if (m_currentSelectedCluster)
-        {
-            int id2 = m_currentSelectedCluster->text(0).toInt();
+      int id2 = m_currentSelectedCluster->text(0).toInt();
 
-            if (id != id2)
-                m_clusters->at(id)->setState((item->checkState(0) == Qt::Checked) ? 1 : 0);
-        }
-        else
-        {
-            m_clusters->at(id)->setState((item->checkState(0) == Qt::Checked) ? 1 : 0);
-        }
-
-        getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
+      if (id != id2)
+        m_clusters->at(id)->setState((item->checkState(0) == Qt::Checked) ? 1 : 0);
     }
+    else
+    {
+      m_clusters->at(id)->setState((item->checkState(0) == Qt::Checked) ? 1 : 0);
+    }
+
+    getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
+  }
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_glycogenClustersTreeWidget_itemSelectionChanged()
 {
-    //qDebug() << "item selection changed";
-    QList<QTreeWidgetItem*> selected_Items = mainwindow_ui->glycogenClustersTreeWidget->selectedItems();
+  //qDebug() << "item selection changed";
+  QList<QTreeWidgetItem*> selected_Items = mainwindow_ui->glycogenClustersTreeWidget->selectedItems();
 
-    if (m_currentSelectedCluster)
-    {
+  if (m_currentSelectedCluster)
+  {
 
-        int id = m_currentSelectedCluster->text(0).toInt();
-        //unselect
-        m_clusters->at(id)->setState((m_currentSelectedCluster->checkState(0) == Qt::Checked) ? 1 : 0);
-        m_currentSelectedCluster = 0;
-    }
+    int id = m_currentSelectedCluster->text(0).toInt();
+    //unselect
+    m_clusters->at(id)->setState((m_currentSelectedCluster->checkState(0) == Qt::Checked) ? 1 : 0);
+    m_currentSelectedCluster = 0;
+  }
 
-    if (selected_Items.size())
-    {
-        //set selected
-        m_currentSelectedCluster = selected_Items[0];
-        int id = m_currentSelectedCluster->text(0).toInt();
-        m_clusters->at(id)->setState(2);
-    }
-    getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
+  if (selected_Items.size())
+  {
+    //set selected
+    m_currentSelectedCluster = selected_Items[0];
+    int id = m_currentSelectedCluster->text(0).toInt();
+    m_clusters->at(id)->setState(2);
+  }
+  getGLWidget()->getOpenGLManager()->updateGlycogenPoints();
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_mapGlycogenGranulesButton_clicked()
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
+  auto t1 = std::chrono::high_resolution_clock::now();
 
-	mainwindow_ui->glycogenMappingTreeWidget->clear();
+  mainwindow_ui->glycogenMappingTreeWidget->clear();
 
-    GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
+  GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
 
-    bool boutons = mainwindow_ui->glycogenMapToBoutonsCheckBox->isChecked();
-    bool spines = mainwindow_ui->glycogenMapToSpinesCheckBox->isChecked();
-	bool mito = mainwindow_ui->mitoRadioButton->isChecked();
-	if (mito)
-	{
-		boutons = false;
-		spines = false;
-	}
-    bool clusters = false;
+  bool boutons = mainwindow_ui->glycogenMapToBoutonsCheckBox->isChecked();
+  bool spines = mainwindow_ui->glycogenMapToSpinesCheckBox->isChecked();
+  bool mito = mainwindow_ui->mitoRadioButton->isChecked();
+  if (mito)
+  {
+    boutons = false;
+    spines = false;
+  }
+  bool clusters = false;
 
-	std::map<int, std::map<int, int>>* results = gam->computeGlycogenMapping(boutons, spines, mito, clusters);
-	std::map<int, float>* result_volumes = gam->getCurrentMappingVolumes();
-	float result_max_volume = gam->getCurrentMappedMaxVolume();
+  std::map<int, std::map<int, int>>* results = gam->computeGlycogenMapping(boutons, spines, mito, clusters);
+  std::map<int, float>* result_volumes = gam->getCurrentMappingVolumes();
+  float result_max_volume = gam->getCurrentMappedMaxVolume();
 
-    DataContainer* dc = getGLWidget()->getDataContainer();
-	dc->resetMappingValues();
-	std::map<int, Object*>* objects = dc->getObjectsMapPtr();
+  DataContainer* dc = getGLWidget()->getDataContainer();
+  dc->resetMappingValues();
+  std::map<int, Object*>* objects = dc->getObjectsMapPtr();
 
-    mainwindow_ui->glycogenMappingTreeWidget->setColumnCount(4);
-    QStringList headerLabels;
-    headerLabels.push_back(tr("Object ID"));
-    headerLabels.push_back(tr("Name"));
-    headerLabels.push_back(tr("Granules"));
-	headerLabels.push_back(tr("Total Volume"));
-    mainwindow_ui->glycogenMappingTreeWidget->setHeaderLabels(headerLabels);
+  mainwindow_ui->glycogenMappingTreeWidget->setColumnCount(4);
+  QStringList headerLabels;
+  headerLabels.push_back(tr("Object ID"));
+  headerLabels.push_back(tr("Name"));
+  headerLabels.push_back(tr("Granules"));
+  headerLabels.push_back(tr("Total Volume"));
+  mainwindow_ui->glycogenMappingTreeWidget->setHeaderLabels(headerLabels);
 
-    //fill mapping tree widget
-    for (auto iter = results->begin(); iter != results->end(); iter++)
-    {
-        int object_id = iter->first;
-        Object* current_object = objects->at(object_id);
+  //fill mapping tree widget
+  for (auto iter = results->begin(); iter != results->end(); iter++)
+  {
+    int object_id = iter->first;
+    Object* current_object = objects->at(object_id);
 
-        //create map item
-        QTreeWidgetItem* map_item = new QTreeWidgetItem(mainwindow_ui->glycogenMappingTreeWidget);
-        map_item->setText(0, QString::number(current_object->getHVGXID()));
-        map_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-        map_item->setCheckState(0, Qt::Checked);
+    //create map item
+    QTreeWidgetItem* map_item = new QTreeWidgetItem(mainwindow_ui->glycogenMappingTreeWidget);
+    map_item->setText(0, QString::number(current_object->getHVGXID()));
+    map_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    map_item->setCheckState(0, Qt::Checked);
 
-        map_item->setText(1, QString(current_object->getName().c_str()));
-        map_item->setText(2, QString::number(iter->second.size()));
-		float volume = result_volumes->at(object_id);
-		map_item->setText(3, QString::number(volume, 'f', 4));
+    map_item->setText(1, QString(current_object->getName().c_str()));
+    map_item->setText(2, QString::number(iter->second.size()));
+    float volume = result_volumes->at(object_id);
+    map_item->setText(3, QString::number(volume, 'f', 4));
 
-		//set total volume value to object to color code
-		current_object->setMappedValue(volume / result_max_volume);
+    //set total volume value to object to color code
+    current_object->setMappedValue(volume / result_max_volume);
 
-    }
+  }
 
 
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> ms = t2 - t1;
+  auto t2 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> ms = t2 - t1;
 
-    float duration =  ms.count()/1000.0;
-    update_glycogen_granules_mapping_timing(QString::number(duration));
+  float duration = ms.count() / 1000.0;
+  update_glycogen_granules_mapping_timing(QString::number(duration));
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_mapGlycogenClustersButton_clicked()
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
+  auto t1 = std::chrono::high_resolution_clock::now();
 
 
-    if (m_clusters && m_clusters->size() > 0)
+  if (m_clusters && m_clusters->size() > 0)
+  {
+    mainwindow_ui->glycogenMappingTreeWidget->clear();
+
+    GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
+
+    bool boutons = mainwindow_ui->glycogenMapToBoutonsCheckBox->isChecked();
+    bool spines = mainwindow_ui->glycogenMapToSpinesCheckBox->isChecked();
+    bool mito = mainwindow_ui->mitoRadioButton->isChecked();
+    if (mito)
     {
-		mainwindow_ui->glycogenMappingTreeWidget->clear();
-
-        GlycogenAnalysisManager* gam = getGLWidget()->getGlycogenAnalysisManager();
-
-        bool boutons = mainwindow_ui->glycogenMapToBoutonsCheckBox->isChecked();
-        bool spines = mainwindow_ui->glycogenMapToSpinesCheckBox->isChecked();
-		bool mito = mainwindow_ui->mitoRadioButton->isChecked(); 
-		if (mito)
-		{
-			boutons = false;
-			spines = false;
-		}
-        bool clusters = true;
-
-        std::map<int, std::map<int, int>>* results = gam->computeGlycogenMapping(boutons, spines, mito, clusters);
-		std::map<int, float>* result_volumes = gam->getCurrentMappingVolumes();
-		float result_max_volume = gam->getCurrentMappedMaxVolume();
-
-        DataContainer* dc = getGLWidget()->getDataContainer();
-		dc->resetMappingValues();
-        std::map<int, Object*>* objects = dc->getObjectsMapPtr();
-
-        mainwindow_ui->glycogenMappingTreeWidget->setColumnCount(4);
-        QStringList headerLabels;
-        headerLabels.push_back(tr("Object ID"));
-        headerLabels.push_back(tr("Name"));
-        headerLabels.push_back(tr("Clusters"));
-		headerLabels.push_back(tr("Total Volume"));
-        mainwindow_ui->glycogenMappingTreeWidget->setHeaderLabels(headerLabels);
-
-        //fill mapping tree widget
-        for (auto iter = results->begin(); iter != results->end(); iter++)
-        {
-            int object_id = iter->first;
-            Object* current_object = objects->at(object_id);
-
-            //create map item
-            QTreeWidgetItem* map_item = new QTreeWidgetItem(mainwindow_ui->glycogenMappingTreeWidget);
-            map_item->setText(0, QString::number(current_object->getHVGXID()));
-            map_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-            map_item->setCheckState(0, Qt::Checked);
-
-            map_item->setText(1, QString(current_object->getName().c_str()));
-            map_item->setText(2, QString::number(iter->second.size()));
-			float volume = result_volumes->at(object_id);
-			map_item->setText(3, QString::number(volume, 'f', 4));
-
-			//set total volume value to object to color code
-			current_object->setMappedValue(volume / result_max_volume);
-        }
+      boutons = false;
+      spines = false;
     }
-    else
+    bool clusters = true;
+
+    std::map<int, std::map<int, int>>* results = gam->computeGlycogenMapping(boutons, spines, mito, clusters);
+    std::map<int, float>* result_volumes = gam->getCurrentMappingVolumes();
+    float result_max_volume = gam->getCurrentMappedMaxVolume();
+
+    DataContainer* dc = getGLWidget()->getDataContainer();
+    dc->resetMappingValues();
+    std::map<int, Object*>* objects = dc->getObjectsMapPtr();
+
+    mainwindow_ui->glycogenMappingTreeWidget->setColumnCount(4);
+    QStringList headerLabels;
+    headerLabels.push_back(tr("Object ID"));
+    headerLabels.push_back(tr("Name"));
+    headerLabels.push_back(tr("Clusters"));
+    headerLabels.push_back(tr("Total Volume"));
+    mainwindow_ui->glycogenMappingTreeWidget->setHeaderLabels(headerLabels);
+
+    //fill mapping tree widget
+    for (auto iter = results->begin(); iter != results->end(); iter++)
     {
-        //show message saying: No clusters available, calculate clusters first
+      int object_id = iter->first;
+      Object* current_object = objects->at(object_id);
+
+      //create map item
+      QTreeWidgetItem* map_item = new QTreeWidgetItem(mainwindow_ui->glycogenMappingTreeWidget);
+      map_item->setText(0, QString::number(current_object->getHVGXID()));
+      map_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+      map_item->setCheckState(0, Qt::Checked);
+
+      map_item->setText(1, QString(current_object->getName().c_str()));
+      map_item->setText(2, QString::number(iter->second.size()));
+      float volume = result_volumes->at(object_id);
+      map_item->setText(3, QString::number(volume, 'f', 4));
+
+      //set total volume value to object to color code
+      current_object->setMappedValue(volume / result_max_volume);
     }
+  }
+  else
+  {
+    //show message saying: No clusters available, calculate clusters first
+  }
 
 
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> ms = t2 - t1;
+  auto t2 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> ms = t2 - t1;
 
-    float duration =  ms.count()/1000.0;
-    update_glycogen_cluter_mapping_timing(QString::number(duration));
+  float duration = ms.count() / 1000.0;
+  update_glycogen_cluter_mapping_timing(QString::number(duration));
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_mitoRadioButton_toggled(bool checked)
 {
-		mainwindow_ui->glycogenMapToBoutonsCheckBox->setEnabled(!checked);
-		mainwindow_ui->glycogenMapToSpinesCheckBox->setEnabled(!checked);
+  mainwindow_ui->glycogenMapToBoutonsCheckBox->setEnabled(!checked);
+  mainwindow_ui->glycogenMapToSpinesCheckBox->setEnabled(!checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_boutonsSpinesRadioButton_toggled(bool checked)
 {
-		mainwindow_ui->glycogenMapToBoutonsCheckBox->setEnabled(checked);
-		mainwindow_ui->glycogenMapToSpinesCheckBox->setEnabled(checked);
+  mainwindow_ui->glycogenMapToBoutonsCheckBox->setEnabled(checked);
+  mainwindow_ui->glycogenMapToSpinesCheckBox->setEnabled(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::getPath(QString pathLabel)
 {
-    mainwindow_ui->listPaths->addItem(pathLabel);
+  mainwindow_ui->listPaths->addItem(pathLabel);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::getSelectedPathIndex(QModelIndex index)
 {
-    QString pathLabel = mainwindow_ui->listPaths->item(index.row())->text();
-    signalPathLabel(pathLabel);
+  QString pathLabel = mainwindow_ui->listPaths->item(index.row())->text();
+  signalPathLabel(pathLabel);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::deleteSelectedPath(QModelIndex index)
 {
-    // return label to mousepad to remove it from paths list
-    QListWidgetItem *item = mainwindow_ui->listPaths->item(index.row());
-    QString pathLabel = item->text();
-    delete mainwindow_ui->listPaths->takeItem(index.row());
-    signalDeletedPathLabel(pathLabel);
+  // return label to mousepad to remove it from paths list
+  QListWidgetItem* item = mainwindow_ui->listPaths->item(index.row());
+  QString pathLabel = item->text();
+  delete mainwindow_ui->listPaths->takeItem(index.row());
+  signalDeletedPathLabel(pathLabel);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_splatAstroCheckBox_toggled(bool checked)
 {
-	//qDebug() << "glycogen visibility toggled";
+  //qDebug() << "glycogen visibility toggled";
 
-	getGLWidget()->getOpenGLManager()->setAstroSplat(checked);
+  getGLWidget()->getOpenGLManager()->setAstroSplat(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_splatGlycoCheckBox_toggled(bool checked)
 {
-	//qDebug() << "glycogen visibility toggled";
+  //qDebug() << "glycogen visibility toggled";
 
-	getGLWidget()->getOpenGLManager()->setGlycoSplat(checked);
+  getGLWidget()->getOpenGLManager()->setGlycoSplat(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_splatNMitoCheckBox_toggled(bool checked)
 {
-	//qDebug() << "glycogen visibility toggled";
+  //qDebug() << "glycogen visibility toggled";
 
-	getGLWidget()->getOpenGLManager()->setNMitoSplat(checked);
+  getGLWidget()->getOpenGLManager()->setNMitoSplat(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_splatAMitoCheckBox_toggled(bool checked)
 {
-	//qDebug() << "glycogen visibility toggled";
+  //qDebug() << "glycogen visibility toggled";
 
-	getGLWidget()->getOpenGLManager()->setAMitoSplat(checked);
+  getGLWidget()->getOpenGLManager()->setAMitoSplat(checked);
 }
 
 //------------------------------------------------------
 //
 void MainWindow::on_specularLightCheckBox_toggled(bool checked)
 {
-	getGLWidget()->getOpenGLManager()->setSpecularLight(checked);
+  getGLWidget()->getOpenGLManager()->setSpecularLight(checked);
 }
 
 //------------------------------------------------------
 //
 void  MainWindow::on_glycogenMappingTreeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
-   bool state = true;
-   if ( item->checkState(0) == Qt::Unchecked)
-       state = false;
+  bool state = true;
+  if (item->checkState(0) == Qt::Unchecked)
+    state = false;
 
-   QString ID_str = item->text(0); // highlighted immediately
-   glycogenMappedSelectedState(ID_str, state);
+  QString ID_str = item->text(0); // highlighted immediately
+  glycogenMappedSelectedState(ID_str, state);
 }
 
 //------------------------------------------------------
 //
-void MainWindow::on_filterByProximityListWidget_itemChanged(QListWidgetItem *item)
+void MainWindow::on_filterByProximityListWidget_itemChanged(QListWidgetItem* item)
 {
-    bool flag = true;
-    if ( item->checkState() == Qt::Unchecked )
-        flag = false;
+  bool flag = true;
+  if (item->checkState() == Qt::Unchecked)
+    flag = false;
 
-    signalProximityTypeState( item->text() ,flag );
+  signalProximityTypeState(item->text(), flag);
 }
 
 //------------------------------------------------------
 //
-void MainWindow::on_listWidget_itemChanged(QListWidgetItem *)
+void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 {
-   signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
+  signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
 }

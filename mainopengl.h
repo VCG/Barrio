@@ -30,30 +30,30 @@
 #include <QFile>
 
 
-class MainOpenGL  : public QOpenGLFunctions_4_3_Core
+class MainOpenGL : public QOpenGLFunctions_4_3_Core
 {
 public:
-    MainOpenGL();
-    ~MainOpenGL();
-    bool initShader(QOpenGLShaderProgram *program, const char *vshader, const char *gshader, const char *fshader);
-    bool initShader(GLuint program, const char *vshader, const char *gshader, const char *fshader);
-    void GL_Error();
-    unsigned int nearestPowerOfTwo ( unsigned int _num );
-    void initText( const QFont &_f  );
-    void renderText( float x, float y, float scaleX, float scaleY, const QString &text );
+  MainOpenGL();
+  ~MainOpenGL();
+  bool initShader(QOpenGLShaderProgram* program, const char* vshader, const char* gshader, const char* fshader);
+  bool initShader(GLuint program, const char* vshader, const char* gshader, const char* fshader);
+  void GL_Error();
+  unsigned int nearestPowerOfTwo(unsigned int _num);
+  void initText(const QFont& _f);
+  void renderText(float x, float y, float scaleX, float scaleY, const QString& text);
 
 
 public:
-    struct FontChar {
-        int width;
-        GLuint textureID;
-        QOpenGLVertexArrayObject *vao;
-    };
+  struct FontChar {
+    int width;
+    GLuint textureID;
+    QOpenGLVertexArrayObject* vao;
+  };
 
-    QHash <char, FontChar>      m_characters;
-    QOpenGLShaderProgram        *m_program_text;
-    QMatrix4x4                  m_projection;
-    bool                        flag;
+  QHash <char, FontChar>      m_characters;
+  QOpenGLShaderProgram* m_program_text;
+  QMatrix4x4                  m_projection;
+  bool                        flag;
 
 };
 

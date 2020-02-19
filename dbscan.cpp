@@ -8,157 +8,157 @@
 
 namespace Clustering
 {
-	//--------------------------------------------------------------------------------
-	//
-	DBScan::DBScan()
-	{
-		m_glycogenMap = 0;
-		m_nodesList = 0;
-		m_octree = 0;
-		m_minPts = 3;
-		m_eps = 0.06f;
-	}
+  //--------------------------------------------------------------------------------
+  //
+  DBScan::DBScan()
+  {
+    m_glycogenMap = 0;
+    m_nodesList = 0;
+    m_octree = 0;
+    m_minPts = 3;
+    m_eps = 0.06f;
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	DBScan::~DBScan()
-	{
+  //--------------------------------------------------------------------------------
+  //
+  DBScan::~DBScan()
+  {
 
-	}
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::initialize(std::vector<VertexData*>* data, std::map<int, Glycogen*>* glycogenMap, SpacePartitioning::Octree* octree, float eps, int minPts)
-	{
-		m_nodesList = data;
-		m_eps = eps;
-		m_minPts = minPts;
-		m_noiseList.clear();
-		m_visitedList.clear();
-		m_clusters.clear();
-		m_nodeClusterMap.clear();
-		m_octree = octree;
-		m_glycogenMap = glycogenMap;
-	}
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::initialize(std::vector<VertexData*>* data, std::map<int, Glycogen*>* glycogenMap, SpacePartitioning::Octree* octree, float eps, int minPts)
+  {
+    m_nodesList = data;
+    m_eps = eps;
+    m_minPts = minPts;
+    m_noiseList.clear();
+    m_visitedList.clear();
+    m_clusters.clear();
+    m_nodeClusterMap.clear();
+    m_octree = octree;
+    m_glycogenMap = glycogenMap;
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::run()
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::run()
+  {
+    for (auto i = m_nodesList->begin(); i != m_nodesList->end(); i++)
     {
-		for (auto i = m_nodesList->begin(); i != m_nodesList->end(); i++)
-		{
-			VertexData* node = (*i);
-			if (isVisited(node))
-				continue;
-			setVisited(node);
-			std::vector<uint32_t> results;
-			m_octree->radiusNeighbors(node->x(), node->y(), node->z(), m_eps, results, node->index);
-			if (results.size() < m_minPts)
-			{
-				setAsNoise(node);
-			}
-			else
-			{
-				GlycogenCluster* c = new GlycogenCluster();
-				m_clusters[c->getID()] = c;
-				expandCluster(node, c, results);
-			}
+      VertexData* node = (*i);
+      if (isVisited(node))
+        continue;
+      setVisited(node);
+      std::vector<uint32_t> results;
+      m_octree->radiusNeighbors(node->x(), node->y(), node->z(), m_eps, results, node->index);
+      if (results.size() < m_minPts)
+      {
+        setAsNoise(node);
+      }
+      else
+      {
+        GlycogenCluster* c = new GlycogenCluster();
+        m_clusters[c->getID()] = c;
+        expandCluster(node, c, results);
+      }
 
 
-		}
+    }
 
-	}
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::expandCluster(VertexData* node, GlycogenCluster* cluster, std::vector<uint32_t> neighbors)
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::expandCluster(VertexData* node, GlycogenCluster* cluster, std::vector<uint32_t> neighbors)
+  {
+    addNodeToCluster(node, cluster);
+
+    for (auto i = neighbors.begin(); i != neighbors.end(); i++)
     {
-		addNodeToCluster(node, cluster);
-
-		for (auto i = neighbors.begin(); i != neighbors.end(); i++)
-		{
-			uint32_t idx = (*i);
-			VertexData* neighborNode = (*m_nodesList)[idx];
-			if (!isVisited(neighborNode))
-			{
-				setVisited(neighborNode);
-				std::vector<uint32_t> results2;
-				m_octree->radiusNeighbors(neighborNode->x(), neighborNode->y(), neighborNode->z(), m_eps, results2, neighborNode->index);
-				if (results2.size() >= m_minPts)
-					expandCluster(node, cluster, results2);
-			}
-			if (!isInCluster(neighborNode))
-			{
-				addNodeToCluster(neighborNode, cluster);
-			}
-		}
+      uint32_t idx = (*i);
+      VertexData* neighborNode = (*m_nodesList)[idx];
+      if (!isVisited(neighborNode))
+      {
+        setVisited(neighborNode);
+        std::vector<uint32_t> results2;
+        m_octree->radiusNeighbors(neighborNode->x(), neighborNode->y(), neighborNode->z(), m_eps, results2, neighborNode->index);
+        if (results2.size() >= m_minPts)
+          expandCluster(node, cluster, results2);
+      }
+      if (!isInCluster(neighborNode))
+      {
+        addNodeToCluster(neighborNode, cluster);
+      }
+    }
 
 
-	}
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	bool DBScan::isVisited(VertexData* node)
-	{
-		if (!node)
-			return false;
+  //--------------------------------------------------------------------------------
+  //
+  bool DBScan::isVisited(VertexData* node)
+  {
+    if (!node)
+      return false;
 
-		return m_visitedList.find(node->id()) != m_visitedList.end();
-	}
+    return m_visitedList.find(node->id()) != m_visitedList.end();
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::setVisited(VertexData* node)
-	{
-		if (!node)
-			return;
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::setVisited(VertexData* node)
+  {
+    if (!node)
+      return;
 
-		m_visitedList[node->id()] = node;
-	}
+    m_visitedList[node->id()] = node;
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::setAsNoise(VertexData* node)
-	{
-		if (!node)
-			return;
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::setAsNoise(VertexData* node)
+  {
+    if (!node)
+      return;
 
-		m_noiseList[node->id()] = node;
-		Glycogen* gnode = m_glycogenMap->at(node->id());
-		gnode->setClusterID(0);
-	}
+    m_noiseList[node->id()] = node;
+    Glycogen* gnode = m_glycogenMap->at(node->id());
+    gnode->setClusterID(0);
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	void DBScan::addNodeToCluster(VertexData* node, GlycogenCluster* cluster)
-	{
-		Glycogen* gnode = m_glycogenMap->at(node->id());
-		cluster->addNode(gnode);
-		m_nodeClusterMap[node->id()] = cluster->getID();
-	}
+  //--------------------------------------------------------------------------------
+  //
+  void DBScan::addNodeToCluster(VertexData* node, GlycogenCluster* cluster)
+  {
+    Glycogen* gnode = m_glycogenMap->at(node->id());
+    cluster->addNode(gnode);
+    m_nodeClusterMap[node->id()] = cluster->getID();
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	bool DBScan::isInCluster(VertexData* node)
-	{
-		if (!node)
-			return false;
+  //--------------------------------------------------------------------------------
+  //
+  bool DBScan::isInCluster(VertexData* node)
+  {
+    if (!node)
+      return false;
 
-		return m_nodeClusterMap.find(node->id()) != m_nodeClusterMap.end();
-	}
+    return m_nodeClusterMap.find(node->id()) != m_nodeClusterMap.end();
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	std::map<int, GlycogenCluster*> DBScan::getClusters()
-	{
+  //--------------------------------------------------------------------------------
+  //
+  std::map<int, GlycogenCluster*> DBScan::getClusters()
+  {
 
-		return m_clusters;
-	}
+    return m_clusters;
+  }
 
-	//--------------------------------------------------------------------------------
-	//
-	std::map<int, VertexData*>  DBScan::getNoiseList()
-	{
-		return m_noiseList;
-	}
+  //--------------------------------------------------------------------------------
+  //
+  std::map<int, VertexData*>  DBScan::getNoiseList()
+  {
+    return m_noiseList;
+  }
 }
