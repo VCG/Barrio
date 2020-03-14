@@ -32,7 +32,7 @@ void Mesh::dumpVertexData(QString path)
   size = m_faces.size(); // astro: 2497612
   outfile.write((char*)&size, sizeof(int));
   for (int i = 0; i < size; ++i) {
-    outfile.write((char*)&m_faces[i], sizeof(struct face));
+    outfile.write((char*)&m_faces[i], sizeof(struct Face));
   }
 
   outfile.close();
@@ -63,9 +63,9 @@ void Mesh::readVertexData(QString path)
     //struct vertex  *v = (struct vertex*)malloc(size * sizeof(struct vertex));
     // to make it dynamic I need to remove qvector4f and use float [4] instead -> not worth it
     for (int i = 0; i < size; i++) {
-      struct face v;
-      ss.read((char*)&v, sizeof(struct face));
-      m_faces.push_back(v);
+      struct Face f;
+      ss.read((char*)&f, sizeof(struct Face));
+      m_faces.push_back(f);
     }
 
     ss.close();
@@ -89,7 +89,7 @@ void Mesh::computeNormalsPerVertex()
     std::vector<int>  faces_list = m_vertexFaces[i];
     for (int i = 0; i < faces_list.size(); ++i) {
       int f_idx = faces_list[i];
-      struct face f = m_faces[f_idx];
+      struct Face f = m_faces[f_idx];
       QVector3D face_normal = this->computeFaceNormal(f);
       normal += face_normal;
     }
@@ -99,7 +99,7 @@ void Mesh::computeNormalsPerVertex()
   }
 }
 
-QVector3D Mesh::computeFaceNormal(struct face f)
+QVector3D Mesh::computeFaceNormal(struct Face f)
 {
   QVector3D face_normal = QVector3D(0, 0, 0);
   if (f.v[0] >= verticesList.size() || f.v[1] >= verticesList.size() || f.v[2] >= verticesList.size())
@@ -214,7 +214,7 @@ void Mesh::addVertexNeighbor(int v_index, int face_index)
 
 void Mesh::addFace(int index1, int index2, int index3)
 {
-  struct face f;
+  struct Face f;
   f.v[0] = index1;
   f.v[1] = index2;
   f.v[2] = index3;
@@ -232,7 +232,7 @@ void Mesh::getVertexNeighbors(int v_index, std::set< int >& neighs)
   // Use 'mesh' to walk the connectivity.
   std::vector<int>  faces_list = m_vertexFaces[v_index];
   for (int i = 0; i < faces_list.size(); ++i) {
-    struct face f = m_faces[faces_list[i]];
+    struct Face f = m_faces[faces_list[i]];
     for (int j = 0; j < 3; ++j) {
       if (f.v[j] != v_index) {
         neighs.insert(f.v[j]);

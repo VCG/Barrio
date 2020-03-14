@@ -73,6 +73,7 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
+  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\mouse3.obj");
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
 
@@ -612,7 +613,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
   // Parent -> Child
   // if axon then all boutons afterwards are its children
   // else if dendrite all consecutive spines are its children
-  // make parent IDs not pointers to objects
+  // make parent IDs not pointers to objects 
   if (m_parents.find(hvgxID) != m_parents.end()) {
     int parentID = m_parents[hvgxID];
     obj->setParentID(parentID);
@@ -802,11 +803,11 @@ void DataContainer::parseMeshNoVertexnoFace(QXmlStreamReader& xml, Object* obj)
         int faceIdx = stringlist.at(0).toInt() + m_faces_offset;
         int faceCount = stringlist.at(1).toInt();
 
-        std::vector< struct face >* facesList = m_mesh->getFacesList();
+        std::vector< struct Face >* facesList = m_mesh->getFacesList();
         // process faces that start from index "faceIdx" with count as faceCount here
 
         for (int i = faceIdx; i < (faceCount + faceIdx); ++i) {
-          struct face f = facesList->at(i);
+          struct Face f = facesList->at(i);
           obj->addTriangleIndex(f.v[0] + m_vertex_offset); // do I have to add the offset?
           obj->addTriangleIndex(f.v[1] + m_vertex_offset);
           obj->addTriangleIndex(f.v[2] + m_vertex_offset);
@@ -828,7 +829,7 @@ void DataContainer::parseMeshNoVertexnoFace(QXmlStreamReader& xml, Object* obj)
         if (obj->getObjectType() == Object_t::SYNAPSE) {
           // get any vertex that belong to the synapse
           std::vector< struct VertexData >* vertixList = m_mesh->getVerticesList();
-          struct face f = facesList->at(faceIdx);
+          struct Face f = facesList->at(faceIdx);
           struct VertexData vertex = vertixList->at(f.v[0] + m_vertex_offset);
           obj->setCenter(QVector4D(vertex.mesh_vertex.x(),
             vertex.mesh_vertex.y(),
@@ -1127,6 +1128,69 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 
   if (m_debug_msg)
     qDebug() << "points count: " << nodes;
+}
+
+bool DataContainer::importObj(QString path)
+{
+  qDebug() << "!!!!!!!! Start reading obj file";
+
+  std::vector< unsigned int > vertexIndices, normalIndices;
+  std::vector<QVector3D> temp_vertices;
+  std::vector<QVector3D> temp_normals;
+
+  FILE* file = fopen(path.toStdString().c_str(), "r");
+  if (file == NULL) {
+    printf("Impossible to open the file !\n");
+    return false;
+  }
+
+  while (true) {
+
+    char lineHeader[128];
+    // read the first word of the line
+    int res = fscanf(file, "%s", lineHeader);
+    if (res == EOF)
+    {
+      qDebug() << "Finished reading obj file";
+      break; // EOF = End Of File. Quit the loop.
+    }
+
+    if (strcmp(lineHeader, "v") == 0) { // read vertices
+      QVector3D vertex;
+      float x, y, z;
+      fscanf(file, "%f %f %f\n", &x, &y, &z);
+      vertex.setX(x);
+      vertex.setY(y);
+      vertex.setZ(z);
+      temp_vertices.push_back(vertex);
+    }
+    else if (strcmp(lineHeader, "vn") == 0) { // read vertex normals
+      QVector3D normal;
+      float x, y, z;
+      fscanf(file, "%f %f %f\n", &x, &y, &z);
+      normal.setX(x);
+      normal.setY(y);
+      normal.setZ(z);
+      temp_normals.push_back(normal);
+    }
+    else if (strcmp(lineHeader, "f") == 0) { // read triangulated faces
+      std::string vertex1, vertex2, vertex3;
+      unsigned int vertexIndex[3], normalIndex[3];
+      int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+      if (matches != 6) {
+        printf(".obj file can't be read by parser: (Try exporting with other options\n");
+        return false;
+      }
+      vertexIndices.push_back(vertexIndex[0]);
+      vertexIndices.push_back(vertexIndex[1]);
+      vertexIndices.push_back(vertexIndex[2]);
+
+      normalIndices.push_back(normalIndex[0]);
+      normalIndices.push_back(normalIndex[1]);
+      normalIndices.push_back(normalIndex[2]);
+    }
+  }
+  
 }
 
 //----------------------------------------------------------------------------

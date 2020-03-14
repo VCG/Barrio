@@ -8,7 +8,7 @@
 
 enum class Object_t;
 
-struct face {
+struct Face {
   int v[3];
 };
 
@@ -17,7 +17,7 @@ struct VertexData {
   QVector4D   mesh_vertex;        // w: Object ID
   QVector4D   skeleton_vertex;    // w: markers distance to astrocyte (since this is per vertex, compute the distance from each vertex to astrocyte)
 
-
+  
   int			index;
   //bool		isGlycogen;			//because glycogen ids and object ids are seperate
 
@@ -58,7 +58,7 @@ public:
   void addFace(int index1, int index2, int index3);
   void getVertexNeighbors(int v_index, std::set< int >& neighs);
 
-  std::vector< struct face >* getFacesList() { return &m_faces; }
+  std::vector< struct Face >* getFacesList() { return &m_faces; }
   size_t getFacesListSize() { return m_faces.size(); }
 
   // opengl functions
@@ -69,7 +69,7 @@ public:
   void readVertexData(QString path);
 
   void computeNormalsPerVertex();
-  QVector3D computeFaceNormal(struct face);
+  QVector3D computeFaceNormal(struct Face);
 
   void dumpNormalsList(QString path);
   bool readNormalsBinary(QString path);
@@ -77,7 +77,7 @@ public:
   size_t getNormalsListSize() { return m_normalsList.size(); }
 
 protected:
-  std::vector< struct face >          m_faces; // sequential, write
+  std::vector< struct Face >          m_faces; // sequential, write
 
   // each vertex could belong to more than one face
   // for each vertex in each face, add face to vertex
@@ -90,6 +90,7 @@ protected:
 
   std::vector<VertexData*> m_typeVertexList[9];
 
+  // skeleton
 
 };
 

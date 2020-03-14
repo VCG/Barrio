@@ -50,6 +50,7 @@ public:
   void parseSkeletonNodes(QXmlStreamReader& xml, Object* obj);
   void parseBranch(QXmlStreamReader& xml, Object* obj);
   void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
+  bool importObj(QString path);
 
   void loadConnectivityGraph(QString path);
   void addEdgeToConnectivityGraph(int, int, std::set< std::tuple<int, int> >&);

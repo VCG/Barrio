@@ -189,6 +189,17 @@ void InputForm::on_pushButton_xml_neurites_clicked()
 
 void InputForm::on_pushButton_submit_clicked()
 {
+  // just for debug purpose so that i dont have to set paths manually every time
+
+  m_input_files.extra_files_path = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data";
+  m_input_files.HVGX_metadata = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mouse3_metadata_objname_center_astroSyn.hvgx";
+  m_input_files.xml_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_astrocyte_noVertex.xml";
+  m_input_files.xml_neurites = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_neurites_noVertexNoFace.xml";
+  m_input_files.proximity_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_745_sigma3.raw";
+  m_input_files.proximity_astro_mito = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\astrocytic_mitochondria_s5.raw";
+  m_input_files.proximity_neu_mito = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\Neuronic_mitochondria_binary_s5.raw";
+  m_input_files.proximity_glycogen = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_glycogen_sig3_blured20.raw";
+
   signal_filesPath(m_input_files);
   this->accept();
 }
