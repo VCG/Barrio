@@ -15,6 +15,7 @@
 #include <QString>
 #include <QFile>
 #include <QXmlStreamReader>
+#include <string>
 
 #include "object.h"
 #include "mesh.h"
@@ -130,6 +131,7 @@ protected:
   std::map<int, Object*>                      m_objects;
   std::map<Object_t, std::vector<Object*> >   m_objectsByType;
   std::map<Object_t, int >                    m_indices_size_byType;
+  std::map<std::string, int>                  m_id_name_map;
 
 
   // graph related data
@@ -138,15 +140,15 @@ protected:
   // glycogen
   std::map<int, Glycogen*>                    m_glycogenMap;
   std::vector<VertexData*>                    m_glycogenList;
-  SpacePartitioning::Grid3D					m_glycogen3DGrid;
+  SpacePartitioning::Grid3D					  m_glycogen3DGrid;
 
   // octrees
   //SpacePartitioning::Octree                   m_spineOctree;
   //SpacePartitioning::Octree                   m_boutonOctree;
   SpacePartitioning::Octree                   m_glycogenOctree;
-  SpacePartitioning::SpatialHash3D			m_boutonHash;
-  SpacePartitioning::SpatialHash3D			m_spineHash;
-  SpacePartitioning::SpatialHash3D			m_neuroMitoHash;
+  SpacePartitioning::SpatialHash3D			  m_boutonHash;
+  SpacePartitioning::SpatialHash3D			  m_spineHash;
+  SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;
 
   // file management
   Normals_t                                   m_normals_t;

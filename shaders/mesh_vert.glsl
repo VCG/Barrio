@@ -13,10 +13,10 @@ out vec4        V_color_val;
 out float       V_alpha;
 out float       V_color_intp;
 out int         V_render;
-out vec4	V_worldPos;
+out vec4	    V_worldPos;
 out vec4        V_normal;
 out vec3        V_fragTexCoord;
-out vec3	E_eye;
+out vec3	    E_eye;
 
 uniform int     y_axis;
 uniform int     x_axis;

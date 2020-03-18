@@ -14,7 +14,7 @@ struct Face {
 
 // mesh vertex
 struct VertexData {
-  QVector4D   mesh_vertex;        // w: Object ID
+  QVector4D   mesh_vertex;        // w: Object ID (hvgx ID)
   QVector4D   skeleton_vertex;    // w: markers distance to astrocyte (since this is per vertex, compute the distance from each vertex to astrocyte)
 
   
@@ -40,6 +40,7 @@ struct VertexData {
 };
 
 
+/*Stores all vertices and faces of one mouse dataset*/
 class Mesh
 {
 public:
@@ -83,10 +84,10 @@ protected:
   // for each vertex in each face, add face to vertex
 
   // set of faces
-  std::vector< struct VertexData  >    verticesList; // .
-  std::map<int, std::vector<int> >    m_vertexFaces;
+  std::vector< struct VertexData  >     verticesList; // .
+  std::map<int, std::vector<int> >      m_vertexFaces;
 
-  std::vector< QVector4D >            m_normalsList;
+  std::vector< QVector4D > m_normalsList;
 
   std::vector<VertexData*> m_typeVertexList[9];
 

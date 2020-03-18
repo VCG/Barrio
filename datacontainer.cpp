@@ -73,9 +73,9 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\mouse3.obj");
+  
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-
+  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj");
 
   auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -314,6 +314,7 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
 
   // temp set to check for edges
   std::set< std::tuple<int, int> > connectivity_e_set;
+  
 
   QTextStream in(&file);
   QList<QByteArray> wordList;
@@ -334,6 +335,10 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
 
       int hvgxID = wordList[1].toInt();
       int parentID = wordList[14].toInt();
+      QString name = wordList[28];
+      name.replace("\n", "");
+
+      m_id_name_map.insert(std::pair< std::string, int>(name.toStdString(), hvgxID));
 
       m_parents[hvgxID] = parentID;
 
@@ -625,7 +630,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
       qDebug() << "Object has no parents in m_objects yet " << parentID;
   }
 
-  QVector4D color = obj->getColor();
+  //QVector4D color = obj->getColor();
   // set ssbo with this ID to this color
 
   xml.readNext();
@@ -859,35 +864,35 @@ void DataContainer::parseMesh(QXmlStreamReader& xml, Object* obj)
 
   xml.readNext();
 
-  int vertices = 0;
-  int faces = 0;
-
   // this object structure is not done
   while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "mesh")) {
     // go to the next child of object node
     if (xml.tokenType() == QXmlStreamReader::StartElement) {
       if (xml.name() == "v") {
-        ++vertices;
+
+        //get line
         xml.readNext();
+
+        //transform line to readable string
         QString coords = xml.text().toString();
         QStringList stringlist = coords.split(" ");
         if (stringlist.size() < 3) {
           continue;
         }
 
+        // get x, y, z coordinates
         float x1 = stringlist.at(0).toDouble() / MESH_MAX;
         float y1 = stringlist.at(1).toDouble() / MESH_MAX;
         float z1 = stringlist.at(2).toDouble() / MESH_MAX;
 
+        //store them in a vector and the hvgx id as a fourth component
         QVector4D mesh_vertex(x1, y1, z1, obj->getHVGXID());
-        std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
 
+        std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
         meshVertexList->emplace_back();
         int vertexIdx = (int)meshVertexList->size() - 1;
         struct VertexData* v = &meshVertexList->at(vertexIdx);
         v->index = vertexIdx;
-        //struct VertexData v;
-        //v.isGlycogen = false;
         v->mesh_vertex = mesh_vertex;
 
         bool mito_no_parent = false;
@@ -951,7 +956,7 @@ void DataContainer::parseMesh(QXmlStreamReader& xml, Object* obj)
 
       }
       else if (xml.name() == "f") { // f v1/vt1/vn1 v2/vt2/vn2/ v3/vt3/vn3
-        ++faces;
+        //++faces;
         xml.readNext();
         int vertexIdx[3];
 
@@ -1132,11 +1137,12 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 
 bool DataContainer::importObj(QString path)
 {
-  qDebug() << "!!!!!!!! Start reading obj file";
-
   std::vector< unsigned int > vertexIndices, normalIndices;
-  std::vector<QVector3D> temp_vertices;
+  std::vector<QVector4D> temp_vertices;
   std::vector<QVector3D> temp_normals;
+
+  char currObject[128];
+  int currHvgx;
 
   FILE* file = fopen(path.toStdString().c_str(), "r");
   if (file == NULL) {
@@ -1144,9 +1150,12 @@ bool DataContainer::importObj(QString path)
     return false;
   }
 
+  int currentHvgx_ID = 0;
+  Object* current_object = NULL;
+
   while (true) {
 
-    char lineHeader[128];
+    char lineHeader[128] = { 0 };
     // read the first word of the line
     int res = fscanf(file, "%s", lineHeader);
     if (res == EOF)
@@ -1155,25 +1164,39 @@ bool DataContainer::importObj(QString path)
       break; // EOF = End Of File. Quit the loop.
     }
 
-    if (strcmp(lineHeader, "v") == 0) { // read vertices
-      QVector3D vertex;
-      float x, y, z;
-      fscanf(file, "%f %f %f\n", &x, &y, &z);
-      vertex.setX(x);
-      vertex.setY(y);
-      vertex.setZ(z);
-      temp_vertices.push_back(vertex);
+    if (!strcmp(lineHeader, "o"))
+    {
+      int result = fscanf(file, "%s", currObject);
+
+      QString nameline(currObject);
+      QList<QString> nameList = nameline.split('_');
+      currentHvgx_ID = nameList.last().toInt();
+
+      QString name; // name consits of everything but the last entry of namelist
+      for (int i = 0; i < nameList.size() - 1; ++i)
+        name += nameList[i];
+
+      current_object = new Object(name.toUtf8().constData(), currentHvgx_ID);
     }
-    else if (strcmp(lineHeader, "vn") == 0) { // read vertex normals
+
+    if (!strcmp(lineHeader, "v")) { // read vertices
+      float x, y, z;
+      int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
+      QVector4D vertex(x, y, z, currentHvgx_ID);
+      temp_vertices.push_back(vertex);
+
+      //m_mesh->addVertex()
+    }
+    else if (!strcmp(lineHeader, "vn")) { // read vertex normals
       QVector3D normal;
       float x, y, z;
-      fscanf(file, "%f %f %f\n", &x, &y, &z);
+      int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
       normal.setX(x);
       normal.setY(y);
       normal.setZ(z);
       temp_normals.push_back(normal);
     }
-    else if (strcmp(lineHeader, "f") == 0) { // read triangulated faces
+    else if (!strcmp(lineHeader, "f")) { // read triangulated faces
       std::string vertex1, vertex2, vertex3;
       unsigned int vertexIndex[3], normalIndex[3];
       int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
@@ -1185,12 +1208,16 @@ bool DataContainer::importObj(QString path)
       vertexIndices.push_back(vertexIndex[1]);
       vertexIndices.push_back(vertexIndex[2]);
 
+      m_mesh->addFace(vertexIndex[0], vertexIndex[1], vertexIndex[2]);
+
+
       normalIndices.push_back(normalIndex[0]);
       normalIndices.push_back(normalIndex[1]);
       normalIndices.push_back(normalIndex[2]);
     }
   }
   
+
 }
 
 //----------------------------------------------------------------------------

@@ -23,7 +23,9 @@ struct synapse {
   int bouton;
 };
 
-enum class Object_t { AXON = 2, DENDRITE = 4, BOUTON = 3, SPINE = 5, MITO = 1, SYNAPSE = 7, ASTROCYTE = 6, GLYCOGEN = 8, UNKNOWN = 0, ASTRO_MITO = 9 };
+// type identifiers for objects
+enum class Object_t { AXON = 2, DENDRITE = 4, BOUTON = 3, SPINE = 5, MITO = 1, 
+  SYNAPSE = 7, ASTROCYTE = 6, GLYCOGEN = 8, UNKNOWN = 0, ASTRO_MITO = 9 };
 
 class Skeleton;
 class Object
@@ -102,45 +104,38 @@ public:
 
 private:
   std::string                             m_name;
-  int                                     m_ID; // hvgx
-
+  int                                     m_ID;           // hvgx
   int                                     m_nodeIndx;
 
-  // object properties
   Object_t                                m_object_t;     /* object type */
-  int                                     m_volume;
+  int                                     m_volume;       // volume of this object
   int                                     m_function;     // -1:not applicable, 0:ex, 1:in, 3:unknown
 
-  Object* m_parent;    // NULL if none
+  Object* m_parent;                                       // NULL if none
   int                                     m_parentID;
-  std::vector<Object*>                    m_children;   // axon-> bouton, den->spine
+  std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
 
-  QVector4D                               m_center;
-  // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
-  QVector4D                               m_ast_point;
+  QVector4D                               m_center;           
+  QVector4D                               m_ast_point;    // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
   QVector4D                               m_color;
 
   Skeleton* m_skeleton;
 
-  // indices to access the global mesh vertices defined in mesh
-  std::vector<GLuint>                     m_meshIndices;
+  std::vector<GLuint>                     m_meshIndices;  // indices to access the global mesh vertices defined in meshv
 
   bool                                    m_isFiltered;   // 1 yes, 0 no
-
   bool                                    m_isAstroSynapse;
 
   std::pair<int, float>                   m_closest_astro_vertex;
-
   std::vector<int>                        m_VertexidxCloseToAstro;  // less than ASTRO_DIST_THRESH ----> we can refine this later
-  float                                     m_averageDistance;
-  float									m_mappedValue;
+  float                                   m_averageDistance;
+  float									  m_mappedValue;
 
-  // list of synapses
-  std::vector<Object*>                    m_synapses;
-
+  
+  std::vector<Object*>                    m_synapses;     // list of synapses
   struct synapse                          m_synapse_data;
 
-  std::map<Object_t, void*>               m_dataByType; // use this to store info based on data type
+  std::map<Object_t, void*>               m_dataByType;   // use this to store info based on data type
 };
 
 #endif // OBJECT_H
