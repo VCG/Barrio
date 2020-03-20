@@ -109,10 +109,6 @@ set(project_sources
     mesh_preprocessing.cpp)
 
 # Creating entries for target: NeCo
-# ############################
-
-# qt5_wrap_ui(project_headers_wrapped ${project_ui})
-# qt5_wrap_cpp(project_sources_moc ${project_headers})
 
 add_executable( NeCo  
     ${project_ui} 
@@ -130,4 +126,3 @@ target_link_libraries( NeCo
     Qt5::Gui
     Qt5::OpenGL
     Qt5::Xml)
-
