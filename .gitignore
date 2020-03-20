@@ -4,6 +4,7 @@
 
 data/*
 scripts/*
+builds/*
 ### C++ ###
 # Prerequisites
 *.d

@@ -38,7 +38,7 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <mousepad.h>
+#include "mousepad.h"
 #include "glwidget.h"
 
 QT_BEGIN_NAMESPACE
