@@ -15,6 +15,7 @@
 #include <QString>
 #include <QFile>
 #include <QXmlStreamReader>
+#include <QDebug>
 #include <string>
 
 #include "object.h"
@@ -58,30 +59,33 @@ public:
   void parseSynapsesGraph(QList<QByteArray>&, std::set< std::tuple<int, int> >&);
   void PostloadMetaDataHVGX(QString path);
   void PreLoadMetaDataHVGX(QString path);
+  bool setParentID(Object* obj, int hvgxID);
 
   //glycogen
-  int									getGlycogenSize() { return m_glycogenMap.size(); }
-  std::map<int, Glycogen*>			getGlycogenMap() { return m_glycogenMap; }
-  std::map<int, Glycogen*>* getGlycogenMapPtr() { return &m_glycogenMap; }
-  std::vector<VertexData*>* getGlycogenVertexDataPtr() { return &m_glycogenList; }
-  SpacePartitioning::Octree* getGlycogenOctree() { return &m_glycogenOctree; }
+  int								  getGlycogenSize() { return m_glycogenMap.size(); }
+  std::map<int, Glycogen*>			  getGlycogenMap() { return m_glycogenMap; }
+  std::map<int, Glycogen*>*           getGlycogenMapPtr() { return &m_glycogenMap; }
+  std::vector<VertexData*>*           getGlycogenVertexDataPtr() { return &m_glycogenList; }
+  SpacePartitioning::Octree*          getGlycogenOctree() { return &m_glycogenOctree; }
+  
 
   //SpacePartitioning::Octree* getSpineOctree() { return &m_spineOctree; }
   //SpacePartitioning::Octree* getBoutonOctree() { return &m_boutonOctree; }
-  SpacePartitioning::SpatialHash3D* getSpineHash() { return &m_spineHash; }
-  SpacePartitioning::SpatialHash3D* getBoutonHash() { return &m_boutonHash; }
-  SpacePartitioning::SpatialHash3D* getNeuroMitoHash() { return &m_neuroMitoHash; }
-  unsigned char* getGlycogen3DGridData();
-  void								resetMappingValues();
+
+  SpacePartitioning::SpatialHash3D*   getSpineHash() { return &m_spineHash; }
+  SpacePartitioning::SpatialHash3D*   getBoutonHash() { return &m_boutonHash; }
+  SpacePartitioning::SpatialHash3D*   getNeuroMitoHash() { return &m_neuroMitoHash; }
+  unsigned char*                      getGlycogen3DGridData();
+  void								  resetMappingValues();
 
 
   // graph related function
   std::map<int, Object*>  getObjectsMap();
   std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
-  std::vector<QVector2D> getNeuritesEdges();
+  std::vector<QVector2D>  getNeuritesEdges();
 
-  int getSkeletonPointsSize();
-  int getMeshIndicesSize();
+  int   getSkeletonPointsSize();
+  int   getMeshIndicesSize();
   Mesh* getMeshPointer();
 
   Object_t getObjectTypeByID(int hvgxID);

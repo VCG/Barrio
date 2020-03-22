@@ -19,6 +19,7 @@ struct VertexData {
 
   
   int			index;
+  double        distance_to_astro;
   //bool		isGlycogen;			//because glycogen ids and object ids are seperate
 
   float  x()  const
@@ -78,18 +79,15 @@ public:
   size_t getNormalsListSize() { return m_normalsList.size(); }
 
 protected:
-  std::vector< struct Face >          m_faces; // sequential, write
-
+  
   // each vertex could belong to more than one face
   // for each vertex in each face, add face to vertex
 
-  // set of faces
-  std::vector< struct VertexData  >     verticesList; // .
+  std::vector< struct Face >            m_faces; // sequential, write
+  std::vector<struct VertexData >       verticesList;
   std::map<int, std::vector<int> >      m_vertexFaces;
-
-  std::vector< QVector4D > m_normalsList;
-
-  std::vector<VertexData*> m_typeVertexList[9];
+  std::vector< QVector4D >              m_normalsList;
+  std::vector<VertexData*>              m_typeVertexList[9];
 
   // skeleton
 

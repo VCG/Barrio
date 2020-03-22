@@ -1,7 +1,9 @@
 #include <chrono>
-#include "datacontainer.h"
 #include <set>
 #include <QDomDocument>
+
+#include "datacontainer.h"
+#include "mesh_preprocessing.h"
 
 /*
  * m_objects -> object class for each object (astrocyte, dendrite, ..)
@@ -73,9 +75,18 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  
+  qDebug() << "!!!!! load data";
+  QString neurites_obj_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_small.obj";
+  QString astrocytes_obj_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj";
+
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj");
+
+  //MeshProcessing* mesh_processing = new MeshProcessing();
+
+  //importObj(neurites_obj_path);
+  //mesh_processing->computeDistance(astrocytes_obj_path, *m_mesh->getVerticesList());
+
+  
 
   auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -362,6 +373,24 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
   file.close();
 }
 
+bool DataContainer::setParentID(Object* obj, int hvgxID)
+{
+  if (m_parents.find(hvgxID) != m_parents.end()) {
+    int parentID = m_parents[hvgxID];
+    obj->setParentID(parentID);
+
+    if (m_objects.find(parentID) != m_objects.end()) {
+      m_objects[parentID]->addChild(obj);
+      return true;
+    }
+    else {
+      qDebug() << "Object has no parents in m_objects yet " << parentID;
+      return false;
+    }
+  }
+  
+}
+
 //----------------------------------------------------------------------------
 // load this after loading obj file
 // get center from here, and volume, and connectivity?
@@ -619,22 +648,9 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
   // if axon then all boutons afterwards are its children
   // else if dendrite all consecutive spines are its children
   // make parent IDs not pointers to objects 
-  if (m_parents.find(hvgxID) != m_parents.end()) {
-    int parentID = m_parents[hvgxID];
-    obj->setParentID(parentID);
-
-    if (m_objects.find(parentID) != m_objects.end()) {
-      m_objects[parentID]->addChild(obj);
-    }
-    else
-      qDebug() << "Object has no parents in m_objects yet " << parentID;
-  }
-
-  //QVector4D color = obj->getColor();
-  // set ssbo with this ID to this color
+  bool success = setParentID(obj, hvgxID);
 
   xml.readNext();
-
 
   // this object structure is not done
   while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "o")) {
@@ -1152,6 +1168,7 @@ bool DataContainer::importObj(QString path)
 
   int currentHvgx_ID = 0;
   Object* current_object = NULL;
+  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
 
   while (true) {
 
@@ -1177,15 +1194,26 @@ bool DataContainer::importObj(QString path)
         name += nameList[i];
 
       current_object = new Object(name.toUtf8().constData(), currentHvgx_ID);
+      setParentID(current_object, currentHvgx_ID);
     }
 
     if (!strcmp(lineHeader, "v")) { // read vertices
       float x, y, z;
       int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
-      QVector4D vertex(x, y, z, currentHvgx_ID);
-      temp_vertices.push_back(vertex);
 
-      //m_mesh->addVertex()
+      QVector4D mesh_vertex(x, y, z, currentHvgx_ID);
+      QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
+
+      meshVertexList->emplace_back();
+      int vertexIdx = (int)meshVertexList->size() - 1;
+      struct VertexData* v = &meshVertexList->at(vertexIdx);
+      
+      v->index = vertexIdx;           
+      v->mesh_vertex = mesh_vertex;
+      v->skeleton_vertex = skeleton_vertex; //place holder
+      v->distance_to_astro = 0.0; //place holder
+
+      temp_vertices.push_back(mesh_vertex);
     }
     else if (!strcmp(lineHeader, "vn")) { // read vertex normals
       QVector3D normal;
@@ -1208,6 +1236,10 @@ bool DataContainer::importObj(QString path)
       vertexIndices.push_back(vertexIndex[1]);
       vertexIndices.push_back(vertexIndex[2]);
 
+      if (!m_mesh->isValidFaces(vertexIndex[0], vertexIndex[1], vertexIndex[2])) {
+        qDebug() << "Error in obj file! - invalid faces";
+        break;
+      }
       m_mesh->addFace(vertexIndex[0], vertexIndex[1], vertexIndex[2]);
 
 
