@@ -21,6 +21,8 @@
 #include <QString>
 #include <QDebug>
 
+#include "mesh.h"
+
 #pragma once
 class MeshProcessing
 {
@@ -29,5 +31,5 @@ public:
   ~MeshProcessing();
 
   int computeCenters(QString obj_path);
-  int computeDistance(QString astro_obj_path, QString neurites_obj_path);
+  int computeDistance(QString astro_obj_path, std::vector<VertexData> &neurites_vertices);
 };
