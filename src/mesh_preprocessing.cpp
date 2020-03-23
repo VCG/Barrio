@@ -129,7 +129,7 @@ int MeshProcessing::computeDistance(QString astro_obj_path, std::vector<VertexDa
     Point point_query(vertex.x(), vertex.y(), vertex.z());
     double distance = std::sqrt(tree.squared_distance(point_query));
     std::cout << "Distance: " << distance << std::endl;
-    //vertex.distance_to_astro = distance;
+    vertex.skeleton_vertex.setW(distance);
     neurites_vertices[i] = vertex;
   }
 

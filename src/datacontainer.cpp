@@ -74,7 +74,7 @@ DataContainer::~DataContainer()
 void DataContainer::loadData()
 {
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-  //importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj");
+  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj");
 
   auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -1143,33 +1143,25 @@ bool DataContainer::importObj(QString path)
   char currObject[128];
   int currHvgx;
 
-  FILE* file = fopen(path.toStdString().c_str(), "r");
-  if (file == NULL) {
-    printf("Impossible to open the file !\n");
-    return false;
+  QFile inputFile(path);
+  if (!inputFile.open(QIODevice::ReadOnly))
+  {
+    qDebug() << "Cant open " << path;
   }
 
   int currentHvgx_ID = 0;
   Object* obj = NULL;
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
-
-  while (true) {
-
-    char lineHeader[128] = { 0 };
-    // read the first word of the line
-    int res = fscanf(file, "%s", lineHeader);
-    if (res == EOF)
+  
+  QTextStream in(&inputFile);
+  while (!in.atEnd()) {
+    
+    QString line = in.readLine();
+    QList<QString> elements = line.split(" ");
+   
+    if (!strcmp(elements[0].toStdString().c_str(), "o"))
     {
-      qDebug() << "Finished reading obj file";
-      break; // EOF = End Of File. Quit the loop.
-    }
-
-    if (!strcmp(lineHeader, "o"))
-    {
-      int result = fscanf(file, "%s", currObject);
-
-      QString nameline(currObject);
-      QList<QString> nameList = nameline.split('_');
+      QList<QString> nameList = elements[1].split('_');
       currentHvgx_ID = nameList.last().toInt();
 
       QString name; // name consits of everything but the last entry of namelist
@@ -1177,6 +1169,7 @@ bool DataContainer::importObj(QString path)
         name += nameList[i];
 
       obj = new Object(name.toUtf8().constData(), currentHvgx_ID);
+      qDebug() << "Reading " << name;
 
       if (m_parents.find(currentHvgx_ID) != m_parents.end()) {
         int parentID = m_parents[currentHvgx_ID];
@@ -1184,18 +1177,20 @@ bool DataContainer::importObj(QString path)
 
         if (m_objects.find(parentID) != m_objects.end()) {
           m_objects[parentID]->addChild(obj);
-          return true;
+          //return true;
         }
         else {
           qDebug() << "Object has no parents in m_objects yet " << parentID;
-          return false;
+          //return false;
         }
       }
     }
 
-    if (!strcmp(lineHeader, "v")) { // read vertices
-      float x, y, z;
-      int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
+    else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
+
+      float x = elements[1].toFloat();
+      float y = elements[2].toFloat();
+      float z = elements[3].toFloat();
 
       QVector4D mesh_vertex(x, y, z, currentHvgx_ID);
       QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
@@ -1214,22 +1209,31 @@ bool DataContainer::importObj(QString path)
 
       temp_vertices.push_back(mesh_vertex);
     }
-    else if (!strcmp(lineHeader, "vn")) { // read vertex normals
-      float x, y, z;
-      int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
+    else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
+    { // read vertex normals
+
+      float x = elements[1].toInt();
+      float y = elements[2].toInt();
+      float z = elements[3].toInt();
+
       QVector4D normal(x, y, z, 0);
       m_mesh->addVertexNormal(normal); // parallel list to vertices
 
       temp_normals.push_back(normal);
     }
-    else if (!strcmp(lineHeader, "f")) { // read triangulated faces
+    else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
       std::string vertex1, vertex2, vertex3;
       unsigned int vertexIndex[3], normalIndex[3];
-      int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
-      if (matches != 6) {
-        printf(".obj file can't be read by parser!\n");
-        return false;
-      }
+
+      vertexIndex[0] = elements[1].split("//")[0].toInt();
+      normalIndex[0] = elements[1].split("//")[1].toInt();
+      
+      vertexIndex[1] = elements[2].split("//")[0].toInt();
+      normalIndex[1] = elements[2].split("//")[1].toInt();
+
+      vertexIndex[2] = elements[3].split("//")[0].toInt();
+      normalIndex[2] = elements[3].split("//")[1].toInt();
+
       vertexIndices.push_back(vertexIndex[0]);
       vertexIndices.push_back(vertexIndex[1]);
       vertexIndices.push_back(vertexIndex[2]);
@@ -1252,15 +1256,15 @@ bool DataContainer::importObj(QString path)
       }
       m_indices_size_byType[obj->getObjectType()] += 3;
 
-
-
       normalIndices.push_back(normalIndex[0]);
       normalIndices.push_back(normalIndex[1]);
       normalIndices.push_back(normalIndex[2]);
     }
   }
 
-
+  inputFile.close();
+  qDebug() << "Done reading .obj file";
+  return true;
 }
 
 //----------------------------------------------------------------------------
