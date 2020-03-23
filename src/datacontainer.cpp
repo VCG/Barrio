@@ -1,9 +1,7 @@
 #include <chrono>
+#include "datacontainer.h"
 #include <set>
 #include <QDomDocument>
-
-#include "datacontainer.h"
-#include "mesh_preprocessing.h"
 
 /*
  * m_objects -> object class for each object (astrocyte, dendrite, ..)
@@ -75,18 +73,8 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  qDebug() << "!!!!! load data";
-  QString neurites_obj_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_small.obj";
-  QString astrocytes_obj_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj";
-
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-
-  //MeshProcessing* mesh_processing = new MeshProcessing();
-
-  //importObj(neurites_obj_path);
-  //mesh_processing->computeDistance(astrocytes_obj_path, *m_mesh->getVerticesList());
-
-  
+  //importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj");
 
   auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -325,7 +313,7 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
 
   // temp set to check for edges
   std::set< std::tuple<int, int> > connectivity_e_set;
-  
+
 
   QTextStream in(&file);
   QList<QByteArray> wordList;
@@ -371,24 +359,6 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
   }
 
   file.close();
-}
-
-bool DataContainer::setParentID(Object* obj, int hvgxID)
-{
-  if (m_parents.find(hvgxID) != m_parents.end()) {
-    int parentID = m_parents[hvgxID];
-    obj->setParentID(parentID);
-
-    if (m_objects.find(parentID) != m_objects.end()) {
-      m_objects[parentID]->addChild(obj);
-      return true;
-    }
-    else {
-      qDebug() << "Object has no parents in m_objects yet " << parentID;
-      return false;
-    }
-  }
-  
 }
 
 //----------------------------------------------------------------------------
@@ -648,9 +618,22 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
   // if axon then all boutons afterwards are its children
   // else if dendrite all consecutive spines are its children
   // make parent IDs not pointers to objects 
-  bool success = setParentID(obj, hvgxID);
+  if (m_parents.find(hvgxID) != m_parents.end()) {
+    int parentID = m_parents[hvgxID];
+    obj->setParentID(parentID);
+
+    if (m_objects.find(parentID) != m_objects.end()) {
+      m_objects[parentID]->addChild(obj);
+    }
+    else
+      qDebug() << "Object has no parents in m_objects yet " << parentID;
+  }
+
+  //QVector4D color = obj->getColor();
+  // set ssbo with this ID to this color
 
   xml.readNext();
+
 
   // this object structure is not done
   while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "o")) {
@@ -1155,7 +1138,7 @@ bool DataContainer::importObj(QString path)
 {
   std::vector< unsigned int > vertexIndices, normalIndices;
   std::vector<QVector4D> temp_vertices;
-  std::vector<QVector3D> temp_normals;
+  std::vector<QVector4D> temp_normals;
 
   char currObject[128];
   int currHvgx;
@@ -1167,7 +1150,7 @@ bool DataContainer::importObj(QString path)
   }
 
   int currentHvgx_ID = 0;
-  Object* current_object = NULL;
+  Object* obj = NULL;
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
 
   while (true) {
@@ -1193,8 +1176,21 @@ bool DataContainer::importObj(QString path)
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i];
 
-      current_object = new Object(name.toUtf8().constData(), currentHvgx_ID);
-      setParentID(current_object, currentHvgx_ID);
+      obj = new Object(name.toUtf8().constData(), currentHvgx_ID);
+
+      if (m_parents.find(currentHvgx_ID) != m_parents.end()) {
+        int parentID = m_parents[currentHvgx_ID];
+        obj->setParentID(parentID);
+
+        if (m_objects.find(parentID) != m_objects.end()) {
+          m_objects[parentID]->addChild(obj);
+          return true;
+        }
+        else {
+          qDebug() << "Object has no parents in m_objects yet " << parentID;
+          return false;
+        }
+      }
     }
 
     if (!strcmp(lineHeader, "v")) { // read vertices
@@ -1207,21 +1203,23 @@ bool DataContainer::importObj(QString path)
       meshVertexList->emplace_back();
       int vertexIdx = (int)meshVertexList->size() - 1;
       struct VertexData* v = &meshVertexList->at(vertexIdx);
-      
-      v->index = vertexIdx;           
+
+      v->index = vertexIdx;
       v->mesh_vertex = mesh_vertex;
       v->skeleton_vertex = skeleton_vertex; //place holder
-      v->distance_to_astro = 0.0; //place holder
+      //v->distance_to_astro = 0.0; //place holder
+      v->skeleton_vertex = QVector4D(0.0, 0.0, 0.0, 0.0); // place holder
+
+      vertexIdx = m_mesh->addVertex(v, obj->getObjectType());
 
       temp_vertices.push_back(mesh_vertex);
     }
     else if (!strcmp(lineHeader, "vn")) { // read vertex normals
-      QVector3D normal;
       float x, y, z;
       int result = fscanf(file, "%f %f %f\n", &x, &y, &z);
-      normal.setX(x);
-      normal.setY(y);
-      normal.setZ(z);
+      QVector4D normal(x, y, z, 0);
+      m_mesh->addVertexNormal(normal); // parallel list to vertices
+
       temp_normals.push_back(normal);
     }
     else if (!strcmp(lineHeader, "f")) { // read triangulated faces
@@ -1229,7 +1227,7 @@ bool DataContainer::importObj(QString path)
       unsigned int vertexIndex[3], normalIndex[3];
       int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
       if (matches != 6) {
-        printf(".obj file can't be read by parser: (Try exporting with other options\n");
+        printf(".obj file can't be read by parser!\n");
         return false;
       }
       vertexIndices.push_back(vertexIndex[0]);
@@ -1240,7 +1238,20 @@ bool DataContainer::importObj(QString path)
         qDebug() << "Error in obj file! - invalid faces";
         break;
       }
-      m_mesh->addFace(vertexIndex[0], vertexIndex[1], vertexIndex[2]);
+
+      obj->addTriangleIndex(vertexIndex[0] - 1);
+      obj->addTriangleIndex(vertexIndex[1] - 1);
+      obj->addTriangleIndex(vertexIndex[2] - 1);
+
+      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[1] - 1, vertexIndex[2] - 1);
+      m_indices_size += 3;
+
+      // todo check what that is for
+      if (m_indices_size_byType.find(obj->getObjectType()) == m_indices_size_byType.end()) {
+        m_indices_size_byType[obj->getObjectType()] = 0;
+      }
+      m_indices_size_byType[obj->getObjectType()] += 3;
+
 
 
       normalIndices.push_back(normalIndex[0]);
@@ -1248,7 +1259,7 @@ bool DataContainer::importObj(QString path)
       normalIndices.push_back(normalIndex[2]);
     }
   }
-  
+
 
 }
 

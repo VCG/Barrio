@@ -59,7 +59,7 @@ public:
   void parseSynapsesGraph(QList<QByteArray>&, std::set< std::tuple<int, int> >&);
   void PostloadMetaDataHVGX(QString path);
   void PreLoadMetaDataHVGX(QString path);
-  bool setParentID(Object* obj, int hvgxID);
+  bool findAndSetParentID(Object* obj, int hvgxID);
 
   //glycogen
   int								  getGlycogenSize() { return m_glycogenMap.size(); }

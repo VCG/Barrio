@@ -27,7 +27,7 @@ int MeshProcessing::computeCenters(QString obj_path)
   std::vector<Point> objects;
   std::vector<Triangle> triangles;
 
-  std::map<int, QVector4D> centers;
+  std::map<int, QVector4D> centers; // maps hvgx id to geometrical center
   int hvgxID = 0;
 
   double x, y, z;
@@ -53,12 +53,12 @@ int MeshProcessing::computeCenters(QString obj_path)
       flag = 1;
     }
     else if (line[0] == 'v') {
-      sscanf(line, "%*s%lf%lf%lf", &x, &y, &z);
+      int result = sscanf(line, "%*s%lf%lf%lf", &x, &y, &z);
       Point p(x, y, z);
       objects.push_back(p);
     }
     else if (line[0] == 'f') {
-      sscanf(line, "f %d//%d %d//%d %d//%d\n", &f1, &n1, &f2, &n2, &f3, &n3);
+      int result = sscanf(line, "f %d//%d %d//%d %d//%d\n", &f1, &n1, &f2, &n2, &f3, &n3);
       triangles.push_back(Triangle(objects[f1], objects[f2], objects[f3]));
     }
   }
@@ -67,7 +67,7 @@ int MeshProcessing::computeCenters(QString obj_path)
   QVector3D center(c.x(), c.y(), c.z());
   centers[hvgxID] = center;
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 struct Astrocyte {
@@ -129,7 +129,7 @@ int MeshProcessing::computeDistance(QString astro_obj_path, std::vector<VertexDa
     Point point_query(vertex.x(), vertex.y(), vertex.z());
     double distance = std::sqrt(tree.squared_distance(point_query));
     std::cout << "Distance: " << distance << std::endl;
-    vertex.distance_to_astro = distance;
+    //vertex.distance_to_astro = distance;
     neurites_vertices[i] = vertex;
   }
 

@@ -19,7 +19,6 @@ struct VertexData {
 
   
   int			index;
-  double        distance_to_astro;
   //bool		isGlycogen;			//because glycogen ids and object ids are seperate
 
   float  x()  const
@@ -94,3 +93,5 @@ protected:
 };
 
 #endif // MESH_H
+
+
