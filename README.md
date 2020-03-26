@@ -1,5 +1,10 @@
 # NeCo - Neuro Comparer
 
+# Prerequisits
+* The application is developed and tested under `Windows 10`.
+* A recent Graphics Card (GPU). I used an `NVIDIA GeForce GTX TITAN Black` GPU. 
+* At least `XXX GB of RAM`
+
 ## Getting Started
 To get started you first need to **install all required dependencies**.
 * [cmake](https://cmake.org/)
