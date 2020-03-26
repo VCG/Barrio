@@ -12,7 +12,7 @@ To get started you first need to **install all required dependencies**.
 * the [CGGAL](https://www.cgal.org/download.html) library, CGAL also requires [boost](https://www.boost.org/)
 
 ## Building the project
-1. Set these environmental variables. Check [this](https://www.youtube.com/watch?v=bEroNNzqlF4) tutorial on how to set environmental variables. 
+1. Set these **environmental variables**. Check [this](https://www.youtube.com/watch?v=bEroNNzqlF4) tutorial on how to set environmental variables. 
 * `Qt5_DIR` to `C:/Qt/5.14.1/msvc2017_64/lib/cmake/Qt5`
 * `QT_QPA_PLATFORM_PLUGIN_PATH` to `C:\Qt\5.14.1\msvc2017_64\plugins\platforms`
 * `BOOST_INCLUDEDIR` to `C:\dev\boost_1_71_0`
