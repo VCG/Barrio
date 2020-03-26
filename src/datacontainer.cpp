@@ -74,94 +74,109 @@ DataContainer::~DataContainer()
 void DataContainer::loadData()
 {
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-  importObj("C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj");
+
+  QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj";
+  QString astro_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj";
+
+  bool cache = true;
 
   auto t1 = std::chrono::high_resolution_clock::now();
 
-  if (m_loadType == LoadFile_t::DUMP_ASTRO || m_loadType == LoadFile_t::DUMP_NEURITES) {
-    if (m_loadType == LoadFile_t::DUMP_ASTRO) {
-      importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
-      m_mesh->dumpVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
-    }
-    else {
-      importXML(input_files_dir.xml_neurites);    // 910741
-      m_mesh->dumpVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat");
-    }
-  }
-  else if (m_loadType == LoadFile_t::LOAD_MESH_NO_VERTEX) {
+  importObj(neurites_path);
 
-    if (m_load_data == LoadData_t::ASTRO) {
-      m_mesh->readVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
-      importXML(input_files_dir.xml_astro);   //  110,928  ms ~ 2 min -> 17306
-    }
-    else if (m_load_data == LoadData_t::NEURITES) {
-      m_mesh->readVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat"); //
-      importXML(input_files_dir.xml_neurites);    // 674046 ~ 12 min -> 118107 ms -> 134884 with vertex type classification
-    }
-    else if (m_load_data == LoadData_t::ALL) {
-      m_mesh->readVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
-      importXML(input_files_dir.xml_astro);   //   110,928  ms ~ 2 min -> 17306 ms
-
-      m_mesh->readVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat"); //
-      importXML(input_files_dir.xml_neurites);    // 674046 ~ 12 min -> 118107 ms
-    }
-  }
-  else {
-    if (m_load_data == LoadData_t::ASTRO) {
-      importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
-    }
-    else if (m_load_data == LoadData_t::NEURITES) {
-      importXML(input_files_dir.xml_neurites);    // 910741
-    }
-    else if (m_load_data == LoadData_t::ALL) {
-      importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
-      importXML(input_files_dir.xml_neurites);    // 910741
-    }
+  if (cache)
+  {
 
   }
+
+
+  
+
+  //if (m_loadType == LoadFile_t::DUMP_ASTRO || m_loadType == LoadFile_t::DUMP_NEURITES) {
+  //  if (m_loadType == LoadFile_t::DUMP_ASTRO) {
+  //    importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
+  //    m_mesh->dumpVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
+  //  }
+  //  else {
+  //    importXML(input_files_dir.xml_neurites);    // 910741
+  //    m_mesh->dumpVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat");
+  //  }
+  //}
+  //else if (m_loadType == LoadFile_t::LOAD_MESH_NO_VERTEX) {
+
+  //  if (m_load_data == LoadData_t::ASTRO) {
+  //    m_mesh->readVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
+  //    importXML(input_files_dir.xml_astro);   //  110,928  ms ~ 2 min -> 17306
+  //  }
+  //  else if (m_load_data == LoadData_t::NEURITES) {
+  //    m_mesh->readVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat"); //
+  //    importXML(input_files_dir.xml_neurites);    // 674046 ~ 12 min -> 118107 ms -> 134884 with vertex type classification
+  //  }
+  //  else if (m_load_data == LoadData_t::ALL) {
+  //    m_mesh->readVertexData(input_files_dir.extra_files_path + "/astro_data_fv.dat");
+  //    importXML(input_files_dir.xml_astro);   //   110,928  ms ~ 2 min -> 17306 ms
+
+  //    m_mesh->readVertexData(input_files_dir.extra_files_path + "/neurites_data_fv.dat"); //
+  //    importXML(input_files_dir.xml_neurites);    // 674046 ~ 12 min -> 118107 ms
+  //  }
+  //}
+  //else {
+  //  if (m_load_data == LoadData_t::ASTRO) {
+  //    importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
+  //  }
+  //  else if (m_load_data == LoadData_t::NEURITES) {
+  //    importXML(input_files_dir.xml_neurites);    // 910741
+  //  }
+  //  else if (m_load_data == LoadData_t::ALL) {
+  //    importXML(input_files_dir.xml_astro);   // 155,266  ms ~ 2.6 min
+  //    importXML(input_files_dir.xml_neurites);    // 910741
+  //  }
+
+  //}
 
   auto t2 = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> ms = t2 - t1;
 
   qDebug() << "Objects Loading time: " << ms.count();
 
-  if (m_normals_t == Normals_t::DUMP_NORMAL) {
-    t1 = std::chrono::high_resolution_clock::now();
-    if (m_load_data == LoadData_t::ASTRO) {
-      m_mesh->computeNormalsPerVertex(); // Normals Computing time:  9440.12
-      m_mesh->dumpNormalsList(input_files_dir.extra_files_path + "/astro_normals.dat");
-    }
-    else if (m_load_data == LoadData_t::NEURITES) {
-      m_mesh->computeNormalsPerVertex(); // Normals Computing time:  44305.1
-      m_mesh->dumpNormalsList(input_files_dir.extra_files_path + "/neurites_normals.dat");
-    }
-    t2 = std::chrono::high_resolution_clock::now();
-    ms = t2 - t1;
+  //if (m_normals_t == Normals_t::DUMP_NORMAL) {
+  //  t1 = std::chrono::high_resolution_clock::now();
+  //  if (m_load_data == LoadData_t::ASTRO) {
+  //    m_mesh->computeNormalsPerVertex(); // Normals Computing time:  9440.12
+  //    m_mesh->dumpNormalsList(input_files_dir.extra_files_path + "/astro_normals.dat");
+  //  }
+  //  else if (m_load_data == LoadData_t::NEURITES) {
+  //    m_mesh->computeNormalsPerVertex(); // Normals Computing time:  44305.1
+  //    m_mesh->dumpNormalsList(input_files_dir.extra_files_path + "/neurites_normals.dat");
+  //  }
+  //  t2 = std::chrono::high_resolution_clock::now();
+  //  ms = t2 - t1;
 
-    qDebug() << "Normals Computing time: " << ms.count();
+  //  qDebug() << "Normals Computing time: " << ms.count();
 
-  }
-  else if (m_normals_t == Normals_t::LOAD_NORMAL) {
-    bool normals_flag = false;
-    if (m_load_data == LoadData_t::ASTRO) {
-      normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/astro_normals.dat");
-    }
-    else if (m_load_data == LoadData_t::NEURITES) {
-      normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/neurites_normals.dat");
-    }
-    else if (m_load_data == LoadData_t::ALL) {
-      normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/astro_normals.dat");
-      normals_flag &= m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/neurites_normals.dat");
-    }
+  //}
 
-    if (normals_flag == false) {
-      m_normals_t = Normals_t::NO_NORMALS; // todo: deal with this case in the openglmanafer.cpp -> dont load normals
-    }
-  }
+  //else if (m_normals_t == Normals_t::LOAD_NORMAL) {
+  //  bool normals_flag = false;
+  //  if (m_load_data == LoadData_t::ASTRO) {
+  //    normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/astro_normals.dat");
+  //  }
+  //  else if (m_load_data == LoadData_t::NEURITES) {
+  //    normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/neurites_normals.dat");
+  //  }
+  //  else if (m_load_data == LoadData_t::ALL) {
+  //    normals_flag = m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/astro_normals.dat");
+  //    normals_flag &= m_mesh->readNormalsBinary(input_files_dir.extra_files_path + "/neurites_normals.dat");
+  //  }
 
-  qDebug() << " faces: " << m_mesh->getFacesListSize() << " " <<
-    " vertices: " << m_mesh->getVerticesSize() << " " <<
-    " normals: " << m_mesh->getNormalsListSize();
+  //  if (normals_flag == false) {
+  //    m_normals_t = Normals_t::NO_NORMALS; // todo: deal with this case in the openglmanafer.cpp -> dont load normals
+  //  }
+  //}
+
+  qDebug() << "faces: " << m_mesh->getFacesListSize();
+  qDebug() << "vertices: " << m_mesh->getVerticesSize();
+  qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
   /* 3 */
   PostloadMetaDataHVGX(input_files_dir.HVGX_metadata);
@@ -1149,7 +1164,7 @@ bool DataContainer::importObj(QString path)
     qDebug() << "Cant open " << path;
   }
 
-  int currentHvgx_ID = 0;
+  int hvgxID = 0;
   Object* obj = NULL;
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
   
@@ -1159,40 +1174,40 @@ bool DataContainer::importObj(QString path)
     QString line = in.readLine();
     QList<QString> elements = line.split(" ");
    
+    // parse object names
     if (!strcmp(elements[0].toStdString().c_str(), "o"))
     {
       QList<QString> nameList = elements[1].split('_');
-      currentHvgx_ID = nameList.last().toInt();
+      hvgxID = nameList.last().toInt();
 
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i];
-
-      obj = new Object(name.toUtf8().constData(), currentHvgx_ID);
+      
+      obj = new Object(name.toUtf8().constData(), hvgxID);
       qDebug() << "Reading " << name;
 
-      if (m_parents.find(currentHvgx_ID) != m_parents.end()) {
-        int parentID = m_parents[currentHvgx_ID];
+      if (m_parents.find(hvgxID) != m_parents.end()) {
+        int parentID = m_parents[hvgxID];
         obj->setParentID(parentID);
 
         if (m_objects.find(parentID) != m_objects.end()) {
           m_objects[parentID]->addChild(obj);
-          //return true;
         }
         else {
           qDebug() << "Object has no parents in m_objects yet " << parentID;
-          //return false;
         }
       }
     }
 
+    // parse vertices
     else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
 
       float x = elements[1].toFloat();
       float y = elements[2].toFloat();
       float z = elements[3].toFloat();
 
-      QVector4D mesh_vertex(x, y, z, currentHvgx_ID);
+      QVector4D mesh_vertex(x, y, z, hvgxID);
       QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
 
       meshVertexList->emplace_back();
@@ -1209,8 +1224,10 @@ bool DataContainer::importObj(QString path)
 
       temp_vertices.push_back(mesh_vertex);
     }
+    
+    // parse vertex normals
     else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
-    { // read vertex normals
+    {
 
       float x = elements[1].toInt();
       float y = elements[2].toInt();
@@ -1221,6 +1238,8 @@ bool DataContainer::importObj(QString path)
 
       temp_normals.push_back(normal);
     }
+
+    // parse faces
     else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
       std::string vertex1, vertex2, vertex3;
       unsigned int vertexIndex[3], normalIndex[3];
@@ -1240,7 +1259,7 @@ bool DataContainer::importObj(QString path)
 
       if (!m_mesh->isValidFaces(vertexIndex[0], vertexIndex[1], vertexIndex[2])) {
         qDebug() << "Error in obj file! - invalid faces";
-        break;
+        return false;
       }
 
       obj->addTriangleIndex(vertexIndex[0] - 1);

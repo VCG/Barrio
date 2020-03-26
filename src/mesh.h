@@ -49,11 +49,11 @@ public:
   int addVertex(struct VertexData* vdata, Object_t type);
   int addVertexNormal(QVector4D vnormal);
   bool isValidFaces(int f1, int f2, int f3);
-  size_t  getVerticesSize() { return verticesList.size(); }
+  size_t  getVerticesSize() { return m_vertices.size(); }
 
   void addVertexNeighbor(int v_index, int face_index);
 
-  std::vector< struct VertexData >* getVerticesList() { return &verticesList; }
+  std::vector< struct VertexData >* getVerticesList() { return &m_vertices; }
   std::vector< VertexData* >* getVerticesListByType(Object_t type) { return &(m_typeVertexList[(int)type]); }
 
   void addFace(int index1, int index2, int index3);
@@ -69,13 +69,16 @@ public:
   void dumpVertexData(QString path);
   void readVertexData(QString path);
 
+  void dumpMesh();
+  void readMesh();
+
   void computeNormalsPerVertex();
   QVector3D computeFaceNormal(struct Face);
 
   void dumpNormalsList(QString path);
   bool readNormalsBinary(QString path);
 
-  size_t getNormalsListSize() { return m_normalsList.size(); }
+  size_t getNormalsListSize() { return m_normals.size(); }
 
 protected:
   
@@ -83,9 +86,10 @@ protected:
   // for each vertex in each face, add face to vertex
 
   std::vector< struct Face >            m_faces; // sequential, write
-  std::vector<struct VertexData >       verticesList;
+  std::vector<struct VertexData >       m_vertices;
+  std::vector< QVector4D >              m_normals;
+
   std::map<int, std::vector<int> >      m_vertexFaces;
-  std::vector< QVector4D >              m_normalsList;
   std::vector<VertexData*>              m_typeVertexList[9];
 
   // skeleton
