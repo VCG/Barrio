@@ -1,13 +1,20 @@
-# Created by the script cgal_create_CMakeLists
-# This is the CMake script for compiling a set of CGAL applications.
+# This is the CMake script for compiling NeCo.
 
-project( NeCo )
+project(NeCo)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 cmake_minimum_required(VERSION 2.8.11)
+
+if(NOT DEFINED ENV{CEREAL_DIR})
+  message(STATUS "This project requires the CEREAL library, and will not be compiled.")
+  return()
+
+endif()
+
+include_directories($ENV{CEREAL_DIR})
 
 # CGAL and its components
 find_package( CGAL QUIET COMPONENTS  )
@@ -110,18 +117,18 @@ set(project_sources
 
 # Creating entries for target: NeCo
 
-add_executable( NeCo  
+add_executable(NeCo  
     ${project_ui} 
     ${project_headers} 
     ${project_sources} 
     resources.qrc)
 
-add_to_cached_list( CGAL_EXECUTABLE_TARGETS NeCo )
+add_to_cached_list(CGAL_EXECUTABLE_TARGETS NeCo)
 
 # Link the executable to CGAL and third-party libraries
-target_link_libraries( NeCo   ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES} )
+target_link_libraries(NeCo ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES})
 
-target_link_libraries( NeCo 
+target_link_libraries(NeCo 
     Qt5::Core
     Qt5::Gui
     Qt5::OpenGL

@@ -5,6 +5,7 @@
 
 #include <set>
 #include <vector>
+#include <cereal/archives/binary.hpp>
 
 enum class Object_t;
 
