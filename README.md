@@ -1,6 +1,6 @@
 # NeCo - Neuro Comparer
 
-# Prerequisits
+## Prerequisits
 * The application is developed and tested under `Windows 10`.
 * A recent Graphics Card (GPU). I used an `NVIDIA GeForce GTX TITAN Black` GPU. 
 * At least `XXX GB of RAM`
