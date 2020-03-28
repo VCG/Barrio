@@ -1238,9 +1238,9 @@ bool DataContainer::importObj(QString path)
     else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
     {
 
-      float x = elements[1].toInt();
-      float y = elements[2].toInt();
-      float z = elements[3].toInt();
+      float x = elements[1].toFloat();
+      float y = elements[2].toFloat();
+      float z = elements[3].toFloat();
 
       QVector4D normal(x, y, z, 0);
       normal.normalize();
