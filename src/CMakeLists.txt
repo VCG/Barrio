@@ -113,7 +113,48 @@ set(project_sources
     path.cpp
     performancerate.cpp
     inputform.cpp
-    mesh_preprocessing.cpp)
+    mesh_preprocessing.cpp
+    shaders/mesh_frag.glsl
+    shaders/mesh_geom.glsl
+    shaders/mesh_vert.glsl
+    shaders/selection_frag.glsl
+    shaders/selection_geom.glsl
+    shaders/selection_vert.glsl
+    shaders/skeleton_point_geom.glsl
+    shaders/skeleton_point_vert.glsl
+    shaders/space2d_geom.glsl
+    shaders/space2d_vert.glsl
+    shaders/text_frag.glsl
+    shaders/text_geom.glsl
+    shaders/text_vert.glsl
+    shaders/space_pointer_frag.glsl
+    shaders/space_pointer_geom.glsl
+    shaders/space_pointer_vert.glsl
+    shaders/abstract_skeleton_line_geom.glsl
+    shaders/nodes_vert.glsl
+    shaders/abstract_skeleton_node_geom.glsl
+    shaders/points_3d_frag.glsl
+    shaders/points_passthrough_frag.glsl
+    shaders/abstract_skeleton_node_2D_vert.glsl
+    shaders/abstract_skeleton_node_transition_vert.glsl
+    shaders/common.glslh
+    shaders/glycogen_frag.glsl
+    shaders/glycogen_geom.glsl
+    shaders/glycogen_vert.glsl
+    shaders/hvgx_selection_frag.glsl
+    shaders/nodes_2DHeatMap_frag.glsl
+    shaders/nodes_2DHeatMap_geom.glsl
+    shaders/nodes_2DHeatMap_vert.glsl
+    shaders/nodes_2DHeatMap_tex_frag.glsl
+    shaders/nodes_2DHeatMap_tex_geom.glsl
+    shaders/nodes_2DHeatMap_tex_vert.glsl
+    shaders/space2d_grid_geom.glsl
+    shaders/path_frag.glsl
+    shaders/path_geom.glsl
+    shaders/path_vert.glsl
+    shaders/space2d_grid_points_geom.glsl
+    shaders/space2d_grid_triangle_geom.glsl
+    shaders/skeleton_point_frag.glsl)
 
 # Creating entries for target: NeCo
 

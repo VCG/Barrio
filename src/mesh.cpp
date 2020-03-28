@@ -79,12 +79,29 @@ void Mesh::readVertexData(QString path)
 
 void Mesh::dumpMesh()
 {
-
+  //std::stringstream ss("test"); // any stream can be used
+  //{
+  //  cereal::BinaryOutputArchive oarchive(ss); // Create an output archive
+  //  oarchive(m_vertices); // Write the data to the archive
+  //} // archive goes out of scope, ensuring all contents are flushed
 }
 
 void Mesh::readMesh()
 {
+  //std::stringstream ss("test"); // any stream can be used
+  //{
+  //  cereal::BinaryInputArchive iarchive(ss); // Create an input archive
+  //  iarchive(m_vertices); // Read the data from the archive
+  //}
 }
+
+// skeleton
+//template<class Archive>
+//inline void serialize(Archive& archive)
+//{
+//  archive(m_vertexFaces); // serialize things by passing them to the archive
+//}
+
 
 void Mesh::computeNormalsPerVertex()
 {

@@ -5,7 +5,10 @@
 
 #include <set>
 #include <vector>
-#include <cereal/archives/binary.hpp>
+#include <cereal\archives\binary.hpp>
+#include <cereal\types\map.hpp>
+#include <cereal\types\vector.hpp>
+
 
 enum class Object_t;
 
@@ -93,8 +96,7 @@ protected:
   std::map<int, std::vector<int> >      m_vertexFaces;
   std::vector<VertexData*>              m_typeVertexList[9];
 
-  // skeleton
-
+ 
 };
 
 #endif // MESH_H

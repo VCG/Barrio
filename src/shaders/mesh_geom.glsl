@@ -14,7 +14,6 @@ in vec3			E_eye[];
 
 out vec4        color_val;
 out vec3        normal_out;
-//out vec2		colorIntp_alpha;
 out float		alpha;
 out float		color_intp;
 out vec3		vposition;

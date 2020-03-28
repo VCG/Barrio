@@ -75,7 +75,7 @@ void DataContainer::loadData()
 {
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
-  QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected.obj";
+  QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected_small.obj";
   QString astro_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj";
 
   bool cache = true;
@@ -83,10 +83,11 @@ void DataContainer::loadData()
   auto t1 = std::chrono::high_resolution_clock::now();
 
   importObj(neurites_path);
+  
 
   if (cache)
   {
-
+    m_mesh->dumpMesh();
   }
 
 
@@ -432,7 +433,7 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
         continue;
       }
 
-      int pID = wordList[18].toInt();
+      //int pID = wordList[18].toInt();
       float x = wordList[19].toFloat();
       float y = wordList[20].toFloat();
       float z = wordList[21].toFloat();
@@ -440,12 +441,12 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
       m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX, y / MESH_MAX, z / MESH_MAX, 0));
 
       // volume
-      int volume = wordList[25].toInt();
+      //int volume = wordList[25].toInt();
 
       // skeleton center
-      float center_x = wordList[7].toFloat();
-      float center_y = wordList[8].toFloat();
-      float center_z = wordList[9].toFloat();
+      //float center_x = wordList[7].toFloat();
+      //float center_y = wordList[8].toFloat();
+      //float center_z = wordList[9].toFloat();
 
     }
     else if (wordList[0] == "sy") {
@@ -641,7 +642,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
       m_objects[parentID]->addChild(obj);
     }
     else
-      qDebug() << "Object has no parents in m_objects yet " << parentID;
+      qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
   }
 
   //QVector4D color = obj->getColor();
@@ -1184,8 +1185,16 @@ bool DataContainer::importObj(QString path)
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i];
       
-      obj = new Object(name.toUtf8().constData(), hvgxID);
       qDebug() << "Reading " << name;
+      
+      obj = new Object(name.toUtf8().constData(), hvgxID);
+
+      obj->setVolume(2.0f);
+      obj->setCenter(QVector4D(1.0f / MESH_MAX, 1.0f / MESH_MAX, 1.0f / MESH_MAX, 0));
+      obj->setAstPoint(QVector4D(1.0f / MESH_MAX, 1.0f / MESH_MAX, 1.0f / MESH_MAX, 0));
+
+      m_objects[hvgxID] = obj;
+      m_objectsByType[obj->getObjectType()].push_back(obj);
 
       if (m_parents.find(hvgxID) != m_parents.end()) {
         int parentID = m_parents[hvgxID];
@@ -1195,7 +1204,7 @@ bool DataContainer::importObj(QString path)
           m_objects[parentID]->addChild(obj);
         }
         else {
-          qDebug() << "Object has no parents in m_objects yet " << parentID;
+          qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
         }
       }
     }
@@ -1234,6 +1243,7 @@ bool DataContainer::importObj(QString path)
       float z = elements[3].toInt();
 
       QVector4D normal(x, y, z, 0);
+      normal.normalize();
       m_mesh->addVertexNormal(normal); // parallel list to vertices
 
       temp_normals.push_back(normal);

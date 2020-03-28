@@ -16,16 +16,16 @@ in vec4         color_val;
 in vec3			vposition;
 in vec3			eye;
 flat in int		otype;
-in float             G_ID;
+in float        G_ID;
 
-layout (location = 0) out vec4        outcol;
+/*layout (location = 0)*/ out vec4        FragColor;
 // textures
 uniform sampler3D   splat_tex; //r=astro g=astro-mito b=neurite-mito
 uniform sampler3D   gly_tex;
 uniform sampler1D	gly_tf;
 
-uniform ivec4     splat_flags;
-uniform int		  specular_flag;
+uniform ivec4		splat_flags;
+uniform int			specular_flag;
 in vec3             G_fragTexCoord;
 uniform int         reset_filter_ssbo;
 
@@ -116,13 +116,13 @@ void main() {
 
         if (reset_filter_ssbo > 0) { // write into ssbo
             objects_list_filter[int(G_ID)].x =  max( splat.r, objects_list_filter[int(G_ID)].x );
-            objects_list_filter[int(G_ID)].y =  max(  splat2.r * 3.0, objects_list_filter[int(G_ID)].y );
+            objects_list_filter[int(G_ID)].y =  max( splat2.r * 3.0, objects_list_filter[int(G_ID)].y );
             objects_list_filter[int(G_ID)].z =  max( splat.g, objects_list_filter[int(G_ID)].z );
         }
 
 	vec4 toon_color = vec4(color.rgb, 1.0);
 	vec4 diffuse_color = max((color * cosTheta2), (color * cosTheta));
-	vec4 phong_color = (ambiance *  color) + diffuse_color + specular;
+	vec4 phong_color = vec4(1.0, 0.0, 1.0, 1.0); //(ambiance *  color) + diffuse_color + specular;
 
 	if (specular > 0.75)
 		toon_color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -137,8 +137,9 @@ void main() {
 
 	float border_value = abs(dot(V1, N));//max(abs(dot(V1, N)), abs(dot(V2, N)));
 	float edgeDetection = (border_value < 0.05) ? 0 : 1;
-	outcol = phong_color * color_intp + (1.0 - color_intp) /* edgeDetection*/ * toon_color;
-	outcol.a = alpha;
+
+	FragColor = red_color; // phong_color * color_intp + (1.0 - color_intp) /* edgeDetection*/ * toon_color
+	//FragColor.a = alpha;
 }
 
 vec3 getSplattedTexture3(in sampler3D texture_toSplat, in vec3 coord, in vec3 step_size)

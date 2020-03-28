@@ -192,7 +192,7 @@ void InputForm::on_pushButton_submit_clicked()
   // just for debug purpose so that i dont have to set paths manually every time
 
   m_input_files.extra_files_path = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data";
-  m_input_files.HVGX_metadata = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mouse3_metadata_objname_center_astroSyn.hvgx";
+  m_input_files.HVGX_metadata = "C:\\Users\\jtroidl\\Desktop\\hvgx_files\\m3_full_corr.hvgx";
   m_input_files.xml_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_astrocyte_noVertex.xml";
   m_input_files.xml_neurites = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_neurites_noVertexNoFace.xml";
   m_input_files.proximity_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_745_sigma3.raw";
