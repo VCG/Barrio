@@ -71,6 +71,9 @@ void main(void)
 {
     if (smooth_shading == 1)
         V_normal = rMatrix * vertex_normal;
+    else
+        V_normal = vertex_normal;
+
     mat4 pvmMatrix = pMatrix * vMatrix * mMatrix;
     mat4 irotation = inverse(rMatrix);
     V_worldPos = rMatrix * vec4(mesh_vx.xyz, 1.0);

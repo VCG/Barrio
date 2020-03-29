@@ -90,7 +90,7 @@ protected:
   // for each vertex in each face, add face to vertex
 
   std::vector< struct Face >            m_faces; // sequential, write
-  std::vector<struct VertexData >       m_vertices;
+  std::vector< struct VertexData >      m_vertices;
   std::vector< QVector4D >              m_normals;
 
   std::map<int, std::vector<int> >      m_vertexFaces;

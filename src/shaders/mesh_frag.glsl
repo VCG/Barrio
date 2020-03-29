@@ -138,7 +138,7 @@ void main() {
 	float border_value = abs(dot(V1, N));//max(abs(dot(V1, N)), abs(dot(V2, N)));
 	float edgeDetection = (border_value < 0.05) ? 0 : 1;
 
-	FragColor = red_color; // phong_color * color_intp + (1.0 - color_intp) /* edgeDetection*/ * toon_color
+	FragColor = vec4(normal_out, 1.0); // phong_color * color_intp + (1.0 - color_intp) /* edgeDetection*/ * toon_color
 	//FragColor.a = alpha;
 }
 

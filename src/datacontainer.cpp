@@ -41,13 +41,13 @@ DataContainer::DataContainer(InputForm* input_form) :
   /* 1: load all data */
   loadData();
 
-  /* 2: build missing skeletons due to order of objects in file */
-  buildMissingSkeletons();
+  ///* 2: build missing skeletons due to order of objects in file */
+  //buildMissingSkeletons();
 
-  /* 3 */
-  qDebug() << "setting up glycogen octree";
-  m_glycogenOctree.initialize(&m_glycogenList);
-  qDebug() << "octree ready";
+  ///* 3 */
+  //qDebug() << "setting up glycogen octree";
+  //m_glycogenOctree.initialize(&m_glycogenList);
+  //qDebug() << "octree ready";
 
   this->recomputeMaxValues(false);
 }
@@ -1153,11 +1153,14 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 bool DataContainer::importObj(QString path)
 {
   std::vector< unsigned int > vertexIndices, normalIndices;
-  std::vector<QVector4D> temp_vertices;
-  std::vector<QVector4D> temp_normals;
+  //std::vector<QVector4D> temp_vertices;
+  //std::vector<QVector4D> temp_normals;
 
   char currObject[128];
   int currHvgx;
+
+  int vertexCounter = 0;
+  int normalCounter = 0;
 
   QFile inputFile(path);
   if (!inputFile.open(QIODevice::ReadOnly))
@@ -1216,6 +1219,8 @@ bool DataContainer::importObj(QString path)
       float y = elements[2].toFloat();
       float z = elements[3].toFloat();
 
+      vertexCounter++;
+
       QVector4D mesh_vertex(x, y, z, hvgxID);
       QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
 
@@ -1231,23 +1236,23 @@ bool DataContainer::importObj(QString path)
 
       vertexIdx = m_mesh->addVertex(v, obj->getObjectType());
 
-      temp_vertices.push_back(mesh_vertex);
+      //temp_vertices.push_back(mesh_vertex);
     }
     
     // parse vertex normals
-    else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
-    {
+    //else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
+    //{
+    //  normalCounter++;
+    //  float x = elements[1].toFloat();
+    //  float y = elements[2].toFloat();
+    //  float z = elements[3].toFloat();
 
-      float x = elements[1].toFloat();
-      float y = elements[2].toFloat();
-      float z = elements[3].toFloat();
+    //  QVector4D normal(x, y, z, 0);
+    //  normal.normalize();
+    //  m_mesh->addVertexNormal(normal); // parallel list to vertices
 
-      QVector4D normal(x, y, z, 0);
-      normal.normalize();
-      m_mesh->addVertexNormal(normal); // parallel list to vertices
-
-      temp_normals.push_back(normal);
-    }
+    //  //temp_normals.push_back(normal);
+    //}
 
     // parse faces
     else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
@@ -1292,7 +1297,14 @@ bool DataContainer::importObj(QString path)
   }
 
   inputFile.close();
+
+
+  m_mesh->computeNormalsPerVertex();
+
   qDebug() << "Done reading .obj file";
+  qDebug() << vertexCounter << " vertices";
+  qDebug() << normalCounter << " normals";
+
   return true;
 }
 

@@ -332,7 +332,7 @@ void OpenGLManager::fillVBOsData()
   m_ssbo_data.resize(1000);
 
   int vbo_skeleton_offset = 0;
-  m_SkeletonPoints.vboCreate("SkeletonPoints", Buffer_t::VERTEX, Buffer_USAGE_t::STATIC);
+  m_SkeletonPoints.vboCreate("SkeletonPoints", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_SkeletonPoints.vboBind("SkeletonPoints");
   m_SkeletonPoints.vboAllocate("SkeletonPoints", NULL,
     m_dataContainer->getSkeletonPointsSize() * sizeof(SkeletonPoint));
@@ -346,18 +346,20 @@ void OpenGLManager::fillVBOsData()
 
   // Neurites VBO
   meshVBO_idx_offset[m_neurites_VBO_label] = 0;
-  m_TMesh.vboCreate(m_neurites_VBO_label, Buffer_t::INDEX, Buffer_USAGE_t::STATIC);
+  m_TMesh.vboCreate(m_neurites_VBO_label, Buffer_Type::INDEX, Buffer_Usage_Type::STATIC);
   m_TMesh.vboBind(m_neurites_VBO_label);
   m_TMesh.vboAllocate(m_neurites_VBO_label, NULL, neurites_indices * sizeof(GLuint));
 
   // Astrocyte VBO
   meshVBO_idx_offset[m_astro_VBO_label] = 0;
-  m_TMesh.vboCreate(m_astro_VBO_label, Buffer_t::INDEX, Buffer_USAGE_t::STATIC);
+  m_TMesh.vboCreate(m_astro_VBO_label, Buffer_Type::INDEX, Buffer_Usage_Type::STATIC);
   m_TMesh.vboBind(m_astro_VBO_label);
   m_TMesh.vboAllocate(m_astro_VBO_label, NULL, astrocyte_indices * sizeof(GLuint));
 
 
   std::map<int, Object*>* objects_map = m_dataContainer->getObjectsMapPtr();
+
+  //iterate over all objects and add indices to the VBO
   for (auto iter = objects_map->rbegin(); iter != objects_map->rend(); iter++) {
     Object* object_p = (*iter).second;
     qDebug() << " allocating: " << object_p->getName().data();
@@ -656,7 +658,7 @@ bool OpenGLManager::init2DHeatMapShaders()
 
 
   // allocate skeleton nodes
-  m_GNeurites.vboCreate("quad", Buffer_t::VERTEX, Buffer_USAGE_t::STATIC);
+  m_GNeurites.vboCreate("quad", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_GNeurites.vboBind("quad");
   m_GNeurites.vboAllocate("quad",
     m_Texquad.data(),
@@ -849,7 +851,7 @@ bool OpenGLManager::initAbstractSkeletonShaders()
     return res;
 
   // allocate skeleton nodes
-  m_GSkeleton.vboCreate("nodes", Buffer_t::VERTEX, Buffer_USAGE_t::DYNAMIC_DRAW);
+  m_GSkeleton.vboCreate("nodes", Buffer_Type::VERTEX, Buffer_Usage_Type::DYNAMIC_DRAW);
   m_GSkeleton.vboBind("nodes");
 
   m_GSkeleton.vboAllocate("nodes",
@@ -860,7 +862,7 @@ bool OpenGLManager::initAbstractSkeletonShaders()
   m_GSkeleton.vboRelease("nodes");
 
   // allocate skeleton edges
-  m_GSkeleton.vboCreate("index", Buffer_t::INDEX, Buffer_USAGE_t::STATIC);
+  m_GSkeleton.vboCreate("index", Buffer_Type::INDEX, Buffer_Usage_Type::STATIC);
   m_GSkeleton.vboBind("index");
 
   m_GSkeleton.vboAllocate("index",
@@ -1183,7 +1185,7 @@ bool OpenGLManager::initNeuritesGraphShaders()
   GL_Error();
 
   // allocate skeleton nodes
-  m_GNeurites.vboCreate("nodes", Buffer_t::VERTEX, Buffer_USAGE_t::STATIC);
+  m_GNeurites.vboCreate("nodes", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
 
   m_GNeurites.vboBind("nodes");
 
@@ -1196,7 +1198,7 @@ bool OpenGLManager::initNeuritesGraphShaders()
 
   // allocate neurites edges
   // allocate skeleton edges
-  m_GNeurites.vboCreate("index", Buffer_t::INDEX, Buffer_USAGE_t::STATIC);
+  m_GNeurites.vboCreate("index", Buffer_Type::INDEX, Buffer_Usage_Type::STATIC);
   m_GNeurites.vboBind("index");
 
   m_GNeurites.vboAllocate("index",
@@ -1334,7 +1336,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
   GLint gly_tex = glGetUniformLocation(mesh_program, "gly_tex");
   if (gly_tex >= 0) glUniform1i(gly_tex, 3);
 
-  m_TMesh.vboCreate("MeshVertices", Buffer_t::VERTEX, Buffer_USAGE_t::STATIC);
+  m_TMesh.vboCreate("MeshVertices", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_TMesh.vboBind("MeshVertices");
 
   Mesh* mesh = m_dataContainer->getMeshPointer();
@@ -1345,7 +1347,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
 
   // create normals vbo
   if (m_normals_enabled) {
-    m_TMesh.vboCreate("VertexNormals", Buffer_t::VERTEX, Buffer_USAGE_t::STATIC);
+    m_TMesh.vboCreate("VertexNormals", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
     m_TMesh.vboBind("VertexNormals");
     // allocate
     mesh->allocateNormalsVBO(m_TMesh.getVBO("VertexNormals"));

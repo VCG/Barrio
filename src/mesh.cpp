@@ -230,7 +230,6 @@ void Mesh::allocateNormalsVBO(QOpenGLBuffer vbo_mesh)
 void Mesh::addVertexNeighbor(int v_index, int face_index)
 {
   m_vertexFaces[v_index].push_back(face_index);
-
 }
 
 void Mesh::addFace(int index1, int index2, int index3)

@@ -73,8 +73,8 @@ void main() {
     }
 
     for (int i = 0; i < 3; i++) {
-        if (smooth_shading == 1)
-            normal_out = V_normal[i].rgb;
+        //if (smooth_shading == 1)
+        normal_out = V_normal[i].rgb;
         int ID = V_ID[i];
         G_ID =  float(ID);
 

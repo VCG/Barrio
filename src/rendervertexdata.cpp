@@ -68,18 +68,18 @@ void  RenderVertexData::vboWrite(std::string name, int offset, const void* data,
   m_vbo[name].write(offset, data, count);
 }
 
-void RenderVertexData::vboCreate(std::string name, Buffer_t type, Buffer_USAGE_t usage)
+void RenderVertexData::vboCreate(std::string name, Buffer_Type type, Buffer_Usage_Type usage)
 {
-  if (type == Buffer_t::VERTEX)
+  if (type == Buffer_Type::VERTEX)
     m_vbo[name] = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-  else if (type == Buffer_t::INDEX)
+  else if (type == Buffer_Type::INDEX)
     m_vbo[name] = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
 
   m_vbo[name].create();
 
-  if (usage == Buffer_USAGE_t::DYNAMIC_DRAW)
+  if (usage == Buffer_Usage_Type::DYNAMIC_DRAW)
     m_vbo[name].setUsagePattern(QOpenGLBuffer::DynamicDraw);
-  else if (usage == Buffer_USAGE_t::STATIC)
+  else if (usage == Buffer_Usage_Type::STATIC)
     m_vbo[name].setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 }
