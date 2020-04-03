@@ -77,6 +77,7 @@ bool MainOpenGL::initShader(QOpenGLShaderProgram* program, const char* vshader, 
   return true;
 }
 
+
 bool MainOpenGL::initShader(GLuint program, const char* vshader, const char* gshader, const char* fshader)
 {
   qDebug() << "Initializing shaders";
@@ -120,13 +121,19 @@ bool MainOpenGL::initShader(GLuint program, const char* vshader, const char* gsh
   glShaderSource(fs, 1, &fs_data, NULL);
   glCompileShader(fs);
   glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
+
   if (!compile_ok) {
-    qDebug() << "Error in fragment shader";
+    
     GLint infoLogLength;
     glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &infoLogLength);
     GLchar* strInfoLog = new GLchar[infoLogLength + 1];
     glGetShaderInfoLog(fs, infoLogLength, NULL, strInfoLog);
+    
+    qDebug() << "##############################################################";
+    qDebug() << "Error in fragment shader";
     qDebug() << strInfoLog;
+    qDebug() << "##############################################################";
+    
     return false;
   }
 
