@@ -25,10 +25,12 @@ layout (std430, binding=4) buffer filter_data
     vec4 objects_list_filter[];
 };
 
-vec3 computeLight(vec3 lightDir, vec3 obj_color);
+vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color);
 
 //-------------------- DIFFUSE LIGHT PROPERTIES --------------------
-vec3 lightColor = vec3(1.0, 1.0, 1.0);
+vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
+vec3 lightColor2 = vec3(0.7, 0.7, 0.7);
+
 vec3 lightDir1 = vec3(-2.5f, -2.5f, -0.9f);
 vec3 lightDir2 = vec3(2.5f, 2.5f, 1.0f);
 vec3 N = normalize(normal_out);
@@ -41,28 +43,28 @@ void main()
 {
 	vec3 obj_color = vec3(0.35, 0.52, 0.79);
 
-    vec3 result = computeLight(lightDir1, obj_color);
-	result += computeLight(lightDir2, obj_color);
+    vec3 result = computeLight(lightDir1, lightColor1, obj_color);
+	result += computeLight(lightDir2, lightColor2, obj_color);
     
 	outcol = vec4(result, 1.0);
 }
 
-vec3 computeLight(vec3 lightDir1, vec3 obj_color)
+vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
 {
-	vec3 L = normalize(lightDir1);
+	vec3 L = normalize(light_dir);
 	
 	// ambient component
-    vec3 ambient = k_a * lightColor;
+    vec3 ambient = k_a * light_color;
 
 	// diffuse component
 	float diff = max(dot(N, L), 0.0);
-	vec3 diffuse = diff * lightColor;
+	vec3 diffuse = diff * light_color;
 	
 	// specular component
 	vec3 viewDir = normalize(eye - vposition);
 	vec3 reflectDir = reflect(-L, N);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8);
-	vec3 specular = k_s * spec * lightColor;  
+	vec3 specular = k_s * spec * light_color;  
 
     return (ambient + diffuse + specular) * obj_color;
 }
