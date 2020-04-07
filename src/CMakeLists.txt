@@ -45,7 +45,7 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView)
 
 set(project_ui
   inputform.ui
@@ -82,7 +82,8 @@ set(project_headers
     path.h
     performancerate.h
     inputform.h
-    mesh_preprocessing.h)
+    mesh_preprocessing.h
+    webviewer.h)
 
 set(project_sources
     main.cpp
@@ -114,6 +115,7 @@ set(project_sources
     performancerate.cpp
     inputform.cpp
     mesh_preprocessing.cpp
+    webviewer.cpp
     shaders/mesh_frag.glsl
     shaders/mesh_geom.glsl
     shaders/mesh_vert.glsl
@@ -173,4 +175,8 @@ target_link_libraries(NeCo
     Qt5::Core
     Qt5::Gui
     Qt5::OpenGL
-    Qt5::Xml)
+    Qt5::Xml
+    Qt5::WebEngine
+    Qt5::WebEngineCore
+    Qt5::WebEngineWidgets
+    Qt5::WebView)

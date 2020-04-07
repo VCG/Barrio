@@ -3,6 +3,8 @@
 #include <set>
 #include <QDomDocument>
 
+#include "webviewer.h"
+
 /*
  * m_objects -> object class for each object (astrocyte, dendrite, ..)
  *           -> get from this the indices of the mesh
@@ -73,6 +75,9 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
+  MyWebViewer* wv = new MyWebViewer();
+  wv->renderWebContent();
+
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
   QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected_small.obj";
