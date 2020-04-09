@@ -16,6 +16,7 @@ To get started you first need to **install all required dependencies**.
 1. Set these **environmental variables**. Check [this](https://www.youtube.com/watch?v=bEroNNzqlF4) tutorial on how to set environmental variables. 
 * `Qt5_DIR` to `C:/Qt/5.14.1/msvc2017_64/lib/cmake/Qt5`
 * `QT_QPA_PLATFORM_PLUGIN_PATH` to `C:\Qt\5.14.1\msvc2017_64\plugins\platforms`
+* Set the `Path` environmental variable to directory of the QT .dll files like `C:\Qt\5.14.2\msvc2017_64\bin`
 * `BOOST_INCLUDEDIR` to `C:\dev\boost_1_71_0`
 * `BOOST_LIBRARYDIR` to `C:\dev\boost_1_71_0\lib64-msvc-14.2`
 * `CGAL_DIR` to `C:\dev\CGAL-5.0.1`
