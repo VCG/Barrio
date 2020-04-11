@@ -4,6 +4,7 @@
 * The application is developed and tested under `Windows 10`.
 * A recent Graphics Card (GPU). I used an `NVIDIA GeForce GTX TITAN Black` GPU. 
 * At least `XXX GB of RAM`
+* A internet connection (to use the D3 library)
 
 ## Getting Started
 To get started you first need to **install all required dependencies**.
@@ -16,6 +17,7 @@ To get started you first need to **install all required dependencies**.
 1. Set these **environmental variables**. Check [this](https://www.youtube.com/watch?v=bEroNNzqlF4) tutorial on how to set environmental variables. 
 * `Qt5_DIR` to `C:/Qt/5.14.1/msvc2017_64/lib/cmake/Qt5`
 * `QT_QPA_PLATFORM_PLUGIN_PATH` to `C:\Qt\5.14.1\msvc2017_64\plugins\platforms`
+* Set the `Path` environmental variable to the directory of the Qt .dll files. In my case this is `C:\Qt\5.14.2\msvc2017_64\bin`
 * `BOOST_INCLUDEDIR` to `C:\dev\boost_1_71_0`
 * `BOOST_LIBRARYDIR` to `C:\dev\boost_1_71_0\lib64-msvc-14.2`
 * `CGAL_DIR` to `C:\dev\CGAL-5.0.1`
