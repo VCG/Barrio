@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include <QWidget>
 #include <QModelIndex>
+
 #include "abstractionspace.h"
 #include "mainopengl.h"
 #include "path.h"

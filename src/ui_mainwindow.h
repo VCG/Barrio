@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.14.1
+** Created by: Qt User Interface Compiler version 5.14.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -38,8 +38,8 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "mousepad.h"
 #include "glwidget.h"
+#include "mousepad.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ public:
     QWidget *dockWidgetContents_2;
     QGridLayout *gridLayout_15;
     QFrame *frame_64;
-    QGridLayout *gridLayout_23;
+    QVBoxLayout *verticalLayout_23;
     QGroupBox *groupBox_16;
     QFormLayout *formLayout_6;
     QFrame *frame_47;
@@ -80,21 +80,24 @@ public:
     QHBoxLayout *horizontalLayout_41;
     QSpacerItem *horizontalSpacer_3;
     QFrame *frame_48;
-    QHBoxLayout *horizontalLayout_46;
+    QVBoxLayout *verticalLayout_15;
+    QFrame *frame_43;
+    QHBoxLayout *horizontalLayout_49;
     QFrame *frame_49;
     QGridLayout *gridLayout_8;
     QLabel *label_42;
-    QFrame *frame_43;
-    QVBoxLayout *verticalLayout_15;
     QSlider *horizontalSlider;
-    QLabel *label_43;
     QFrame *frame_45;
     QGridLayout *gridLayout_4;
     QLabel *label_51;
+    QFrame *frame_55;
+    QGridLayout *gridLayout_27;
+    QLabel *label_43;
     QGroupBox *groupBox_3;
     QFormLayout *formLayout_2;
     QLabel *label_7;
     QLabel *label_8;
+    QSpacerItem *verticalSpacer_3;
     QDockWidget *dockWidget_2;
     QWidget *dockWidgetContents;
     QGridLayout *gridLayout_25;
@@ -443,8 +446,8 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(dockWidget->sizePolicy().hasHeightForWidth());
         dockWidget->setSizePolicy(sizePolicy);
-        dockWidget->setMinimumSize(QSize(407, 478));
-        dockWidget->setMaximumSize(QSize(1000, 2000));
+        dockWidget->setMinimumSize(QSize(410, 300));
+        dockWidget->setMaximumSize(QSize(400, 2000));
         dockWidget->setLayoutDirection(Qt::LeftToRight);
         dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         dockWidgetContents_2 = new QWidget();
@@ -455,18 +458,20 @@ public:
         gridLayout_15->setObjectName(QString::fromUtf8("gridLayout_15"));
         frame_64 = new QFrame(dockWidgetContents_2);
         frame_64->setObjectName(QString::fromUtf8("frame_64"));
+        frame_64->setMaximumSize(QSize(400, 16777215));
         frame_64->setFrameShape(QFrame::StyledPanel);
         frame_64->setFrameShadow(QFrame::Raised);
-        gridLayout_23 = new QGridLayout(frame_64);
-        gridLayout_23->setObjectName(QString::fromUtf8("gridLayout_23"));
+        verticalLayout_23 = new QVBoxLayout(frame_64);
+        verticalLayout_23->setObjectName(QString::fromUtf8("verticalLayout_23"));
         groupBox_16 = new QGroupBox(frame_64);
         groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
         groupBox_16->setMinimumSize(QSize(0, 0));
-        groupBox_16->setMaximumSize(QSize(16777215, 16777215));
+        groupBox_16->setMaximumSize(QSize(400, 400));
         formLayout_6 = new QFormLayout(groupBox_16);
         formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
         frame_47 = new QFrame(groupBox_16);
         frame_47->setObjectName(QString::fromUtf8("frame_47"));
+        frame_47->setMaximumSize(QSize(16777215, 400));
         frame_47->setFrameShape(QFrame::StyledPanel);
         frame_47->setFrameShadow(QFrame::Raised);
         gridLayout_9 = new QGridLayout(frame_47);
@@ -508,8 +513,10 @@ public:
         horizontalLayout_45 = new QHBoxLayout();
         horizontalLayout_45->setSpacing(0);
         horizontalLayout_45->setObjectName(QString::fromUtf8("horizontalLayout_45"));
+        horizontalLayout_45->setSizeConstraint(QLayout::SetDefaultConstraint);
         frame_46 = new QFrame(frame_47);
         frame_46->setObjectName(QString::fromUtf8("frame_46"));
+        frame_46->setMaximumSize(QSize(16777215, 310));
         frame_46->setFrameShape(QFrame::StyledPanel);
         frame_46->setFrameShadow(QFrame::Raised);
         horizontalLayout_42 = new QHBoxLayout(frame_46);
@@ -517,6 +524,7 @@ public:
         horizontalLayout_42->setContentsMargins(3, 0, 0, 0);
         frame_44 = new QFrame(frame_46);
         frame_44->setObjectName(QString::fromUtf8("frame_44"));
+        frame_44->setMaximumSize(QSize(16777215, 250));
         frame_44->setFrameShape(QFrame::StyledPanel);
         frame_44->setFrameShadow(QFrame::Raised);
         horizontalLayout_40 = new QHBoxLayout(frame_44);
@@ -526,7 +534,7 @@ public:
         label_44 = new QLabel(frame_44);
         label_44->setObjectName(QString::fromUtf8("label_44"));
         label_44->setMinimumSize(QSize(15, 0));
-        label_44->setMaximumSize(QSize(20, 16777215));
+        label_44->setMaximumSize(QSize(20, 250));
         label_44->setLineWidth(0);
         label_44->setAlignment(Qt::AlignCenter);
         label_44->setWordWrap(true);
@@ -560,11 +568,12 @@ public:
 
         frame_2 = new QFrame(frame_47);
         frame_2->setObjectName(QString::fromUtf8("frame_2"));
+        frame_2->setMaximumSize(QSize(16777215, 200));
         frame_2->setFrameShape(QFrame::StyledPanel);
         frame_2->setFrameShadow(QFrame::Raised);
         horizontalLayout_41 = new QHBoxLayout(frame_2);
         horizontalLayout_41->setObjectName(QString::fromUtf8("horizontalLayout_41"));
-        horizontalSpacer_3 = new QSpacerItem(18, 218, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer_3 = new QSpacerItem(18, 100, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout_41->addItem(horizontalSpacer_3);
 
@@ -576,14 +585,26 @@ public:
 
         frame_48 = new QFrame(frame_47);
         frame_48->setObjectName(QString::fromUtf8("frame_48"));
+        frame_48->setMaximumSize(QSize(16777215, 80));
+        frame_48->setLayoutDirection(Qt::LeftToRight);
         frame_48->setFrameShape(QFrame::StyledPanel);
         frame_48->setFrameShadow(QFrame::Raised);
-        horizontalLayout_46 = new QHBoxLayout(frame_48);
-        horizontalLayout_46->setSpacing(0);
-        horizontalLayout_46->setObjectName(QString::fromUtf8("horizontalLayout_46"));
-        horizontalLayout_46->setContentsMargins(0, 0, 0, 0);
-        frame_49 = new QFrame(frame_48);
+        verticalLayout_15 = new QVBoxLayout(frame_48);
+        verticalLayout_15->setSpacing(0);
+        verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
+        verticalLayout_15->setContentsMargins(0, 0, 0, 0);
+        frame_43 = new QFrame(frame_48);
+        frame_43->setObjectName(QString::fromUtf8("frame_43"));
+        frame_43->setMinimumSize(QSize(300, 0));
+        frame_43->setMaximumSize(QSize(16777215, 16777215));
+        frame_43->setFrameShape(QFrame::StyledPanel);
+        frame_43->setFrameShadow(QFrame::Raised);
+        horizontalLayout_49 = new QHBoxLayout(frame_43);
+        horizontalLayout_49->setObjectName(QString::fromUtf8("horizontalLayout_49"));
+        horizontalLayout_49->setContentsMargins(5, -1, 0, 0);
+        frame_49 = new QFrame(frame_43);
         frame_49->setObjectName(QString::fromUtf8("frame_49"));
+        frame_49->setMaximumSize(QSize(16777215, 30));
         frame_49->setFrameShape(QFrame::StyledPanel);
         frame_49->setFrameShadow(QFrame::Raised);
         gridLayout_8 = new QGridLayout(frame_49);
@@ -591,46 +612,30 @@ public:
         gridLayout_8->setContentsMargins(4, 0, 0, -1);
         label_42 = new QLabel(frame_49);
         label_42->setObjectName(QString::fromUtf8("label_42"));
+        label_42->setMaximumSize(QSize(16777215, 100));
         label_42->setAlignment(Qt::AlignCenter);
 
-        gridLayout_8->addWidget(label_42, 0, 0, 1, 1);
+        gridLayout_8->addWidget(label_42, 0, 1, 1, 1);
 
 
-        horizontalLayout_46->addWidget(frame_49);
+        horizontalLayout_49->addWidget(frame_49);
 
-        frame_43 = new QFrame(frame_48);
-        frame_43->setObjectName(QString::fromUtf8("frame_43"));
-        frame_43->setMaximumSize(QSize(230, 16777215));
-        frame_43->setFrameShape(QFrame::StyledPanel);
-        frame_43->setFrameShadow(QFrame::Raised);
-        verticalLayout_15 = new QVBoxLayout(frame_43);
-        verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
-        verticalLayout_15->setContentsMargins(5, -1, 0, 0);
         horizontalSlider = new QSlider(frame_43);
         horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
         horizontalSlider->setMinimumSize(QSize(220, 0));
         horizontalSlider->setMaximumSize(QSize(220, 16777215));
         horizontalSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout_15->addWidget(horizontalSlider);
+        horizontalLayout_49->addWidget(horizontalSlider);
 
-        label_43 = new QLabel(frame_43);
-        label_43->setObjectName(QString::fromUtf8("label_43"));
-        label_43->setMaximumSize(QSize(220, 16777215));
-        label_43->setAlignment(Qt::AlignCenter);
-
-        verticalLayout_15->addWidget(label_43);
-
-
-        horizontalLayout_46->addWidget(frame_43);
-
-        frame_45 = new QFrame(frame_48);
+        frame_45 = new QFrame(frame_43);
         frame_45->setObjectName(QString::fromUtf8("frame_45"));
+        frame_45->setMinimumSize(QSize(0, 0));
+        frame_45->setMaximumSize(QSize(16777215, 30));
         frame_45->setFrameShape(QFrame::StyledPanel);
         frame_45->setFrameShadow(QFrame::Raised);
         gridLayout_4 = new QGridLayout(frame_45);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
-        gridLayout_4->setContentsMargins(0, 0, -1, -1);
         label_51 = new QLabel(frame_45);
         label_51->setObjectName(QString::fromUtf8("label_51"));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -638,12 +643,34 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(label_51->sizePolicy().hasHeightForWidth());
         label_51->setSizePolicy(sizePolicy1);
+        label_51->setMinimumSize(QSize(0, 0));
+        label_51->setMaximumSize(QSize(16777215, 30));
         label_51->setAlignment(Qt::AlignCenter);
 
         gridLayout_4->addWidget(label_51, 0, 0, 1, 1);
 
 
-        horizontalLayout_46->addWidget(frame_45);
+        horizontalLayout_49->addWidget(frame_45);
+
+
+        verticalLayout_15->addWidget(frame_43);
+
+        frame_55 = new QFrame(frame_48);
+        frame_55->setObjectName(QString::fromUtf8("frame_55"));
+        frame_55->setLayoutDirection(Qt::LeftToRight);
+        frame_55->setFrameShape(QFrame::StyledPanel);
+        frame_55->setFrameShadow(QFrame::Raised);
+        gridLayout_27 = new QGridLayout(frame_55);
+        gridLayout_27->setObjectName(QString::fromUtf8("gridLayout_27"));
+        label_43 = new QLabel(frame_55);
+        label_43->setObjectName(QString::fromUtf8("label_43"));
+        label_43->setMaximumSize(QSize(220, 30));
+        label_43->setAlignment(Qt::AlignCenter);
+
+        gridLayout_27->addWidget(label_43, 0, 0, 1, 1);
+
+
+        verticalLayout_15->addWidget(frame_55);
 
 
         verticalLayout_16->addWidget(frame_48);
@@ -658,10 +685,11 @@ public:
         formLayout_6->setWidget(0, QFormLayout::LabelRole, frame_47);
 
 
-        gridLayout_23->addWidget(groupBox_16, 0, 0, 1, 1);
+        verticalLayout_23->addWidget(groupBox_16);
 
         groupBox_3 = new QGroupBox(frame_64);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        groupBox_3->setMaximumSize(QSize(400, 16777215));
         formLayout_2 = new QFormLayout(groupBox_3);
         formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
         label_7 = new QLabel(groupBox_3);
@@ -675,7 +703,11 @@ public:
         formLayout_2->setWidget(0, QFormLayout::FieldRole, label_8);
 
 
-        gridLayout_23->addWidget(groupBox_3, 1, 0, 1, 1);
+        verticalLayout_23->addWidget(groupBox_3);
+
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_23->addItem(verticalSpacer_3);
 
 
         gridLayout_15->addWidget(frame_64, 0, 0, 1, 1);
@@ -1529,7 +1561,7 @@ public:
         toolBox_graphsParam->addItem(graph1, QString::fromUtf8("Neurites Connectivity"));
         graph2 = new QWidget();
         graph2->setObjectName(QString::fromUtf8("graph2"));
-        graph2->setGeometry(QRect(0, 0, 245, 433));
+        graph2->setGeometry(QRect(0, 0, 247, 433));
         formLayout_4 = new QFormLayout(graph2);
         formLayout_4->setObjectName(QString::fromUtf8("formLayout_4"));
         frame_13 = new QFrame(graph2);
@@ -1722,7 +1754,7 @@ public:
         toolBox_graphsParam->addItem(graph2, QString::fromUtf8("Astrocyte Skeleton - Neurites Nodes"));
         graph3 = new QWidget();
         graph3->setObjectName(QString::fromUtf8("graph3"));
-        graph3->setGeometry(QRect(0, 0, 245, 433));
+        graph3->setGeometry(QRect(0, 0, 247, 433));
         formLayout_31 = new QFormLayout(graph3);
         formLayout_31->setObjectName(QString::fromUtf8("formLayout_31"));
         frame_20 = new QFrame(graph3);
@@ -1915,7 +1947,7 @@ public:
         toolBox_graphsParam->addItem(graph3, QString::fromUtf8("Astrocyte Skeleton - Neurites Skeleton"));
         graph4 = new QWidget();
         graph4->setObjectName(QString::fromUtf8("graph4"));
-        graph4->setGeometry(QRect(0, 0, 245, 433));
+        graph4->setGeometry(QRect(0, 0, 247, 433));
         formLayout = new QFormLayout(graph4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         frame_28 = new QFrame(graph4);
@@ -2348,8 +2380,8 @@ public:
         label_52->setText(QCoreApplication::translate("MainWindow", "max", nullptr));
         label_44->setText(QCoreApplication::translate("MainWindow", "A s t r o c y t e", nullptr));
         label_42->setText(QCoreApplication::translate("MainWindow", "  min  ", nullptr));
+        label_51->setText(QCoreApplication::translate("MainWindow", "max", nullptr));
         label_43->setText(QCoreApplication::translate("MainWindow", "Neurites", nullptr));
-        label_51->setText(QCoreApplication::translate("MainWindow", "     max", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Selected", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));

@@ -15,11 +15,12 @@ int main(int argc, char* argv[])
   QSurfaceFormat::setDefaultFormat(format);
 
   InputForm* input_form;
-  input_form = new InputForm(0);
+  input_form = new InputForm(nullptr);
   input_form->exec();
 
-  if (input_form->exec() == InputForm::Accepted) {
-    MainWindow* window = new MainWindow(0, input_form);
+  if (input_form->exec() == InputForm::Accepted)
+  {
+    MainWindow* window = new MainWindow(nullptr, input_form);
 
     window->show();
   }

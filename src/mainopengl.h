@@ -51,7 +51,7 @@ public:
   };
 
   QHash <char, FontChar>      m_characters;
-  QOpenGLShaderProgram* m_program_text;
+  QOpenGLShaderProgram*       m_program_text;
   QMatrix4x4                  m_projection;
   bool                        flag;
 

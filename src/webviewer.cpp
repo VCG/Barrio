@@ -1,5 +1,5 @@
 #include "webviewer.h"
-#include <QWebEngineView>
+
 
 MyWebViewer::MyWebViewer()
 {
@@ -11,10 +11,10 @@ MyWebViewer::~MyWebViewer()
 
 void MyWebViewer::renderWebContent()
 {
-  QWebEngineView* view = new QWebEngineView();
+  /*QWebEngineView* view = new QWebEngineView();
   qDebug() << exePath().c_str();
   view->load(QUrl("C:/Users/jtroidl/Desktop/NeuroComparer/src/web/colorGame.html"));
-  view->show();
+  view->show();*/
 }
 
 std::string MyWebViewer::exePath()

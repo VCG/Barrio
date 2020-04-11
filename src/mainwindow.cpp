@@ -1,14 +1,15 @@
+#include "glwidget.h"
+#include "glycogenanalysismanager.h"
 #include "glycogencluster.h"
 #include "object.h"
-#include "glycogenanalysismanager.h"
-#include "glwidget.h"
 #include "openglmanager.h"
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include <chrono>
 #include <map>
 #include <QPixmap>
-#include <chrono>
+#include "ui_mainwindow.h"
+#include "webviewer.h"
 
 //------------------------------------------------------
 //
@@ -39,6 +40,12 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   painter.rotate(-90);
   painter.drawText(0, 0, "Astrocytes");
   mainwindow_ui->label_44->setPixmap(myPixmap);
+
+  QDockWidget* w = mainwindow_ui->dockWidget;
+
+  QWebEngineView* view = new QWebEngineView(w);
+  view->load(QUrl("C:/Users/jtroidl/Desktop/NeuroComparer/src/web/colorGame.html"));
+  view->show();
 }
 
 //------------------------------------------------------

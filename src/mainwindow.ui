@@ -47,13 +47,13 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>407</width>
-     <height>478</height>
+     <width>410</width>
+     <height>300</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>1000</width>
+     <width>400</width>
      <height>2000</height>
     </size>
    </property>
@@ -82,14 +82,20 @@
     <layout class="QGridLayout" name="gridLayout_15">
      <item row="0" column="0">
       <widget class="QFrame" name="frame_64">
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QGridLayout" name="gridLayout_23">
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_23">
+        <item>
          <widget class="QGroupBox" name="groupBox_16">
           <property name="minimumSize">
            <size>
@@ -99,8 +105,8 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>16777215</width>
-            <height>16777215</height>
+            <width>400</width>
+            <height>400</height>
            </size>
           </property>
           <property name="title">
@@ -109,6 +115,12 @@
           <layout class="QFormLayout" name="formLayout_6">
            <item row="0" column="0">
             <widget class="QFrame" name="frame_47">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>400</height>
+              </size>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -215,8 +227,17 @@
                     <property name="spacing">
                      <number>0</number>
                     </property>
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetDefaultConstraint</enum>
+                    </property>
                     <item>
                      <widget class="QFrame" name="frame_46">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>310</height>
+                       </size>
+                      </property>
                       <property name="frameShape">
                        <enum>QFrame::StyledPanel</enum>
                       </property>
@@ -238,6 +259,12 @@
                        </property>
                        <item>
                         <widget class="QFrame" name="frame_44">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>250</height>
+                          </size>
+                         </property>
                          <property name="frameShape">
                           <enum>QFrame::StyledPanel</enum>
                          </property>
@@ -271,7 +298,7 @@
                             <property name="maximumSize">
                              <size>
                               <width>20</width>
-                              <height>16777215</height>
+                              <height>250</height>
                              </size>
                             </property>
                             <property name="lineWidth">
@@ -346,6 +373,12 @@
                     </item>
                     <item>
                      <widget class="QFrame" name="frame_2">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>200</height>
+                       </size>
+                      </property>
                       <property name="frameShape">
                        <enum>QFrame::StyledPanel</enum>
                       </property>
@@ -364,7 +397,7 @@
                          <property name="sizeHint" stdset="0">
                           <size>
                            <width>18</width>
-                           <height>218</height>
+                           <height>100</height>
                           </size>
                          </property>
                         </spacer>
@@ -376,13 +409,22 @@
                   </item>
                   <item>
                    <widget class="QFrame" name="frame_48">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>80</height>
+                     </size>
+                    </property>
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
                     <property name="frameShadow">
                      <enum>QFrame::Raised</enum>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_46">
+                    <layout class="QVBoxLayout" name="verticalLayout_15">
                      <property name="spacing">
                       <number>0</number>
                      </property>
@@ -399,41 +441,16 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QFrame" name="frame_49">
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                       <layout class="QGridLayout" name="gridLayout_8">
-                        <property name="leftMargin">
-                         <number>4</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <item row="0" column="0">
-                         <widget class="QLabel" name="label_42">
-                          <property name="text">
-                           <string>  min  </string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item>
                       <widget class="QFrame" name="frame_43">
+                       <property name="minimumSize">
+                        <size>
+                         <width>300</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="maximumSize">
                         <size>
-                         <width>230</width>
+                         <width>16777215</width>
                          <height>16777215</height>
                         </size>
                        </property>
@@ -443,7 +460,7 @@
                        <property name="frameShadow">
                         <enum>QFrame::Raised</enum>
                        </property>
-                       <layout class="QVBoxLayout" name="verticalLayout_15">
+                       <layout class="QHBoxLayout" name="horizontalLayout_49">
                         <property name="leftMargin">
                          <number>5</number>
                         </property>
@@ -453,6 +470,49 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
+                        <item>
+                         <widget class="QFrame" name="frame_49">
+                          <property name="maximumSize">
+                           <size>
+                            <width>16777215</width>
+                            <height>30</height>
+                           </size>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QGridLayout" name="gridLayout_8">
+                           <property name="leftMargin">
+                            <number>4</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="rightMargin">
+                            <number>0</number>
+                           </property>
+                           <item row="0" column="1">
+                            <widget class="QLabel" name="label_42">
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>100</height>
+                              </size>
+                             </property>
+                             <property name="text">
+                              <string>  min  </string>
+                             </property>
+                             <property name="alignment">
+                              <set>Qt::AlignCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
                         <item>
                          <widget class="QSlider" name="horizontalSlider">
                           <property name="minimumSize">
@@ -473,49 +533,82 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="label_43">
-                          <property name="maximumSize">
+                         <widget class="QFrame" name="frame_45">
+                          <property name="minimumSize">
                            <size>
-                            <width>220</width>
-                            <height>16777215</height>
+                            <width>0</width>
+                            <height>0</height>
                            </size>
                           </property>
-                          <property name="text">
-                           <string>Neurites</string>
+                          <property name="maximumSize">
+                           <size>
+                            <width>16777215</width>
+                            <height>30</height>
+                           </size>
                           </property>
-                          <property name="alignment">
-                           <set>Qt::AlignCenter</set>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
                           </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QGridLayout" name="gridLayout_4">
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_51">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="minimumSize">
+                              <size>
+                               <width>0</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>30</height>
+                              </size>
+                             </property>
+                             <property name="text">
+                              <string>max</string>
+                             </property>
+                             <property name="alignment">
+                              <set>Qt::AlignCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QFrame" name="frame_45">
+                      <widget class="QFrame" name="frame_55">
+                       <property name="layoutDirection">
+                        <enum>Qt::LeftToRight</enum>
+                       </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
                        <property name="frameShadow">
                         <enum>QFrame::Raised</enum>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_4">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
+                       <layout class="QGridLayout" name="gridLayout_27">
                         <item row="0" column="0">
-                         <widget class="QLabel" name="label_51">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
+                         <widget class="QLabel" name="label_43">
+                          <property name="maximumSize">
+                           <size>
+                            <width>220</width>
+                            <height>30</height>
+                           </size>
                           </property>
                           <property name="text">
-                           <string>     max</string>
+                           <string>Neurites</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -538,8 +631,14 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item>
          <widget class="QGroupBox" name="groupBox_3">
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="title">
            <string>Selected</string>
           </property>
@@ -560,6 +659,19 @@
            </item>
           </layout>
          </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1981,7 +2093,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>245</width>
+                 <width>247</width>
                  <height>433</height>
                 </rect>
                </property>
@@ -2258,7 +2370,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>245</width>
+                 <width>247</width>
                  <height>433</height>
                 </rect>
                </property>
@@ -2535,7 +2647,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>245</width>
+                 <width>247</width>
                  <height>433</height>
                 </rect>
                </property>
