@@ -48,12 +48,12 @@
    <property name="minimumSize">
     <size>
      <width>410</width>
-     <height>300</height>
+     <height>634</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>400</width>
+     <width>410</width>
      <height>2000</height>
     </size>
    </property>
@@ -661,17 +661,61 @@
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QGroupBox" name="webView1">
+          <property name="title">
+           <string>GroupBox</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <layout class="QGridLayout" name="gridLayout_23">
+           <item row="0" column="0">
+            <widget class="QFrame" name="frame_65">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="webView2">
+          <property name="title">
+           <string>GroupBox</string>
           </property>
-         </spacer>
+          <layout class="QGridLayout" name="gridLayout_28">
+           <item row="0" column="0">
+            <widget class="QFrame" name="frame_66">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="webView3">
+          <property name="title">
+           <string>GroupBox</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_29">
+           <item row="0" column="0">
+            <widget class="QFrame" name="frame_67">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>

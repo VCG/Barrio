@@ -10,6 +10,9 @@
 #include <QPixmap>
 #include "ui_mainwindow.h"
 #include "webviewer.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 //------------------------------------------------------
 //
@@ -41,11 +44,23 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   painter.drawText(0, 0, "Astrocytes");
   mainwindow_ui->label_44->setPixmap(myPixmap);
 
-  QDockWidget* w = mainwindow_ui->dockWidget;
+  fs::path current_path = fs::current_path();
+  qDebug() << current_path.parent_path().c_str();
 
-  QWebEngineView* view = new QWebEngineView(w);
-  view->load(QUrl("C:/Users/jtroidl/Desktop/NeuroComparer/src/web/colorGame.html"));
-  view->show();
+  QString base_path = QString(current_path.parent_path().string().c_str());
+  base_path.replace("\\", "/");
+  QString url = base_path + QString("/src/web/colorGame.html");
+
+  QWebEngineView *view = new QWebEngineView();
+  view->load(QUrl(url));
+  //view->showMaximized();
+
+  QGridLayout *layout = new QGridLayout;
+  layout->addWidget(view);
+  mainwindow_ui->frame_65->setLayout(layout);
+  
+
+  
 }
 
 //------------------------------------------------------

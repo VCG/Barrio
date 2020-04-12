@@ -97,7 +97,15 @@ public:
     QFormLayout *formLayout_2;
     QLabel *label_7;
     QLabel *label_8;
-    QSpacerItem *verticalSpacer_3;
+    QGroupBox *webView1;
+    QGridLayout *gridLayout_23;
+    QFrame *frame_65;
+    QGroupBox *webView2;
+    QGridLayout *gridLayout_28;
+    QFrame *frame_66;
+    QGroupBox *webView3;
+    QGridLayout *gridLayout_29;
+    QFrame *frame_67;
     QDockWidget *dockWidget_2;
     QWidget *dockWidgetContents;
     QGridLayout *gridLayout_25;
@@ -446,8 +454,8 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(dockWidget->sizePolicy().hasHeightForWidth());
         dockWidget->setSizePolicy(sizePolicy);
-        dockWidget->setMinimumSize(QSize(410, 300));
-        dockWidget->setMaximumSize(QSize(400, 2000));
+        dockWidget->setMinimumSize(QSize(410, 634));
+        dockWidget->setMaximumSize(QSize(410, 2000));
         dockWidget->setLayoutDirection(Qt::LeftToRight);
         dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         dockWidgetContents_2 = new QWidget();
@@ -705,9 +713,47 @@ public:
 
         verticalLayout_23->addWidget(groupBox_3);
 
-        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        webView1 = new QGroupBox(frame_64);
+        webView1->setObjectName(QString::fromUtf8("webView1"));
+        gridLayout_23 = new QGridLayout(webView1);
+        gridLayout_23->setObjectName(QString::fromUtf8("gridLayout_23"));
+        frame_65 = new QFrame(webView1);
+        frame_65->setObjectName(QString::fromUtf8("frame_65"));
+        frame_65->setFrameShape(QFrame::StyledPanel);
+        frame_65->setFrameShadow(QFrame::Raised);
 
-        verticalLayout_23->addItem(verticalSpacer_3);
+        gridLayout_23->addWidget(frame_65, 0, 0, 1, 1);
+
+
+        verticalLayout_23->addWidget(webView1);
+
+        webView2 = new QGroupBox(frame_64);
+        webView2->setObjectName(QString::fromUtf8("webView2"));
+        gridLayout_28 = new QGridLayout(webView2);
+        gridLayout_28->setObjectName(QString::fromUtf8("gridLayout_28"));
+        frame_66 = new QFrame(webView2);
+        frame_66->setObjectName(QString::fromUtf8("frame_66"));
+        frame_66->setFrameShape(QFrame::StyledPanel);
+        frame_66->setFrameShadow(QFrame::Raised);
+
+        gridLayout_28->addWidget(frame_66, 0, 0, 1, 1);
+
+
+        verticalLayout_23->addWidget(webView2);
+
+        webView3 = new QGroupBox(frame_64);
+        webView3->setObjectName(QString::fromUtf8("webView3"));
+        gridLayout_29 = new QGridLayout(webView3);
+        gridLayout_29->setObjectName(QString::fromUtf8("gridLayout_29"));
+        frame_67 = new QFrame(webView3);
+        frame_67->setObjectName(QString::fromUtf8("frame_67"));
+        frame_67->setFrameShape(QFrame::StyledPanel);
+        frame_67->setFrameShadow(QFrame::Raised);
+
+        gridLayout_29->addWidget(frame_67, 0, 0, 1, 1);
+
+
+        verticalLayout_23->addWidget(webView3);
 
 
         gridLayout_15->addWidget(frame_64, 0, 0, 1, 1);
@@ -2385,6 +2431,9 @@ public:
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Selected", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
+        webView1->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
+        webView2->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
+        webView3->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Selected Objects", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "Match Exactly", nullptr));
         pushButton_3->setText(QCoreApplication::translate("MainWindow", "Show / Hide", nullptr));
