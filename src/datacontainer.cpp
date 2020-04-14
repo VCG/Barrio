@@ -80,7 +80,7 @@ void DataContainer::loadData()
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
-  QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_corrected_small.obj";
+  QString neurites_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\d042_mito.obj";
   QString astro_path = "C:\\Users\\jtroidl\\Desktop\\6mice_sp_bo\\m3\\m3_astrocyte.obj";
 
   bool cache = true;
@@ -1157,12 +1157,10 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 
 bool DataContainer::importObj(QString path)
 {
-  std::vector< unsigned int > vertexIndices, normalIndices;
-  //std::vector<QVector4D> temp_vertices;
-  //std::vector<QVector4D> temp_normals;
+  std::vector< unsigned int > vertexIndices;
 
-  char currObject[128];
-  int currHvgx;
+  //char currObject[128];
+  //int currHvgx;
 
   int vertexCounter = 0;
   int normalCounter = 0;
@@ -1240,38 +1238,16 @@ bool DataContainer::importObj(QString path)
       v->skeleton_vertex = QVector4D(0.0, 0.0, 0.0, 0.0); // place holder
 
       vertexIdx = m_mesh->addVertex(v, obj->getObjectType());
-
-      //temp_vertices.push_back(mesh_vertex);
     }
-    
-    // parse vertex normals
-    //else if (!strcmp(elements[0].toStdString().c_str(), "vn")) 
-    //{
-    //  normalCounter++;
-    //  float x = elements[1].toFloat();
-    //  float y = elements[2].toFloat();
-    //  float z = elements[3].toFloat();
-
-    //  QVector4D normal(x, y, z, 0);
-    //  normal.normalize();
-    //  m_mesh->addVertexNormal(normal); // parallel list to vertices
-
-    //  //temp_normals.push_back(normal);
-    //}
 
     // parse faces
     else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
       std::string vertex1, vertex2, vertex3;
-      unsigned int vertexIndex[3], normalIndex[3];
+      unsigned int vertexIndex[3];
 
-      vertexIndex[0] = elements[1].split("//")[0].toInt();
-      normalIndex[0] = elements[1].split("//")[1].toInt();
-      
-      vertexIndex[1] = elements[2].split("//")[0].toInt();
-      normalIndex[1] = elements[2].split("//")[1].toInt();
-
-      vertexIndex[2] = elements[3].split("//")[0].toInt();
-      normalIndex[2] = elements[3].split("//")[1].toInt();
+      vertexIndex[0] = elements[1].toInt();
+      vertexIndex[1] = elements[2].toInt();
+      vertexIndex[2] = elements[3].toInt();
 
       vertexIndices.push_back(vertexIndex[0]);
       vertexIndices.push_back(vertexIndex[1]);
@@ -1294,15 +1270,9 @@ bool DataContainer::importObj(QString path)
         m_indices_size_byType[obj->getObjectType()] = 0;
       }
       m_indices_size_byType[obj->getObjectType()] += 3;
-
-      normalIndices.push_back(normalIndex[0]);
-      normalIndices.push_back(normalIndex[1]);
-      normalIndices.push_back(normalIndex[2]);
     }
   }
-
   inputFile.close();
-
 
   m_mesh->computeNormalsPerVertex();
 
