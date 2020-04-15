@@ -632,35 +632,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="maximumSize">
-           <size>
-            <width>400</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Selected</string>
-          </property>
-          <layout class="QFormLayout" name="formLayout_2">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>ID</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <widget class="QGroupBox" name="webView1">
           <property name="title">
            <string>GroupBox</string>
@@ -680,37 +651,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="webView2">
-          <property name="title">
-           <string>GroupBox</string>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>60</height>
+           </size>
           </property>
-          <layout class="QGridLayout" name="gridLayout_28">
+          <property name="title">
+           <string>Selected</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_2">
            <item row="0" column="0">
-            <widget class="QFrame" name="frame_66">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>ID</string>
              </property>
             </widget>
            </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="webView3">
-          <property name="title">
-           <string>GroupBox</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_29">
-           <item row="0" column="0">
-            <widget class="QFrame" name="frame_67">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Name</string>
              </property>
             </widget>
            </item>
@@ -1863,8 +1825,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>496</width>
-                 <height>1338</height>
+                 <width>247</width>
+                 <height>433</height>
                 </rect>
                </property>
                <attribute name="label">

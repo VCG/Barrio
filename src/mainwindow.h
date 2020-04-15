@@ -29,6 +29,7 @@ public:
 
   GLWidget* getGLWidget();
   MousePad* getMousePad();
+  void onAddWebWidget();
 
 public slots:
   void on_glycogenVisibilityCheckBox_toggled(bool);

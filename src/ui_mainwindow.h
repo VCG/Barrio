@@ -93,19 +93,13 @@ public:
     QFrame *frame_55;
     QGridLayout *gridLayout_27;
     QLabel *label_43;
+    QGroupBox *webView1;
+    QGridLayout *gridLayout_23;
+    QFrame *frame_65;
     QGroupBox *groupBox_3;
     QFormLayout *formLayout_2;
     QLabel *label_7;
     QLabel *label_8;
-    QGroupBox *webView1;
-    QGridLayout *gridLayout_23;
-    QFrame *frame_65;
-    QGroupBox *webView2;
-    QGridLayout *gridLayout_28;
-    QFrame *frame_66;
-    QGroupBox *webView3;
-    QGridLayout *gridLayout_29;
-    QFrame *frame_67;
     QDockWidget *dockWidget_2;
     QWidget *dockWidgetContents;
     QGridLayout *gridLayout_25;
@@ -695,24 +689,6 @@ public:
 
         verticalLayout_23->addWidget(groupBox_16);
 
-        groupBox_3 = new QGroupBox(frame_64);
-        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        groupBox_3->setMaximumSize(QSize(400, 16777215));
-        formLayout_2 = new QFormLayout(groupBox_3);
-        formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
-        label_7 = new QLabel(groupBox_3);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-
-        formLayout_2->setWidget(0, QFormLayout::LabelRole, label_7);
-
-        label_8 = new QLabel(groupBox_3);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
-
-        formLayout_2->setWidget(0, QFormLayout::FieldRole, label_8);
-
-
-        verticalLayout_23->addWidget(groupBox_3);
-
         webView1 = new QGroupBox(frame_64);
         webView1->setObjectName(QString::fromUtf8("webView1"));
         gridLayout_23 = new QGridLayout(webView1);
@@ -727,33 +703,23 @@ public:
 
         verticalLayout_23->addWidget(webView1);
 
-        webView2 = new QGroupBox(frame_64);
-        webView2->setObjectName(QString::fromUtf8("webView2"));
-        gridLayout_28 = new QGridLayout(webView2);
-        gridLayout_28->setObjectName(QString::fromUtf8("gridLayout_28"));
-        frame_66 = new QFrame(webView2);
-        frame_66->setObjectName(QString::fromUtf8("frame_66"));
-        frame_66->setFrameShape(QFrame::StyledPanel);
-        frame_66->setFrameShadow(QFrame::Raised);
+        groupBox_3 = new QGroupBox(frame_64);
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        groupBox_3->setMaximumSize(QSize(400, 60));
+        formLayout_2 = new QFormLayout(groupBox_3);
+        formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
+        label_7 = new QLabel(groupBox_3);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
 
-        gridLayout_28->addWidget(frame_66, 0, 0, 1, 1);
+        formLayout_2->setWidget(0, QFormLayout::LabelRole, label_7);
 
+        label_8 = new QLabel(groupBox_3);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
 
-        verticalLayout_23->addWidget(webView2);
-
-        webView3 = new QGroupBox(frame_64);
-        webView3->setObjectName(QString::fromUtf8("webView3"));
-        gridLayout_29 = new QGridLayout(webView3);
-        gridLayout_29->setObjectName(QString::fromUtf8("gridLayout_29"));
-        frame_67 = new QFrame(webView3);
-        frame_67->setObjectName(QString::fromUtf8("frame_67"));
-        frame_67->setFrameShape(QFrame::StyledPanel);
-        frame_67->setFrameShadow(QFrame::Raised);
-
-        gridLayout_29->addWidget(frame_67, 0, 0, 1, 1);
+        formLayout_2->setWidget(0, QFormLayout::FieldRole, label_8);
 
 
-        verticalLayout_23->addWidget(webView3);
+        verticalLayout_23->addWidget(groupBox_3);
 
 
         gridLayout_15->addWidget(frame_64, 0, 0, 1, 1);
@@ -1415,7 +1381,7 @@ public:
         toolBox_graphsParam->setObjectName(QString::fromUtf8("toolBox_graphsParam"));
         graph1 = new QWidget();
         graph1->setObjectName(QString::fromUtf8("graph1"));
-        graph1->setGeometry(QRect(0, 0, 496, 1338));
+        graph1->setGeometry(QRect(0, 0, 247, 433));
         formLayout_5 = new QFormLayout(graph1);
         formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
         frame_11 = new QFrame(graph1);
@@ -2428,12 +2394,10 @@ public:
         label_42->setText(QCoreApplication::translate("MainWindow", "  min  ", nullptr));
         label_51->setText(QCoreApplication::translate("MainWindow", "max", nullptr));
         label_43->setText(QCoreApplication::translate("MainWindow", "Neurites", nullptr));
+        webView1->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Selected", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
-        webView1->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
-        webView2->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
-        webView3->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Selected Objects", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "Match Exactly", nullptr));
         pushButton_3->setText(QCoreApplication::translate("MainWindow", "Show / Hide", nullptr));

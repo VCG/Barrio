@@ -47,20 +47,17 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   fs::path current_path = fs::current_path();
   qDebug() << current_path.parent_path().c_str();
 
+  // process html path 
   QString base_path = QString(current_path.parent_path().string().c_str());
   base_path.replace("\\", "/");
   QString url = base_path + QString("/src/web/colorGame.html");
 
   QWebEngineView *view = new QWebEngineView();
   view->load(QUrl(url));
-  //view->showMaximized();
 
   QGridLayout *layout = new QGridLayout;
   layout->addWidget(view);
   mainwindow_ui->frame_65->setLayout(layout);
-  
-
-  
 }
 
 //------------------------------------------------------
@@ -150,6 +147,10 @@ GLWidget* MainWindow::getGLWidget()
 MousePad* MainWindow::getMousePad()
 {
   return mainwindow_ui->openGLWidget_2;
+}
+
+void MainWindow::onAddWebWidget()
+{
 }
 
 //------------------------------------------------------
