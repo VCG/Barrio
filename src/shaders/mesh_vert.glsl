@@ -90,7 +90,8 @@ void main(void)
     V_ID = ID;
 
     int type = int(SSBO_data[ID].center.w);
-    V_color_val = vec4(1.0, 0.0, 1.0, 1.0); //SSBO_data[ID].color;
+    vec3 c = vec3(1.0, 1.0, 1.0) * skeleton_vx.w;
+    V_color_val = vec4(c, 1.0) ;  //SSBO_data[ID].color;
 
 
     properties space_properties = (type == astrocyte) ? space2d.ast : space2d.neu;

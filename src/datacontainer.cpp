@@ -4,6 +4,7 @@
 #include <QDomDocument>
 
 #include "webviewer.h"
+#include "mesh_preprocessing.h"
 
 /*
  * m_objects -> object class for each object (astrocyte, dendrite, ..)
@@ -186,6 +187,16 @@ void DataContainer::loadData()
 
   /* 3 */
   PostloadMetaDataHVGX(input_files_dir.HVGX_metadata);
+
+  MeshProcessing* mp = new MeshProcessing();
+  std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
+
+  for (int i = 0; i < mitos.size(); ++i)
+  {
+    Object* m = mitos[i];
+    Object* parent = m_objects[m->getParentID() + 1];
+    mp->compute_distance(m, parent, m_mesh->getVerticesList());
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1233,9 +1244,9 @@ bool DataContainer::importObj(QString path)
 
       v->index = vertexIdx;
       v->mesh_vertex = mesh_vertex;
-      v->skeleton_vertex = skeleton_vertex; //place holder
+      v->skeleton_vertex = skeleton_vertex; // place holder
       //v->distance_to_astro = 0.0; //place holder
-      v->skeleton_vertex = QVector4D(0.0, 0.0, 0.0, 0.0); // place holder
+      
 
       vertexIdx = m_mesh->addVertex(v, obj->getObjectType());
     }

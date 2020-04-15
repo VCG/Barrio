@@ -256,7 +256,6 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
       m_selectedObjects.insert(hvgxID);
       insertInTable(hvgxID);
     }
-
   }
 
 quit:

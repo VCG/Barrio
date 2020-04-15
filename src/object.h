@@ -41,7 +41,10 @@ public:
   // mesh indices functions
   void addTriangleIndex(GLuint faces);
   size_t get_indices_Size() { return m_meshIndices.size(); }
-  void* get_indices() { return m_meshIndices.data(); }
+  void* get_indices_forVBO() { return m_meshIndices.data(); }
+  std::vector<GLuint>* get_indices_list(){ return &m_meshIndices; }
+
+
 
   // properties getters
   bool hasParent();
@@ -111,7 +114,7 @@ private:
   int                                     m_volume;       // volume of this object
   int                                     m_function;     // -1:not applicable, 0:ex, 1:in, 3:unknown
 
-  Object* m_parent;                                       // NULL if none
+  Object*                                 m_parent;       // NULL if none
   int                                     m_parentID;
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
 
@@ -119,7 +122,7 @@ private:
   QVector4D                               m_ast_point;    // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
   QVector4D                               m_color;
 
-  Skeleton* m_skeleton;
+  Skeleton*                               m_skeleton;
 
   std::vector<GLuint>                     m_meshIndices;  // indices to access the global mesh vertices defined in meshv
 

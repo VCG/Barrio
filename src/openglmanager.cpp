@@ -260,7 +260,7 @@ int OpenGLManager::fillMeshVBO(Object* object_p, int offset, std::string vboLabe
   m_TMesh.vboBind(vboLabel);
 
   int vbo_IndexMesh_count = object_p->get_indices_Size() * sizeof(GLuint);
-  m_TMesh.vboWrite(vboLabel, offset, object_p->get_indices(), vbo_IndexMesh_count);
+  m_TMesh.vboWrite(vboLabel, offset, object_p->get_indices_forVBO(), vbo_IndexMesh_count);
 
   return vbo_IndexMesh_count;
 }

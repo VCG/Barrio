@@ -1,12 +1,13 @@
 #include "mesh_preprocessing.h"
 
-typedef CGAL::Simple_cartesian<double>              K;
-typedef K::Point_3                                  Point;
-typedef K::Triangle_3                               Triangle;
-typedef std::list<Triangle>::iterator               Iterator;
-typedef CGAL::AABB_triangle_primitive<K, Iterator>  Primitive;
-typedef CGAL::AABB_traits<K, Primitive>             AABB_triangle_traits;
-typedef CGAL::AABB_tree<AABB_triangle_traits>       Tree;
+
+typedef CGAL::Simple_cartesian<double>              k;
+using point = k::Point_3;
+typedef k::Triangle_3                               triangle;
+typedef std::list<triangle>::iterator               iterator;
+typedef CGAL::AABB_triangle_primitive<k, iterator>  primitive;
+typedef CGAL::AABB_traits<k, primitive>             aabb_triangle_traits;
+typedef CGAL::AABB_tree<aabb_triangle_traits>       tree;
 
 MeshProcessing::MeshProcessing()
 {
@@ -24,8 +25,8 @@ int MeshProcessing::computeCenters(QString obj_path)
   if (!fp) return 0;
   char line[1024];
 
-  std::vector<Point> objects;
-  std::vector<Triangle> triangles;
+  std::vector<point> objects;
+  std::vector<triangle> triangles;
 
   std::map<int, QVector4D> centers; // maps hvgx id to geometrical center
   int hvgxID = 0;
@@ -39,7 +40,7 @@ int MeshProcessing::computeCenters(QString obj_path)
     if (line[0] == 'o') {
       // get center for last object
       if (flag == 1 && triangles.size() > 1) {
-        Point c = CGAL::centroid(triangles.begin(), triangles.end(), CGAL::Dimension_tag<2>());
+        point c = CGAL::centroid(triangles.begin(), triangles.end(), CGAL::Dimension_tag<2>());
         QVector3D center(c.x(), c.y(), c.z());
         centers[hvgxID] = center;
       }
@@ -54,16 +55,16 @@ int MeshProcessing::computeCenters(QString obj_path)
     }
     else if (line[0] == 'v') {
       int result = sscanf(line, "%*s%lf%lf%lf", &x, &y, &z);
-      Point p(x, y, z);
+      point p(x, y, z);
       objects.push_back(p);
     }
     else if (line[0] == 'f') {
       int result = sscanf(line, "f %d//%d %d//%d %d//%d\n", &f1, &n1, &f2, &n2, &f3, &n3);
-      triangles.push_back(Triangle(objects[f1], objects[f2], objects[f3]));
+      triangles.push_back(triangle(objects[f1], objects[f2], objects[f3]));
     }
   }
 
-  Point c = CGAL::centroid(triangles.begin(), triangles.end(), CGAL::Dimension_tag<2>());
+  point c = CGAL::centroid(triangles.begin(), triangles.end(), CGAL::Dimension_tag<2>());
   QVector3D center(c.x(), c.y(), c.z());
   centers[hvgxID] = center;
 
@@ -72,8 +73,8 @@ int MeshProcessing::computeCenters(QString obj_path)
 
 struct Astrocyte {
   std::string name;
-  std::list<Triangle> triangles;
-  std::vector<Point> vertices;
+  std::list<triangle> triangles;
+  std::vector<point> vertices;
 };
 
 // Load astrocyte mesh and build its tree
@@ -81,56 +82,57 @@ struct Astrocyte {
 // for each other object, check against the astrocyte, and get the closest vertices from neurites to skeleton mesh
 // Goal: find all closest points to astrocyte
 
-int MeshProcessing::computeDistance(QString astro_obj_path, std::vector<VertexData> &neurites_vertices)
+int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<VertexData>* vertices) const
 {
-  FILE* fp_astro = fopen(astro_obj_path.toStdString().c_str(), "r");
+  struct Astrocyte my_cell;
+  my_cell.name = cell->getName();
+ 
+  std::vector<GLuint>* cell_indices = cell->get_indices_list();
 
-  if (!fp_astro) {
-    std::cout << "error in file" << std::endl;
-    return 0;
-  }
+  // extract vertex data
+  for (auto i = 0; i < cell_indices->size(); i = i + 3)
+  {
+    // vertex 0
+    const int idx_0 = (*cell_indices)[i]; // dereferencing pointer
+    auto v0 = vertices->at(idx_0);
+    point p0(v0.x(), v0.y(), v0.z());
+    my_cell.vertices.push_back(p0);
 
-  struct Astrocyte astro;
-  double x, y, z;
-  int f1, f2, f3;
-  int n1, n2, n3;
-  Point p;
-  char line[1024];
-  while (fgets(line, 1024, fp_astro)) {
-    if (line[0] == 'o') { // read obj vertices
-      astro.name = line;
-    }
-    else if (line[0] == 'v') {
-      int result = sscanf(line, "%*s%lf%lf%lf", &x, &y, &z);
-      Point p(x, y, z);
-      astro.vertices.push_back(p);
-    }
-    else if (line[0] == 'f') {
-      int result = sscanf(line, "f %d//%d %d//%d %d//%d\n", &f1, &n1, &f2, &n2, &f3, &n3);
-      Point p1 = astro.vertices.at(f1 - 1);
-      Point p2 = astro.vertices.at(f2 - 1);
-      Point p3 = astro.vertices.at(f3 - 1);
-      astro.triangles.push_back(Triangle(p1, p2, p3));
-    }
+    // vertex 1
+    const int idx_1 = (*cell_indices)[i + 1]; // dereferencing pointer
+    auto v1 = vertices->at(idx_1);
+    point p1(v1.x(), v1.y(), v1.z());
+    my_cell.vertices.push_back(p1);
+
+    // vertex 2
+    const int idx_2 = (*cell_indices)[i + 2]; // dereferencing pointer
+    auto v2 = vertices->at(idx_2);
+    point p2(v2.x(), v2.y(), v2.z());
+    my_cell.vertices.push_back(p2);
+
+    // add face
+    my_cell.triangles.emplace_back(p0, p1, p2);
   }
 
   // load astrocyte into a tree
-  std::cout << "Astrocyte has: " << astro.triangles.size() << " Triangles" << std::endl;
+  qDebug() << QString(my_cell.name.c_str()) << " has: " << my_cell.triangles.size() << " Triangles";
 
-  std::cout << "Started building tree ..." << std::endl;
-  Tree tree(astro.triangles.begin(), astro.triangles.end());
-  tree.accelerate_distance_queries(); // the astrocyte in a tree
-  std::cout << "Finished building tree ..." << std::endl;
+  qDebug() << "Started building distance tree ...";
+  tree tree(my_cell.triangles.begin(), my_cell.triangles.end());
+  tree.accelerate_distance_queries();
+  qDebug() << "Finished building distance tree ...";
 
-  // compute distances for each neurite vertex
-  for (size_t i = 0; i < neurites_vertices.size(); i++)
+  const auto mito_indices = mito->get_indices_list();
+
+  // compute distances for each mitochondrion vertex
+  for (int idx : *mito_indices)
   {
-    VertexData vertex = neurites_vertices.at(i);
-    Point point_query(vertex.x(), vertex.y(), vertex.z());
-    double distance = std::sqrt(tree.squared_distance(point_query));
-    std::cout << "Distance: " << distance << std::endl;
-    vertex.skeleton_vertex.setW(distance);
-    neurites_vertices[i] = vertex;
+    // dereferencing pointer
+    auto vertex = &vertices->at(idx);
+    point point_query(vertex->x(), vertex->y(), vertex->z());
+    const auto distance = std::sqrt(tree.squared_distance(point_query));
+    //qDebug() << "Distance: " << distance;
+    vertex->skeleton_vertex.setW(distance);
   }
 
   return EXIT_SUCCESS;

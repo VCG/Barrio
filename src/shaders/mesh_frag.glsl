@@ -1,5 +1,14 @@
 #version 430
 
+#define MITO  1
+#define AXONS 2
+#define BOUTN 3
+#define DENDS 4
+#define SPINE 5
+#define ASTRO 6
+#define SYNPS 7
+#define AMITO 9
+
 in vec3         normal_out;
 in float		color_intp;
 in float		alpha;
@@ -7,7 +16,7 @@ in vec4         color_val;
 in vec3			vposition;
 in vec3			eye;
 flat in int		otype;
-in float             G_ID;
+in float        G_ID;
 
 layout (location = 0) out vec4        outcol;
 // textures
@@ -46,7 +55,12 @@ void main()
     vec3 result = computeLight(lightDir1, lightColor1, obj_color);
 	result += computeLight(lightDir2, lightColor2, obj_color);
     
-	outcol = vec4(result, 1.0);
+	outcol = color_val;//vec4(result, 1.0);
+
+	if(otype != MITO)
+	{
+	  discard;
+	}
 }
 
 vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
