@@ -45,21 +45,30 @@ vec3 lightDir2 = vec3(2.5f, 2.5f, 1.0f);
 vec3 N = normalize(normal_out);
 float k_a = 0.3;
 float k_s = 0.5;
+
 // ------------------- TOON SHADER PROPERTIES ----------------------
 vec3 E2 = vec3(0.5, 0.5, -1.0);
 
 void main() 
 {
-	vec3 obj_color = vec3(0.35, 0.52, 0.79);
+	vec3 obj_color;
+	if(otype != MITO)
+	{
+	  obj_color = vec3(0.35, 0.52, 0.79);
+	} 
+	else{
+	  obj_color = color_val.xyz;
+	}
 
     vec3 result = computeLight(lightDir1, lightColor1, obj_color);
 	result += computeLight(lightDir2, lightColor2, obj_color);
-    
-	outcol = color_val;//vec4(result, 1.0);
 
 	if(otype != MITO)
 	{
-	  discard;
+	  outcol = vec4(result, 0.3);
+	}
+	else{
+	  outcol = vec4(result, 1.0);
 	}
 }
 

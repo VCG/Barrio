@@ -90,7 +90,7 @@ void main(void)
     V_ID = ID;
 
     int type = int(SSBO_data[ID].center.w);
-    vec3 c = vec3(1.0, 1.0, 1.0) * skeleton_vx.w;
+    vec3 c = vec3(1.0, 1.0, 1.0) * 2.85 * skeleton_vx.w;
     V_color_val = vec4(c, 1.0) ;  //SSBO_data[ID].color;
 
 
