@@ -13,6 +13,12 @@
 
 #include "colors.h" //bouton1insolid.044
 
+Object::Object()
+{
+  qDebug() << "new object created";
+}
+
+
 Object::Object(std::string name, int ID)
 {
   if (name[name.size() - 1] == '\n') {
@@ -30,7 +36,7 @@ Object::Object(std::string name, int ID)
   m_closest_astro_vertex.first = -1;
   m_skeleton = new Skeleton(m_ID);
 
-  m_parent = NULL;
+  //m_parent = NULL;
   m_isFiltered = false;
 
   m_function = -1;
@@ -85,7 +91,7 @@ Object_t Object::getObjectType()
   }
 }
 
-void Object::addTriangleIndex(GLuint face)
+void Object::addTriangleIndex(int face)
 {
   m_meshIndices.push_back(face);
 }

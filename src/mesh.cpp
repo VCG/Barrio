@@ -15,7 +15,16 @@ Mesh::Mesh()
   m_typeVertexList[7].reserve(350000);   //synps.v: 300,748
 }
 
-void Mesh::dumpVertexData(QString path)
+
+void Mesh::dumpObjects(QString path)
+{
+}
+
+void Mesh::readObjects(QString path)
+{
+}
+
+void Mesh::dumpVertices(QString path)
 {
   std::string temp_string = path.toStdString();
   const char* filename = temp_string.c_str();
@@ -38,7 +47,7 @@ void Mesh::dumpVertexData(QString path)
   outfile.close();
 }
 
-void Mesh::readVertexData(QString path)
+void Mesh::readVertices(QString path)
 {
   std::string temp_string = path.toStdString();
   const char* filename = temp_string.c_str();
@@ -48,19 +57,16 @@ void Mesh::readVertexData(QString path)
 
   if (ss.is_open()) {
     ss.read((char*)&size, sizeof(int)); // astro: 1246096
-    //struct vertex  *v = (struct vertex*)malloc(size * sizeof(struct vertex));
     // to make it dynamic I need to remove qvector4f and use float [4] instead -> not worth it
     for (int i = 0; i < size; i++) {
       struct VertexData v;
       ss.read((char*)&v, sizeof(struct VertexData));
       m_vertices.push_back(v);
-      //qDebug() << v.mesh_vertex  << " " << v.skeleton_vertex  << " " << v.index;
     }
 
     size = 0;
 
     ss.read((char*)&size, sizeof(int));  // astro: 2497612
-    //struct vertex  *v = (struct vertex*)malloc(size * sizeof(struct vertex));
     // to make it dynamic I need to remove qvector4f and use float [4] instead -> not worth it
     for (int i = 0; i < size; i++) {
       struct Face f;
@@ -77,31 +83,17 @@ void Mesh::readVertexData(QString path)
   qDebug() << " verticesList: " << m_vertices.size() << " m_faces: " << m_faces.size();
 }
 
-void Mesh::dumpMesh()
+void Mesh::dumpMesh(QString path)
 {
-  //std::stringstream ss("test"); // any stream can be used
-  //{
-  //  cereal::BinaryOutputArchive oarchive(ss); // Create an output archive
-  //  oarchive(m_vertices); // Write the data to the archive
-  //} // archive goes out of scope, ensuring all contents are flushed
+  dumpVertices(path + QString("/vertices.dat"));
+  dumpNormals(path + QString("/normals.dat"));
 }
 
-void Mesh::readMesh()
+void Mesh::readMesh(QString path)
 {
-  //std::stringstream ss("test"); // any stream can be used
-  //{
-  //  cereal::BinaryInputArchive iarchive(ss); // Create an input archive
-  //  iarchive(m_vertices); // Read the data from the archive
-  //}
+  readVertices(path + QString("/vertices.dat"));
+  readNormals(path + QString("/normals.dat"));
 }
-
-// skeleton
-//template<class Archive>
-//inline void serialize(Archive& archive)
-//{
-//  archive(m_vertexFaces); // serialize things by passing them to the archive
-//}
-
 
 void Mesh::computeNormalsPerVertex()
 {
@@ -151,7 +143,7 @@ QVector3D Mesh::computeFaceNormal(struct Face f)
   return face_normal.normalized() * sin_alpha;
 }
 
-void Mesh::dumpNormalsList(QString path)
+void Mesh::dumpNormals(QString path)
 {
   std::string temp_string = path.toStdString();
   const char* filename = temp_string.c_str();
@@ -168,7 +160,7 @@ void Mesh::dumpNormalsList(QString path)
 
 }
 
-bool Mesh::readNormalsBinary(QString path)
+bool Mesh::readNormals(QString path)
 {
   std::string temp_string = path.toStdString();
   const char* filename = temp_string.c_str();
@@ -190,6 +182,7 @@ bool Mesh::readNormalsBinary(QString path)
 
   return true;
 }
+
 
 int Mesh::addVertex(struct VertexData* vdata, Object_t type)
 {

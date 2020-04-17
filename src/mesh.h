@@ -5,9 +5,12 @@
 
 #include <set>
 #include <vector>
+
 #include <cereal\archives\binary.hpp>
 #include <cereal\types\map.hpp>
 #include <cereal\types\vector.hpp>
+
+
 
 
 enum class Object_t;
@@ -70,17 +73,22 @@ public:
   void allocateVerticesVBO(QOpenGLBuffer vbo_mesh);
   void allocateNormalsVBO(QOpenGLBuffer vbo_mesh);
 
-  void dumpVertexData(QString path);
-  void readVertexData(QString path);
+  void dumpVertices(QString path);
+  void readVertices(QString path);
 
-  void dumpMesh();
-  void readMesh();
+  void dumpNormals(QString path);
+  bool readNormals(QString path);
+
+  void dumpObjects(QString path);
+  void readObjects(QString path);
+
+  void dumpMesh(QString path);
+  void readMesh(QString path);
 
   void computeNormalsPerVertex();
   QVector3D computeFaceNormal(struct Face);
 
-  void dumpNormalsList(QString path);
-  bool readNormalsBinary(QString path);
+  
 
   size_t getNormalsListSize() { return m_normals.size(); }
 

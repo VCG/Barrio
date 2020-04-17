@@ -1855,7 +1855,10 @@ void OpenGLManager::renderAbstractions()
   }
 
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1) {
-    if (reset_ssbo) {
+    if (reset_ssbo) 
+    {
+
+
       glDisable(GL_DEPTH_TEST);
       glDisable(GL_CULL_FACE);
 

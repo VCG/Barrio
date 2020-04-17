@@ -9,6 +9,11 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 
+#include <cereal/archives/binary.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "skeleton.h"
 #include "mesh.h"
 #include "ssbo_structs.h"
@@ -21,6 +26,12 @@ struct synapse {
   int dendrite;
   int spine;
   int bouton;
+
+  template<class Archive>
+  void serialize(Archive& ar)
+  {
+    ar(axon, dendrite, spine, bouton);
+  }
 };
 
 // type identifiers for objects
@@ -31,6 +42,7 @@ class Skeleton;
 class Object
 {
 public:
+  Object();
   Object(std::string name, int ID);
   ~Object();
 
@@ -39,10 +51,10 @@ public:
 
   int writeSkeletontoVBO(QOpenGLBuffer vbo, int offset);
   // mesh indices functions
-  void addTriangleIndex(GLuint faces);
+  void addTriangleIndex(int faces);
   size_t get_indices_Size() { return m_meshIndices.size(); }
   void* get_indices_forVBO() { return m_meshIndices.data(); }
-  std::vector<GLuint>* get_indices_list(){ return &m_meshIndices; }
+  std::vector<int>* get_indices_list(){ return &m_meshIndices; }
 
 
 
@@ -57,7 +69,7 @@ public:
   int getHVGXID() { return m_ID; }
   struct ssbo_mesh getSSBOData();
 
-  Object* getParent() { return m_parent; }
+  //Object* getParent() { return m_parent; }
   int getParentID() { return m_parentID; }
 
   std::vector<Object*> getChildren() { return m_children; }
@@ -72,7 +84,7 @@ public:
   void setVolume(int volume) { m_volume = volume; }
 
   void setParentID(int parentID) { m_parentID = parentID; }
-  void setParent(Object* parent) { m_parent = parent; }
+  //void setParent(Object* parent) { m_parent = parent; }
 
   void addChild(Object* child);
   // skeleton management
@@ -83,8 +95,8 @@ public:
   void fixSkeleton(Object* parent);
   void setSkeletonOffset(int offset) { m_skeleton->setIndexOffset(offset); }
   int  getSkeletonOffset() { return m_skeleton->getIndexOffset(); }
-  void setNodeIdx(int node_index) { m_nodeIndx = node_index; }
-  int  getNodeIdx() { return m_nodeIndx; }
+  void setNodeIdx(int node_index) { m_nodeIdx = node_index; }
+  int  getNodeIdx() { return m_nodeIdx; }
 
   void markChildSubSkeleton(SkeletonBranch* branch, int ID);
 
@@ -105,18 +117,24 @@ public:
 
   int getSynapseSize();
 
+  
 private:
+
+  
+
+
   std::string                             m_name;
   int                                     m_ID;           // hvgx
-  int                                     m_nodeIndx;
+  int                                     m_nodeIdx;
 
   Object_t                                m_object_t;     /* object type */
   int                                     m_volume;       // volume of this object
   int                                     m_function;     // -1:not applicable, 0:ex, 1:in, 3:unknown
 
-  Object*                                 m_parent;       // NULL if none
+  //Object*                                 m_parent;       // NULL if none
   int                                     m_parentID;
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
+  std::vector<int>                        m_chidren_ids;
 
   QVector4D                               m_center;           
   QVector4D                               m_ast_point;    // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
@@ -124,7 +142,7 @@ private:
 
   Skeleton*                               m_skeleton;
 
-  std::vector<GLuint>                     m_meshIndices;  // indices to access the global mesh vertices defined in meshv
+  std::vector<int>                        m_meshIndices;  // indices to access the global mesh vertices defined in meshv
 
   bool                                    m_isFiltered;   // 1 yes, 0 no
   bool                                    m_isAstroSynapse;
@@ -136,9 +154,24 @@ private:
 
   
   std::vector<Object*>                    m_synapses;     // list of synapses
+  std::vector<int>                        m_synapse_ids;
   struct synapse                          m_synapse_data;
 
-  std::map<Object_t, void*>               m_dataByType;   // use this to store info based on data type
+  //std::map<Object_t, void*>               m_dataByType;   // use this to store info based on data type
+
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive& ar)
+  {
+    ar(m_name, m_ID, m_nodeIdx,
+      m_object_t, m_volume, m_function,
+      m_parentID, m_chidren_ids,
+      m_meshIndices, 
+      m_isFiltered, m_isAstroSynapse,
+      m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
+      m_synapse_ids, m_synapse_data);
+  }
 };
 
 #endif // OBJECT_H

@@ -87,7 +87,7 @@ int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<Ver
   struct Astrocyte my_cell;
   my_cell.name = cell->getName();
  
-  std::vector<GLuint>* cell_indices = cell->get_indices_list();
+  std::vector<int>* cell_indices = cell->get_indices_list();
 
   // extract vertex data
   for (auto i = 0; i < cell_indices->size(); i = i + 3)
@@ -124,6 +124,8 @@ int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<Ver
 
   const auto mito_indices = mito->get_indices_list();
 
+  double max_distance = 0.0;
+
   // compute distances for each mitochondrion vertex
   for (int idx : *mito_indices)
   {
@@ -131,7 +133,8 @@ int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<Ver
     auto vertex = &vertices->at(idx);
     point point_query(vertex->x(), vertex->y(), vertex->z());
     const auto distance = std::sqrt(tree.squared_distance(point_query));
-    //qDebug() << "Distance: " << distance;
+    if (distance > max_distance)
+      max_distance = distance;
     vertex->skeleton_vertex.setW(distance);
   }
 

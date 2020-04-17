@@ -18,6 +18,10 @@
 #include <QDebug>
 #include <string>
 
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "object.h"
 #include "mesh.h"
 #include "glycogen.h"
@@ -60,6 +64,9 @@ public:
   void PostloadMetaDataHVGX(QString path);
   void PreLoadMetaDataHVGX(QString path);
   bool findAndSetParentID(Object* obj, int hvgxID);
+
+  void dumpObjects(QString path);
+  void readObjects(QString path);
 
   //glycogen
   int								  getGlycogenSize() { return m_glycogenMap.size(); }
