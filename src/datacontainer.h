@@ -92,6 +92,11 @@ public:
   std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
   std::vector<QVector2D>  getNeuritesEdges();
 
+  void writeDataToCache(QString cache_path);
+  void loadDataFromCache(QString cache_path);
+  void computeDistanceMitoCellBoundary();
+
+
   int   getSkeletonPointsSize();
   int   getMeshIndicesSize();
   Mesh* getMeshPointer();
@@ -171,6 +176,7 @@ protected:
 
  private:
    std::map<int, Object>                     serializable_objects;
+   QString                                   objs_filename;
 };
 
 #endif // OBJECTMANAGER_H

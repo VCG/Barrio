@@ -41,6 +41,8 @@ DataContainer::DataContainer(InputForm* input_form) :
   m_spineHash.setSize(32, 32, 32);
   m_neuroMitoHash.setSize(32, 32, 32);
 
+  objs_filename = QString("/objects.cereal");
+
   /* 1: load all data */
   loadData();
 
@@ -79,15 +81,12 @@ void DataContainer::loadData()
   QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/d042_mito.obj";
   QString astro_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
-
+  bool recomputeData = false;
 
   MyWebViewer* wv = new MyWebViewer();
   wv->renderWebContent();
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
-
-  QString objs_filename("/objects.cereal");
-  bool recomputeData = false;
 
   if (recomputeData) 
   {
@@ -103,22 +102,12 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
-    /*MeshProcessing* mp = new MeshProcessing();
-    std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
-
-    for (int i = 0; i < mitos.size(); ++i)
-    {
-      Object* m = mitos[i];
-      Object* parent = m_objects[m->getParentID() + 1];
-      mp->compute_distance(m, parent, m_mesh->getVerticesList());
-    }*/
-    m_mesh->dumpMesh(cache_path);
-    dumpObjects(cache_path + objs_filename);
+    computeDistanceMitoCellBoundary();
+    writeDataToCache(cache_path);
   }
   else
   {
-    m_mesh->readMesh(cache_path);
-    readObjects(cache_path + objs_filename);
+    loadDataFromCache(cache_path);
   }
 
   /* 3 */
@@ -1421,6 +1410,31 @@ std::map<int, Object*>  DataContainer::getObjectsMap()
 std::vector<QVector2D> DataContainer::getNeuritesEdges()
 {
   return neurites_neurite_edge;
+}
+
+void DataContainer::writeDataToCache(QString cache_path)
+{
+  m_mesh->dumpMesh(cache_path);
+  dumpObjects(cache_path + objs_filename);
+}
+
+void DataContainer::loadDataFromCache(QString cache_path)
+{
+  m_mesh->readMesh(cache_path);
+  readObjects(cache_path + objs_filename);
+}
+
+void DataContainer::computeDistanceMitoCellBoundary()
+{
+  MeshProcessing* mp = new MeshProcessing();
+  std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
+
+  for (int i = 0; i < mitos.size(); ++i)
+  {
+    Object* m = mitos[i];
+    Object* parent = m_objects[m->getParentID() + 1];
+    mp->compute_distance(m, parent, m_mesh->getVerticesList());
+  }
 }
 
 //----------------------------------------------------------------------------
