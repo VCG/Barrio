@@ -86,14 +86,16 @@ void DataContainer::loadData()
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
+  QString objs_filename("/objects.cereal");
+  bool recomputeData = false;
 
-  bool recomputeData = true;
-
-  if (recomputeData) {
+  if (recomputeData) 
+  {
     auto t1 = std::chrono::high_resolution_clock::now();
+    
     importObj(neurites_path);
-    auto t2 = std::chrono::high_resolution_clock::now();
 
+    auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> ms = t2 - t1;
 
     qDebug() << "Objects Loading time: " << ms.count();
@@ -110,15 +112,13 @@ void DataContainer::loadData()
       Object* parent = m_objects[m->getParentID() + 1];
       mp->compute_distance(m, parent, m_mesh->getVerticesList());
     }*/
-    
-
     m_mesh->dumpMesh(cache_path);
-    dumpObjects(cache_path + QString("/objects.cereal"));
+    dumpObjects(cache_path + objs_filename);
   }
   else
   {
     m_mesh->readMesh(cache_path);
-    readObjects(cache_path + QString("/objects.dat"));
+    readObjects(cache_path + objs_filename);
   }
 
   /* 3 */
@@ -321,23 +321,32 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
 
 void DataContainer::dumpObjects(QString path)
 {
-  Object* obj = m_objects[333];
+  std::map<int, Object> objs;
+  for (auto const& [hvgxID, obj] : m_objects)
+  {
+    objs[hvgxID] = *obj;
+  }
+
   std::ofstream ofs(path.toStdString(), std::ios::binary); // any stream can be used
   {
-    cereal::BinaryOutputArchive oarchive(ofs); // Create an output archive
-    oarchive(*obj); // Write the data to the archive
+    cereal::BinaryOutputArchive oarchive(ofs); // Create an output archive  
+    oarchive(objs); // Write the data to the archive
   } // archive goes out of scope, ensuring all contents are flushed
-
-  
 }
 
 void DataContainer::readObjects(QString path)
 {
-  Object* obj = new Object();
   std::ifstream ifs(path.toStdString(), std::ios::binary);
   {
     cereal::BinaryInputArchive iarchive(ifs); // Create an input archive
-    iarchive(*obj); // Read the data from the archive
+    iarchive(serializable_objects); // Read the data from the archive
+  }
+
+  // fill m_objects map
+  for (auto& [hvgxID, obj] : serializable_objects)
+  {
+    obj.getSkeleton()->setID(obj.getHVGXID());
+    m_objects[hvgxID] = &obj;
   }
 }
 

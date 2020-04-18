@@ -21,6 +21,7 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 
 #include "object.h"
 #include "mesh.h"
@@ -167,6 +168,9 @@ protected:
   LoadData_t                                  m_load_data;
   bool                                        m_debug_msg;
   std::set<Object*>                           m_missingParentSkeleton;
+
+ private:
+   std::map<int, Object>                     serializable_objects;
 };
 
 #endif // OBJECTMANAGER_H

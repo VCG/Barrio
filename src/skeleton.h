@@ -57,6 +57,7 @@ public:
   std::vector<QVector3D> getGraphNodes();
   std::vector<QVector2D> getGraphEdges();
 
+  void setID(int ID) { m_ID = ID; }
   void setIndexOffset(int offset) { m_idx_offset = offset; }
   int getIndexOffset() { return m_idx_offset; }
 
