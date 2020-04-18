@@ -346,6 +346,14 @@ void DataContainer::readObjects(QString path)
   for (auto& [hvgxID, obj] : serializable_objects)
   {
     obj.getSkeleton()->setID(obj.getHVGXID());
+    m_objectsByType[obj.getObjectType()].push_back(&obj);
+
+    if (m_indices_size_byType.find(obj.getObjectType()) == m_indices_size_byType.end()) {
+      m_indices_size_byType[obj.getObjectType()] = 0;
+    }
+    m_indices_size_byType[obj.getObjectType()] += obj.get_indices_Size();
+    m_indices_size += obj.get_indices_Size();
+
     m_objects[hvgxID] = &obj;
   }
 }
