@@ -17,12 +17,14 @@ in vec3			vposition;
 in vec3			eye;
 flat in int		otype;
 in float        G_ID;
+in float		mito_cell_distance;
 
 layout (location = 0) out vec4        outcol;
 // textures
 uniform sampler3D   splat_tex; //r=astro g=astro-mito b=neurite-mito
 uniform sampler3D   gly_tex;
 uniform sampler1D	gly_tf;
+uniform sampler1D	mito_colormap;
 
 uniform ivec4     splat_flags;
 uniform int		  specular_flag;
@@ -54,11 +56,12 @@ void main()
 	vec3 obj_color;
 	if(otype != MITO)
 	{
-	  obj_color = vec3(0.35, 0.52, 0.79);
+	  //obj_color = vec3(0.35, 0.52, 0.79);
+	  discard;
 	} 
 	else{
-	  obj_color = color_val.xyz;
-	}
+	  obj_color = texture(mito_colormap, 2.85 * mito_cell_distance).xyz;
+	} 
 
     vec3 result = computeLight(lightDir1, lightColor1, obj_color);
 	result += computeLight(lightDir2, lightColor2, obj_color);

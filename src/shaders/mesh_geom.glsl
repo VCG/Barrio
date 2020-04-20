@@ -11,6 +11,7 @@ in vec4			V_worldPos[];
 in vec4         V_normal[];
 in vec3         V_fragTexCoord[];
 in vec3			E_eye[];
+in float        V_mito_cell_distance[];
 
 out vec4        color_val;
 out vec3        normal_out;
@@ -21,6 +22,7 @@ out float       G_ID;
 out vec3        G_fragTexCoord;
 out vec3		eye;
 flat out int	otype;
+out float       mito_cell_distance;
 
 uniform int     hoveredID;
 uniform int     smooth_shading;
@@ -108,7 +110,7 @@ void main() {
 		if (alpha < 0.05)
             return;
 
-
+        mito_cell_distance = V_mito_cell_distance[i];
         eye = E_eye[i];
 
 		color_intp = V_color_intp[i];

@@ -340,8 +340,8 @@ void DataContainer::readObjects(QString path)
     if (m_indices_size_byType.find(obj.getObjectType()) == m_indices_size_byType.end()) {
       m_indices_size_byType[obj.getObjectType()] = 0;
     }
-    m_indices_size_byType[obj.getObjectType()] += obj.get_indices_Size();
-    m_indices_size += obj.get_indices_Size();
+    m_indices_size_byType[obj.getObjectType()] += obj.get_indices_size();
+    m_indices_size += obj.get_indices_size();
 
     m_objects[hvgxID] = &obj;
   }

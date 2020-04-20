@@ -1,5 +1,8 @@
 #include "openglmanager.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 OpenGLManager::OpenGLManager(DataContainer* data_container, AbstractionSpace* absSpace)
   : m_2D(false),
   m_bindIdx(2),
@@ -100,17 +103,26 @@ bool OpenGLManager::initOpenGLFunctions()
     m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);
 
   std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
-  glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); glycogen_tf->push_back(255);   // 2 199,233,192
-  glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); glycogen_tf->push_back(255);   // 3 161,217,155
-  glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); glycogen_tf->push_back(255);   // 4 116,196,118
-  glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); glycogen_tf->push_back(255);   //5 65, 171, 93
-  glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); glycogen_tf->push_back(255);   //6 35, 139, 69
-  glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); glycogen_tf->push_back(255);   //7 0, 109, 44
-  glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); glycogen_tf->push_back(255);   //8 0, 68, 27
+  glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
+  glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
+  glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); //glycogen_tf->push_back(255);   // 4 116,196,118
+  glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); //glycogen_tf->push_back(255);   //5 65, 171, 93
+  glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); //glycogen_tf->push_back(255);   //6 35, 139, 69
+  glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); //glycogen_tf->push_back(255);   //7 0, 109, 44
+  glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); //glycogen_tf->push_back(255);   //8 0, 68, 27
 
-  init_TF(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
+  init_1D_texture(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
 
   delete glycogen_tf;
+
+  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_tom.png");
+  int width, height, nrChannels;
+  unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
+  if (data)
+  {
+    init_1D_texture(m_mito_colormap, GL_TEXTURE4, data, width);
+  }
+  stbi_image_free(data);
 
   fillVBOsData();
 
@@ -130,7 +142,7 @@ bool OpenGLManager::initOpenGLFunctions()
 
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::init_TF(GLuint& texture, GLenum texture_unit, GLvoid* data, int size)
+void OpenGLManager::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size)
 {
   glGenTextures(1, &texture);
   GL_Error();
@@ -143,7 +155,7 @@ void OpenGLManager::init_TF(GLuint& texture, GLenum texture_unit, GLvoid* data, 
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   GL_Error();
 
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
   GL_Error();
 }
@@ -259,7 +271,7 @@ int OpenGLManager::fillMeshVBO(Object* object_p, int offset, std::string vboLabe
 {
   m_TMesh.vboBind(vboLabel);
 
-  int vbo_IndexMesh_count = object_p->get_indices_Size() * sizeof(GLuint);
+  int vbo_IndexMesh_count = object_p->get_indices_size() * sizeof(GLuint);
   m_TMesh.vboWrite(vboLabel, offset, object_p->get_indices_forVBO(), vbo_IndexMesh_count);
 
   return vbo_IndexMesh_count;
@@ -1021,9 +1033,6 @@ void OpenGLManager::updateSkeletonGraphUniforms(GLuint program)
     glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
   }
 
-
-
-
   GL_Error();
 }
 
@@ -1503,6 +1512,15 @@ void OpenGLManager::drawMeshTriangles(bool selection)
       glUniform1i(gly_tex, 3);
       glActiveTexture(GL_TEXTURE3);
       glBindTexture(GL_TEXTURE_3D, m_glycogen_3DTex);
+    }
+
+    GLint mito_colormap = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "mito_colormap");
+
+    if (mito_colormap)
+    {
+      glUniform1i(mito_colormap, 4);
+      glActiveTexture(GL_TEXTURE4);
+      glBindTexture(GL_TEXTURE_1D, m_mito_colormap);
     }
 
     // Astrocyte 3D volume

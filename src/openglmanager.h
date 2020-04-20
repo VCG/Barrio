@@ -17,6 +17,9 @@
 #include "glsluniform_structs.h"
 #include "rendervertexdata.h"
 
+
+
+
 enum class Size_e { VOLUME, ASTRO_COVERAGE, SYNAPSE_SIZE };
 enum class Color_e { TYPE, FUNCTION, ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
@@ -142,7 +145,7 @@ public:
   void render2DHeatMapTexture();
   void update2DTextureUniforms(GLuint program);
   // ************ 3D HeatMap  *******
-  void init_TF(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
+  void init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
   void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX = DIM_X, int sizeY = DIM_Y, int sizeZ = DIM_Z);
   void load3DTexturesFromRaw_3(QString path1, QString path2, QString path3, GLuint& texture, GLenum texture_unit, int sizeX = DIM_X, int sizeY = DIM_Y, int sizeZ = DIM_Z);
 
@@ -253,13 +256,16 @@ protected:
   std::vector<QVector4D>                  m_tf_2DHeatmap2;
 
   // ************ 3D HeatMap  *******
-  GLuint									m_splat_volume_3DTex;
-  GLuint									m_gly_3D_Tex;
+  GLuint								  m_splat_volume_3DTex;
+  GLuint								  m_gly_3D_Tex;
   GLuint                                  m_astro_3DTex;
   GLuint                                  m_mito_3DTex;
-  GLuint									m_nmito_3DTex;
-  GLuint									m_glycogen_3DTex;
-  GLuint									m_tf_glycogen;
+  GLuint							      m_nmito_3DTex;
+  GLuint							      m_glycogen_3DTex;
+  GLuint							      m_tf_glycogen;
+
+  // *********** Mitochondria attributes **************
+  GLuint                                  m_mito_colormap;
 
   bool                                    m_weighted_coverage;
 

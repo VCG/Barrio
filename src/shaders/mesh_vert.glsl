@@ -17,6 +17,7 @@ out vec4	    V_worldPos;
 out vec4        V_normal;
 out vec3        V_fragTexCoord;
 out vec3	    E_eye;
+out float       V_mito_cell_distance;
 
 uniform int     y_axis;
 uniform int     x_axis;
@@ -91,6 +92,7 @@ void main(void)
 
     int type = int(SSBO_data[ID].center.w);
     vec3 c = vec3(1.0, 1.0, 1.0) * 2.85 * skeleton_vx.w;
+    V_mito_cell_distance = skeleton_vx.w;
     V_color_val = vec4(c, 1.0) ;  //SSBO_data[ID].color;
 
 
