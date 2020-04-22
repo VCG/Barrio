@@ -57,6 +57,13 @@ public:
   void renderVBOMesh(std::string vbolabel, int indices);
   void renderOrderToggle();
 
+  // *********** slice shaders *************
+  bool initSliceShaders();
+  bool initSliceVertexAttrib();
+  void updateSliceProgram(GLuint program);
+  void drawSlice();
+
+
   // *********** 3) Skeleton Points    ***********
   bool initSkeletonShaders();
   void drawSkeletonPoints(bool selection);
@@ -190,6 +197,10 @@ protected:
   std::string                             m_neurites_VBO_label;
   std::string                             m_astro_VBO_label;
   bool                                    m_transparent_astro;
+
+  // *********** 2) Slice View *******************
+  RenderVertexData                        m_TSliceView;
+  std::string                             m_sliceView_VBO_label;
 
   // *********** 3) Skeleton Points    ***********
   RenderVertexData                        m_SkeletonPoints;

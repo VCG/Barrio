@@ -93,6 +93,7 @@ bool OpenGLManager::initOpenGLFunctions()
   m_SkeletonPoints.initOpenGLFunctions();
   m_GNeurites.initOpenGLFunctions();
   m_GlycogenPoints.initOpenGLFunctions();
+  m_TSliceView.initOpenGLFunctions();
 
   load3DTexturesFromRaw_3(m_dataContainer->input_files_dir.proximity_astro,
     m_dataContainer->input_files_dir.proximity_astro_mito,
@@ -115,7 +116,7 @@ bool OpenGLManager::initOpenGLFunctions()
 
   delete glycogen_tf;
 
-  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_tom.png");
+  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_copper.png");
   int width, height, nrChannels;
   unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
   if (data)
@@ -134,6 +135,8 @@ bool OpenGLManager::initOpenGLFunctions()
   initAbstractSkeletonShaders();
   initNeuritesGraphShaders();
   initGlycogenPointsShaders();
+
+  initSliceShaders();
 
   initFilterSSBO();
 
@@ -1446,6 +1449,76 @@ void OpenGLManager::updateMeshPrograms(GLuint program)
 void OpenGLManager::renderOrderToggle()
 {
   m_transparent_astro = !m_transparent_astro;
+}
+
+bool OpenGLManager::initSliceShaders()
+{
+  qDebug() << "initSliceViewShaders";
+  m_TSliceView.createProgram("sliceView");
+  bool res = m_TSliceView.compileShader("sliceView",
+    ":/shaders/slice_vert.glsl",
+    ":/shaders/slice_geom.glsl",
+    ":/shaders/slice_frag.glsl");
+  if (res == false)
+    return res;
+
+  // create vbos and vaos
+  m_TSliceView.vaoCreate("slice");
+  m_TSliceView.vaoBind("slice");
+
+  m_TSliceView.useProgram("sliceView");
+  GLuint slice_program = m_TSliceView.getProgram("sliceView");
+
+  //GLint splat_tex = glGetUniformLocation(mesh_program, "splat_tex");
+  //if (splat_tex >= 0) glUniform1i(splat_tex, 2);
+
+  //GLint gly_tex = glGetUniformLocation(mesh_program, "gly_tex");
+  //if (gly_tex >= 0) glUniform1i(gly_tex, 3);
+
+  m_TSliceView.vboCreate("sliceVertices", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
+  m_TSliceView.vboBind("sliceVertices");
+
+  float sliceVertices[] =
+  {
+    // vertices         // uv - coords
+    0.0, 0.0, 0.0,      0.0, 1.0,
+    0.0, 1.0, 0.0,      0.0, 0.0,
+    1.0, 0.0, 0.0,      1.0, 1.0,
+    1.0, 1.0, 0.0,      1.0, 0.0
+  };
+
+
+  QOpenGLBuffer buffer = m_TSliceView.getVBO("sliceVertices");
+  buffer.allocate(sliceVertices, sizeof(sliceVertices));
+  initSliceVertexAttrib();
+
+  GL_Error();
+  return false;
+}
+
+bool OpenGLManager::initSliceVertexAttrib()
+{
+  if (m_glFunctionsSet == false)
+    return false;
+
+  int offset = 0;
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+
+
+  offset += 3 * sizeof(float);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)offset);
+
+  return true;
+}
+
+void OpenGLManager::updateSliceProgram(GLuint program)
+{
+}
+
+void OpenGLManager::drawSlice()
+{
 }
 
 void OpenGLManager::renderVBOMesh(std::string vbolabel, int indices)

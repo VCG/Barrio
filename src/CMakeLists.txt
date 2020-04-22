@@ -116,6 +116,9 @@ set(project_sources
     inputform.cpp
     mesh_preprocessing.cpp
     webviewer.cpp
+    shaders/slice_vert.glsl
+    shaders/slice_geom.glsl
+    shaders/slice_frag.glsl
     shaders/mesh_frag.glsl
     shaders/mesh_geom.glsl
     shaders/mesh_vert.glsl

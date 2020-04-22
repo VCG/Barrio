@@ -37,6 +37,7 @@ layout (std430, binding=4) buffer filter_data
 };
 
 vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color);
+float normDistance(float d);
 
 //-------------------- DIFFUSE LIGHT PROPERTIES --------------------
 vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
