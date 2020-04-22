@@ -1332,6 +1332,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
     ":/shaders/mesh_vert.glsl",
     ":/shaders/mesh_geom.glsl",
     ":/shaders/mesh_frag.glsl");
+
   if (res == false)
     return res;
 

@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
+    	<file>shaders/slice_vert.glsl</file>
+    	<file>shaders/slice_geom.glsl</file>
+   	 	<file>shaders/slice_frag.glsl</file>
         <file>shaders/mesh_frag.glsl</file>
         <file>shaders/mesh_geom.glsl</file>
         <file>shaders/mesh_vert.glsl</file>
