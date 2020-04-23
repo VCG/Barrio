@@ -274,6 +274,7 @@ protected:
   GLuint                                  m_mito_3DTex;
   GLuint							      m_nmito_3DTex;
   GLuint							      m_glycogen_3DTex;
+  GLuint                                  m_image_volume_3DTex;
   GLuint							      m_tf_glycogen;
 
   // *********** Mitochondria attributes **************

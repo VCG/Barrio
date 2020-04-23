@@ -105,6 +105,9 @@ bool OpenGLManager::initOpenGLFunctions()
   load3DTexturesFromRaw(m_dataContainer->input_files_dir.proximity_glycogen,
     m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);
 
+  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
+  load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE5, 999, 999, 449);
+
   std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
   glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
   glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
@@ -1536,14 +1539,24 @@ void OpenGLManager::updateSliceProgram(GLuint program)
 
 void OpenGLManager::drawSlice()
 {
+  GLuint program = m_TSliceView.getProgram("sliceView");
   m_TSliceView.vaoBind("slice");
   m_TSliceView.useProgram("sliceView");
 
-  updateMeshPrograms(m_TSliceView.getProgram("sliceView"));
+  updateMeshPrograms(program);
 
   this->renderVBOSlice("sliceVertices");
 
   m_TSliceView.vaoRelease();
+
+  GLint volume = glGetUniformLocation(program, "volume");
+
+  if (volume)
+  {
+    glUniform1i(volume, 5);
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_3D, m_image_volume_3DTex);
+  }
 }
 
 void OpenGLManager::renderVBOSlice(std::string vbolabel)

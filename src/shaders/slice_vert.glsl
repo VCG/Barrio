@@ -18,7 +18,7 @@ out vec2 TexCoord;
 void main()
 {
     mat4 pvmMatrix = pMatrix * vMatrix * mMatrix;
-    vec3 out_pos = vec3(pos.xy, 0.0);
+    vec3 out_pos = vec3(pos.xy, -3.0);
     gl_Position = pvmMatrix * vec4(out_pos, 1.0);
     
     TexCoord = texCoord;
