@@ -62,6 +62,7 @@ public:
   bool initSliceVertexAttrib();
   void updateSliceProgram(GLuint program);
   void drawSlice();
+  void renderVBOSlice(std::string vbolabel);
 
 
   // *********** 3) Skeleton Points    ***********

@@ -37,6 +37,8 @@ OpenGLManager::OpenGLManager(DataContainer* data_container, AbstractionSpace* ab
   m_neurites_VBO_label = "NeuritesIndices";
   m_astro_VBO_label = "AstroIndices";
 
+
+
   m_2DHeatMap_encoding = HeatMap2D_e::ASTRO_COVERAGE;
 
   m_weighted_coverage = false;
@@ -1483,9 +1485,12 @@ bool OpenGLManager::initSliceShaders()
   {
     // vertices         // uv - coords
     0.0, 0.0, 0.0,      0.0, 1.0,
-    0.0, 1.0, 0.0,      0.0, 0.0,
-    1.0, 0.0, 0.0,      1.0, 1.0,
-    1.0, 1.0, 0.0,      1.0, 0.0
+    5.0, 0.0, 0.0,      1.0, 1.0,
+    0.0, 5.0, 0.0,      0.0, 0.0,
+
+    0.0, 5.0, 0.0,      0.0, 0.0,
+    5.0, 0.0, 0.0,      1.0, 1.0,
+    5.0, 5.0, 0.0,      1.0, 0.0
   };
 
 
@@ -1494,7 +1499,7 @@ bool OpenGLManager::initSliceShaders()
   initSliceVertexAttrib();
 
   GL_Error();
-  return false;
+  return true;
 }
 
 bool OpenGLManager::initSliceVertexAttrib()
@@ -1504,22 +1509,49 @@ bool OpenGLManager::initSliceVertexAttrib()
 
   int offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
 
 
   offset += 3 * sizeof(float);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)offset);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)offset);
 
   return true;
 }
 
 void OpenGLManager::updateSliceProgram(GLuint program)
 {
+  int rMatrix = glGetUniformLocation(program, "rMatrix");
+  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, m_uniforms.rMatrix.data());
+
+  int mMatrix = glGetUniformLocation(program, "mMatrix");
+  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, m_uniforms.mMatrix);
+
+  int vMatrix = glGetUniformLocation(program, "vMatrix");
+  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, m_uniforms.vMatrix);
+
+  int pMatrix = glGetUniformLocation(program, "pMatrix");
+  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, m_uniforms.pMatrix);
 }
 
 void OpenGLManager::drawSlice()
 {
+  m_TSliceView.vaoBind("slice");
+  m_TSliceView.useProgram("sliceView");
+
+  updateMeshPrograms(m_TSliceView.getProgram("sliceView"));
+
+  this->renderVBOSlice("sliceVertices");
+
+  m_TSliceView.vaoRelease();
+}
+
+void OpenGLManager::renderVBOSlice(std::string vbolabel)
+{
+  m_TSliceView.vboBind(vbolabel);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  m_TSliceView.vboBind(vbolabel);
+
 }
 
 void OpenGLManager::renderVBOMesh(std::string vbolabel, int indices)
@@ -1962,6 +1994,10 @@ void OpenGLManager::renderAbstractions()
     else {
       drawMeshTriangles(false);
     }
+
+    glDisable(GL_CULL_FACE);    
+    drawSlice();
+    glEnable(GL_CULL_FACE);
   }
 
   if (skeleton_point)
