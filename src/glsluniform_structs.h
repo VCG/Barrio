@@ -15,6 +15,7 @@ struct GlobalUniforms {
   /* 8 */    int max_volume;  // maximum volume from displayed objects
   /* 9 */    int max_astro_coverage; // maximum vertices from neurites covered by astrocyte
   /* 10*/    float AST_DIST_THRSH; // distance to strocyte threshold
+             float slice_z;
 };
 
 #endif // GLSLUNIFORM_STRUCTS_H

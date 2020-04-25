@@ -57,8 +57,7 @@ void main()
 	vec3 obj_color;
 	if(otype != MITO)
 	{
-	  //obj_color = vec3(0.35, 0.52, 0.79);
-	  discard;
+	  obj_color = vec3(0.6, 1.0, 0.6);
 	} 
 	else{
 	  obj_color = texture(mito_colormap, 2.85 * mito_cell_distance).xyz;
@@ -69,7 +68,7 @@ void main()
 
 	if(otype != MITO)
 	{
-	  outcol = vec4(result, 0.3);
+	  outcol = vec4(result, 0.5);
 	}
 	else{
 	  outcol = vec4(result, 1.0);

@@ -31,13 +31,16 @@
 #include "spatialhash3d.h"
 #include "inputform.h"
 
+#include "globalParameters.h"
+
 //#include "dbscan.h"
 
-#define MESH_MAX    5.0f
-#define DIM_X       999
-#define DIM_Y       999
-#define DIM_Z       449
-#define DIM_G		64
+//#define MESH_MAX_X    5.0f
+//
+//#define DIM_X       999
+//#define DIM_Y       999
+//#define DIM_Z       449
+//#define DIM_G		64
 
 class DataContainer
 {

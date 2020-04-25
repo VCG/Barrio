@@ -16,7 +16,7 @@
 #include "datacontainer.h"
 #include "glsluniform_structs.h"
 #include "rendervertexdata.h"
-
+#include "globalParameters.h"
 
 
 

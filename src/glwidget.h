@@ -12,6 +12,7 @@
 #include "glycogenanalysismanager.h"
 #include "performancerate.h"
 #include "inputform.h"
+#include "globalParameters.h"
 
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
@@ -170,6 +171,8 @@ protected:
 
   bool                                m_auto_rotate;
   float                               m_rot_ydiff;
+
+  float                               m_xy_slice_z;
 };
 
 

@@ -36,7 +36,7 @@ void main() {
         float tex_splat = texture(splat_tex, G_fragTexCoord).g;
 
         if (tex_splat > 0) {
-            outcol  += vec4(0.1, 0.2, 0.2, 0) ; // if glycogen fall within mito, then make it darker?
+            outcol  += vec4(1.0, 0.2, 0.2, 0) ; // if glycogen fall within mito, then make it darker?
         }
     }
 

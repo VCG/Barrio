@@ -78,17 +78,16 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/d042_mito.obj";
+  QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/2_mitos.obj";
   QString astro_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
-  bool recomputeData = false;
 
   MyWebViewer* wv = new MyWebViewer();
   wv->renderWebContent();
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
-  if (recomputeData) 
+  if (RECOMPUTE_DATA) 
   {
     auto t1 = std::chrono::high_resolution_clock::now();
     
@@ -408,7 +407,7 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
       float y = wordList[20].toFloat();
       float z = wordList[21].toFloat();
 
-      m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX, y / MESH_MAX, z / MESH_MAX, 0));
+      m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
 
       // volume
       //int volume = wordList[25].toInt();
@@ -658,7 +657,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
         float x = stringlist.at(0).toDouble();
         float y = stringlist.at(1).toDouble();
         float z = stringlist.at(2).toDouble();
-        obj->setCenter(QVector4D(x / MESH_MAX, y / MESH_MAX, z / MESH_MAX, 0));
+        obj->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
         // set ssbo with this center
       }
       else if (xml.name() == "ast_point") {
@@ -674,7 +673,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
         float x = stringlist.at(0).toDouble();
         float y = stringlist.at(1).toDouble();
         float z = stringlist.at(2).toDouble();
-        obj->setAstPoint(QVector4D(x / MESH_MAX, y / MESH_MAX, z / MESH_MAX, 0));
+        obj->setAstPoint(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
         // set ssbo with this center
       }
     } // if start element
@@ -709,13 +708,9 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
       }
     }
 
-
     if (max_astro_coverage < obj->getAstroCoverage())
       max_astro_coverage = obj->getAstroCoverage();
-
-
   }
-
 }
 
 //----------------------------------------------------------------------------
@@ -866,9 +861,9 @@ void DataContainer::parseMesh(QXmlStreamReader& xml, Object* obj)
         }
 
         // get x, y, z coordinates
-        float x1 = stringlist.at(0).toDouble() / MESH_MAX;
-        float y1 = stringlist.at(1).toDouble() / MESH_MAX;
-        float z1 = stringlist.at(2).toDouble() / MESH_MAX;
+        float x1 = stringlist.at(0).toDouble() / MESH_MAX_X;
+        float y1 = stringlist.at(1).toDouble() / MESH_MAX_X;
+        float z1 = stringlist.at(2).toDouble() / MESH_MAX_X;
 
         //store them in a vector and the hvgx id as a fourth component
         QVector4D mesh_vertex(x1, y1, z1, obj->getHVGXID());
@@ -905,9 +900,9 @@ void DataContainer::parseMesh(QXmlStreamReader& xml, Object* obj)
         }
         else {
           // I could use index to be able to connect vertices logically
-          float x2 = stringlist.at(3).toFloat() / MESH_MAX;
-          float y2 = stringlist.at(4).toFloat() / MESH_MAX;
-          float z2 = stringlist.at(5).toFloat() / MESH_MAX;
+          float x2 = stringlist.at(3).toFloat() / MESH_MAX_X;
+          float y2 = stringlist.at(4).toFloat() / MESH_MAX_X;
+          float z2 = stringlist.at(5).toFloat() / MESH_MAX_X;
           QVector4D skeleton_vertex(x2, y2, z2, 0);
           v->skeleton_vertex = skeleton_vertex;
         }
@@ -1059,9 +1054,9 @@ void DataContainer::parseSkeletonNodes(QXmlStreamReader& xml, Object* obj)
           continue;
         }
 
-        float x = stringlist.at(0).toDouble() / MESH_MAX;
-        float y = stringlist.at(1).toDouble() / MESH_MAX;
-        float z = stringlist.at(2).toDouble() / MESH_MAX;
+        float x = stringlist.at(0).toDouble() / MESH_MAX_X;
+        float y = stringlist.at(1).toDouble() / MESH_MAX_X;
+        float z = stringlist.at(2).toDouble() / MESH_MAX_X;
         QVector3D node(x, y, z);
         obj->addSkeletonNode(node);
       }
@@ -1106,9 +1101,9 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
         }
 
         // children? they should not have points
-        float x = stringlist.at(0).toDouble() / MESH_MAX;
-        float y = stringlist.at(1).toDouble() / MESH_MAX;
-        float z = stringlist.at(2).toDouble() / MESH_MAX;
+        float x = stringlist.at(0).toDouble() / MESH_MAX_X;
+        float y = stringlist.at(1).toDouble() / MESH_MAX_X;
+        float z = stringlist.at(2).toDouble() / MESH_MAX_X;
         QVector3D node(x, y, z);
         obj->addSkeletonPoint(node);
       }
@@ -1122,6 +1117,10 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 
 bool DataContainer::importObj(QString path)
 {
+  float mesh_max_x = 5.0;
+  float mesh_max_y = 5.0;
+  float mesh_max_z = 5.0;
+
   int vertexCounter = 0;
   int normalCounter = 0;
 
@@ -1156,8 +1155,8 @@ bool DataContainer::importObj(QString path)
       obj = new Object(name.toUtf8().constData(), hvgxID);
 
       obj->setVolume(2.0f);
-      obj->setCenter(QVector4D(1.0f / MESH_MAX, 1.0f / MESH_MAX, 1.0f / MESH_MAX, 0));
-      obj->setAstPoint(QVector4D(1.0f / MESH_MAX, 1.0f / MESH_MAX, 1.0f / MESH_MAX, 0));
+      obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
+      obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 
       m_objects[hvgxID] = obj;
       m_objectsByType[obj->getObjectType()].push_back(obj);
@@ -1181,6 +1180,11 @@ bool DataContainer::importObj(QString path)
       float x = elements[1].toFloat();
       float y = elements[2].toFloat();
       float z = elements[3].toFloat();
+
+      // center objects around origin
+      /*x = x - mesh_max_x / 2.0f;
+      y = y - mesh_max_y / 2.0f;
+      z = z - mesh_max_z / 2.0f;*/
 
       vertexCounter++;
 

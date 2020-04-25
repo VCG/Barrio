@@ -87,6 +87,9 @@ void OpenGLManager::drawAll()
 // todo: if the file doesn't open or doesn't exist, then don't load the data here and in GLSL
 bool OpenGLManager::initOpenGLFunctions()
 {
+  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
+  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_tom.png");
+
   m_glFunctionsSet = true;
   initializeOpenGLFunctions();
 
@@ -105,7 +108,7 @@ bool OpenGLManager::initOpenGLFunctions()
   load3DTexturesFromRaw(m_dataContainer->input_files_dir.proximity_glycogen,
     m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);
 
-  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
+  
   load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE5, 999, 999, 449);
 
   std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
@@ -121,7 +124,7 @@ bool OpenGLManager::initOpenGLFunctions()
 
   delete glycogen_tf;
 
-  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_copper.png");
+ 
   int width, height, nrChannels;
   unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
   if (data)
@@ -531,6 +534,7 @@ void OpenGLManager::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum 
 {
   unsigned int size = sizeX * sizeY * sizeZ;
   unsigned char* rawData = (unsigned char*)m_dataContainer->loadRawFile(path, size);
+  
   //load data into a 3D texture
   glGenTextures(1, &texture);
   glActiveTexture(texture_unit);
@@ -543,27 +547,10 @@ void OpenGLManager::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum 
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  //unsigned int size_4 = size * 4;
-
-  unsigned char* bufferRGBA = new unsigned char[size];
-
-  // convert to rgba
-  for (int i = 0; i < size; ++i) {
-    if (rawData != NULL)
-      bufferRGBA[i] = rawData[i];// (rawData[i] > 0) ? 255 : 0; //hack: remove later
-    else
-      bufferRGBA[i] = 0;
-  }
-
-  glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, bufferRGBA);
+  glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
 
   GL_Error();
-
   delete[] rawData;
-  delete[] bufferRGBA;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -1475,25 +1462,56 @@ bool OpenGLManager::initSliceShaders()
   m_TSliceView.useProgram("sliceView");
   GLuint slice_program = m_TSliceView.getProgram("sliceView");
 
-  //GLint splat_tex = glGetUniformLocation(mesh_program, "splat_tex");
-  //if (splat_tex >= 0) glUniform1i(splat_tex, 2);
-
-  //GLint gly_tex = glGetUniformLocation(mesh_program, "gly_tex");
-  //if (gly_tex >= 0) glUniform1i(gly_tex, 3);
-
   m_TSliceView.vboCreate("sliceVertices", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_TSliceView.vboBind("sliceVertices");
 
   float sliceVertices[] =
   {
-    // vertices         // uv - coords
-    0.0, 0.0, 0.0,      0.0, 1.0,
-    5.0, 0.0, 0.0,      1.0, 1.0,
-    0.0, 5.0, 0.0,      0.0, 0.0,
+    // vertices                  // uv - coords
+    0.0,          0.0,          0.0,              0.0, 0.0,
+    0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0,
 
-    0.0, 5.0, 0.0,      0.0, 0.0,
-    5.0, 0.0, 0.0,      1.0, 1.0,
-    5.0, 5.0, 0.0,      1.0, 0.0
+    0.0,          MESH_MAX_Y,   MESH_MAX_Z,       1.0, 1.0,
+    0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0
+
+
+
+
+
+
+    //0.0,          0.0,          0.0,              1.0, 0.0,
+    //0.0,          MESH_MAX_Y,   0.0,              0.0, 0.0,
+    //0.0,          0.0,          MESH_MAX_Z,       1.0, 1.0,
+
+    //0.0,          MESH_MAX_Y,   MESH_MAX_Z,       0.0, 1.0,
+    //0.0,          MESH_MAX_Y,   0.0,              0.0, 0.0,
+    //0.0,          0.0,          MESH_MAX_Z,       1.0, 1.0
+
+
+
+
+    //0.0,          0.0,          0.0,              1.0, 1.0,
+    //0.0,          MESH_MAX_Y,   0.0,              1.0, 0.0,
+    //0.0,          0.0,          MESH_MAX_Z,       0.0, 1.0,
+
+    //0.0,          MESH_MAX_Y,   MESH_MAX_Z,       0.0, 0.0,
+    //0.0,          MESH_MAX_Y,   0.0,              1.0, 0.0,
+    //0.0,          0.0,          MESH_MAX_Z,       0.0, 1.0
+
+
+
+
+    /*0.0,          0.0,          0.0,              0.0, 1.0,
+    0.0,          MESH_MAX_Y,   0.0,              1.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       0.0, 0.0,
+
+    0.0,          MESH_MAX_Y,   MESH_MAX_Z,       1.0, 0.0,
+    0.0,          MESH_MAX_Y,   0.0,              1.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       0.0, 0.0*/
+
+
   };
 
 
@@ -1522,20 +1540,7 @@ bool OpenGLManager::initSliceVertexAttrib()
   return true;
 }
 
-void OpenGLManager::updateSliceProgram(GLuint program)
-{
-  int rMatrix = glGetUniformLocation(program, "rMatrix");
-  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, m_uniforms.rMatrix.data());
 
-  int mMatrix = glGetUniformLocation(program, "mMatrix");
-  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, m_uniforms.mMatrix);
-
-  int vMatrix = glGetUniformLocation(program, "vMatrix");
-  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, m_uniforms.vMatrix);
-
-  int pMatrix = glGetUniformLocation(program, "pMatrix");
-  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, m_uniforms.pMatrix);
-}
 
 void OpenGLManager::drawSlice()
 {
@@ -1557,6 +1562,9 @@ void OpenGLManager::drawSlice()
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_3D, m_image_volume_3DTex);
   }
+
+  int zSlice = glGetUniformLocation(program, "slice_z");
+  if (zSlice >= 0) glUniform1f(zSlice, m_uniforms.slice_z);
 }
 
 void OpenGLManager::renderVBOSlice(std::string vbolabel)
@@ -1882,6 +1890,21 @@ bool OpenGLManager::initGlycogenPointsShaders()
   m_vao_glycogen.bind();
 }
 
+void OpenGLManager::updateSliceProgram(GLuint program)
+{
+  int rMatrix = glGetUniformLocation(program, "rMatrix");
+  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, m_uniforms.rMatrix.data());
+
+  int mMatrix = glGetUniformLocation(program, "mMatrix");
+  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, m_uniforms.mMatrix);
+
+  int vMatrix = glGetUniformLocation(program, "vMatrix");
+  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, m_uniforms.vMatrix);
+
+  int pMatrix = glGetUniformLocation(program, "pMatrix");
+  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, m_uniforms.pMatrix);
+}
+
 void OpenGLManager::updateGlycogenUniforms(GLuint program)
 {
   // initialize uniforms
@@ -1991,11 +2014,13 @@ void OpenGLManager::renderAbstractions()
     glEnable(GL_DEPTH_TEST);
   }
 
+  glDisable(GL_CULL_FACE);
+  drawSlice();
+  glEnable(GL_CULL_FACE);
+
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1) {
     if (reset_ssbo) 
     {
-
-
       glDisable(GL_DEPTH_TEST);
       glDisable(GL_CULL_FACE);
 
@@ -2007,10 +2032,6 @@ void OpenGLManager::renderAbstractions()
     else {
       drawMeshTriangles(false);
     }
-
-    glDisable(GL_CULL_FACE);    
-    drawSlice();
-    glEnable(GL_CULL_FACE);
   }
 
   if (skeleton_point)

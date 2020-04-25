@@ -42,6 +42,8 @@ GLWidget::GLWidget(QWidget* parent)
 
   m_auto_rotate = false;
   m_rot_ydiff = 1;
+
+  m_xy_slice_z = 0.5f * MESH_MAX_Z;
 }
 
 GLWidget::~GLWidget()
@@ -108,7 +110,7 @@ void GLWidget::updateMVPAttrib()
   int max_volume = m_data_containter->getMaxVolume();
   // graph model matrix without rotation, apply rotation to nodes directly
   m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(),
-                      m_model_noRotation.data(), m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001 };
+                      m_model_noRotation.data(), m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
   m_opengl_mngr->updateUniformsData(m_uniforms);
 }
 
@@ -202,7 +204,7 @@ void GLWidget::resizeGL(int w, int h)
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  m_cameraPosition = QVector3D(0.5, 0.5, 0.5);
+  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0f, MESH_MAX_Y / 2.0f, MESH_MAX_Z / 2.0f);
   QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(QVector3D(0.5, 0.5, 1.0) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
@@ -328,7 +330,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     // Mouse release position - mouse press position
     QVector2D diff = QVector2D(deltaX, deltaY);
     // Rotation axis is perpendicular to the mouse position difference
-    qDebug() << width() << " " << height() << " " << event->x() << " " << event->y();
+    //qDebug() << width() << " " << height() << " " << event->x() << " " << event->y();
     QVector3D n;
     if ((width() - event->x()) < 100 || event->x() < 100)
       n = QVector3D(0.0, diff.x(), diff.y()).normalized();
@@ -427,6 +429,18 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
   case (Qt::Key_Up):
     m_rot_ydiff += 0.1;
     qDebug() << m_rot_ydiff;
+    break;
+  case(Qt::Key_Right):
+    if (m_xy_slice_z < MESH_MAX_Z) {
+      m_xy_slice_z += 0.005f * MESH_MAX_Z;
+      qDebug() << m_xy_slice_z;
+    }
+    break;
+  case(Qt::Key_Left):
+    if (m_xy_slice_z > 0.0f) {
+      m_xy_slice_z -= 0.005f * MESH_MAX_Z;
+      qDebug() << m_xy_slice_z;
+    }
     break;
   }
 }
