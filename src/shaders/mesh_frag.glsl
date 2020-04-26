@@ -60,7 +60,7 @@ void main()
 	  obj_color = vec3(0.6, 1.0, 0.6);
 	} 
 	else{
-	  obj_color = texture(mito_colormap, 2.85 * mito_cell_distance).xyz;
+	  obj_color = texture(mito_colormap, 1 - 2.85 * mito_cell_distance).xyz;
 	} 
 
     vec3 result = computeLight(lightDir1, lightColor1, obj_color);
