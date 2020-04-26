@@ -204,10 +204,10 @@ void GLWidget::resizeGL(int w, int h)
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0f, MESH_MAX_Y / 2.0f, MESH_MAX_Z / 2.0f);
+  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 0.0);
   QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(QVector3D(0.5, 0.5, 1.0) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
+  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
 
   if (m_opengl_mngr != NULL)
     m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
@@ -324,26 +324,26 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     setMouseTracking(false);
 
   }
-  else if (m_xaxis < 60 || m_yaxis < 60) {
-
+  else if (event->buttons() == Qt::LeftButton /*m_xaxis < 60 || m_yaxis < 60*/) 
+  {
     setMouseTracking(false);
     // Mouse release position - mouse press position
     QVector2D diff = QVector2D(deltaX, deltaY);
     // Rotation axis is perpendicular to the mouse position difference
     //qDebug() << width() << " " << height() << " " << event->x() << " " << event->y();
     QVector3D n;
-    if ((width() - event->x()) < 100 || event->x() < 100)
+    //if ((width() - event->x()) < 100 || event->x() < 100)
       n = QVector3D(0.0, diff.x(), diff.y()).normalized();
-    else
-      n = QVector3D(diff.y(), diff.x(), 0).normalized();
+    //else
+      //n = QVector3D(diff.y(), diff.x(), 0).normalized();
 
     // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 2.0;;
+    qreal angle = diff.length() / 2.0;;
 
     // Calculate new rotation axis as weighted sum
     m_rotationAxis = (m_rotationAxis + n).normalized();
     // angle in degrees and rotation axis
-    m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, acc) * m_rotation;
+    m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
 
     // whenever the rotation matrix is changed, reset the force directed layout and the nodes rotation matrix!
     // the 2D view is always locked from rotating
@@ -433,13 +433,11 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
   case(Qt::Key_Right):
     if (m_xy_slice_z < MESH_MAX_Z) {
       m_xy_slice_z += 0.005f * MESH_MAX_Z;
-      qDebug() << m_xy_slice_z;
     }
     break;
   case(Qt::Key_Left):
     if (m_xy_slice_z > 0.0f) {
       m_xy_slice_z -= 0.005f * MESH_MAX_Z;
-      qDebug() << m_xy_slice_z;
     }
     break;
   }

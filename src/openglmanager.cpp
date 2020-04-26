@@ -65,11 +65,10 @@ void OpenGLManager::drawAll()
 {
   write_ssbo_data();
 
+  drawCoordSystem();
 
   render2DHeatMapTexture();
-
   renderAbstractions();
-
   drawNodesInto2DTexture();
 
   if (reset_ssbo) { // only once
@@ -99,6 +98,7 @@ bool OpenGLManager::initOpenGLFunctions()
   m_GNeurites.initOpenGLFunctions();
   m_GlycogenPoints.initOpenGLFunctions();
   m_TSliceView.initOpenGLFunctions();
+  m_TCoordSystem.initializeOpenGLFunctions();
 
   load3DTexturesFromRaw_3(m_dataContainer->input_files_dir.proximity_astro,
     m_dataContainer->input_files_dir.proximity_astro_mito,
@@ -144,6 +144,7 @@ bool OpenGLManager::initOpenGLFunctions()
   initNeuritesGraphShaders();
   initGlycogenPointsShaders();
 
+  initCoordSystemShaders();
   initSliceShaders();
 
   initFilterSSBO();
@@ -250,6 +251,86 @@ void OpenGLManager::readFilterSSBO()
   memcpy(m_ssbo_filter_data, p, bufferSize);
   glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
+bool OpenGLManager::initCoordSystemShaders()
+{
+
+  qDebug() << "init Coordinate System";
+  m_TCoordSystem.createProgram("coord_system_program");
+  bool res = m_TCoordSystem.compileShader("coord_system_program",
+    ":/shaders/coord_system_vert.glsl",
+    ":/shaders/coord_system_geom.glsl",
+    ":/shaders/coord_system_frag.glsl");
+  if (res == false)
+    return res;
+
+  // create vbos and vaos
+  m_TCoordSystem.vaoCreate("coord_system_vao");
+  m_TCoordSystem.vaoBind("coord_system_vao");
+
+  m_TCoordSystem.useProgram("coord_system_program");
+
+  m_TCoordSystem.vboCreate("coord_sysstem_vbo", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
+  m_TCoordSystem.vboBind("coord_sysstem_vbo");
+
+  float coordVertices[] =
+  {
+    // vertices                  // uv - coords
+    0.0, 0.0, 0.0,               1.0, 0.0, 0.0,
+    5.0, 0.0, 0.0,               1.0, 0.0, 0.0,
+
+    0.0, 0.0, 0.0,               0.0, 1.0, 0.0,
+    0.0, 5.0, 0.0,               0.0, 1.0, 0.0,
+
+    0.0, 0.0, 0.0,               0.0, 0.0, 1.0,
+    0.0, 0.0, 5.0,               0.0, 0.0, 1.0
+  };
+
+  QOpenGLBuffer buffer = m_TCoordSystem.getVBO("coord_sysstem_vbo");
+  buffer.allocate(coordVertices, sizeof(coordVertices));
+  
+  initCoordSystemVertexAttrib();
+
+  GL_Error();
+  return true;
+}
+
+bool OpenGLManager::initCoordSystemVertexAttrib()
+{
+  if (m_glFunctionsSet == false)
+    return false;
+
+  int offset = 0;
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+
+
+  offset += 3 * sizeof(float);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)offset);
+
+  return true;
+}
+
+void OpenGLManager::drawCoordSystem()
+{
+  GLuint program = m_TCoordSystem.getProgram("coord_system_program");
+  m_TCoordSystem.vaoBind("coord_system_vao");
+  m_TCoordSystem.useProgram("coord_system_program");
+
+  updateMeshPrograms(program);
+
+  this->renderVBOCoordSystem("coord_system_vbo");
+
+  m_TCoordSystem.vaoRelease();
+}
+
+void OpenGLManager::renderVBOCoordSystem(std::string vbolabel)
+{
+  m_TCoordSystem.vboBind(vbolabel);
+  glDrawArrays(GL_LINES, 0, 6);
+  m_TCoordSystem.vboRelease(vbolabel);
 }
 
 // ----------------------------------------------------------------------------
@@ -1477,10 +1558,6 @@ bool OpenGLManager::initSliceShaders()
     0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0
 
 
-
-
-
-
     //0.0,          0.0,          0.0,              1.0, 0.0,
     //0.0,          MESH_MAX_Y,   0.0,              0.0, 0.0,
     //0.0,          0.0,          MESH_MAX_Z,       1.0, 1.0,
@@ -1571,7 +1648,7 @@ void OpenGLManager::renderVBOSlice(std::string vbolabel)
 {
   m_TSliceView.vboBind(vbolabel);
   glDrawArrays(GL_TRIANGLES, 0, 6);
-  m_TSliceView.vboBind(vbolabel);
+  m_TSliceView.vboRelease(vbolabel);
 
 }
 

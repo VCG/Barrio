@@ -48,6 +48,13 @@ public:
 
   bool initFilterSSBO();
   void readFilterSSBO();
+
+  // Coordinate System debug shaders
+  bool initCoordSystemShaders();
+  bool initCoordSystemVertexAttrib();
+  void drawCoordSystem();
+  void renderVBOCoordSystem(std::string vbolabel);
+
   // *********** 1) Mesh Triangles     ***********
   bool initMeshTrianglesShaders();
   bool initMeshVertexAttrib();
@@ -191,6 +198,9 @@ protected:
   bool                                    reset_ssbo;
   QVector3D                               m_proximity_filter_flags;
   double                                  m_min_proximity;
+
+  RenderVertexData                        m_TCoordSystem;
+  std::string                             m_coordSystem_VBO_label;
 
   // *********** 1) Mesh Triangles     ***********
   RenderVertexData                        m_TMesh;
