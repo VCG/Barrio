@@ -200,14 +200,14 @@ void GLWidget::resizeGL(int w, int h)
   m_projection.setToIdentity();
   m_projection.ortho(GLfloat(-w) / GLfloat(h), GLfloat(w) / GLfloat(h), -1.0, 1.0f, -5.0, 5.0);
 
-  // m_projection.perspective(45.0,  aspect, -5.0, 5.0 );
+  //m_projection.perspective(45.0,  aspect, -5.0, 5.0 );
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 0.0);
+  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -MESH_MAX_Z / 2.0);
   QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
+  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
 
   if (m_opengl_mngr != NULL)
     m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
@@ -327,21 +327,19 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
   else if (event->buttons() == Qt::LeftButton /*m_xaxis < 60 || m_yaxis < 60*/) 
   {
     setMouseTracking(false);
+    
     // Mouse release position - mouse press position
     QVector2D diff = QVector2D(deltaX, deltaY);
+    
     // Rotation axis is perpendicular to the mouse position difference
-    //qDebug() << width() << " " << height() << " " << event->x() << " " << event->y();
-    QVector3D n;
-    //if ((width() - event->x()) < 100 || event->x() < 100)
-      n = QVector3D(0.0, diff.x(), diff.y()).normalized();
-    //else
-      //n = QVector3D(diff.y(), diff.x(), 0).normalized();
+    QVector3D n = QVector3D(-diff.y(), diff.x(), 0).normalized();
 
     // Accelerate angular speed relative to the length of the mouse sweep
     qreal angle = diff.length() / 2.0;;
 
     // Calculate new rotation axis as weighted sum
     m_rotationAxis = (m_rotationAxis + n).normalized();
+    
     // angle in degrees and rotation axis
     m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
 
