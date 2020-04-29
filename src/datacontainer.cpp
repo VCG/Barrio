@@ -1117,10 +1117,6 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
 
 bool DataContainer::importObj(QString path)
 {
-  float mesh_max_x = 5.0;
-  float mesh_max_y = 5.0;
-  float mesh_max_z = 5.0;
-
   int vertexCounter = 0;
   int normalCounter = 0;
 
@@ -1181,11 +1177,6 @@ bool DataContainer::importObj(QString path)
       float y = elements[2].toFloat();
       float z = elements[3].toFloat();
 
-      // center objects around origin
-      /*x = x - mesh_max_x / 2.0f;
-      y = y - mesh_max_y / 2.0f;
-      z = z - mesh_max_z / 2.0f;*/
-
       vertexCounter++;
 
       QVector4D mesh_vertex(x, y, z, hvgxID);
@@ -1220,6 +1211,7 @@ bool DataContainer::importObj(QString path)
       obj->addTriangleIndex(vertexIndex[0] - 1);
       obj->addTriangleIndex(vertexIndex[1] - 1);
       obj->addTriangleIndex(vertexIndex[2] - 1);
+      
 
       m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[1] - 1, vertexIndex[2] - 1);
       m_indices_size += 3;
