@@ -2091,19 +2091,19 @@ void OpenGLManager::renderAbstractions()
     glEnable(GL_DEPTH_TEST);
   }
 
-  glDisable(GL_CULL_FACE);
+  //glDisable(GL_CULL_FACE);
   drawSlice();
-  glEnable(GL_CULL_FACE);
+  //glEnable(GL_CULL_FACE);
 
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1) {
     if (reset_ssbo) 
     {
       glDisable(GL_DEPTH_TEST);
-      glDisable(GL_CULL_FACE);
+      //glDisable(GL_CULL_FACE);
 
       drawMeshTriangles(false);
 
-      glEnable(GL_CULL_FACE);
+      //glEnable(GL_CULL_FACE);
       glEnable(GL_DEPTH_TEST);
     }
     else {

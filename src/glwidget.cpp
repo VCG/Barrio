@@ -140,7 +140,7 @@ void GLWidget::initializeGL()
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
   glEnable(GL_MULTISAMPLE);
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
+  //glEnable(GL_CULL_FACE);
   // to enable transparency
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -193,21 +193,20 @@ void GLWidget::resizeGL(int w, int h)
   h = (h == 0) ? 1 : h;
   glViewport(0, 0, w * retinaScale, h * retinaScale);
 
-  qDebug() << w * retinaScale << " " << h * retinaScale;
+  //qDebug() << w * retinaScale << " " << h * retinaScale;
   m_uniforms.viewport = QVector4D(0, 0, w * retinaScale, h * retinaScale);
 
   qreal aspect = retinaScale * qreal(w) / qreal(h ? h : 1);
   m_projection.setToIdentity();
-  m_projection.ortho(GLfloat(-w) / GLfloat(h), GLfloat(w) / GLfloat(h), -1.0, 1.0f, -5.0, 5.0);
-
-  //m_projection.perspective(45.0,  aspect, -5.0, 5.0 );
+  //m_projection.ortho(GLfloat(-w) / GLfloat(h), GLfloat(w) / GLfloat(h), -1.0, 1.0f, -5.0, 5.0);
+  m_projection.perspective(45.0, aspect, 5.0, -50.0);
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
   m_cameraPosition = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -MESH_MAX_Z / 2.0);
   QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
+  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -2.0 * MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
 
   if (m_opengl_mngr != NULL)
     m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
