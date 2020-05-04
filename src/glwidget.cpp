@@ -140,16 +140,39 @@ void GLWidget::initializeGL()
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
   glEnable(GL_MULTISAMPLE);
   glEnable(GL_DEPTH_TEST);
-  //glEnable(GL_CULL_FACE);
-  // to enable transparency
-  glEnable(GL_BLEND);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_BLEND); // to enable transparency
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  // for line smoothing
-  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_LINE_SMOOTH); // for line smoothing
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+  GLuint meshShaderProgramHandle = m_opengl_mngr->getMeshShaderProgramHandle();
+  initMeshShaderStorage(meshShaderProgramHandle);
+
+  mesh_shader_pass_idx_1 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass1");
+  mesh_shader_pass_idx_2 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass2");
+
+
+  // Set up a  VAO for the full-screen quad
+  GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
+  GLuint bufHandle;
+  glGenBuffers(1, &bufHandle);
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+
+  // Set up the vertex array object
+  glGenVertexArrays(1, &fsQuad);
+  glBindVertexArray(fsQuad);
+
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(0);  // Vertex position
+
+  glBindVertexArray(0);
+
 
 
   if (m_FDL_running) {
@@ -160,7 +183,7 @@ void GLWidget::initializeGL()
 
 }
 
-void GLWidget::paintGL()
+void GLWidget::pass1()
 {
   float fps = m_performaceMeasure.getFPS();
   if (fps > 0) {
@@ -170,9 +193,74 @@ void GLWidget::paintGL()
 
   startRotation();
 
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
+  
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDepthMask(GL_FALSE);
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+  const qreal retinaScale = devicePixelRatio();
+  glViewport(0, 0, width() * retinaScale, height() * retinaScale);
+  updateMVPAttrib();
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  m_opengl_mngr->updateUniformsData(m_uniforms);
+  m_opengl_mngr->drawAll();
+
+  // draw scene
+  m_opengl_mngr->drawAll();
+
+  glFinish();
+}
+
+void GLWidget::pass2()
+{
+  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_2);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  //view = glm::mat4(1.0f);
+  //projection = glm::mat4(1.0f);
+  //model = glm::mat4(1.0f);
+
+  //setMatrices();
+
+  // Draw a screen filler
+  glBindVertexArray(fsQuad);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+  glBindVertexArray(0);
+}
+
+void GLWidget::clearBuffers()
+{
+  GLuint zero = 0;
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
+
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width(), height(), GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+}
 
 
-  // paint the text here
+void GLWidget::paintGL()
+{
+  clearBuffers();
+  pass1();
+  pass2();
+  
+
+
+  /*float fps = m_performaceMeasure.getFPS();
+  if (fps > 0) {
+    updateFPS(QString::number(fps));
+    updateFrameTime(QString::number(1000.0 / fps));
+  }
+
+  startRotation();
+
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   const qreal retinaScale = devicePixelRatio();
@@ -183,7 +271,10 @@ void GLWidget::paintGL()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   m_opengl_mngr->updateUniformsData(m_uniforms);
-  m_opengl_mngr->drawAll();
+  m_opengl_mngr->drawAll();*/
+
+  // paint the text here
+ 
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -208,8 +299,8 @@ void GLWidget::resizeGL(int w, int h)
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -2.0 * MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
 
-  if (m_opengl_mngr != NULL)
-    m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
+  //if (m_opengl_mngr != NULL)
+  //  m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
   update();
 }
 
@@ -351,25 +442,18 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     if (m_FDL_running) {
       stopForecDirectedLayout();
     }
-
     m_lockRotation2D_timer->start(500);
-
   }
   else {
     setMouseTracking(false);
   }
-
-
-
 
   m_lastPos = event->pos();
   event->accept();
 
   update();
 
-
   doneCurrent();
-
 }
 
 void GLWidget::wheelEvent(QWheelEvent* event)
@@ -904,6 +988,37 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
   signalCheckByType(checkBoxByType);
 
 }
+
+void GLWidget::initMeshShaderStorage(GLuint program)
+{
+  glGenBuffers(2, oit_buffers);
+  GLint maxNodes = 20 * width() * height();
+  GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
+
+  // Our atomic counter
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+
+  // The buffer for the head pointers, as an image texture
+  glGenTextures(1, &headPtrTex);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, width(), height());
+  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+
+  // The buffer of linked lists
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+
+  // set max nodes uniform
+  int maxNodesID = glGetUniformLocation(program, "maxNodes");
+  if (maxNodesID >= 0) glUniform1iv(maxNodesID, 1, &maxNodes);
+
+  std::vector<GLuint> headPtrClearBuf(width() * height(), 0xffffffff);
+  glGenBuffers(1, &clear_oit_buffers);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), &headPtrClearBuf[0], GL_STATIC_COPY);
+}
+
 
 // GET THE WIDGET LIST FROM MAIN WINDOW
 // CALL ANOTHER FUNCTINO TO HANDLE THAT

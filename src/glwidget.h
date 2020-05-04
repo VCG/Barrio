@@ -14,6 +14,14 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
+enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
+
+struct ListNode {
+  QVector4D color;
+  GLfloat depth;
+  GLuint next;
+};
+
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT
@@ -32,6 +40,10 @@ public:
   void insertInTable(int);
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
+  void initMeshShaderStorage(GLuint program);
+  void pass1();
+  void pass2();
+  void clearBuffers();
 
 public slots:
   void getSliderX(int value);
@@ -158,21 +170,19 @@ protected:
   QTimer* m_auto_rotation_timer;
 
   std::set<int>                       m_selectedObjects;
-
   bool                                m_hover;
-
   bool                                m_hide_toggle;
-
   int                                 m_active_graph_tab;
-
   PerformanceRate                     m_performaceMeasure;
-
   QVector3D                           m_filterByProximityType;
-
   bool                                m_auto_rotate;
   float                               m_rot_ydiff;
-
   float                               m_xy_slice_z;
+
+  /* order independent transparency vars*/
+  GLuint                              oit_buffers[2], fsQuad, headPtrTex;
+  GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
+  GLuint                              clear_oit_buffers;
 };
 
 

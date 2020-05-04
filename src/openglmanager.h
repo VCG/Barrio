@@ -61,6 +61,8 @@ public:
   void updateMeshPrograms(GLuint program);
   void drawMeshTriangles(bool selection);
 
+  GLuint getMeshShaderProgramHandle() { return m_TMesh.getProgram("3Dtriangles"); }
+
   void renderVBOMesh(std::string vbolabel, int indices);
   void renderOrderToggle();
 

@@ -1,5 +1,9 @@
 #version 430
 
+/*Order Independent Transperency code is based on the code of liao gang */
+// https://github.com/gangliao/Order-Independent-Transparency-GPU
+
+
 #define MITO  1
 #define AXONS 2
 #define BOUTN 3
@@ -8,6 +12,9 @@
 #define ASTRO 6
 #define SYNPS 7
 #define AMITO 9
+
+#define MAX_FRAGMENTS 75
+
 
 in vec3         normal_out;
 in float		color_intp;
@@ -19,7 +26,7 @@ flat in int		otype;
 in float        G_ID;
 in float		mito_cell_distance;
 
-layout (location = 0) out vec4        outcol;
+layout (location = 0) out vec4        FragColor;
 // textures
 uniform sampler3D   splat_tex; //r=astro g=astro-mito b=neurite-mito
 uniform sampler3D   gly_tex;
@@ -52,28 +59,23 @@ float k_s = 0.5;
 // ------------------- TOON SHADER PROPERTIES ----------------------
 vec3 E2 = vec3(0.5, 0.5, -1.0);
 
-void main() 
-{
-	vec3 obj_color;
-	if(otype != MITO)
-	{
-	  obj_color = vec3(0.6, 1.0, 0.6);
-	} 
-	else{
-	  obj_color = texture(mito_colormap, 1 - 2.85 * mito_cell_distance).xyz;
-	} 
+// ------------- order independent transparency variables ----------
+struct NodeType {
+  vec4 color;
+  float depth;
+  uint next;
+};
 
-    vec3 result = computeLight(lightDir1, lightColor1, obj_color);
-	result += computeLight(lightDir2, lightColor2, obj_color);
+layout( binding = 0, r32ui) uniform uimage2D headPointers;
+layout( binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
+layout( binding = 0, std430 ) buffer linkedLists {
+  NodeType nodes[];
+};
 
-	if(otype != MITO)
-	{
-	  outcol = vec4(result, 0.5);
-	}
-	else{
-	  outcol = vec4(result, 1.0);
-	}
-}
+uniform uint maxNodes;
+subroutine void RenderPassType();
+subroutine uniform RenderPassType RenderPass;
+
 
 vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
 {
@@ -95,28 +97,112 @@ vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
     return (ambient + diffuse + specular) * obj_color;
 }
 
-//vec3 getSplattedTexture3(in sampler3D texture_toSplat, in vec3 coord, in vec3 step_size)
-//{
-//	vec3 idx_offset = vec3(0.0, 0.0, 0.0);
-//	float weight = 1;
-//	float tex_value = 1.0;
-//	float sum = 0;
-//	vec3 result = vec3(0);
-//	for (int k = 0; k < 5; k++)
-//	{
-//		idx_offset.z = gaussian_steps[k] * step_size.z;
-//		for (int j = 0; j < 5; j++)
-//		{
-//			idx_offset.y = gaussian_steps[j] * step_size.y;
-//			for (int i = 0; i < 5; i++)
-//			{
-//				idx_offset.x = gaussian_steps[i] * step_size.x;
-//				weight = gaussian_kernel[i + j * 5 + k * 25];
-//				vec3 new_coord = coord.xyz + idx_offset.xyz;
-//				vec4 tex_value4 = texture(texture_toSplat, new_coord);
-//				result = result + (weight * tex_value4.rgb);
-//			}
-//		}
-//	}
-//	return result;
-//}
+vec4 computeColor()
+{
+  vec3 obj_color;
+  vec4 out_color;
+
+  if(otype != MITO)
+  {
+	obj_color = vec3(0.6, 1.0, 0.6);
+  } 
+  else{
+    obj_color = texture(mito_colormap, 1 - 2.85 * mito_cell_distance).xyz;
+  } 
+
+  vec3 result = computeLight(lightDir1, lightColor1, obj_color);
+  result += computeLight(lightDir2, lightColor2, obj_color);
+
+  vec3 viewDir = normalize(eye - vposition);
+  float alpha = abs(dot(viewDir, N));
+
+  if(otype == MITO)
+  {
+    out_color = vec4(result, 1.0);
+  }
+  else
+  {
+    out_color = vec4(result, alpha);
+  }
+
+  return out_color;
+}
+
+// ------------------------------------------------------------------
+subroutine(RenderPassType) void pass1()
+{  
+  uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
+  
+  if(nodeIdx < maxNodes)
+  {
+	// get previous head of list
+	uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx); // what does this line do exactly
+	
+	nodes[nodeIdx].color = computeColor();
+	nodes[nodeIdx].depth = gl_FragCoord.z; // why this z value? 
+	nodes[nodeIdx].next = prevHead;
+  }
+}
+
+subroutine(RenderPassType) void pass2()
+{
+    NodeType frags[MAX_FRAGMENTS];
+	int count = 0;
+	uint list_end = 0xffffffff;
+	uint head_idx = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r; // what does r mean?
+	
+	while(head_idx != list_end && count < MAX_FRAGMENTS)
+	{
+	  frags[count] = nodes[head_idx];
+	  head_idx = frags[count].next;
+	  count++;
+	}
+
+	// sort frags based on depth - merge sort
+	int i, j1, j2, k;
+    int a, b, c;
+    int step = 1;
+    NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+    
+    while (step <= count)
+    {
+        i = 0;
+        while (i < count - step)
+        {
+            a = i;
+            b = i + step;
+            c = (i + step + step) >= count ? count : (i + step + step);
+
+            for (k = 0; k < step; k++)
+                leftArray[k] = frags[a + k];
+            
+            j1 = 0;
+            j2 = 0;
+            for (k = a; k < c; k++)
+            {
+                if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                    frags[k] = leftArray[j2++];
+                else
+                    frags[k] = frags[b + j1++];
+            }
+            i += 2 * step;
+        }
+        step *= 2;
+    }
+	
+    // iterate through sorted map and mix colors and transparencies
+	vec4 color = vec4(0.5, 0.5, 0.5, 1.0);
+	for( int i = 0; i < count; i++ )
+	{
+	  color = mix(color, frags[i].color, frags[i].color.a);
+	}
+
+	// Output the final color
+	FragColor = color;
+
+}
+
+void main() 
+{
+  RenderPass();
+}

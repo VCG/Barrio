@@ -66,6 +66,7 @@ void OpenGLManager::drawAll()
   write_ssbo_data();
 
   drawCoordSystem();
+  drawSlice();
 
   render2DHeatMapTexture();
   renderAbstractions();
@@ -1448,7 +1449,6 @@ bool OpenGLManager::initMeshTrianglesShaders()
   m_TMesh.vboRelease("MeshVertices");
   m_TMesh.vaoRelease();
 
-
   /*  start selection buffer **/
   m_TMesh.vaoCreate("Selection");
   m_TMesh.vaoBind("Selection");
@@ -2090,10 +2090,6 @@ void OpenGLManager::renderAbstractions()
     drawSkeletonsGraph(false);
     glEnable(GL_DEPTH_TEST);
   }
-
-  //glDisable(GL_CULL_FACE);
-  drawSlice();
-  //glEnable(GL_CULL_FACE);
 
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1) {
     if (reset_ssbo) 
