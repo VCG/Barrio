@@ -63,24 +63,24 @@ OpenGLManager::~OpenGLManager()
 //
 void OpenGLManager::drawAll()
 {
-  write_ssbo_data();
+  //write_ssbo_data();
 
-  drawCoordSystem();
-  drawSlice();
+  //drawCoordSystem();
+  //drawSlice();
 
-  render2DHeatMapTexture();
-  renderAbstractions();
-  drawNodesInto2DTexture();
+  //render2DHeatMapTexture();
+  //renderAbstractions();
+  //drawNodesInto2DTexture();
 
-  if (reset_ssbo) { // only once
-    glFlush();
-    glFinish();
-    reset_ssbo = false;
+  //if (reset_ssbo) { // only once
+  //  glFlush();
+  //  glFinish();
+  //  reset_ssbo = false;
 
     // read the output from ssbo
     // then reset ssbo to 0
-    readFilterSSBO();
-  }
+    //readFilterSSBO();
+  //}
 }
 
 // ############## Data Initialization ###############################################
@@ -101,31 +101,31 @@ bool OpenGLManager::initOpenGLFunctions()
   m_TSliceView.initOpenGLFunctions();
   m_TCoordSystem.initializeOpenGLFunctions();
 
-  load3DTexturesFromRaw_3(m_dataContainer->input_files_dir.proximity_astro,
+  /*load3DTexturesFromRaw_3(m_dataContainer->input_files_dir.proximity_astro,
     m_dataContainer->input_files_dir.proximity_astro_mito,
     m_dataContainer->input_files_dir.proximity_neu_mito,
     m_splat_volume_3DTex, GL_TEXTURE2);
 
   load3DTexturesFromRaw(m_dataContainer->input_files_dir.proximity_glycogen,
-    m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);
+    m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);*/
 
-  
-  load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE5, 999, 999, 449);
 
-  std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
-  glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
-  glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
-  glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); //glycogen_tf->push_back(255);   // 4 116,196,118
-  glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); //glycogen_tf->push_back(255);   //5 65, 171, 93
-  glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); //glycogen_tf->push_back(255);   //6 35, 139, 69
-  glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); //glycogen_tf->push_back(255);   //7 0, 109, 44
-  glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); //glycogen_tf->push_back(255);   //8 0, 68, 27
+  //load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE1, 999, 999, 449);
 
-  init_1D_texture(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
+  //std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
+  //glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
+  //glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
+  //glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); //glycogen_tf->push_back(255);   // 4 116,196,118
+  //glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); //glycogen_tf->push_back(255);   //5 65, 171, 93
+  //glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); //glycogen_tf->push_back(255);   //6 35, 139, 69
+  //glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); //glycogen_tf->push_back(255);   //7 0, 109, 44
+  //glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); //glycogen_tf->push_back(255);   //8 0, 68, 27
 
-  delete glycogen_tf;
+  //init_1D_texture(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
 
- 
+  //delete glycogen_tf;
+
+
   int width, height, nrChannels;
   unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
   if (data)
@@ -136,19 +136,19 @@ bool OpenGLManager::initOpenGLFunctions()
 
   fillVBOsData();
 
-  initSSBO();
+  //initSSBO();
 
   // *********** 3) Skeleton Points    ***********
-  initSkeletonShaders();
+  //initSkeletonShaders();
   initMeshTrianglesShaders();
-  initAbstractSkeletonShaders();
-  initNeuritesGraphShaders();
-  initGlycogenPointsShaders();
+  //initAbstractSkeletonShaders();
+  //initNeuritesGraphShaders();
+  //initGlycogenPointsShaders();
 
   initCoordSystemShaders();
   initSliceShaders();
 
-  initFilterSSBO();
+  //initFilterSSBO();
 
   return true;
 }
@@ -205,7 +205,7 @@ bool OpenGLManager::initSSBO()
   qDebug() << "m_ssbo_data buffer size: " << bufferSize;
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-  write_ssbo_data();
+  //write_ssbo_data();
 
   return true;
 }
@@ -290,7 +290,7 @@ bool OpenGLManager::initCoordSystemShaders()
 
   QOpenGLBuffer buffer = m_TCoordSystem.getVBO("coord_sysstem_vbo");
   buffer.allocate(coordVertices, sizeof(coordVertices));
-  
+
   initCoordSystemVertexAttrib();
 
   GL_Error();
@@ -314,13 +314,13 @@ bool OpenGLManager::initCoordSystemVertexAttrib()
   return true;
 }
 
-void OpenGLManager::drawCoordSystem()
+void OpenGLManager::drawCoordSystem(WidgetUniforms* uniforms)
 {
   GLuint program = m_TCoordSystem.getProgram("coord_system_program");
   m_TCoordSystem.vaoBind("coord_system_vao");
   m_TCoordSystem.useProgram("coord_system_program");
 
-  updateMeshPrograms(program);
+  updateMeshPrograms(program, uniforms);
 
   this->renderVBOCoordSystem("coord_system_vbo");
 
@@ -439,8 +439,7 @@ void OpenGLManager::fillVBOsData()
   int vbo_skeleton_offset = 0;
   m_SkeletonPoints.vboCreate("SkeletonPoints", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_SkeletonPoints.vboBind("SkeletonPoints");
-  m_SkeletonPoints.vboAllocate("SkeletonPoints", NULL,
-    m_dataContainer->getSkeletonPointsSize() * sizeof(SkeletonPoint));
+  m_SkeletonPoints.vboAllocate("SkeletonPoints", NULL, m_dataContainer->getSkeletonPointsSize() * sizeof(SkeletonPoint));
 
 
   // initialize index buffers
@@ -469,7 +468,7 @@ void OpenGLManager::fillVBOsData()
     Object* object_p = (*iter).second;
     qDebug() << " allocating: " << object_p->getName().data();
 
-    this->fillSSBO(object_p);
+    //this->fillSSBO(object_p);
 
 
     if (object_p->getObjectType() == Object_t::ASTROCYTE) {
@@ -616,7 +615,7 @@ void OpenGLManager::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum 
 {
   unsigned int size = sizeX * sizeY * sizeZ;
   unsigned char* rawData = (unsigned char*)m_dataContainer->loadRawFile(path, size);
-  
+
   //load data into a 3D texture
   glGenTextures(1, &texture);
   glActiveTexture(texture_unit);
@@ -1382,18 +1381,35 @@ bool OpenGLManager::initMeshVertexAttrib()
   if (m_glFunctionsSet == false)
     return false;
 
+  int stride = sizeof(VertexData);
+
+  // mesh_vtx
   int offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
-    sizeof(VertexData), 0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
 
-
+  // distance to cell
   offset += sizeof(QVector4D);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
-    sizeof(VertexData), (GLvoid*)offset);
+  glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+
+  // structure type
+  offset += sizeof(float);
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
+
+  // hvgx ID
+  offset += sizeof(int);
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
 
   return true;
+}
+
+void OpenGLManager::initNormalsAttrib()
+{
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -1402,10 +1418,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
 {
   qDebug() << "initMeshTrianglesShaders";
   m_TMesh.createProgram("3Dtriangles");
-  bool res = m_TMesh.compileShader("3Dtriangles",
-    ":/shaders/mesh_vert.glsl",
-    ":/shaders/mesh_geom.glsl",
-    ":/shaders/mesh_frag.glsl");
+  bool res = m_TMesh.compileShader("3Dtriangles", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/mesh_frag_simplified.glsl");
 
   if (res == false)
     return res;
@@ -1423,42 +1436,39 @@ bool OpenGLManager::initMeshTrianglesShaders()
   GLint gly_tex = glGetUniformLocation(mesh_program, "gly_tex");
   if (gly_tex >= 0) glUniform1i(gly_tex, 3);
 
+  Mesh* mesh = m_dataContainer->getMeshPointer();
+
   m_TMesh.vboCreate("MeshVertices", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_TMesh.vboBind("MeshVertices");
 
-  Mesh* mesh = m_dataContainer->getMeshPointer();
   mesh->allocateVerticesVBO(m_TMesh.getVBO("MeshVertices"));
   initMeshVertexAttrib();
+
+  m_TMesh.vboRelease("MeshVertices");
 
   GL_Error();
 
   // create normals vbo
-  if (m_normals_enabled) {
-    m_TMesh.vboCreate("VertexNormals", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
-    m_TMesh.vboBind("VertexNormals");
-    // allocate
-    mesh->allocateNormalsVBO(m_TMesh.getVBO("VertexNormals"));
+  m_TMesh.vboCreate("VertexNormals", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
+  m_TMesh.vboBind("VertexNormals");
 
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  //// allocate
+  mesh->allocateNormalsVBO(m_TMesh.getVBO("VertexNormals"));
+  initNormalsAttrib();
 
-    m_TMesh.vboBind("VertexNormals");
-    GL_Error();
-  }
+  //m_TMesh.vboRelease("VertexNormals");
+  GL_Error();
 
-  m_TMesh.vboRelease("MeshVertices");
   m_TMesh.vaoRelease();
+
+  /*---------------------------------------------------------------------------------------------------------------------*/
 
   /*  start selection buffer **/
   m_TMesh.vaoCreate("Selection");
   m_TMesh.vaoBind("Selection");
 
-
   m_TMesh.createProgram("selection");
-  res = m_TMesh.compileShader("selection",
-    ":/shaders/mesh_vert.glsl",
-    ":/shaders/mesh_geom.glsl",
-    ":/shaders/hvgx_selection_frag.glsl");
+  res = m_TMesh.compileShader("selection", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/hvgx_selection_frag.glsl");
   if (res == false)
     return res;
 
@@ -1467,36 +1477,40 @@ bool OpenGLManager::initMeshTrianglesShaders()
   m_TMesh.vboBind("MeshVertices");
   initMeshVertexAttrib();
   m_TMesh.vboRelease("MeshVertices");
+
+  //m_TMesh.vboBind("VertexNormals");
+  //initNormalsAttrib();
+  //m_TMesh.vboRelease("VertexNormals");
+  
   GL_Error();
-
-
   m_TMesh.vaoRelease();
 
   GL_Error();
   /*  end selection buffer **/
 
 }
+
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::updateMeshPrograms(GLuint program)
+void OpenGLManager::updateMeshPrograms(GLuint program, WidgetUniforms* uniforms)
 {
   int rMatrix = glGetUniformLocation(program, "rMatrix");
-  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, m_uniforms.rMatrix.data());
+  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, uniforms->rMatrix.data());
 
   int mMatrix = glGetUniformLocation(program, "mMatrix");
-  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, m_uniforms.mMatrix);
+  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, uniforms->mMatrix);
 
   int vMatrix = glGetUniformLocation(program, "vMatrix");
-  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, m_uniforms.vMatrix);
+  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, uniforms->vMatrix);
 
   int pMatrix = glGetUniformLocation(program, "pMatrix");
-  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, m_uniforms.pMatrix);
+  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, uniforms->pMatrix);
 
   int y_axis = glGetUniformLocation(program, "y_axis");
-  if (y_axis >= 0) glUniform1iv(y_axis, 1, &m_uniforms.y_axis);
+  if (y_axis >= 0) glUniform1iv(y_axis, 1, &uniforms->y_axis);
 
   int x_axis = glGetUniformLocation(program, "x_axis");
-  if (x_axis >= 0) glUniform1iv(x_axis, 1, &m_uniforms.x_axis);
+  if (x_axis >= 0) glUniform1iv(x_axis, 1, &uniforms->x_axis);
 
   int hoveredID = glGetUniformLocation(program, "hoveredID");
   if (hoveredID >= 0) glUniform1iv(hoveredID, 1, &m_hoveredID);
@@ -1619,13 +1633,13 @@ bool OpenGLManager::initSliceVertexAttrib()
 
 
 
-void OpenGLManager::drawSlice()
+void OpenGLManager::drawSlice(WidgetUniforms* uniforms)
 {
   GLuint program = m_TSliceView.getProgram("sliceView");
   m_TSliceView.vaoBind("slice");
   m_TSliceView.useProgram("sliceView");
 
-  updateMeshPrograms(program);
+  updateMeshPrograms(program, uniforms);
 
   this->renderVBOSlice("sliceVertices");
 
@@ -1661,13 +1675,13 @@ void OpenGLManager::renderVBOMesh(std::string vbolabel, int indices)
 
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::drawMeshTriangles(bool selection)
+void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
 {
   if (selection) {
     m_TMesh.vaoBind("Selection");
     m_TMesh.useProgram("selection");
 
-    updateMeshPrograms(m_TMesh.getProgram("selection"));
+    updateMeshPrograms(m_TMesh.getProgram("selection"), uniforms);
 
     int astrocyte_indices = m_dataContainer->getIndicesSizeByObjectType(Object_t::ASTROCYTE);
     int neurites_indices = m_dataContainer->getMeshIndicesSize() - astrocyte_indices;
@@ -1688,7 +1702,7 @@ void OpenGLManager::drawMeshTriangles(bool selection)
     m_TMesh.vaoBind("Mesh");
     m_TMesh.useProgram("3Dtriangles");
 
-    updateMeshPrograms(m_TMesh.getProgram("3Dtriangles"));
+    updateMeshPrograms(m_TMesh.getProgram("3Dtriangles"), uniforms);
 
     // transfer function
     GLint gly_tf = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "gly_tf");
@@ -1720,7 +1734,7 @@ void OpenGLManager::drawMeshTriangles(bool selection)
 
     GLint mito_colormap = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "mito_colormap");
 
-    if (mito_colormap)
+    if (mito_colormap >= 0)
     {
       glUniform1i(mito_colormap, 4);
       glActiveTexture(GL_TEXTURE4);
@@ -1730,15 +1744,17 @@ void OpenGLManager::drawMeshTriangles(bool selection)
     // Astrocyte 3D volume
     int astrocyte_indices = m_dataContainer->getIndicesSizeByObjectType(Object_t::ASTROCYTE);
     int neurites_indices = m_dataContainer->getMeshIndicesSize() - astrocyte_indices;
+    
+    this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
 
-    if (m_transparent_astro) {
+    /*if (m_transparent_astro) {
       this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
       this->renderVBOMesh(m_astro_VBO_label, astrocyte_indices);
     }
     else {
       this->renderVBOMesh(m_astro_VBO_label, astrocyte_indices);
       this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
-    }
+    }*/
 
 
     m_TMesh.vaoRelease();
@@ -1967,19 +1983,19 @@ bool OpenGLManager::initGlycogenPointsShaders()
   m_vao_glycogen.bind();
 }
 
-void OpenGLManager::updateSliceProgram(GLuint program)
+void OpenGLManager::updateSliceProgram(GLuint program, WidgetUniforms* uniforms)
 {
   int rMatrix = glGetUniformLocation(program, "rMatrix");
-  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, m_uniforms.rMatrix.data());
+  if (rMatrix >= 0) glUniformMatrix4fv(rMatrix, 1, GL_FALSE, uniforms->rMatrix.data());
 
   int mMatrix = glGetUniformLocation(program, "mMatrix");
-  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, m_uniforms.mMatrix);
+  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, uniforms->mMatrix);
 
   int vMatrix = glGetUniformLocation(program, "vMatrix");
-  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, m_uniforms.vMatrix);
+  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, uniforms->vMatrix);
 
   int pMatrix = glGetUniformLocation(program, "pMatrix");
-  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, m_uniforms.pMatrix);
+  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, uniforms->pMatrix);
 }
 
 void OpenGLManager::updateGlycogenUniforms(GLuint program)
@@ -2092,18 +2108,18 @@ void OpenGLManager::renderAbstractions()
   }
 
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1) {
-    if (reset_ssbo) 
+    if (reset_ssbo)
     {
       glDisable(GL_DEPTH_TEST);
       //glDisable(GL_CULL_FACE);
 
-      drawMeshTriangles(false);
+      //drawMeshTriangles(false);
 
       //glEnable(GL_CULL_FACE);
       glEnable(GL_DEPTH_TEST);
     }
     else {
-      drawMeshTriangles(false);
+      //drawMeshTriangles(false);
     }
   }
 
@@ -2159,7 +2175,7 @@ int OpenGLManager::processSelection(float x, float y)
 
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::renderSelection()
+void OpenGLManager::renderSelection(WidgetUniforms* uniforms)
 {
   // ********* Render Selection
 
@@ -2176,7 +2192,7 @@ void OpenGLManager::renderSelection()
 
   //render graph
   if (space_properties.ast.render_type.x() == 1 || space_properties.neu.render_type.x() == 1)
-    drawMeshTriangles(true);
+    drawMeshTriangles(true, uniforms);
 
   if (space_properties.ast.render_type.y() == 1 || space_properties.neu.render_type.y() == 1)
     drawSkeletonPoints(true);
@@ -2875,22 +2891,22 @@ std::vector<int> OpenGLManager::getSSBOFilterByProximity()
 
     if (sum == 3) {
       if (astro_proximity * m_proximity_filter_flags.x() > m_min_proximity
-        && gly_proximity* m_proximity_filter_flags.y() > m_min_proximity
-        && astro_mito_proximity* m_proximity_filter_flags.z() > m_min_proximity) {
+        && gly_proximity * m_proximity_filter_flags.y() > m_min_proximity
+        && astro_mito_proximity * m_proximity_filter_flags.z() > m_min_proximity) {
         filtered_ids.push_back(hvgxID);
       }
     }
     else if (sum == 2) {
       if (astro_proximity * m_proximity_filter_flags.x() > m_min_proximity
-        && gly_proximity* m_proximity_filter_flags.y() > m_min_proximity) {
+        && gly_proximity * m_proximity_filter_flags.y() > m_min_proximity) {
         filtered_ids.push_back(hvgxID);
       }
       else if (astro_proximity * m_proximity_filter_flags.x() > m_min_proximity
-        && astro_mito_proximity* m_proximity_filter_flags.z() > m_min_proximity) {
+        && astro_mito_proximity * m_proximity_filter_flags.z() > m_min_proximity) {
         filtered_ids.push_back(hvgxID);
       }
       else if (gly_proximity * m_proximity_filter_flags.y() > m_min_proximity
-        && astro_mito_proximity* m_proximity_filter_flags.z() > m_min_proximity) {
+        && astro_mito_proximity * m_proximity_filter_flags.z() > m_min_proximity) {
         filtered_ids.push_back(hvgxID);
       }
     }

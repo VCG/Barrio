@@ -35,11 +35,14 @@ GLuint RenderVertexData::createProgram(std::string program_name)
   return m_programs[program_name];
 }
 
-bool RenderVertexData::compileShader(std::string program_name,
-  const char* vshader, const char* gshader, const char* fshader)
+bool RenderVertexData::compileShader(std::string program_name, const char* vshader, const char* gshader, const char* fshader)
 {
-  bool res = initShader(m_programs[program_name], vshader, gshader, fshader);
-  return res;
+  return initShader(m_programs[program_name], vshader, gshader, fshader);
+}
+
+bool RenderVertexData::compileShader(std::string program_name, const char* vshader, const char* fshader)
+{
+  return initShader(m_programs[program_name], vshader, fshader);
 }
 
 void RenderVertexData::useProgram(std::string program_name)

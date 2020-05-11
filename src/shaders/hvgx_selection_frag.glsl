@@ -1,13 +1,14 @@
 #version 430
 
-in float        G_ID;
-out vec4        outcol;
+in float        hvgx_frag;
+out vec4        FragColor;
 
-void main() {
-    float blue = int(G_ID)%256;
-    float grean = int(G_ID / 256) % 256;
-    int red = int(G_ID / 65536) % 256;
+void main() 
+{
+    float blue =  int(hvgx_frag / pow(256, 0)) % 256;
+    float green = int(hvgx_frag / pow(256, 1)) % 256;
+    float red =   int(hvgx_frag / pow(256, 2)) % 256;
 
     // deal with parent and child overlapping IDs
-    outcol =   vec4(blue/255.0, grean/255.0, 0, 1.0);
+    FragColor =   vec4(blue/255.0, green/255.0, 0, 1.0);
 }

@@ -19,7 +19,7 @@ GraphManager::~GraphManager()
   }
 }
 
-void GraphManager::update2Dflag(bool is2D, struct GlobalUniforms uniforms)
+void GraphManager::update2Dflag(bool is2D, struct WidgetUniforms uniforms)
 {
   if (is2D) {
     // pass rotation matrix

@@ -38,7 +38,7 @@ public:
   void updateAbstractUniformsLocation(GLuint program);
   void update2Dflag(bool is2D);
 
-  void updateUniformsData(struct GlobalUniforms grid_uniforms) { m_uniforms = grid_uniforms; }
+  void updateUniformsData(struct WidgetUniforms grid_uniforms) { m_uniforms = grid_uniforms; }
 
   void drawAll();
 
@@ -52,14 +52,15 @@ public:
   // Coordinate System debug shaders
   bool initCoordSystemShaders();
   bool initCoordSystemVertexAttrib();
-  void drawCoordSystem();
+  void drawCoordSystem(WidgetUniforms* uniforms);
   void renderVBOCoordSystem(std::string vbolabel);
 
   // *********** 1) Mesh Triangles     ***********
   bool initMeshTrianglesShaders();
+  void initNormalsAttrib();
   bool initMeshVertexAttrib();
-  void updateMeshPrograms(GLuint program);
-  void drawMeshTriangles(bool selection);
+  void updateMeshPrograms(GLuint program, WidgetUniforms* uniforms);
+  void drawMeshTriangles(bool selection, WidgetUniforms* uniforms);
 
   GLuint getMeshShaderProgramHandle() { return m_TMesh.getProgram("3Dtriangles"); }
 
@@ -69,8 +70,8 @@ public:
   // *********** slice shaders *************
   bool initSliceShaders();
   bool initSliceVertexAttrib();
-  void updateSliceProgram(GLuint program);
-  void drawSlice();
+  void updateSliceProgram(GLuint program, WidgetUniforms* uniforms);
+  void drawSlice(WidgetUniforms* uniforms);
   void renderVBOSlice(std::string vbolabel);
 
 
@@ -141,7 +142,7 @@ public:
   void updateCanvasDim(int w, int h, int retianScale);
   void initSelectionFrameBuffer();
   int processSelection(float x, float y);
-  void renderSelection();
+  void renderSelection(WidgetUniforms* uniforms);
 
   void highlightObject(int hvgxID);
 
@@ -186,7 +187,7 @@ protected:
 
   bool                                    m_glFunctionsSet;
   bool                                    m_2D;
-  struct GlobalUniforms                   m_uniforms;
+  struct WidgetUniforms                   m_uniforms;
 
   // *********** 0) SSBO objects Data    ***********
   std::vector<struct ssbo_mesh>           m_ssbo_data; // Color, Cenert, Type

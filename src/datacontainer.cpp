@@ -127,8 +127,6 @@ bool DataContainer::isNormalsEnabled()
 //
 char* DataContainer::loadRawFile(QString path, int size)
 {
-  qDebug() << "Func: loadRawFile";
-
   QFile  file(path);
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << "Could not open the file for reading";
@@ -140,7 +138,8 @@ char* DataContainer::loadRawFile(QString path, int size)
   char* buffer = new char[size];
   in.device()->reset();
   int nbytes = in.readRawData(buffer, size);
-  qDebug() << nbytes;
+
+  qDebug() << "loaded .raw file with " << nbytes << "bytes";
 
   return  buffer;
 }
@@ -1185,10 +1184,14 @@ bool DataContainer::importObj(QString path)
       meshVertexList->emplace_back();
       int vertexIdx = (int)meshVertexList->size() - 1;
       struct VertexData* v = &meshVertexList->at(vertexIdx);
-
-      v->index = vertexIdx;
+      
       v->mesh_vertex = mesh_vertex;
+      v->distance_to_cell = 0.0; // first init all distances with the default value
+      v->hvgxID = hvgxID;
+      v->structure_type = (int)obj->getObjectType();
+
       v->skeleton_vertex = skeleton_vertex; // place holder
+      v->index = vertexIdx;
       //v->distance_to_astro = 0.0; //place holder
 
       vertexIdx = m_mesh->addVertex(v, obj->getObjectType());

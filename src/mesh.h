@@ -21,12 +21,13 @@ struct Face {
 
 // mesh vertex
 struct VertexData {
-  QVector4D   mesh_vertex;        // w: Object ID (hvgx ID)
-  QVector4D   skeleton_vertex;    // w: markers distance to astrocyte (since this is per vertex, compute the distance from each vertex to astrocyte)
+  QVector4D   mesh_vertex;
+  float       distance_to_cell;
+  int         structure_type;
+  int         hvgxID;
 
-  
-  int			index;
-  //bool		isGlycogen;			//because glycogen ids and object ids are seperate
+  QVector4D   skeleton_vertex;
+  int		  index;
 
   float  x()  const
   {

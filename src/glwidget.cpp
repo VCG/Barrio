@@ -126,7 +126,7 @@ void GLWidget::initializeGL()
 
   m_2dspace->initOpenGLFunctions();
   m_opengl_mngr->initOpenGLFunctions();
-  m_graphManager->ExtractGraphFromMesh();
+  //m_graphManager->ExtractGraphFromMesh();
 
 
 
@@ -148,30 +148,30 @@ void GLWidget::initializeGL()
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-  GLuint meshShaderProgramHandle = m_opengl_mngr->getMeshShaderProgramHandle();
-  initMeshShaderStorage(meshShaderProgramHandle);
+  //GLuint meshShaderProgramHandle = m_opengl_mngr->getMeshShaderProgramHandle();
+  //initMeshShaderStorage(meshShaderProgramHandle);
 
-  mesh_shader_pass_idx_1 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass1");
-  mesh_shader_pass_idx_2 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass2");
+  //mesh_shader_pass_idx_1 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass1");
+  //mesh_shader_pass_idx_2 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass2");
 
 
-  // Set up a  VAO for the full-screen quad
-  GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
-  GLuint bufHandle;
-  glGenBuffers(1, &bufHandle);
-  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
-  glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+  //// Set up a  VAO for the full-screen quad
+  //GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
+  //  1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
+  //GLuint bufHandle;
+  //glGenBuffers(1, &bufHandle);
+  //glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  //glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
 
-  // Set up the vertex array object
-  glGenVertexArrays(1, &fsQuad);
-  glBindVertexArray(fsQuad);
+  //// Set up the vertex array object
+  //glGenVertexArrays(1, &fsQuad);
+  //glBindVertexArray(fsQuad);
 
-  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(0);  // Vertex position
+  //glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  //glEnableVertexAttribArray(0);  // Vertex position
 
-  glBindVertexArray(0);
+  //glBindVertexArray(0);
 
 
 
@@ -193,7 +193,7 @@ void GLWidget::pass1()
 
   startRotation();
 
-  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
+  //glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
   
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glDepthMask(GL_FALSE);
@@ -206,11 +206,11 @@ void GLWidget::pass1()
   
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  m_opengl_mngr->updateUniformsData(m_uniforms);
-  m_opengl_mngr->drawAll();
+  //m_opengl_mngr->updateUniformsData(m_uniforms);
+  //m_opengl_mngr->drawAll();
 
   // draw scene
-  m_opengl_mngr->drawAll();
+  m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
 
   glFinish();
 }
@@ -247,13 +247,12 @@ void GLWidget::clearBuffers()
 
 void GLWidget::paintGL()
 {
-  clearBuffers();
-  pass1();
-  pass2();
+  //clearBuffers();
+  //pass1();
+  //pass2();
   
 
-
-  /*float fps = m_performaceMeasure.getFPS();
+  float fps = m_performaceMeasure.getFPS();
   if (fps > 0) {
     updateFPS(QString::number(fps));
     updateFrameTime(QString::number(1000.0 / fps));
@@ -270,8 +269,11 @@ void GLWidget::paintGL()
   updateMVPAttrib();
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  m_opengl_mngr->updateUniformsData(m_uniforms);
-  m_opengl_mngr->drawAll();*/
+  //m_opengl_mngr->updateUniformsData(m_uniforms);
+  m_opengl_mngr->drawCoordSystem(&m_uniforms);
+  //m_opengl_mngr->drawSlice(&m_uniforms);
+  m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
+  
 
   // paint the text here
  
@@ -299,8 +301,8 @@ void GLWidget::resizeGL(int w, int h)
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -2.0 * MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
 
-  //if (m_opengl_mngr != NULL)
-  //  m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
+  if (m_opengl_mngr != NULL)
+    m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
   update();
 }
 
@@ -331,7 +333,7 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
 
   makeCurrent();
 
-  m_opengl_mngr->renderSelection();
+  m_opengl_mngr->renderSelection(&m_uniforms);
 
   int hvgxID = pickObject(event);
 
@@ -385,7 +387,7 @@ void GLWidget::lockRotation2D()
   // once we exceed threshold start force layouted
   // if we are below x < 50 and y < 50
   updateMVPAttrib();      // update uniforms
-  m_graphManager->update2Dflag(true, m_uniforms);
+  //m_graphManager->update2Dflag(true, m_uniforms);
   m_opengl_mngr->update2Dflag(true);
 }
 
@@ -397,7 +399,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
   if (event->modifiers() == Qt::ShiftModifier) {
     makeCurrent();
 
-    m_opengl_mngr->renderSelection();
+    m_opengl_mngr->renderSelection(&m_uniforms);
 
     int hvgxID = pickObject(event); // hovered object
 
@@ -439,9 +441,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
     // do wait function, if the user stayed in this view more than t seconds then do this
     // 1) stop previous layouting algorithm if running
-    if (m_FDL_running) {
+
+    /*if (m_FDL_running) {
       stopForecDirectedLayout();
-    }
+    }*/
+
     m_lockRotation2D_timer->start(500);
   }
   else {
@@ -986,6 +990,11 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
   }
 
   signalCheckByType(checkBoxByType);
+
+}
+
+void GLWidget::drawMesh()
+{
 
 }
 

@@ -78,6 +78,8 @@ bool MainOpenGL::initShader(QOpenGLShaderProgram* program, const char* vshader, 
 }
 
 
+
+
 bool MainOpenGL::initShader(GLuint program, const char* vshader, const char* gshader, const char* fshader)
 {
   qDebug() << "Initializing shaders";
@@ -160,6 +162,78 @@ bool MainOpenGL::initShader(GLuint program, const char* vshader, const char* gsh
 
   glDeleteShader(vs);
   glDeleteShader(gs);
+  glDeleteShader(fs);
+
+  return true;
+}
+
+bool MainOpenGL::initShader(GLuint program, const char* vshader, const char* fshader)
+{
+  qDebug() << "Initializing shaders";
+  QResource vs_resource(vshader);
+  const char* vs_data = (const char*)vs_resource.data();
+
+  GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
+  GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vs, 1, &vs_data, NULL);
+  glCompileShader(vs);
+  glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
+  if (!compile_ok) {
+    GLint infoLogLength;
+    glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &infoLogLength);
+    GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+    glGetShaderInfoLog(vs, infoLogLength, NULL, strInfoLog);
+
+    qDebug() << "##############################################################";
+    qDebug() << "Error in vertex shader";
+    qDebug() << strInfoLog;
+    qDebug() << "##############################################################";
+
+    return false;
+  }
+
+  QResource fs_resource(fshader);
+  const char* fs_data = (const char*)fs_resource.data();
+  GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fs, 1, &fs_data, NULL);
+  glCompileShader(fs);
+  glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
+
+  if (!compile_ok) {
+
+    GLint infoLogLength;
+    glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &infoLogLength);
+    GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+    glGetShaderInfoLog(fs, infoLogLength, NULL, strInfoLog);
+
+    qDebug() << "##############################################################";
+    qDebug() << "Error in fragment shader";
+    qDebug() << strInfoLog;
+    qDebug() << "##############################################################";
+
+    return false;
+  }
+
+  // link all together
+  glAttachShader(program, vs);
+  glAttachShader(program, fs);
+  glLinkProgram(program);
+  glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
+  
+  if (!link_ok) {
+    qDebug() << "Error in glLinkProgram";
+    GLint infoLogLength = 0;
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+    GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+    glGetProgramInfoLog(program, infoLogLength, &infoLogLength, strInfoLog);
+    qDebug() << strInfoLog;
+    return false;
+  }
+
+  glDetachShader(program, vs);
+  glDetachShader(program, fs);
+
+  glDeleteShader(vs);
   glDeleteShader(fs);
 
   return true;

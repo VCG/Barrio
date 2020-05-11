@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1600</width>
+    <width>2000</width>
     <height>1600</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>2000</width>
+    <height>1000</height>
+   </size>
   </property>
   <property name="cursor">
    <cursorShape>ArrowCursor</cursorShape>
@@ -19,11 +25,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_26">
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="GLWidget" name="openGLWidget" native="true"/>
-      </item>
-     </layout>
+     <layout class="QGridLayout" name="gridLayout_5"/>
     </item>
    </layout>
   </widget>
@@ -32,7 +34,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1600</width>
+     <width>2000</width>
      <height>21</height>
     </rect>
    </property>
@@ -694,7 +696,7 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QGridLayout" name="gridLayout_25">
-     <item row="0" column="0">
+     <item row="0" column="1">
       <widget class="QFrame" name="frame_61">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -1825,8 +1827,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>247</width>
-                 <height>433</height>
+                 <width>496</width>
+                 <height>1338</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -3128,6 +3130,9 @@
         </item>
        </layout>
       </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="GLWidget" name="openGLWidget" native="true"/>
      </item>
     </layout>
    </widget>

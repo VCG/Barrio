@@ -83,7 +83,8 @@ set(project_headers
     performancerate.h
     inputform.h
     mesh_preprocessing.h
-    webviewer.h)
+    webviewer.h
+    globalParameters.h)
 
 set(project_sources
     main.cpp
@@ -162,7 +163,9 @@ set(project_sources
     shaders/path_vert.glsl
     shaders/space2d_grid_points_geom.glsl
     shaders/space2d_grid_triangle_geom.glsl
-    shaders/skeleton_point_frag.glsl)
+    shaders/skeleton_point_frag.glsl
+    shaders/mesh_vert_simplified.glsl
+    shaders/mesh_frag_simplified.glsl)
 
 # Creating entries for target: NeCo
 

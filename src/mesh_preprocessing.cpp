@@ -135,7 +135,7 @@ int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<Ver
     const auto distance = std::sqrt(tree.squared_distance(point_query));
     if (distance > max_distance)
       max_distance = distance;
-    vertex->skeleton_vertex.setW(distance);
+    vertex->distance_to_cell = distance;
   }
 
   return EXIT_SUCCESS;

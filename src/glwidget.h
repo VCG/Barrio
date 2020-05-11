@@ -40,6 +40,8 @@ public:
   void insertInTable(int);
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
+  void drawMesh();
+
   void initMeshShaderStorage(GLuint program);
   void pass1();
   void pass2();
@@ -140,7 +142,7 @@ protected:
   GraphManager* m_graphManager;
   GlycogenAnalysisManager* m_glycogenAnalysisManager;
 
-  struct GlobalUniforms               m_uniforms;
+  struct WidgetUniforms               m_uniforms;
 
   /* matrices */
   QMatrix4x4                          m_projection;

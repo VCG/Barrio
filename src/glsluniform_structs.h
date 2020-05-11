@@ -3,7 +3,7 @@
 
 #include <QMatrix4x4>
 
-struct GlobalUniforms {
+struct WidgetUniforms {
   /* 0 */    int y_axis;
   /* 1 */    int x_axis;
   /* 2 */    float* mMatrix;
