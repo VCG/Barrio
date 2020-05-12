@@ -47,6 +47,8 @@ endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView)
 
+set(CMAKE_CXX_STANDARD 17)
+
 set(project_ui
   inputform.ui
   mainwindow.ui)
