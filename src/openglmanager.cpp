@@ -1456,7 +1456,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
   mesh->allocateNormalsVBO(m_TMesh.getVBO("VertexNormals"));
   initNormalsAttrib();
 
-  //m_TMesh.vboRelease("VertexNormals");
+  m_TMesh.vboRelease("VertexNormals");
   GL_Error();
 
   m_TMesh.vaoRelease();
@@ -1478,9 +1478,9 @@ bool OpenGLManager::initMeshTrianglesShaders()
   initMeshVertexAttrib();
   m_TMesh.vboRelease("MeshVertices");
 
-  //m_TMesh.vboBind("VertexNormals");
-  //initNormalsAttrib();
-  //m_TMesh.vboRelease("VertexNormals");
+  m_TMesh.vboBind("VertexNormals");
+  initNormalsAttrib();
+  m_TMesh.vboRelease("VertexNormals");
   
   GL_Error();
   m_TMesh.vaoRelease();

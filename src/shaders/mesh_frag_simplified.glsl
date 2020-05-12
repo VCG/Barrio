@@ -10,12 +10,12 @@
 
 layout (location = 0) out vec4 FragColor;
 
-in vec3         normal_frag;
+in vec4         normal_frag;
 in vec3			eye_frag;
 flat in int     frag_structure_type;
 in float        hvgx_frag;
 
 void main()
 {
-  FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  FragColor = vec4(normal_frag.xyz, 1.0);
 }

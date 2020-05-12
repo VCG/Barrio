@@ -1172,9 +1172,9 @@ bool DataContainer::importObj(QString path)
     // parse vertices
     else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
 
-      float x = elements[1].toFloat();
-      float y = elements[2].toFloat();
-      float z = elements[3].toFloat();
+      float x = abs(elements[1].toFloat());
+      float y = abs(elements[2].toFloat());
+      float z = abs(elements[3].toFloat());
 
       vertexCounter++;
 
@@ -1211,15 +1211,15 @@ bool DataContainer::importObj(QString path)
         return false;
       }
 
+      // safe indices counter clockwise
       obj->addTriangleIndex(vertexIndex[0] - 1);
-      obj->addTriangleIndex(vertexIndex[1] - 1);
       obj->addTriangleIndex(vertexIndex[2] - 1);
+      obj->addTriangleIndex(vertexIndex[1] - 1);
       
-
-      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[1] - 1, vertexIndex[2] - 1);
+      // safe indices counter clockwise
+      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[2] - 1, vertexIndex[1] - 1);
       m_indices_size += 3;
 
-      // todo check what that is for
       if (m_indices_size_byType.find(obj->getObjectType()) == m_indices_size_byType.end()) {
         m_indices_size_byType[obj->getObjectType()] = 0;
       }

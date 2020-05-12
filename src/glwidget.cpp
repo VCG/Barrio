@@ -85,9 +85,9 @@ void GLWidget::updateMVPAttrib()
   m_mMatrix.setToIdentity();
 
   // Center Zoom
-  m_mMatrix.translate(m_cameraPosition);
+  m_mMatrix.translate(m_center);
   m_mMatrix.scale(m_distance);
-  m_mMatrix.translate(-1.0 * m_cameraPosition);
+  m_mMatrix.translate(-1.0 * m_center);
 
   // Translation
   m_mMatrix.translate(m_translation);
@@ -98,9 +98,9 @@ void GLWidget::updateMVPAttrib()
 
   // Rotation
   m_rotationMatrix.setToIdentity();
-  m_rotationMatrix.translate(m_cameraPosition);
+  m_rotationMatrix.translate(m_center);
   m_rotationMatrix.rotate(m_rotation);
-  m_rotationMatrix.translate(-1.0 * m_cameraPosition);
+  m_rotationMatrix.translate(-1.0 * m_center);
   m_mMatrix *= m_rotationMatrix;
 
   const qreal retinaScale = devicePixelRatio();
@@ -292,14 +292,16 @@ void GLWidget::resizeGL(int w, int h)
   qreal aspect = retinaScale * qreal(w) / qreal(h ? h : 1);
   m_projection.setToIdentity();
   //m_projection.ortho(GLfloat(-w) / GLfloat(h), GLfloat(w) / GLfloat(h), -1.0, 1.0f, -5.0, 5.0);
-  m_projection.perspective(45.0, aspect, 5.0, -50.0);
+  m_projection.perspective(45.0, aspect, 1.0, 10 * MESH_MAX_Z);
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  m_cameraPosition = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -MESH_MAX_Z / 2.0);
+  m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
   QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
+  QVector3D eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
+  
   m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, -2.0 * MESH_MAX_Z) /*m_cameraPosition*/, m_cameraPosition /*center*/, cameraUpDirection);
+  m_vMatrix.lookAt(eye, m_center, cameraUpDirection);
 
   if (m_opengl_mngr != NULL)
     m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
@@ -424,7 +426,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     QVector2D diff = QVector2D(deltaX, deltaY);
     
     // Rotation axis is perpendicular to the mouse position difference
-    QVector3D n = QVector3D(-diff.y(), diff.x(), 0).normalized();
+    QVector3D n = QVector3D(diff.y(), diff.x(), 0).normalized();
 
     // Accelerate angular speed relative to the length of the mouse sweep
     qreal angle = diff.length() / 2.0;;

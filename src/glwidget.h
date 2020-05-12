@@ -151,7 +151,7 @@ protected:
   QMatrix4x4                          m_model_noRotation;
   QMatrix4x4                          m_rotationMatrix;
 
-  QVector3D                           m_cameraPosition;
+  QVector3D                           m_center;
 
   /* rotation */
   QPoint                              m_lastPos;
