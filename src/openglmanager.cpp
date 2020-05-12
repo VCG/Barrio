@@ -146,7 +146,7 @@ bool OpenGLManager::initOpenGLFunctions()
   //initGlycogenPointsShaders();
 
   initCoordSystemShaders();
-  initSliceShaders();
+  //initSliceShaders();
 
   //initFilterSSBO();
 
@@ -272,8 +272,8 @@ bool OpenGLManager::initCoordSystemShaders()
 
   m_TCoordSystem.useProgram("coord_system_program");
 
-  m_TCoordSystem.vboCreate("coord_sysstem_vbo", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
-  m_TCoordSystem.vboBind("coord_sysstem_vbo");
+  m_TCoordSystem.vboCreate("coord_system_vbo", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
+  m_TCoordSystem.vboBind("coord_system_vbo");
 
   float coordVertices[] =
   {
@@ -288,7 +288,7 @@ bool OpenGLManager::initCoordSystemShaders()
     0.0, 0.0, 5.0,               0.0, 0.0, 1.0
   };
 
-  QOpenGLBuffer buffer = m_TCoordSystem.getVBO("coord_sysstem_vbo");
+  QOpenGLBuffer buffer = m_TCoordSystem.getVBO("coord_system_vbo");
   buffer.allocate(coordVertices, sizeof(coordVertices));
 
   initCoordSystemVertexAttrib();
