@@ -72,11 +72,13 @@ void GLWidget::init(InputForm* input_form)
   m_graphManager = new GraphManager(m_data_containter, m_opengl_mngr);
 
   //glycogen analysis manager with clustering
-  m_glycogenAnalysisManager = new GlycogenAnalysisManager(m_data_containter->getGlycogenMapPtr(), m_data_containter->getGlycogenVertexDataPtr(), m_data_containter->getGlycogenOctree(), m_data_containter->getMeshPointer()->getVerticesList());
-  m_glycogenAnalysisManager->setBoutonAndSpineOctrees(m_data_containter->getBoutonHash(), m_data_containter->getSpineHash());
-  m_glycogenAnalysisManager->setMitochondriaSpatialHash(m_data_containter->getNeuroMitoHash());
+  //m_glycogenAnalysisManager = new GlycogenAnalysisManager(m_data_containter->getGlycogenMapPtr(), m_data_containter->getGlycogenVertexDataPtr(), m_data_containter->getGlycogenOctree(), m_data_containter->getMeshPointer()->getVerticesList());
+  //m_glycogenAnalysisManager->setBoutonAndSpineOctrees(m_data_containter->getBoutonHash(), m_data_containter->getSpineHash());
+  //m_glycogenAnalysisManager->setMitochondriaSpatialHash(m_data_containter->getNeuroMitoHash());
 
 }
+
+
 
 void GLWidget::updateMVPAttrib()
 {
@@ -89,7 +91,7 @@ void GLWidget::updateMVPAttrib()
   m_mMatrix.scale(m_distance);
   m_mMatrix.translate(-1.0 * m_center);
 
-  // Translation
+  //// Translation
   m_mMatrix.translate(m_translation);
 
   // Model Matrix without rotation
@@ -108,9 +110,10 @@ void GLWidget::updateMVPAttrib()
 
   int max_astro_coverage = m_data_containter->getMaxAstroCoverage();
   int max_volume = m_data_containter->getMaxVolume();
+
   // graph model matrix without rotation, apply rotation to nodes directly
-  m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(),
-                      m_model_noRotation.data(), m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
+  m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(), m_model_noRotation.data(),
+    m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
   m_opengl_mngr->updateUniformsData(m_uniforms);
 }
 
@@ -119,174 +122,49 @@ void GLWidget::initializeGL()
   qDebug() << "initializeGL";
   m_performaceMeasure.startTimer();
 
-  initializeOpenGLFunctions();
-
-  updateMVPAttrib();
-
-
-  m_2dspace->initOpenGLFunctions();
+  //updateMVPAttrib();
   m_opengl_mngr->initOpenGLFunctions();
-  //m_graphManager->ExtractGraphFromMesh();
-
-
-
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  /******************** 1 Abstraction Space ********************/
-  m_2dspace->initBuffer();
-  emit setAbstractionData(m_2dspace);
-
-  glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-  glEnable(GL_MULTISAMPLE);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glEnable(GL_BLEND); // to enable transparency
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_LINE_SMOOTH); // for line smoothing
-  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-  //GLuint meshShaderProgramHandle = m_opengl_mngr->getMeshShaderProgramHandle();
-  //initMeshShaderStorage(meshShaderProgramHandle);
-
-  //mesh_shader_pass_idx_1 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass1");
-  //mesh_shader_pass_idx_2 = glGetSubroutineIndex(meshShaderProgramHandle, GL_FRAGMENT_SHADER, "pass2");
-
-
-  //// Set up a  VAO for the full-screen quad
-  //GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
-  //  1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
-  //GLuint bufHandle;
-  //glGenBuffers(1, &bufHandle);
-  //glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
-  //glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
-
-  //// Set up the vertex array object
-  //glGenVertexArrays(1, &fsQuad);
-  //glBindVertexArray(fsQuad);
-
-  //glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
-  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  //glEnableVertexAttribArray(0);  // Vertex position
-
-  //glBindVertexArray(0);
-
-
 
   if (m_FDL_running) {
     stopForecDirectedLayout();
   }
 
   m_lockRotation2D_timer->start(500);
-
-}
-
-void GLWidget::pass1()
-{
-  float fps = m_performaceMeasure.getFPS();
-  if (fps > 0) {
-    updateFPS(QString::number(fps));
-    updateFrameTime(QString::number(1000.0 / fps));
-  }
-
-  startRotation();
-
-  //glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
-  
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glDepthMask(GL_FALSE);
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
-  const qreal retinaScale = devicePixelRatio();
-  glViewport(0, 0, width() * retinaScale, height() * retinaScale);
-  updateMVPAttrib();
-  
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  //m_opengl_mngr->updateUniformsData(m_uniforms);
-  //m_opengl_mngr->drawAll();
-
-  // draw scene
-  m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
-
-  glFinish();
-}
-
-void GLWidget::pass2()
-{
-  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_2);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  //view = glm::mat4(1.0f);
-  //projection = glm::mat4(1.0f);
-  //model = glm::mat4(1.0f);
-
-  //setMatrices();
-
-  // Draw a screen filler
-  glBindVertexArray(fsQuad);
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-  glBindVertexArray(0);
-}
-
-void GLWidget::clearBuffers()
-{
-  GLuint zero = 0;
-  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
-  glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
-
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
-  glBindTexture(GL_TEXTURE_2D, headPtrTex);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width(), height(), GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
 }
 
 
 void GLWidget::paintGL()
 {
-  //clearBuffers();
-  //pass1();
-  //pass2();
+  startRotation();
+
+  if (debug_count > 10) {
+    updateMVPAttrib();
+    m_opengl_mngr->renderMesh(&m_uniforms);
+  }
+  debug_count++;
   
 
-  float fps = m_performaceMeasure.getFPS();
+  
+
+  /*float fps = m_performaceMeasure.getFPS();
   if (fps > 0) {
     updateFPS(QString::number(fps));
     updateFrameTime(QString::number(1000.0 / fps));
-  }
-
-  startRotation();
-
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  const qreal retinaScale = devicePixelRatio();
-  glViewport(0, 0, width() * retinaScale, height() * retinaScale);
-
-
-  updateMVPAttrib();
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }*/
 
   //m_opengl_mngr->updateUniformsData(m_uniforms);
-  m_opengl_mngr->drawCoordSystem(&m_uniforms);
   //m_opengl_mngr->drawSlice(&m_uniforms);
-  m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
-  
-
-  // paint the text here
- 
+  //m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
+  qDebug() << "Resize Widget: " << w << ", " << h;
+
   // Calculate aspect ratio
   const qreal retinaScale = devicePixelRatio();
   h = (h == 0) ? 1 : h;
-  glViewport(0, 0, w * retinaScale, h * retinaScale);
 
-  //qDebug() << w * retinaScale << " " << h * retinaScale;
   m_uniforms.viewport = QVector4D(0, 0, w * retinaScale, h * retinaScale);
 
   qreal aspect = retinaScale * qreal(w) / qreal(h ? h : 1);
@@ -297,15 +175,18 @@ void GLWidget::resizeGL(int w, int h)
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
   m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
-  QVector3D  cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
-  QVector3D eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
+  m_cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
+  m_eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
   
   m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(eye, m_center, cameraUpDirection);
+  m_vMatrix.lookAt(m_eye, m_center, m_cameraUpDirection);
 
-  if (m_opengl_mngr != NULL)
+  if (m_opengl_mngr != NULL) {
     m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
+  }
+
   update();
+  
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -335,7 +216,7 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
 
   makeCurrent();
 
-  m_opengl_mngr->renderSelection(&m_uniforms);
+  /*m_opengl_mngr->renderSelection(&m_uniforms);
 
   int hvgxID = pickObject(event);
 
@@ -352,7 +233,7 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
       m_selectedObjects.insert(hvgxID);
       insertInTable(hvgxID);
     }
-  }
+  }*/
 
 quit:
   doneCurrent();
@@ -467,6 +348,7 @@ void GLWidget::wheelEvent(QWheelEvent* event)
   int delta = event->delta();
 
   if (event->orientation() == Qt::Vertical) {
+    qDebug("Zooming");
     if (delta < 0) {
       m_distance *= 1.1;
     }
@@ -993,41 +875,6 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
   signalCheckByType(checkBoxByType);
 
-}
-
-void GLWidget::drawMesh()
-{
-
-}
-
-void GLWidget::initMeshShaderStorage(GLuint program)
-{
-  glGenBuffers(2, oit_buffers);
-  GLint maxNodes = 20 * width() * height();
-  GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
-
-  // Our atomic counter
-  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
-  glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
-
-  // The buffer for the head pointers, as an image texture
-  glGenTextures(1, &headPtrTex);
-  glBindTexture(GL_TEXTURE_2D, headPtrTex);
-  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, width(), height());
-  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-
-  // The buffer of linked lists
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
-
-  // set max nodes uniform
-  int maxNodesID = glGetUniformLocation(program, "maxNodes");
-  if (maxNodesID >= 0) glUniform1iv(maxNodesID, 1, &maxNodes);
-
-  std::vector<GLuint> headPtrClearBuf(width() * height(), 0xffffffff);
-  glGenBuffers(1, &clear_oit_buffers);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), &headPtrClearBuf[0], GL_STATIC_COPY);
 }
 
 

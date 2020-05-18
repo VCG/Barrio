@@ -14,7 +14,7 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
-enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
+//enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
 struct ListNode {
   QVector4D color;
@@ -42,7 +42,7 @@ public:
 
   void drawMesh();
 
-  void initMeshShaderStorage(GLuint program);
+
   void pass1();
   void pass2();
   void clearBuffers();
@@ -126,6 +126,7 @@ protected:
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
   void updateMVPAttrib();
+  void resetMVPAttrib();
   void loadMesh();
 
 
@@ -152,6 +153,8 @@ protected:
   QMatrix4x4                          m_rotationMatrix;
 
   QVector3D                           m_center;
+  QVector3D                           m_eye;
+  QVector3D                           m_cameraUpDirection;
 
   /* rotation */
   QPoint                              m_lastPos;
@@ -181,10 +184,13 @@ protected:
   float                               m_rot_ydiff;
   float                               m_xy_slice_z;
 
+  int debug_count = 0;
+
   /* order independent transparency vars*/
-  GLuint                              oit_buffers[2], fsQuad, headPtrTex;
-  GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
-  GLuint                              clear_oit_buffers;
+  //GLuint                              oit_buffers[2], fsQuad, headPtrTex;
+  //GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
+  //GLuint                              clear_oit_buffers;
+  //GLuint                              m_maxNodes;
 };
 
 

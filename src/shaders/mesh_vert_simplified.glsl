@@ -14,17 +14,17 @@ uniform mat4    rMatrix;
 out float hvgx_frag;
 out vec4 normal_frag;
 out vec3 eye_frag;
-out flat int frag_structure_type;
+flat out float frag_structure_type;
 
 vec3 eye = vec3(0.5, 0.5, 1.0);
 
 void main()
 {
-    mat4 pvmMatrix = pMatrix * vMatrix * mMatrix;
-    gl_Position =  pvmMatrix * vec4(mesh_vtx.xyz, 1.0);
+    mat4 mvpMatrix = pMatrix * vMatrix * mMatrix;
+    gl_Position =  mvpMatrix * vec4(mesh_vtx.xyz, 1.0);
 
     normal_frag = normalize(normal);
     eye_frag = normalize(eye);
-    frag_structure_type = structure_type;
+    frag_structure_type = float(structure_type);
     hvgx_frag = float(hvgxID);
 }

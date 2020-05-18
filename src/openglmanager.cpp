@@ -93,13 +93,13 @@ bool OpenGLManager::initOpenGLFunctions()
   m_glFunctionsSet = true;
   initializeOpenGLFunctions();
 
-  m_GSkeleton.initOpenGLFunctions();
+  //m_GSkeleton.initOpenGLFunctions();
   m_TMesh.initOpenGLFunctions();
-  m_SkeletonPoints.initOpenGLFunctions();
-  m_GNeurites.initOpenGLFunctions();
-  m_GlycogenPoints.initOpenGLFunctions();
-  m_TSliceView.initOpenGLFunctions();
-  m_TCoordSystem.initializeOpenGLFunctions();
+  //m_SkeletonPoints.initOpenGLFunctions();
+  //m_GNeurites.initOpenGLFunctions();
+  //m_GlycogenPoints.initOpenGLFunctions();
+  //m_TSliceView.initOpenGLFunctions();
+  //m_TCoordSystem.initializeOpenGLFunctions();
 
   /*load3DTexturesFromRaw_3(m_dataContainer->input_files_dir.proximity_astro,
     m_dataContainer->input_files_dir.proximity_astro_mito,
@@ -126,29 +126,62 @@ bool OpenGLManager::initOpenGLFunctions()
   //delete glycogen_tf;
 
 
-  int width, height, nrChannels;
-  unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
-  if (data)
-  {
-    init_1D_texture(m_mito_colormap, GL_TEXTURE4, data, width);
-  }
-  stbi_image_free(data);
+  //int width, height, nrChannels;
+  //unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
+  //if (data)
+  //{
+  //  init_1D_texture(m_mito_colormap, GL_TEXTURE4, data, width);
+  //}
+  //stbi_image_free(data);
 
+  // init buffers
   fillVBOsData();
+  initMeshBuffers();
+  GL_Error();
 
-  //initSSBO();
-
-  // *********** 3) Skeleton Points    ***********
-  //initSkeletonShaders();
+  // init shaders
   initMeshTrianglesShaders();
-  //initAbstractSkeletonShaders();
-  //initNeuritesGraphShaders();
-  //initGlycogenPointsShaders();
+  GL_Error();
 
-  initCoordSystemShaders();
-  //initSliceShaders();
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glEnable(GL_DEPTH_TEST);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glEnable(GL_CULL_FACE);
+  //glCullFace(GL_BACK);
+  GL_Error();
 
-  //initFilterSSBO();
+  mesh_shader_pass_idx_1 = glGetSubroutineIndex(m_TMesh.getProgram("3Dtriangles"), GL_FRAGMENT_SHADER, "pass1");
+  mesh_shader_pass_idx_2 = glGetSubroutineIndex(m_TMesh.getProgram("3Dtriangles"), GL_FRAGMENT_SHADER, "pass2");
+  GL_Error();
+
+  // screen quad
+
+  // Set up a  VAO for the full-screen quad
+  GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0,
+                       1.0f, -1.0f, 0.0f, 1.0,
+                       1.0f,  1.0f, 0.0f, 1.0,
+                      -1.0f,  1.0f, 0.0f, 1.0 };
+
+  GLuint bufHandle;
+  glGenBuffers(1, &bufHandle);
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+
+  // Set up the vertex array object
+  glGenVertexArrays(1, &fsQuad);
+  glBindVertexArray(fsQuad);
+
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(0);  // Vertex position
+
+  glBindVertexArray(0);
+  GL_Error();
+
+
+
+  //initCoordSystemShaders();
+
 
   return true;
 }
@@ -175,17 +208,34 @@ void OpenGLManager::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid
 
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::updateCanvasDim(int w, int h, int retianScale)
+void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
 {
+  glViewport(0, 0, w * retinaScale, h * retinaScale);
+
   if (m_canvas_h != h || m_canvas_w != w) {
-    m_canvas_h = h * retianScale;
-    m_canvas_w = w * retianScale;
-    m_retinaScale = retianScale;
-    initSelectionFrameBuffer();
-    init2DHeatMapTextures();
+    m_canvas_h = h * retinaScale;
+    m_canvas_w = w * retinaScale;
+    m_retinaScale = retinaScale;
+    //initSelectionFrameBuffer();
+    //init2DHeatMapTextures();
+   
+    if (!init) {
+      m_TMesh.useProgram("3Dtriangles");
+      initMeshShaderStorage();
+
+     
+      GLuint prog = m_TMesh.getProgram("3Dtriangles");
+      GL_Error();
+
+      int maxNodesID = glGetUniformLocation(prog, "maxNodes");
+      GL_Error();
+
+      if (maxNodesID >= 0) glUniform1ui(maxNodesID, m_maxNodes);
+      GL_Error();
+      init = true;
+    }
     GL_Error();
   }
-
 }
 
 // ----------------------------------------------------------------------------
@@ -1394,12 +1444,12 @@ bool OpenGLManager::initMeshVertexAttrib()
   glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
 
   // structure type
-  offset += sizeof(float);
+  offset += sizeof(GL_FLOAT);
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
 
   // hvgx ID
-  offset += sizeof(int);
+  offset += sizeof(GL_INT);
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
 
@@ -1418,23 +1468,44 @@ bool OpenGLManager::initMeshTrianglesShaders()
 {
   qDebug() << "initMeshTrianglesShaders";
   m_TMesh.createProgram("3Dtriangles");
-  bool res = m_TMesh.compileShader("3Dtriangles", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/mesh_frag_simplified.glsl");
+  return m_TMesh.compileShader("3Dtriangles", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/mesh_frag_simplified.glsl");
 
-  if (res == false)
-    return res;
 
+  /*---------------------------------------------------------------------------------------------------------------------*/
+
+  ///*  start selection buffer **/
+  //m_TMesh.vaoCreate("Selection");
+  //m_TMesh.vaoBind("Selection");
+
+  //m_TMesh.createProgram("selection");
+  //res = m_TMesh.compileShader("selection", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/hvgx_selection_frag.glsl");
+  //if (res == false)
+  //  return res;
+
+  //m_TMesh.useProgram("selection");
+
+  //m_TMesh.vboBind("MeshVertices");
+  //initMeshVertexAttrib();
+  //m_TMesh.vboRelease("MeshVertices");
+
+  //m_TMesh.vboBind("VertexNormals");
+  //initNormalsAttrib();
+  //m_TMesh.vboRelease("VertexNormals");
+  //
+  //GL_Error();
+  //m_TMesh.vaoRelease();
+
+  //GL_Error();
+  /*  end selection buffer **/
+
+}
+
+void OpenGLManager::initMeshBuffers()
+{
   // create vbos and vaos
   m_TMesh.vaoCreate("Mesh");
   m_TMesh.vaoBind("Mesh");
 
-  m_TMesh.useProgram("3Dtriangles");
-  GLuint mesh_program = m_TMesh.getProgram("3Dtriangles");
-
-  GLint splat_tex = glGetUniformLocation(mesh_program, "splat_tex");
-  if (splat_tex >= 0) glUniform1i(splat_tex, 2);
-
-  GLint gly_tex = glGetUniformLocation(mesh_program, "gly_tex");
-  if (gly_tex >= 0) glUniform1i(gly_tex, 3);
 
   Mesh* mesh = m_dataContainer->getMeshPointer();
 
@@ -1458,36 +1529,7 @@ bool OpenGLManager::initMeshTrianglesShaders()
 
   m_TMesh.vboRelease("VertexNormals");
   GL_Error();
-
   m_TMesh.vaoRelease();
-
-  /*---------------------------------------------------------------------------------------------------------------------*/
-
-  /*  start selection buffer **/
-  m_TMesh.vaoCreate("Selection");
-  m_TMesh.vaoBind("Selection");
-
-  m_TMesh.createProgram("selection");
-  res = m_TMesh.compileShader("selection", ":/shaders/mesh_vert_simplified.glsl", ":/shaders/hvgx_selection_frag.glsl");
-  if (res == false)
-    return res;
-
-  m_TMesh.useProgram("selection");
-
-  m_TMesh.vboBind("MeshVertices");
-  initMeshVertexAttrib();
-  m_TMesh.vboRelease("MeshVertices");
-
-  m_TMesh.vboBind("VertexNormals");
-  initNormalsAttrib();
-  m_TMesh.vboRelease("VertexNormals");
-  
-  GL_Error();
-  m_TMesh.vaoRelease();
-
-  GL_Error();
-  /*  end selection buffer **/
-
 }
 
 // ----------------------------------------------------------------------------
@@ -1681,7 +1723,7 @@ void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
     m_TMesh.vaoBind("Selection");
     m_TMesh.useProgram("selection");
 
-    updateMeshPrograms(m_TMesh.getProgram("selection"), uniforms);
+    //updateMeshPrograms(m_TMesh.getProgram("selection"), uniforms);
 
     int astrocyte_indices = m_dataContainer->getIndicesSizeByObjectType(Object_t::ASTROCYTE);
     int neurites_indices = m_dataContainer->getMeshIndicesSize() - astrocyte_indices;
@@ -1700,37 +1742,8 @@ void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
   }
   else {
     m_TMesh.vaoBind("Mesh");
-    m_TMesh.useProgram("3Dtriangles");
 
     updateMeshPrograms(m_TMesh.getProgram("3Dtriangles"), uniforms);
-
-    // transfer function
-    GLint gly_tf = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "gly_tf");
-
-    if (gly_tf >= 0)
-    {
-      glUniform1i(gly_tf, 1);
-      glActiveTexture(GL_TEXTURE1);
-      glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
-    }
-
-    // Astrocyte 3D volume
-
-    GLint splat_tex = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "splat_tex");
-
-    if (splat_tex >= 0) {
-      glUniform1i(splat_tex, 2);
-      glActiveTexture(GL_TEXTURE2);
-      glBindTexture(GL_TEXTURE_3D, m_splat_volume_3DTex);// m_astro_3DTex);
-    }
-    // Glycogen 3D volume
-
-    GLint gly_tex = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "gly_tex");
-    if (gly_tex >= 0) {
-      glUniform1i(gly_tex, 3);
-      glActiveTexture(GL_TEXTURE3);
-      glBindTexture(GL_TEXTURE_3D, m_glycogen_3DTex);
-    }
 
     GLint mito_colormap = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "mito_colormap");
 
@@ -1747,18 +1760,111 @@ void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
     
     this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
 
-    /*if (m_transparent_astro) {
-      this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
-      this->renderVBOMesh(m_astro_VBO_label, astrocyte_indices);
-    }
-    else {
-      this->renderVBOMesh(m_astro_VBO_label, astrocyte_indices);
-      this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
-    }*/
-
-
     m_TMesh.vaoRelease();
+    GL_Error();
   }
+}
+
+void OpenGLManager::initMeshShaderStorage()
+{
+  qDebug() << "Updating Mesh Shader Storage - Width: " << m_canvas_w << ", Height << " << m_canvas_h;
+  glGenBuffers(2, oit_buffers);
+  m_maxNodes = 20 * m_canvas_w * m_canvas_h;
+  GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
+  GL_Error();
+
+  // Our atomic counter
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+  GL_Error();
+
+  // The buffer for the head pointers, as an image texture
+  glGenTextures(1, &headPtrTex);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, m_canvas_w, m_canvas_h);
+  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+  GL_Error();
+
+  // The buffer of linked lists
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+  GL_Error();
+  
+
+  GLuint pixels = m_canvas_w * m_canvas_h;
+  std::vector<GLuint> headPtrClearBuf(pixels, 0xffffffff);
+  glGenBuffers(1, &clear_oit_buffers);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), &headPtrClearBuf[0], GL_STATIC_COPY);
+  GL_Error();
+}
+
+
+
+void OpenGLManager::renderMesh(WidgetUniforms* uniforms)
+{ 
+    m_TMesh.useProgram("3Dtriangles");
+    clearBuffers();
+    pass1(&m_uniforms);
+    glFlush();
+    pass2();
+
+}
+
+void OpenGLManager::clearBuffers()
+{
+  GLuint zero = 0;
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
+  GL_Error();
+
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  GLuint my_width = m_canvas_w;
+  GLuint my_height = m_canvas_h;
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, my_width, my_height, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+  GL_Error();
+}
+
+void OpenGLManager::pass1(WidgetUniforms* uniforms)
+{
+  GL_Error();
+  m_TMesh.useProgram("3Dtriangles");
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDepthMask(GL_FALSE);
+  GL_Error();
+
+  // draw scene
+  drawMeshTriangles(false, uniforms);
+
+  glFinish();
+}
+
+void OpenGLManager::pass2()
+{
+  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_2);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  QMatrix4x4 mat = QMatrix4x4();
+  mat.setToIdentity();
+
+  int mMatrix = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "mMatrix");
+  if (mMatrix >= 0) glUniformMatrix4fv(mMatrix, 1, GL_FALSE, mat.data());
+
+  int vMatrix = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "vMatrix");
+  if (vMatrix >= 0) glUniformMatrix4fv(vMatrix, 1, GL_FALSE, mat.data());
+
+  int pMatrix = glGetUniformLocation(m_TMesh.getProgram("3Dtriangles"), "pMatrix");
+  if (pMatrix >= 0) glUniformMatrix4fv(pMatrix, 1, GL_FALSE, mat.data());
+
+  GL_Error();
+
+  // Draw a screen filler
+  glBindVertexArray(fsQuad);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+  glBindVertexArray(0);
 }
 
 // ############## Skeleton Points ###############################################
@@ -2139,20 +2245,23 @@ void OpenGLManager::initSelectionFrameBuffer()
   // create FBO
   glGenFramebuffers(1, &m_selectionFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
+  GL_Error();
 
   glGenRenderbuffers(1, &m_selectionRenderBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, m_selectionRenderBuffer);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, m_canvas_w, m_canvas_h);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_selectionRenderBuffer);
+  GL_Error();
 
   GLuint depthBuffer;
   glGenRenderbuffers(1, &depthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_canvas_w, m_canvas_h);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
+  GL_Error();
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GL_Error();
 }
 
 // ----------------------------------------------------------------------------

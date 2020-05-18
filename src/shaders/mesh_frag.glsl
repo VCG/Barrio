@@ -72,7 +72,7 @@ layout( binding = 0, std430 ) buffer linkedLists {
   NodeType nodes[];
 };
 
-uniform uint maxNodes;
+uniform long maxNodes;
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 

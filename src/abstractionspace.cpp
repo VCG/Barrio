@@ -434,7 +434,7 @@ void AbstractionSpace::updateID(int ID)
 void AbstractionSpace::initOpenGLFunctions()
 {
   m_glFunctionsSet = true;
-  initializeOpenGLFunctions();
+  //initializeOpenGLFunctions();
 }
 
 bool AbstractionSpace::initBuffer()

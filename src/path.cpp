@@ -42,7 +42,7 @@ void Path::addPoint(QVector2D point, QVector2D selection)
 
 void Path::initPath()
 {
-  initializeOpenGLFunctions();
+  /*initializeOpenGLFunctions();
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -76,7 +76,7 @@ void Path::initPath()
   glEnable(GL_MULTISAMPLE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);*/
 }
 
 void Path::drawPath(QMatrix4x4 projection)

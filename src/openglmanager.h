@@ -23,6 +23,7 @@
 enum class Size_e { VOLUME, ASTRO_COVERAGE, SYNAPSE_SIZE };
 enum class Color_e { TYPE, FUNCTION, ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
+enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
 class OpenGLManager : public MainOpenGL
 {
@@ -57,12 +58,23 @@ public:
 
   // *********** 1) Mesh Triangles     ***********
   bool initMeshTrianglesShaders();
+  void initMeshBuffers();
   void initNormalsAttrib();
   bool initMeshVertexAttrib();
   void updateMeshPrograms(GLuint program, WidgetUniforms* uniforms);
   void drawMeshTriangles(bool selection, WidgetUniforms* uniforms);
 
-  GLuint getMeshShaderProgramHandle() { return m_TMesh.getProgram("3Dtriangles"); }
+  void initMeshShaderStorage();
+  void updateMeshShaderStorage();
+  void renderMesh(WidgetUniforms* uniforms);
+  void clearBuffers();
+  void pass1(WidgetUniforms* uniforms);
+  void pass2();
+
+  GLuint useMeshProgram() {
+    m_TMesh.vaoBind("Mesh");
+    m_TMesh.useProgram("3Dtriangles");
+    return m_TMesh.getProgram("3Dtriangles"); }
 
   void renderVBOMesh(std::string vbolabel, int indices);
   void renderOrderToggle();
@@ -143,6 +155,7 @@ public:
   void initSelectionFrameBuffer();
   int processSelection(float x, float y);
   void renderSelection(WidgetUniforms* uniforms);
+
 
   void highlightObject(int hvgxID);
 
@@ -296,6 +309,16 @@ protected:
   bool                                    m_weighted_coverage;
 
   std::map<Object_t, std::pair<int, int>> m_visibleByType; // <number of objects of this type, visible objects of this type>
+
+  /* order independent transparency vars*/
+  GLuint                              oit_buffers[2], fsQuad, headPtrTex;
+  GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
+  GLuint                              clear_oit_buffers;
+  GLuint                              m_maxNodes;
+
+  bool init = false;
+  int debug_counter = 0;
+
 };
 
 #endif // OPENGLMANAGER_H
