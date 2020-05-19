@@ -1431,7 +1431,7 @@ bool OpenGLManager::initMeshVertexAttrib()
   if (m_glFunctionsSet == false)
     return false;
 
-  int stride = sizeof(VertexData);
+  GLsizei stride = sizeof(VertexData);
 
   // mesh_vtx
   int offset = 0;
@@ -1446,12 +1446,12 @@ bool OpenGLManager::initMeshVertexAttrib()
   // structure type
   offset += sizeof(GL_FLOAT);
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
+  glVertexAttribIPointer(2, 1, GL_INT, stride, (GLvoid*)offset);
 
   // hvgx ID
   offset += sizeof(GL_INT);
   glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, stride, (GLvoid*)offset);
+  glVertexAttribIPointer(3, 1, GL_INT, stride, (GLvoid*)offset);
 
   return true;
 }

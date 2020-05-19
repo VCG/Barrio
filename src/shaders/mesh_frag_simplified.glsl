@@ -15,8 +15,9 @@ layout (location = 0) out vec4 FragColor;
 
 in vec4         normal_frag;
 in vec3			    eye_frag;
-flat in float   frag_structure_type;
+flat in int     frag_structure_type;
 in float        hvgx_frag;
+in float        frag_cell_distance;
 
 // ------------- order independent transparency variables ----------
 struct NodeType {
@@ -58,17 +59,16 @@ subroutine(RenderPassType) void pass1()
 
     if(frag_structure_type == MITO)
     {
-      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.5) ;
+      nodes[nodeIdx].color =  vec4(normal_frag.xyz, 1.0);
     }
-    // else
-    // {
-    //    nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.5) ;
-    // }
+    else
+    {
+      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.05) ;
+    }
    
     nodes[nodeIdx].depth = gl_FragCoord.z;
     nodes[nodeIdx].next = prevHead;
   }
-  //FragColor = vec4(0.0, 0.0, 1.0, 1.0);
 }
 
   subroutine(RenderPassType) void pass2()
@@ -108,7 +108,7 @@ subroutine(RenderPassType) void pass1()
   }
 
   // Output the final color
-  FragColor = color;//vec4(1.0, 0.0, 0.0, 1.0);
+  FragColor = color;
 }
 
 void main()

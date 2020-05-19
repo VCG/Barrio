@@ -14,7 +14,8 @@ uniform mat4    rMatrix;
 out float hvgx_frag;
 out vec4 normal_frag;
 out vec3 eye_frag;
-flat out float frag_structure_type;
+flat out int frag_structure_type;
+out float frag_cell_distance;
 
 vec3 eye = vec3(0.5, 0.5, 1.0);
 
@@ -25,6 +26,7 @@ void main()
 
     normal_frag = normalize(normal);
     eye_frag = normalize(eye);
-    frag_structure_type = float(structure_type);
+    frag_structure_type = structure_type;
     hvgx_frag = float(hvgxID);
+    frag_cell_distance = distance_to_cell;
 }
