@@ -216,10 +216,10 @@ void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
     m_canvas_h = h * retinaScale;
     m_canvas_w = w * retinaScale;
     m_retinaScale = retinaScale;
-    //initSelectionFrameBuffer();
+    initSelectionFrameBuffer();
     //init2DHeatMapTextures();
    
-    if (!init) {
+    //if (!init) {
       m_TMesh.useProgram("3Dtriangles");
       initMeshShaderStorage();
 
@@ -232,9 +232,6 @@ void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
 
       if (maxNodesID >= 0) glUniform1ui(maxNodesID, m_maxNodes);
       GL_Error();
-      init = true;
-    }
-    GL_Error();
   }
 }
 
