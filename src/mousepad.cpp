@@ -348,47 +348,47 @@ void MousePad::init2DSpaceGL()
 
 void MousePad::initializeGL()
 {
-  ///*qDebug() << "MousePad::initializeGL()";
-  //initializeOpenGLFunctions();
-  //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  qDebug() << "MousePad::initializeGL()";
+  initializeOpenGLFunctions();
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //qDebug() << "MousePad::initData()";
-  //initData();
-  //GL_Error();
+  qDebug() << "MousePad::initData()";
+  initData();
+  GL_Error();
 
-  //qDebug() << "MousePad::initBuffer()";
-  //initBuffer();
-  //GL_Error();
+  qDebug() << "MousePad::initBuffer()";
+  initBuffer();
+  GL_Error();
 
-  //qDebug() << "MousePad::initSelectionPointerGL()";
-  //initSelectionPointerGL();
-  //GL_Error();
+  qDebug() << "MousePad::initSelectionPointerGL()";
+  initSelectionPointerGL();
+  GL_Error();
 
-  //qDebug() << "MousePad::initializeGL()";
-  //init2DSpaceGL();
+  qDebug() << "MousePad::initializeGL()";
+  init2DSpaceGL();
 
-  //qDebug() << "Widget OpenGl: " << format().majorVersion() << "." << format().minorVersion();
-  //qDebug() << "Context valid: " << context()->isValid();
-  //qDebug() << "Really used OpenGl: " << context()->format().majorVersion() << "." << context()->format().minorVersion();
-  //qDebug() << "OpenGl information: VENDOR:       " << (const char*)glGetString(GL_VENDOR);
-  //qDebug() << "                    RENDERDER:    " << (const char*)glGetString(GL_RENDERER);
-  //qDebug() << "                    VERSION:      " << (const char*)glGetString(GL_VERSION);
-  //qDebug() << "                    GLSL VERSION: " << (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  qDebug() << "Widget OpenGl: " << format().majorVersion() << "." << format().minorVersion();
+  qDebug() << "Context valid: " << context()->isValid();
+  qDebug() << "Really used OpenGl: " << context()->format().majorVersion() << "." << context()->format().minorVersion();
+  qDebug() << "OpenGl information: VENDOR:       " << (const char*)glGetString(GL_VENDOR);
+  qDebug() << "                    RENDERDER:    " << (const char*)glGetString(GL_RENDERER);
+  qDebug() << "                    VERSION:      " << (const char*)glGetString(GL_VERSION);
+  qDebug() << "                    GLSL VERSION: " << (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-  //m_projection.setToIdentity();
+  m_projection.setToIdentity();
 
-  //glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-  //glEnable(GL_MULTISAMPLE);
-  //glEnable(GL_DEPTH_TEST);
-  //glEnable(GL_CULL_FACE);
-  //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);*/
+  glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+  glEnable(GL_MULTISAMPLE);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 
   // test one path
-  //m_activePath = new Path(0); // no path yet
-  //m_activePath->initPath();
-  //signalPathName(m_activePath->getName());
+  m_activePath = new Path(0); // no path yet
+  m_activePath->initPath();
+  signalPathName(m_activePath->getName());
 }
 
 void MousePad::render2D_DebugSpace()
@@ -451,43 +451,43 @@ void MousePad::render2D_GridSpace()
 
 void MousePad::paintGL()
 {
-  //glViewport(0, 0, m_w, m_h);
-  //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glViewport(0, 0, m_w, m_h);
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //m_vao_circle.bind();
-  //m_program_circle->bind();
-  //m_program_circle->setUniformValue("pMatrix", m_projection);
-  //glDrawArrays(GL_POINTS, 0, 1);
-  //m_program_circle->release();
-  //m_vao_circle.release();
+  m_vao_circle.bind();
+  m_program_circle->bind();
+  m_program_circle->setUniformValue("pMatrix", m_projection);
+  glDrawArrays(GL_POINTS, 0, 1);
+  m_program_circle->release();
+  m_vao_circle.release();
 
-  //if (m_path_page_active && m_paths_list.size() > 0) {
-  //  if (m_tracing) {
-  //    m_activePath->tracePath(m_projection, m_trace_X);
-  //  }
-  //  else {
-  //    m_activePath->drawPath(m_projection);
-  //  }
-  //}
+  if (m_path_page_active && m_paths_list.size() > 0) {
+    if (m_tracing) {
+      m_activePath->tracePath(m_projection, m_trace_X);
+    }
+    else {
+      m_activePath->drawPath(m_projection);
+    }
+  }
 
-  //render2D_GridSpace();
-  //// render2D_DebugSpace();
+  render2D_GridSpace();
+  // render2D_DebugSpace();
 }
 
 void MousePad::resizeGL(int w, int h)
 {
-  //qDebug() << "Func: resizeGL: " << w << " " << width() << " " << h << " " << height();
-  //// Calculate aspect ratio
-  //const qreal retinaScale = devicePixelRatio();
+  qDebug() << "Func: resizeGL: " << w << " " << width() << " " << h << " " << height();
+  // Calculate aspect ratio
+  const qreal retinaScale = devicePixelRatio();
 
-  //m_h = h * retinaScale;
-  //m_w = w * retinaScale;
-  //h = (h == 0) ? 1 : h;
+  m_h = h * retinaScale;
+  m_w = w * retinaScale;
+  h = (h == 0) ? 1 : h;
 
-  //glViewport(0, 0, w * retinaScale, h * retinaScale);
-  //m_projection.setToIdentity();
-  //m_projection.ortho(0.0f, 1.0f, 0.0f, 1.0f, -1.0, 1.0);
+  glViewport(0, 0, w * retinaScale, h * retinaScale);
+  m_projection.setToIdentity();
+  m_projection.ortho(0.0f, 1.0f, 0.0f, 1.0f, -1.0, 1.0);
 
 
   update();

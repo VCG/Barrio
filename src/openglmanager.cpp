@@ -210,20 +210,21 @@ void OpenGLManager::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid
 //
 void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
 {
+  m_TMesh.useProgram("3Dtriangles");
   glViewport(0, 0, w * retinaScale, h * retinaScale);
 
   if (m_canvas_h != h || m_canvas_w != w) {
     m_canvas_h = h * retinaScale;
     m_canvas_w = w * retinaScale;
     m_retinaScale = retinaScale;
-    initSelectionFrameBuffer();
+    //initSelectionFrameBuffer();
     //init2DHeatMapTextures();
    
-    //if (!init) {
-      m_TMesh.useProgram("3Dtriangles");
+    if (!init) {
+      
       initMeshShaderStorage();
 
-     
+
       GLuint prog = m_TMesh.getProgram("3Dtriangles");
       GL_Error();
 
@@ -232,6 +233,8 @@ void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
 
       if (maxNodesID >= 0) glUniform1ui(maxNodesID, m_maxNodes);
       GL_Error();
+      init = true;
+    }
   }
 }
 
