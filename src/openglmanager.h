@@ -68,6 +68,7 @@ public:
   void updateMeshShaderStorage();
   void renderMesh(WidgetUniforms* uniforms);
   void clearBuffers();
+  void clearHeadTexture();
   void pass1(WidgetUniforms* uniforms);
   void pass2();
 
@@ -318,6 +319,8 @@ protected:
 
   bool init = false;
   int debug_counter = 0;
+
+  std::vector<GLuint>                 headPtrClearBuf;
 
 };
 

@@ -110,31 +110,31 @@ bool OpenGLManager::initOpenGLFunctions()
     m_glycogen_3DTex, GL_TEXTURE3, 999, 999, 999);*/
 
 
-  //load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE1, 999, 999, 449);
+    //load3DTexturesFromRaw(image_volume_path, m_image_volume_3DTex, GL_TEXTURE1, 999, 999, 449);
 
-  //std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
-  //glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
-  //glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
-  //glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); //glycogen_tf->push_back(255);   // 4 116,196,118
-  //glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); //glycogen_tf->push_back(255);   //5 65, 171, 93
-  //glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); //glycogen_tf->push_back(255);   //6 35, 139, 69
-  //glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); //glycogen_tf->push_back(255);   //7 0, 109, 44
-  //glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); //glycogen_tf->push_back(255);   //8 0, 68, 27
+    //std::vector<unsigned char>* glycogen_tf = new std::vector<unsigned char>();
+    //glycogen_tf->push_back(252); glycogen_tf->push_back(187); glycogen_tf->push_back(161); //glycogen_tf->push_back(255);   // 2 199,233,192
+    //glycogen_tf->push_back(252); glycogen_tf->push_back(146); glycogen_tf->push_back(114); //glycogen_tf->push_back(255);   // 3 161,217,155
+    //glycogen_tf->push_back(251); glycogen_tf->push_back(106); glycogen_tf->push_back(74); //glycogen_tf->push_back(255);   // 4 116,196,118
+    //glycogen_tf->push_back(239); glycogen_tf->push_back(59); glycogen_tf->push_back(44); //glycogen_tf->push_back(255);   //5 65, 171, 93
+    //glycogen_tf->push_back(203); glycogen_tf->push_back(24); glycogen_tf->push_back(29); //glycogen_tf->push_back(255);   //6 35, 139, 69
+    //glycogen_tf->push_back(165); glycogen_tf->push_back(15); glycogen_tf->push_back(21); //glycogen_tf->push_back(255);   //7 0, 109, 44
+    //glycogen_tf->push_back(103); glycogen_tf->push_back(0);  glycogen_tf->push_back(13); //glycogen_tf->push_back(255);   //8 0, 68, 27
 
-  //init_1D_texture(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
+    //init_1D_texture(m_tf_glycogen, GL_TEXTURE1, glycogen_tf->data(), glycogen_tf->size() / 4);
 
-  //delete glycogen_tf;
+    //delete glycogen_tf;
 
 
-  //int width, height, nrChannels;
-  //unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
-  //if (data)
-  //{
-  //  init_1D_texture(m_mito_colormap, GL_TEXTURE4, data, width);
-  //}
-  //stbi_image_free(data);
+    //int width, height, nrChannels;
+    //unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
+    //if (data)
+    //{
+    //  init_1D_texture(m_mito_colormap, GL_TEXTURE4, data, width);
+    //}
+    //stbi_image_free(data);
 
-  // init buffers
+    // init buffers
   fillVBOsData();
   initMeshBuffers();
   GL_Error();
@@ -210,31 +210,35 @@ void OpenGLManager::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid
 //
 void OpenGLManager::updateCanvasDim(int w, int h, int retinaScale)
 {
-  m_TMesh.useProgram("3Dtriangles");
+  //if (init) {
+    clearBuffers();
+  //}
+ 
   glViewport(0, 0, w * retinaScale, h * retinaScale);
 
   if (m_canvas_h != h || m_canvas_w != w) {
+
     m_canvas_h = h * retinaScale;
     m_canvas_w = w * retinaScale;
     m_retinaScale = retinaScale;
     //initSelectionFrameBuffer();
     //init2DHeatMapTextures();
+
    
-    if (!init) {
-      
-      initMeshShaderStorage();
+   initMeshShaderStorage();
+     
 
+    m_TMesh.useProgram("3Dtriangles");
+    GLuint prog = m_TMesh.getProgram("3Dtriangles");
+    GL_Error();
 
-      GLuint prog = m_TMesh.getProgram("3Dtriangles");
-      GL_Error();
+    int maxNodesID = glGetUniformLocation(prog, "maxNodes");
+    GL_Error();
 
-      int maxNodesID = glGetUniformLocation(prog, "maxNodes");
-      GL_Error();
+    if (maxNodesID >= 0) glUniform1ui(maxNodesID, m_maxNodes);
+    GL_Error();
+    init = true;
 
-      if (maxNodesID >= 0) glUniform1ui(maxNodesID, m_maxNodes);
-      GL_Error();
-      init = true;
-    }
   }
 }
 
@@ -1757,13 +1761,53 @@ void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
     // Astrocyte 3D volume
     int astrocyte_indices = m_dataContainer->getIndicesSizeByObjectType(Object_t::ASTROCYTE);
     int neurites_indices = m_dataContainer->getMeshIndicesSize() - astrocyte_indices;
-    
+
     this->renderVBOMesh(m_neurites_VBO_label, neurites_indices);
 
     m_TMesh.vaoRelease();
     GL_Error();
   }
 }
+
+//void OpenGLManager::updateMeshShaderStorage()
+//{
+//
+//
+//  //GLuint zero = 0;
+//  //glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+//  //glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
+//  //GL_Error();
+//
+//  //clearHeadTexture();
+//
+//  //glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+//  //glBindTexture(GL_TEXTURE_2D, headPtrTex);
+//  //glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_canvas_w, m_canvas_h, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+//  //GL_Error();
+//
+//  m_maxNodes = 20 * m_canvas_w * m_canvas_h;
+//  GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
+//
+//  // The buffer for the head pointers, as an image texture
+//  //glGenTextures(1, &headPtrTex);
+//  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+//  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, m_canvas_w, m_canvas_h);
+//  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+//  GL_Error();
+//
+//  // The buffer of linked lists
+//  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+//  glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+//  GL_Error();
+//
+//
+//  GLuint pixels = m_canvas_w * m_canvas_h;
+//  headPtrClearBuf = new std::vector<GLuint>(pixels, 0xffffffff);
+//  glGenBuffers(1, &clear_oit_buffers);
+//  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+//  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf->size() * sizeof(GLuint), headPtrClearBuf->data(), GL_STATIC_COPY);
+//  GL_Error();
+//}
 
 void OpenGLManager::initMeshShaderStorage()
 {
@@ -1789,25 +1833,29 @@ void OpenGLManager::initMeshShaderStorage()
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
   glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
   GL_Error();
-  
+
 
   GLuint pixels = m_canvas_w * m_canvas_h;
-  std::vector<GLuint> headPtrClearBuf(pixels, 0xffffffff);
+
+  // todo check why storage usage increases
+  if (!headPtrClearBuf.empty())
+  {
+    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memoty
+  }
+  headPtrClearBuf = *(new std::vector<GLuint>(pixels, 0xffffffff));
   glGenBuffers(1, &clear_oit_buffers);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), &headPtrClearBuf[0], GL_STATIC_COPY);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
   GL_Error();
 }
 
-
-
 void OpenGLManager::renderMesh(WidgetUniforms* uniforms)
-{ 
-    m_TMesh.useProgram("3Dtriangles");
-    clearBuffers();
-    pass1(&m_uniforms);
-    glFlush();
-    pass2();
+{
+  m_TMesh.useProgram("3Dtriangles");
+  clearBuffers();
+  pass1(&m_uniforms);
+  glFlush();
+  pass2();
 
 }
 
@@ -1818,11 +1866,14 @@ void OpenGLManager::clearBuffers()
   glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
   GL_Error();
 
+  clearHeadTexture();
+}
+
+void OpenGLManager::clearHeadTexture()
+{
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
   glBindTexture(GL_TEXTURE_2D, headPtrTex);
-  GLuint my_width = m_canvas_w;
-  GLuint my_height = m_canvas_h;
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, my_width, my_height, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_canvas_w, m_canvas_h, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
   GL_Error();
 }
 
