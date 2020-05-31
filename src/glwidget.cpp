@@ -8,7 +8,7 @@
 #include "glwidget.h"
 #include "colors.h"
 
-GLWidget::GLWidget(QWidget* parent)
+GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
   : QOpenGLWidget(parent),
   m_yaxis(0),
   m_xaxis(0),
@@ -44,6 +44,9 @@ GLWidget::GLWidget(QWidget* parent)
   m_rot_ydiff = 1;
 
   m_xy_slice_z = 0.5f * MESH_MAX_Z;
+
+  m_shared_resources = resources;
+  m_hvgx_id = hvgx_id;
 }
 
 GLWidget::~GLWidget()
@@ -71,16 +74,11 @@ void GLWidget::init(InputForm* input_form)
   // graph manager with 4 graphs and 2D space layouted data
   m_graphManager = new GraphManager(m_data_containter, m_opengl_mngr);
 
-  //glycogen analysis manager with clustering
-  //m_glycogenAnalysisManager = new GlycogenAnalysisManager(m_data_containter->getGlycogenMapPtr(), m_data_containter->getGlycogenVertexDataPtr(), m_data_containter->getGlycogenOctree(), m_data_containter->getMeshPointer()->getVerticesList());
-  //m_glycogenAnalysisManager->setBoutonAndSpineOctrees(m_data_containter->getBoutonHash(), m_data_containter->getSpineHash());
-  //m_glycogenAnalysisManager->setMitochondriaSpatialHash(m_data_containter->getNeuroMitoHash());
-
 }
 
 
 
-void GLWidget::updateMVPAttrib()
+void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 {
   // calculate model view transformation
   // world/model matrix: determines the position and orientation of an object in 3D space
@@ -105,16 +103,35 @@ void GLWidget::updateMVPAttrib()
   m_rotationMatrix.translate(-1.0 * m_center);
   m_mMatrix *= m_rotationMatrix;
 
-  const qreal retinaScale = devicePixelRatio();
-  QVector4D viewport = QVector4D(0, 0, width() * retinaScale, height() * retinaScale);
+  //int rMatrix = program->uniformLocation("rMatrix");
+  //if (rMatrix >= 0) program->setUniformValue(rMatrix, m_rotationMatrix);
 
-  int max_astro_coverage = m_data_containter->getMaxAstroCoverage();
-  int max_volume = m_data_containter->getMaxVolume();
+  int mMatrix = program->uniformLocation("mMatrix");
+  if (mMatrix >= 0) program->setUniformValue(mMatrix, m_mMatrix);
+  GL_Error();
 
-  // graph model matrix without rotation, apply rotation to nodes directly
-  m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(), m_model_noRotation.data(),
-    m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
-  m_opengl_mngr->updateUniformsData(m_uniforms);
+  int vMatrix = program->uniformLocation("vMatrix");
+  if (vMatrix >= 0) program->setUniformValue(vMatrix, m_vMatrix);
+  GL_Error();
+
+  int pMatrix = program->uniformLocation("pMatrix");
+  if (pMatrix >= 0) program->setUniformValue(pMatrix, m_projection);
+  GL_Error();
+
+  int mNodes = program->uniformLocation("maxNodes");
+  if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
+  GL_Error();
+
+  //const qreal retinaScale = devicePixelRatio();
+  //QVector4D viewport = QVector4D(0, 0, width() * retinaScale, height() * retinaScale);
+
+  //int max_astro_coverage = m_data_containter->getMaxAstroCoverage();
+  //int max_volume = m_data_containter->getMaxVolume();
+
+  //// graph model matrix without rotation, apply rotation to nodes directly
+  //m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(), m_model_noRotation.data(),
+  //  m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
+  //m_opengl_mngr->updateUniformsData(m_uniforms);
 }
 
 void GLWidget::initializeGL()
@@ -122,8 +139,93 @@ void GLWidget::initializeGL()
   qDebug() << "initializeGL";
   m_performaceMeasure.startTimer();
 
-  //updateMVPAttrib();
-  m_opengl_mngr->initOpenGLFunctions();
+  initializeOpenGLFunctions();
+  
+  QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
+  
+  f->glClearColor(1.0, 1.0, 1.0, 1.0);
+
+  m_mesh_program = new QOpenGLShaderProgram;
+  m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/mesh_vert_simplified.glsl");
+  m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/mesh_frag_simplified.glsl");
+  m_mesh_program->link();
+
+  f->glEnable(GL_DEPTH_TEST);
+  f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  
+ 
+
+  int success = m_mesh_program->bind();
+  
+  m_mesh_vao.create();
+ 
+  m_mesh_vao.bind();
+
+
+  // bind vbos to vao
+  m_shared_resources.mesh_vertex_vbo->bind();
+
+  // setting up vertex attributes
+  GLsizei stride = sizeof(VertexData);
+
+  // mesh_vtx
+  int offset = 0;
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, 0);
+
+  // distance to cell
+  offset += sizeof(QVector4D);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+
+  // structure type
+  offset += sizeof(GL_FLOAT);
+  glEnableVertexAttribArray(2);
+  glVertexAttribIPointer(2, 1, GL_INT, stride, (GLvoid*)offset);
+
+  // hvgx ID
+  offset += sizeof(GL_INT);
+  glEnableVertexAttribArray(3);
+  glVertexAttribIPointer(3, 1, GL_INT, stride, (GLvoid*)offset);
+
+  m_shared_resources.mesh_normal_vbo->bind();
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+  m_mesh_vao.release();
+
+
+  mesh_shader_pass_idx_1 = glGetSubroutineIndex(m_mesh_program->programId(), GL_FRAGMENT_SHADER, "pass1");
+  mesh_shader_pass_idx_2 = glGetSubroutineIndex(m_mesh_program->programId(), GL_FRAGMENT_SHADER, "pass2");
+  GL_Error();
+
+  // screen quad
+
+  // Set up a  VAO for the full-screen quad
+  GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0,
+                       1.0f, -1.0f, 0.0f, 1.0,
+                       1.0f,  1.0f, 0.0f, 1.0,
+                      -1.0f,  1.0f, 0.0f, 1.0 };
+
+  GLuint bufHandle;
+  glGenBuffers(1, &bufHandle);
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+
+  // Set up the vertex array object
+  glGenVertexArrays(1, &fsQuad);
+  glBindVertexArray(fsQuad);
+
+  glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(0);  // Vertex position
+
+  glBindVertexArray(0);
+  GL_Error();
+
+  m_mesh_program->release();
+
 
   if (m_FDL_running) {
     stopForecDirectedLayout();
@@ -136,40 +238,42 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
   startRotation();
-
-  if (debug_count > 10) {
-    updateMVPAttrib();
-    m_opengl_mngr->renderMesh(&m_uniforms);
-  }
-  debug_count++;
+  GL_Error();
   
-
   
+  //if (debug_count > 10) {
+    
+    bool success = m_mesh_program->bind();
 
-  /*float fps = m_performaceMeasure.getFPS();
-  if (fps > 0) {
-    updateFPS(QString::number(fps));
-    updateFrameTime(QString::number(1000.0 / fps));
-  }*/
+    clearBuffers();
+    pass1();
+    GL_Error();
+    glFlush();
+    GL_Error();
+    pass2();
 
-  //m_opengl_mngr->updateUniformsData(m_uniforms);
-  //m_opengl_mngr->drawSlice(&m_uniforms);
-  //m_opengl_mngr->drawMeshTriangles(false, &m_uniforms);
+    m_mesh_program->release();
+  //}
+  //debug_count++;
+
+   
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-  qDebug() << "Resize Widget: " << w << ", " << h;
-
-  // Calculate aspect ratio
   const qreal retinaScale = devicePixelRatio();
   h = (h == 0) ? 1 : h;
 
-  m_uniforms.viewport = QVector4D(0, 0, w * retinaScale, h * retinaScale);
+  m_width = w * retinaScale;
+  m_height = h * retinaScale;
+
+  qDebug() << "Resize Widget: " << m_width << ", " << m_height;
+
+  // Calculate aspect ratio
+  m_uniforms.viewport = QVector4D(0, 0, m_width, m_height);
 
   qreal aspect = retinaScale * qreal(w) / qreal(h ? h : 1);
   m_projection.setToIdentity();
-  //m_projection.ortho(GLfloat(-w) / GLfloat(h), GLfloat(w) / GLfloat(h), -1.0, 1.0f, -5.0, 5.0);
   m_projection.perspective(45.0, aspect, 1.0, 10 * MESH_MAX_Z);
 
   // set up view
@@ -181,9 +285,9 @@ void GLWidget::resizeGL(int w, int h)
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(m_eye, m_center, m_cameraUpDirection);
 
-  if (m_opengl_mngr != NULL) {
-    m_opengl_mngr->updateCanvasDim(w, h, retinaScale);
-  }
+  glViewport(0, 0, m_width, m_height);
+
+  initMeshShaderStorage();
 
   update();
   
@@ -269,9 +373,9 @@ void GLWidget::lockRotation2D()
   // start a timer, and reset it whenever we are here
   // once we exceed threshold start force layouted
   // if we are below x < 50 and y < 50
-  updateMVPAttrib();      // update uniforms
+  //updateMVPAttrib(m_mesh_program);      // update uniforms
   //m_graphManager->update2Dflag(true, m_uniforms);
-  m_opengl_mngr->update2Dflag(true);
+  //m_opengl_mngr->update2Dflag(true);
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
@@ -348,7 +452,6 @@ void GLWidget::wheelEvent(QWheelEvent* event)
   int delta = event->delta();
 
   if (event->orientation() == Qt::Vertical) {
-    qDebug("Zooming");
     if (delta < 0) {
       m_distance *= 1.1;
     }
@@ -875,6 +978,126 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
   signalCheckByType(checkBoxByType);
 
+}
+
+void GLWidget::drawScene()
+{
+  GL_Error();
+  updateMVPAttrib(m_mesh_program);
+  GL_Error();
+
+  m_mesh_vao.bind();
+  GL_Error();
+ 
+  m_shared_resources.mesh_index_vbo->bind();
+  glDrawElements(GL_TRIANGLES, m_shared_resources.index_count, GL_UNSIGNED_INT, 0);
+  GL_Error();
+
+  m_mesh_vao.release();
+  GL_Error();
+}
+
+void GLWidget::pass1()
+{
+  GL_Error();
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDepthMask(GL_FALSE);
+  GL_Error();
+
+  // draw scene
+  drawScene();
+  GL_Error();
+
+  glFinish();
+  GL_Error();
+}
+
+void GLWidget::pass2()
+{
+  GL_Error();
+  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  GL_Error();
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_2);
+  GL_Error();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  GL_Error();
+
+  QMatrix4x4 mat = QMatrix4x4();
+  mat.setToIdentity();
+  GL_Error();
+
+  int mMatrix = m_mesh_program->uniformLocation("mMatrix");
+  if (mMatrix >= 0) m_mesh_program->setUniformValue(mMatrix, mat);
+  GL_Error();
+
+  int vMatrix = m_mesh_program->uniformLocation("vMatrix");
+  if (vMatrix >= 0) m_mesh_program->setUniformValue(vMatrix, mat);
+  GL_Error();
+
+  int pMatrix = m_mesh_program->uniformLocation("pMatrix");
+  if (pMatrix >= 0) m_mesh_program->setUniformValue(pMatrix, mat);
+
+  GL_Error();
+
+  // Draw a screen filler
+  glBindVertexArray(fsQuad);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+  glBindVertexArray(0);
+  GL_Error();
+}
+
+void GLWidget::clearBuffers()
+{
+  GLuint zero = 0;
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
+  GL_Error();
+
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+  GL_Error();
+}
+
+void GLWidget::initMeshShaderStorage()
+{
+  qDebug() << "Updating Mesh Shader Storage - Width: " << m_width << ", Height << " << m_height;
+  glGenBuffers(2, oit_buffers);
+  m_maxNodes = 20 * m_width * m_height;
+  GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
+  GL_Error();
+
+  // Our atomic counter
+  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+  GL_Error();
+
+  // The buffer for the head pointers, as an image texture
+  glGenTextures(1, &headPtrTex);
+  glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, m_width, m_height);
+  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+  GL_Error();
+
+  // The buffer of linked lists
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+  GL_Error();
+
+
+  GLuint pixels = m_width * m_height;
+
+  // todo check why storage usage increases
+  if (!headPtrClearBuf.empty())
+  {
+    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memoty
+  }
+  headPtrClearBuf = *(new std::vector<GLuint>(pixels, 0xffffffff));
+  glGenBuffers(1, &clear_oit_buffers);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
+  GL_Error();
 }
 
 

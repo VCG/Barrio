@@ -63,6 +63,8 @@ public:
 
   std::vector< struct VertexData >* getVerticesList() { return &m_vertices; }
   std::vector< VertexData* >* getVerticesListByType(Object_t type) { return &(m_typeVertexList[(int)type]); }
+  std::vector<QVector4D>* getNormalsList() { return &m_normals;
+  }
 
   void addFace(int index1, int index2, int index3);
   void getVertexNeighbors(int v_index, std::set< int >& neighs);

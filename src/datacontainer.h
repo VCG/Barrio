@@ -102,7 +102,7 @@ public:
 
   int   getSkeletonPointsSize();
   int   getMeshIndicesSize();
-  Mesh* getMeshPointer();
+  Mesh* getMesh();
 
   Object_t getObjectTypeByID(int hvgxID);
   std::string getObjectName(int hvgxID);

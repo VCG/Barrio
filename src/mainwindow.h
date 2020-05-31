@@ -6,6 +6,7 @@
 #include <QStandardItemModel>
 #include <QListWidgetItem>
 #include "inputform.h"
+#include "mainwidget.h"
 
 namespace Ui {
   class MainWindow;
@@ -27,8 +28,8 @@ public:
 
   void setupSignalsNSlots();
 
-  GLWidget* getGLWidget();
-  MousePad* getMousePad();
+  //GLWidget* getGLWidget();
+  //MousePad* getMousePad();
   void onAddWebWidget();
 
 public slots:
@@ -92,6 +93,10 @@ private:
   std::map<int, Clustering::GlycogenCluster*>* m_clusters;
   QTreeWidgetItem* m_currentSelectedCluster;
   QStandardItemModel* tableView;
+
+  MainWidget* m_mainWidget;
+  
+
 };
 
 #endif // MAINWINDOW_H

@@ -1,15 +1,15 @@
 #version 430 core
+
 layout (location = 0) in vec4 mesh_vtx;
 layout (location = 1) in float distance_to_cell;
 layout (location = 2) in int structure_type;
 layout (location = 3) in int hvgxID;
-
 layout (location = 4) in vec4 normal;
 
 uniform mat4    mMatrix;
 uniform mat4    vMatrix;
 uniform mat4    pMatrix;
-uniform mat4    rMatrix;
+//uniform mat4    rMatrix;
 
 out float hvgx_frag;
 out vec4 normal_frag;

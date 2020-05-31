@@ -1370,7 +1370,7 @@ int DataContainer::getSkeletonPointsSize()
 
 //----------------------------------------------------------------------------
 //
-Mesh* DataContainer::getMeshPointer()
+Mesh* DataContainer::getMesh()
 {
   return m_mesh;
 }

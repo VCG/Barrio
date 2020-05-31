@@ -419,7 +419,7 @@ int OpenGLManager::fillMeshVBO(Object* object_p, int offset, std::string vboLabe
   m_TMesh.vboBind(vboLabel);
 
   int vbo_IndexMesh_count = object_p->get_indices_size() * sizeof(GLuint);
-  m_TMesh.vboWrite(vboLabel, offset, object_p->get_indices_forVBO(), vbo_IndexMesh_count);
+  m_TMesh.vboWrite(vboLabel, offset, object_p->getIndexData(), vbo_IndexMesh_count);
 
   return vbo_IndexMesh_count;
 }
@@ -1511,7 +1511,7 @@ void OpenGLManager::initMeshBuffers()
   m_TMesh.vaoBind("Mesh");
 
 
-  Mesh* mesh = m_dataContainer->getMeshPointer();
+  Mesh* mesh = m_dataContainer->getMesh();
 
   m_TMesh.vboCreate("MeshVertices", Buffer_Type::VERTEX, Buffer_Usage_Type::STATIC);
   m_TMesh.vboBind("MeshVertices");
@@ -1811,42 +1811,42 @@ void OpenGLManager::drawMeshTriangles(bool selection, WidgetUniforms* uniforms)
 
 void OpenGLManager::initMeshShaderStorage()
 {
-  qDebug() << "Updating Mesh Shader Storage - Width: " << m_canvas_w << ", Height << " << m_canvas_h;
-  glGenBuffers(2, oit_buffers);
-  m_maxNodes = 20 * m_canvas_w * m_canvas_h;
-  GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
-  GL_Error();
+  //qDebug() << "Updating Mesh Shader Storage - Width: " << m_canvas_w << ", Height << " << m_canvas_h;
+  //glGenBuffers(2, oit_buffers);
+  //m_maxNodes = 20 * m_canvas_w * m_canvas_h;
+  //GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
+  //GL_Error();
 
-  // Our atomic counter
-  glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
-  glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
-  GL_Error();
+  //// Our atomic counter
+  //glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
+  //glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+  //GL_Error();
 
-  // The buffer for the head pointers, as an image texture
-  glGenTextures(1, &headPtrTex);
-  glBindTexture(GL_TEXTURE_2D, headPtrTex);
-  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, m_canvas_w, m_canvas_h);
-  glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-  GL_Error();
+  //// The buffer for the head pointers, as an image texture
+  //glGenTextures(1, &headPtrTex);
+  //glBindTexture(GL_TEXTURE_2D, headPtrTex);
+  //glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, m_canvas_w, m_canvas_h);
+  //glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+  //GL_Error();
 
-  // The buffer of linked lists
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
-  GL_Error();
+  //// The buffer of linked lists
+  //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+  //glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+  //GL_Error();
 
 
-  GLuint pixels = m_canvas_w * m_canvas_h;
+  //GLuint pixels = m_canvas_w * m_canvas_h;
 
-  // todo check why storage usage increases
-  if (!headPtrClearBuf.empty())
-  {
-    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memoty
-  }
-  headPtrClearBuf = *(new std::vector<GLuint>(pixels, 0xffffffff));
-  glGenBuffers(1, &clear_oit_buffers);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
-  GL_Error();
+  //// todo check why storage usage increases
+  //if (!headPtrClearBuf.empty())
+  //{
+  //  std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memoty
+  //}
+  //headPtrClearBuf = *(new std::vector<GLuint>(pixels, 0xffffffff));
+  //glGenBuffers(1, &clear_oit_buffers);
+  //glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
+  //glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
+  //GL_Error();
 }
 
 void OpenGLManager::renderMesh(WidgetUniforms* uniforms)
@@ -1861,12 +1861,12 @@ void OpenGLManager::renderMesh(WidgetUniforms* uniforms)
 
 void OpenGLManager::clearBuffers()
 {
-  GLuint zero = 0;
+  /*GLuint zero = 0;
   glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
   glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
   GL_Error();
 
-  clearHeadTexture();
+  clearHeadTexture();*/
 }
 
 void OpenGLManager::clearHeadTexture()

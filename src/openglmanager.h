@@ -20,10 +20,11 @@
 
 
 
+
 enum class Size_e { VOLUME, ASTRO_COVERAGE, SYNAPSE_SIZE };
 enum class Color_e { TYPE, FUNCTION, ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
-enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
+//enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
 class OpenGLManager : public MainOpenGL
 {

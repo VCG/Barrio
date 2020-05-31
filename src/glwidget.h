@@ -14,7 +14,7 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
-//enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
+enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
 struct ListNode {
   QVector4D color;
@@ -22,12 +22,20 @@ struct ListNode {
   GLuint next;
 };
 
+struct SharedGLResources
+{
+  QOpenGLBuffer* mesh_index_vbo;
+  QOpenGLBuffer* mesh_vertex_vbo;
+  QOpenGLBuffer* mesh_normal_vbo;
+  int            index_count;
+};
+
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT
 
 public:
-  GLWidget(QWidget* parent = 0);
+  GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent = 0);
   ~GLWidget();
   void init(InputForm* input_form);
 
@@ -40,12 +48,14 @@ public:
   void insertInTable(int);
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
-  void drawMesh();
+  void drawScene();
 
 
   void pass1();
   void pass2();
   void clearBuffers();
+
+  void initMeshShaderStorage();
 
 public slots:
   void getSliderX(int value);
@@ -125,7 +135,7 @@ protected:
   void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
-  void updateMVPAttrib();
+  void updateMVPAttrib(QOpenGLShaderProgram* program);
   void resetMVPAttrib();
   void loadMesh();
 
@@ -186,11 +196,22 @@ protected:
 
   int debug_count = 0;
 
+  SharedGLResources                   m_shared_resources;
+
+  int                                 m_hvgx_id;
+
+  QOpenGLShaderProgram*                m_mesh_program;
+  QOpenGLVertexArrayObject             m_mesh_vao;
+
   /* order independent transparency vars*/
-  //GLuint                              oit_buffers[2], fsQuad, headPtrTex;
-  //GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
-  //GLuint                              clear_oit_buffers;
-  //GLuint                              m_maxNodes;
+  GLuint                              oit_buffers[2], fsQuad, headPtrTex;
+  GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
+  GLuint                              clear_oit_buffers;
+  GLint                               m_maxNodes;
+
+  std::vector<GLuint>                 headPtrClearBuf;
+
+  int                                 m_width, m_height;
 };
 
 

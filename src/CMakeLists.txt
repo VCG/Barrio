@@ -86,7 +86,9 @@ set(project_headers
     inputform.h
     mesh_preprocessing.h
     webviewer.h
-    globalParameters.h)
+    globalParameters.h
+    mainWidget.h
+    mainwidget.h)
 
 set(project_sources
     main.cpp
@@ -119,6 +121,7 @@ set(project_sources
     inputform.cpp
     mesh_preprocessing.cpp
     webviewer.cpp
+    mainwidget.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

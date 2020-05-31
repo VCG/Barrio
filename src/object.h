@@ -53,7 +53,7 @@ public:
   // mesh indices functions
   void addTriangleIndex(int faces);
   size_t get_indices_size() { return m_meshIndices.size(); }
-  void* get_indices_forVBO() { return m_meshIndices.data(); }
+  void* getIndexData() { return m_meshIndices.data(); }
   std::vector<int>* get_indices_list(){ return &m_meshIndices; }
 
 
