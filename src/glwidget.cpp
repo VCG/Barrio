@@ -150,7 +150,7 @@ void GLWidget::initializeGL()
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/mesh_frag_simplified.glsl");
   m_mesh_program->link();
 
-  f->glEnable(GL_DEPTH_TEST);
+  //f->glEnable(GL_DEPTH_TEST);
   f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   
@@ -244,6 +244,7 @@ void GLWidget::paintGL()
   //if (debug_count > 10) {
     
     bool success = m_mesh_program->bind();
+    updateMVPAttrib(m_mesh_program);
 
     clearBuffers();
     pass1();
@@ -254,7 +255,7 @@ void GLWidget::paintGL()
 
     m_mesh_program->release();
   //}
-  //debug_count++;
+  debug_count++;
 
    
 }
@@ -983,7 +984,7 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 void GLWidget::drawScene()
 {
   GL_Error();
-  updateMVPAttrib(m_mesh_program);
+  
   GL_Error();
 
   m_mesh_vao.bind();
@@ -1085,15 +1086,12 @@ void GLWidget::initMeshShaderStorage()
   glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
   GL_Error();
 
-
-  GLuint pixels = m_width * m_height;
-
   // todo check why storage usage increases
   if (!headPtrClearBuf.empty())
   {
-    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memoty
+    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memory
   }
-  headPtrClearBuf = *(new std::vector<GLuint>(pixels, 0xffffffff));
+  headPtrClearBuf = *(new std::vector<GLuint>(m_width * m_height, 0xffffffff));
   glGenBuffers(1, &clear_oit_buffers);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
   glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
