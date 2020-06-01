@@ -37,7 +37,7 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
   connect(m_auto_rotation_timer, SIGNAL(timeout()), this, SLOT(startRotation()));
 
   m_active_graph_tab = 0;
-  setFocusPolicy(Qt::StrongFocus);
+  //setFocusPolicy(Qt::StrongFocus);
   m_hide_toggle = false;
 
   m_auto_rotate = false;
@@ -47,6 +47,8 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
 
   m_shared_resources = resources;
   m_hvgx_id = hvgx_id;
+
+  headPtrClearBuf = new std::vector<GLuint>();
 }
 
 GLWidget::~GLWidget()
@@ -238,26 +240,16 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
   startRotation();
-  GL_Error();
-  
-  
-  //if (debug_count > 10) {
     
-    bool success = m_mesh_program->bind();
-    updateMVPAttrib(m_mesh_program);
+  bool success = m_mesh_program->bind();
+  updateMVPAttrib(m_mesh_program);
 
-    clearBuffers();
-    pass1();
-    GL_Error();
-    glFlush();
-    GL_Error();
-    pass2();
+  clearBuffers();
+  pass1();
+  glFlush();
+  pass2();
 
-    m_mesh_program->release();
-  //}
-  debug_count++;
-
-   
+  m_mesh_program->release(); 
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -1086,15 +1078,14 @@ void GLWidget::initMeshShaderStorage()
   glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
   GL_Error();
 
-  // todo check why storage usage increases
-  if (!headPtrClearBuf.empty())
-  {
-    std::vector<GLuint>().swap(headPtrClearBuf);  // reallocate memory
-  }
-  headPtrClearBuf = *(new std::vector<GLuint>(m_width * m_height, 0xffffffff));
+
+  headPtrClearBuf->clear();
+  headPtrClearBuf->shrink_to_fit();
+  headPtrClearBuf = new std::vector<GLuint>(m_width * m_height, 0xffffffff);
+
   glGenBuffers(1, &clear_oit_buffers);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), headPtrClearBuf.data(), GL_STATIC_COPY);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf->size() * sizeof(GLuint), headPtrClearBuf->data(), GL_STATIC_COPY);
   GL_Error();
 }
 

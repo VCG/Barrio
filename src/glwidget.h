@@ -209,7 +209,7 @@ protected:
   GLuint                              clear_oit_buffers;
   GLint                               m_maxNodes;
 
-  std::vector<GLuint>                 headPtrClearBuf;
+  std::vector<GLuint>*                 headPtrClearBuf;
 
   int                                 m_width, m_height;
 };

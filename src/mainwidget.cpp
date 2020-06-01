@@ -5,10 +5,12 @@ MainWidget::MainWidget(InputForm* input_form, QWidget* parent)
 {
   m_datacontainer = new DataContainer(input_form);
   m_input_form = input_form;
+  setFocusPolicy(Qt::StrongFocus);
 }
 
 bool MainWidget::addGLWidget(int ID, int row, int col)
 {
+
   GLWidget* widget = new GLWidget(ID, m_shared_resources, this);
   
   widget->init(m_input_form); // todo delete dependecy of input form later
@@ -24,6 +26,19 @@ bool MainWidget::deleteWidget(int ID)
   return false;
 }
 
+void MainWidget::keyPressEvent(QKeyEvent* event)
+{
+  qDebug() << "Key pressed";
+  switch (event->key())
+  {
+  case(Qt::Key_A):
+    m_lastID++;
+    m_current_row++;
+    addGLWidget(m_lastID, m_current_row, m_current_col);
+    break;
+  }
+}
+
 void MainWidget::initializeGL()
 {
   initializeOpenGLFunctions();
@@ -35,14 +50,24 @@ void MainWidget::initializeGL()
   // setup shared resources
   initSharedVBOs();
 
-  // add first widget
-  addGLWidget(0, 0, 0);
+  m_current_row = 0;
+  m_current_col = 0;
+  m_lastID = 0;
 
-  /*addGLWidget(1, 0, 1);
+
+
+  // add first widget
+  addGLWidget(m_lastID, m_current_row, m_current_col);
+
+ /* addGLWidget(1, 0, 1);
 
   addGLWidget(2, 1, 0);
 
-  addGLWidget(2, 1, 1);*/
+  addGLWidget(3, 1, 1);*/
+
+  //addGLWidget(4, 2, 0);
+
+  //addGLWidget(5, 2, 1);
 
 }
 

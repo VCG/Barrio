@@ -19,6 +19,7 @@ protected:
   void initializeGL() override;
   void paintGL() override;
   void resizeGL(int width, int height) override;
+  void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
 private:
   DataContainer* m_datacontainer;
@@ -33,6 +34,10 @@ private:
   QOpenGLBuffer m_mesh_normal_vbo;
 
   void initSharedVBOs();
+
+  int m_lastID;
+  int m_current_row;
+  int m_current_col;
 
 };
 
