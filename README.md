@@ -26,6 +26,9 @@ To get started you first need to **install all required dependencies**.
 
 Note that you do not have to restart youre machine after setting the environmental variables. **Restarting the programs (Visual Studio, the command line, cmake etc.) is enough the apply the changes**.  
 
+2. Create a `build` directory on the same level as the `src` directory
+3. Run cmake and use the src dir as the source dir and the newly created build dir
+
 ## Data Preprocessing
 For data preprocessing and input data specification please refer to this [repo](https://github.com/jakobtroidl/neco_convert). 
 
