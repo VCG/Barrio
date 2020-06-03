@@ -52,7 +52,7 @@ void MainWidget::initializeGL()
 
   m_current_row = 0;
   m_current_col = 0;
-  m_lastID = 0;
+  m_lastID = 10;
 
 
 
@@ -74,6 +74,7 @@ void MainWidget::initializeGL()
 void MainWidget::paintGL()
 {
   qDebug() << "Trying to paint mainwidget";
+  glClearColor(1.0, 0.0, 0.0, 1.0);
   // do nothing
 }
 

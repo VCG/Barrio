@@ -49,13 +49,14 @@ public:
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
   void drawScene();
+ 
 
 
   void pass1();
   void pass2();
   void clearBuffers();
 
-  void initMeshShaderStorage();
+  void initMeshShaderStorage(int width, int height);
 
 public slots:
   void getSliderX(int value);
@@ -112,6 +113,7 @@ public slots:
 
   void autoRotation();
   void startRotation();
+  void prepareResize();
 
 signals:
   void setAbstractionData(AbstractionSpace* space_instance);
@@ -194,8 +196,6 @@ protected:
   float                               m_rot_ydiff;
   float                               m_xy_slice_z;
 
-  int debug_count = 0;
-
   SharedGLResources                   m_shared_resources;
 
   int                                 m_hvgx_id;
@@ -204,7 +204,8 @@ protected:
   QOpenGLVertexArrayObject             m_mesh_vao;
 
   /* order independent transparency vars*/
-  GLuint                              oit_buffers[2], fsQuad, headPtrTex;
+  QOpenGLVertexArrayObject            m_fsQuad_vao;
+  GLuint                              oit_buffers[2], headPtrTex;
   GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
   GLuint                              clear_oit_buffers;
   GLint                               m_maxNodes;
@@ -212,6 +213,9 @@ protected:
   std::vector<GLuint>*                 headPtrClearBuf;
 
   int                                 m_width, m_height;
+  bool                                m_init;
+  int                                 debug_counter;
+  bool                                just_resized;
 };
 
 
