@@ -23,6 +23,7 @@ To get started you first need to **install all required dependencies**.
 * `CGAL_DIR` to `C:\dev\CGAL-5.0.1`
 * `CEREAL_DIR` to `C:\dev\cereal-1.3.0\include`
 
+
 Note that you do not have to restart youre machine after setting the environmental variables. **Restarting the programs (Visual Studio, the command line, cmake etc.) is enough the apply the changes**.  
 
 ## Data Preprocessing
