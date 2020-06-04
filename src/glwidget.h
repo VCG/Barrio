@@ -214,8 +214,6 @@ protected:
 
   int                                 m_width, m_height;
   bool                                m_init;
-  int                                 debug_counter;
-  bool                                just_resized;
 };
 
 

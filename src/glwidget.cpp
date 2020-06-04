@@ -52,14 +52,9 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
 
   headPtrClearBuf = new std::vector<GLuint>();
   m_init = false;
-  debug_counter = 0;
 
   m_height = 0;
   m_width = 0;
-
-  just_resized = false;
-
-  
 }
 
 GLWidget::~GLWidget()
@@ -249,17 +244,6 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
   startRotation();
-
- //if (just_resized) 
- // {
- //   initMeshShaderStorage();
- //   just_resized = false;
-
- //   GLint vp[4]; 
- //   glGetIntegerv(GL_VIEWPORT, vp);
-
- //   qDebug() << "Actual Viewport size: " << vp[0] << ", " << vp[1] << ", " << vp[2] << ", " << vp[3];
- // }
     
   bool success = m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
@@ -269,21 +253,13 @@ void GLWidget::paintGL()
   glFlush();
   pass2();
 
-  //drawScene();
-
   m_mesh_program->release();
-
-  GL_Error();
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-  qDebug() << "ID: " << m_hvgx_id;
-
   const qreal retinaScale = devicePixelRatio();
   h = (h == 0) ? 1 : h;
-
-  qDebug() << "Retina Scale: " << retinaScale;
 
   m_width = w * retinaScale;
   m_height = h * retinaScale;
@@ -307,12 +283,10 @@ void GLWidget::resizeGL(int w, int h)
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(m_eye, m_center, m_cameraUpDirection);
 
-  //just_resized = true;
 
   initMeshShaderStorage(m_width, m_height);
 
   update();
-  
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -1005,76 +979,58 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 void GLWidget::drawScene()
 {
-  GL_Error();
-
   m_mesh_vao.bind();
-  GL_Error();
  
   m_shared_resources.mesh_index_vbo->bind();
   glDrawElements(GL_TRIANGLES, m_shared_resources.index_count, GL_UNSIGNED_INT, 0);
-  GL_Error();
 
   m_mesh_vao.release();
-  GL_Error();
 }
 
 void GLWidget::prepareResize()
 {
   makeCurrent();
-
-  //glDeleteBuffers(2, oit_buffers);
-  glBindTexture(headPtrTex, 0);
-  //glDeleteBuffers(1, &clear_oit_buffers);
+  
+  // make sure memory is deallocated before fbo is resized
+  if (m_init)
+  {
+    glDeleteBuffers(2, oit_buffers);
+    glDeleteTextures(1, &headPtrTex);
+    glDeleteBuffers(1, &clear_oit_buffers);
+  }
 }
 
 void GLWidget::pass1()
 {
-  GL_Error();
   glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
   glDepthMask(GL_FALSE);
-  GL_Error();
-
-  // draw scene
   drawScene();
-  GL_Error();
-
   glFinish();
-  GL_Error();
 }
 
 void GLWidget::pass2()
 {
-  GL_Error();
   glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-  GL_Error();
   glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mesh_shader_pass_idx_2);
-  GL_Error();
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  GL_Error();
+  glClear(GL_COLOR_BUFFER_BIT);
 
   QMatrix4x4 mat = QMatrix4x4();
   mat.setToIdentity();
-  GL_Error();
 
   int mMatrix = m_mesh_program->uniformLocation("mMatrix");
   if (mMatrix >= 0) m_mesh_program->setUniformValue(mMatrix, mat);
-  GL_Error();
 
   int vMatrix = m_mesh_program->uniformLocation("vMatrix");
   if (vMatrix >= 0) m_mesh_program->setUniformValue(vMatrix, mat);
-  GL_Error();
 
   int pMatrix = m_mesh_program->uniformLocation("pMatrix");
   if (pMatrix >= 0) m_mesh_program->setUniformValue(pMatrix, mat);
-
-  GL_Error();
 
   // Draw a screen filler
   m_fsQuad_vao.bind();
   glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
   m_fsQuad_vao.release();
-  GL_Error();
 }
 
 void GLWidget::clearBuffers()
@@ -1082,46 +1038,32 @@ void GLWidget::clearBuffers()
   GLuint zero = 0;
   glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
   glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
-  GL_Error();
 
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
   glBindTexture(GL_TEXTURE_2D, headPtrTex);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
-  GL_Error();
 }
 
 void GLWidget::initMeshShaderStorage(int width, int height)
 {
-  // make sure memory is deallocated
-  if (m_init)
-  {
-    glDeleteBuffers(2, oit_buffers);
-    glDeleteTextures(1, &headPtrTex);
-    glDeleteBuffers(1, &clear_oit_buffers);
-  }
-
-  qDebug() << "Updating Mesh Shader Storage - Width: " << width << ", Height << " << height;
-  glGenBuffers(2, oit_buffers);
   m_maxNodes = 20 * width * height;
   GLuint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint); // The size of a linked list node
-  GL_Error();
+
+  glGenBuffers(2, oit_buffers);
 
   // Our atomic counter
   glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, oit_buffers[COUNTER_BUFFER]);
   glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
-  GL_Error();
+
+  // The buffer of linked lists
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, (GLsizeiptr)(m_maxNodes * nodeSize), NULL, GL_DYNAMIC_DRAW);
 
   // The buffer for the head pointers, as an image texture
   glGenTextures(1, &headPtrTex);
   glBindTexture(GL_TEXTURE_2D, headPtrTex);
   glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, width, height);
   glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-  GL_Error();
-
-  // The buffer of linked lists
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, oit_buffers[LINKED_LIST_BUFFER]);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, (GLsizeiptr)(m_maxNodes * nodeSize), NULL, GL_DYNAMIC_DRAW);
-  GL_Error();
 
   headPtrClearBuf->clear();
   headPtrClearBuf->shrink_to_fit();
@@ -1130,7 +1072,6 @@ void GLWidget::initMeshShaderStorage(int width, int height)
   glGenBuffers(1, &clear_oit_buffers);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
   glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf->size() * sizeof(GLuint), headPtrClearBuf->data(), GL_STATIC_COPY);
-  GL_Error();
   
   m_init = true;
 }
