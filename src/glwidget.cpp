@@ -111,8 +111,8 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   m_rotationMatrix.translate(-1.0 * m_center);
   m_mMatrix *= m_rotationMatrix;
 
-  //int rMatrix = program->uniformLocation("rMatrix");
-  //if (rMatrix >= 0) program->setUniformValue(rMatrix, m_rotationMatrix);
+  int rMatrix = program->uniformLocation("rMatrix");
+  if (rMatrix >= 0) program->setUniformValue(rMatrix, m_rotationMatrix);
 
   int mMatrix = program->uniformLocation("mMatrix");
   if (mMatrix >= 0) program->setUniformValue(mMatrix, m_mMatrix);

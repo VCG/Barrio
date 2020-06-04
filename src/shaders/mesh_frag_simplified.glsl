@@ -18,6 +18,7 @@ in vec4         normal_frag;
 in vec3			    eye_frag;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
+in vec4         frag_vert_pos;
 
 // ------------- order independent transparency variables ----------
 struct NodeType {
@@ -35,6 +36,68 @@ layout( binding = 0, std430 ) buffer linkedLists {
 uniform int maxNodes;
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
+
+//-------------------- DIFFUSE LIGHT PROPERTIES --------------------
+vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
+vec3 lightColor2 = vec3(0.7, 0.7, 0.7);
+
+vec3 lightDir1 = vec3(-2.5f, -2.5f, -0.9f);
+vec3 lightDir2 = vec3(2.5f, 2.5f, 1.0f);
+float k_a = 0.3;
+float k_s = 0.5;
+
+vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
+{
+  vec3 L = normalize(light_dir);
+  vec3 N = normal_frag.xyz;
+  
+  // ambient component
+  vec3 ambient = k_a * light_color;
+
+  // diffuse component
+  float diff = max(dot(N, L), 0.0);
+  vec3 diffuse = diff * light_color;
+  
+  // specular component
+  vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
+  vec3 reflectDir = reflect(-L, N);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8);
+  vec3 specular = k_s * spec * light_color;  
+
+    return (ambient + diffuse + specular) * obj_color;
+}
+
+vec4 computeColor()
+{
+  vec3 obj_color;
+  vec4 out_color;
+
+  if(frag_structure_type != MITO)
+  {
+    obj_color = vec3(0.6, 1.0, 0.6);
+  } 
+  else
+  {
+    obj_color = vec3(1.0, 0.0, 0.0);
+  } 
+
+  vec3 result = computeLight(lightDir1, lightColor1, obj_color);
+  result += computeLight(lightDir2, lightColor2, obj_color);
+
+  vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
+  //float alpha = abs(dot(viewDir, N));
+
+  if(frag_structure_type == MITO)
+  {
+    out_color = vec4(result, 1.0);
+  }
+  else
+  {
+    out_color = vec4(result, 0.1);
+  }
+
+  return out_color;
+}
 
 
 subroutine(RenderPassType) void pass1()
@@ -56,16 +119,8 @@ subroutine(RenderPassType) void pass1()
     // Here we set the color and depth of this new node to the color
     // and depth of the fragment.  The next pointer, points to the
     // previous head of the list.
-
-    if(frag_structure_type == MITO)
-    {
-      nodes[nodeIdx].color =  vec4(normal_frag.xyz, 1.0);
-    }
-    else
-    {
-      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.05);
-    }
-   
+    
+    nodes[nodeIdx].color = computeColor();
     nodes[nodeIdx].depth = gl_FragCoord.z;
     nodes[nodeIdx].next = prevHead;
   }
