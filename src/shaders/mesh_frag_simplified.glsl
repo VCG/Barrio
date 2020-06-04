@@ -13,10 +13,10 @@ layout (early_fragment_tests) in;
 
 layout (location = 0) out vec4 FragColor;
 
+in float        hvgx_frag;
 in vec4         normal_frag;
 in vec3			    eye_frag;
 flat in int     frag_structure_type;
-in float        hvgx_frag;
 in float        frag_cell_distance;
 
 // ------------- order independent transparency variables ----------
@@ -63,7 +63,7 @@ subroutine(RenderPassType) void pass1()
     }
     else
     {
-      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.05) ;
+      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.05);
     }
    
     nodes[nodeIdx].depth = gl_FragCoord.z;

@@ -129,7 +129,7 @@ void MainWidget::initSharedVBOs()
   // setup shared resource container
   m_shared_resources.mesh_index_vbo = &m_mesh_index_vbo;
   m_shared_resources.mesh_vertex_vbo = &m_mesh_vertex_vbo;
-  m_shared_resources.mesh_normal_vbo = &m_mesh_index_vbo;
+  m_shared_resources.mesh_normal_vbo = &m_mesh_normal_vbo;
   m_shared_resources.index_count = neurites_index_count;
 
 }
