@@ -73,14 +73,11 @@ void MainWidget::initializeGL()
 
 void MainWidget::paintGL()
 {
-  qDebug() << "Trying to paint mainwidget";
   glClearColor(1.0, 0.0, 0.0, 1.0);
-  // do nothing
 }
 
 void MainWidget::resizeGL(int width, int height)
 {
-  qDebug() << "Trying to resize mainwidget";
   // do nothing
 }
 

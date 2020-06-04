@@ -205,8 +205,6 @@ void GLWidget::initializeGL()
   mesh_shader_pass_idx_2 = glGetSubroutineIndex(m_mesh_program->programId(), GL_FRAGMENT_SHADER, "pass2");
   GL_Error();
 
-  // screen quad
-
   // Set up a  VAO for the full-screen quad
   GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0,
                        1.0f, -1.0f, 0.0f, 1.0,

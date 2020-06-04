@@ -59,11 +59,11 @@ subroutine(RenderPassType) void pass1()
 
     if(frag_structure_type == MITO)
     {
-      nodes[nodeIdx].color =  vec4(1.0, 0.0, 0.0, 1.0);
+      nodes[nodeIdx].color =  vec4(normal_frag.xyz, 1.0);
     }
     else
     {
-      nodes[nodeIdx].color = vec4(0.0, 1.0, 0.0, 0.05) ;
+      nodes[nodeIdx].color = vec4(normal_frag.xyz, 0.05) ;
     }
    
     nodes[nodeIdx].depth = gl_FragCoord.z;
@@ -114,5 +114,4 @@ subroutine(RenderPassType) void pass1()
 void main()
 {
   RenderPass();
-  //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
