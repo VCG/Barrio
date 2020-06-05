@@ -7,6 +7,7 @@
 #include <QListWidgetItem>
 #include "inputform.h"
 #include "mainwidget.h"
+#include "treemodel.h"
 
 namespace Ui {
   class MainWindow;
@@ -95,7 +96,8 @@ private:
   QStandardItemModel* tableView;
 
   MainWidget* m_mainWidget;
-  
+  TreeModel m_treemodel;
+  DataContainer* m_data_container;
 
 };
 

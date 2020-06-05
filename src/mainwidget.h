@@ -11,7 +11,7 @@
 class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
-  MainWidget(InputForm* input_form, QWidget* parent = 0);
+  MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
   bool addGLWidget(int ID, int row, int col);
   bool deleteWidget(int ID);
 

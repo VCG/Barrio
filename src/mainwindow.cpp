@@ -23,7 +23,9 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   mainwindow_ui->setupUi(this);
   //getGLWidget()->init(input_form);
 
-  m_mainWidget = new MainWidget(input_form, mainwindow_ui->centralwidget);
+  m_data_container = new DataContainer(input_form);
+
+  m_mainWidget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
   mainwindow_ui->gridLayout_5->addWidget(m_mainWidget, 0, 0);
  
   setupSignalsNSlots();
@@ -38,14 +40,19 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   mainwindow_ui->tableView->setModel(tableView);
 
-  //rotate astrocytes label of the abstraction space
-  QPixmap myPixmap(QSize(20, 210));
-  myPixmap.fill(Qt::transparent);
-  QPainter painter(&myPixmap);
-  painter.translate(12, 140);
-  painter.rotate(-90);
-  painter.drawText(0, 0, "Astrocytes");
-  mainwindow_ui->label_44->setPixmap(myPixmap);
+  ////rotate astrocytes label of the abstraction space
+  //QPixmap myPixmap(QSize(20, 210));
+  //myPixmap.fill(Qt::transparent);
+  //QPainter painter(&myPixmap);
+  //painter.translate(12, 140);
+  //painter.rotate(-90);
+  //painter.drawText(0, 0, "Astrocytes");
+  //mainwindow_ui->label_44->setPixmap(myPixmap);
+ 
+  
+  m_treemodel.init(mainwindow_ui->treeView, m_data_container);
+ 
+  
 
   fs::path current_path = fs::current_path();
   qDebug() << current_path.parent_path().c_str();

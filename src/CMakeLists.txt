@@ -88,7 +88,9 @@ set(project_headers
     webviewer.h
     globalParameters.h
     mainWidget.h
-    mainwidget.h)
+    mainwidget.h
+    treemodel.h
+    treeitem.h)
 
 set(project_sources
     main.cpp
@@ -122,6 +124,8 @@ set(project_sources
     mesh_preprocessing.cpp
     webviewer.cpp
     mainwidget.cpp
+    treemodel.cpp
+    treeitem.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

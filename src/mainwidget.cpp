@@ -1,9 +1,9 @@
 #include "MainWidget.h"
 
-MainWidget::MainWidget(InputForm* input_form, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
   : QOpenGLWidget(parent)
 {
-  m_datacontainer = new DataContainer(input_form);
+  m_datacontainer = datacontainer;
   m_input_form = input_form;
   setFocusPolicy(Qt::StrongFocus);
 }
