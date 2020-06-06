@@ -12,7 +12,7 @@ class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
-  bool addGLWidget(int ID, int row, int col);
+  bool addGLWidget(int ID);
   bool deleteWidget(int ID);
 
 protected:
@@ -36,8 +36,11 @@ private:
   void initSharedVBOs();
 
   int m_lastID;
-  int m_current_row;
-  int m_current_col;
+  int m_current_row = 0;
+  int m_current_col = 0;
+
+
+  int m_max_cols = 3;
 
 };
 

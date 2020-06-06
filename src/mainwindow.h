@@ -96,7 +96,7 @@ private:
   QStandardItemModel* tableView;
 
   MainWidget* m_mainWidget;
-  TreeModel m_treemodel;
+  TreeModel* m_treemodel;
   DataContainer* m_data_container;
 
 };

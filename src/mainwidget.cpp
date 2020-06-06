@@ -8,7 +8,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   setFocusPolicy(Qt::StrongFocus);
 }
 
-bool MainWidget::addGLWidget(int ID, int row, int col)
+bool MainWidget::addGLWidget(int ID)
 {
 
   GLWidget* widget = new GLWidget(ID, m_shared_resources, this);
@@ -16,7 +16,20 @@ bool MainWidget::addGLWidget(int ID, int row, int col)
   widget->init(m_input_form); // todo delete dependecy of input form later
 
   m_widgets[ID] = widget;
-  m_layout->addWidget(widget, row, col);
+
+  m_layout->addWidget(widget, m_current_row, m_current_col);
+
+  if (m_current_col < m_max_cols - 1) 
+  {
+    m_current_col++;
+    
+  }
+  else {
+    m_current_row++;
+    m_current_col = 0;
+  }
+
+  
 
   return true;
 }
@@ -34,7 +47,7 @@ void MainWidget::keyPressEvent(QKeyEvent* event)
   case(Qt::Key_A):
     m_lastID++;
     m_current_row++;
-    addGLWidget(m_lastID, m_current_row, m_current_col);
+    addGLWidget(m_lastID);
     break;
   }
 }
@@ -49,25 +62,10 @@ void MainWidget::initializeGL()
 
   // setup shared resources
   initSharedVBOs();
-
-  m_current_row = 0;
-  m_current_col = 0;
-  m_lastID = 10;
-
-
-
+ 
   // add first widget
-  addGLWidget(m_lastID, m_current_row, m_current_col);
+  addGLWidget(0);
 
- /* addGLWidget(1, 0, 1);
-
-  addGLWidget(2, 1, 0);
-
-  addGLWidget(3, 1, 1);*/
-
-  //addGLWidget(4, 2, 0);
-
-  //addGLWidget(5, 2, 1);
 
 }
 

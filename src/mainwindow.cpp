@@ -39,20 +39,10 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
 
   mainwindow_ui->tableView->setModel(tableView);
+ 
+  m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
+  mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
-  ////rotate astrocytes label of the abstraction space
-  //QPixmap myPixmap(QSize(20, 210));
-  //myPixmap.fill(Qt::transparent);
-  //QPainter painter(&myPixmap);
-  //painter.translate(12, 140);
-  //painter.rotate(-90);
-  //painter.drawText(0, 0, "Astrocytes");
-  //mainwindow_ui->label_44->setPixmap(myPixmap);
- 
-  
-  m_treemodel.init(mainwindow_ui->treeView, m_data_container);
- 
-  
 
   fs::path current_path = fs::current_path();
   qDebug() << current_path.parent_path().c_str();

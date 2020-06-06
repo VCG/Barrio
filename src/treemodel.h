@@ -57,19 +57,20 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include "datacontainer.h"
+#include "mainwidget.h"
 
 //! [0]
-class TreeModel
+class TreeModel: public QTreeView
 {
 
 public:
-  TreeModel();
+  TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainwidget);
   ~TreeModel();
-  void init(QTreeView* tree, DataContainer* datacontainer);
-
+  void selectItem(const QModelIndex& index);
 
 private:
-  QStandardItemModel paramList;
+  QStandardItemModel* paramList;
+  MainWidget* m_mainwidget;
 };
 
 #endif
