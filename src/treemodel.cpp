@@ -68,7 +68,7 @@ void TreeModel::selectItem(const QModelIndex& index)
 {
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
-  m_mainwidget->addGLWidget(hvgx);
+  m_mainwidget->addGLWidget(hvgx, false);
   qDebug() << hvgx;
 }
 

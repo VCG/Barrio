@@ -35,7 +35,7 @@ class GLWidget : public QOpenGLWidget, MainOpenGL
   Q_OBJECT
 
 public:
-  GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent = 0);
+  GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidget, QWidget* parent = 0);
   ~GLWidget();
   void init(InputForm* input_form);
 
@@ -221,6 +221,9 @@ protected:
 
   int                                 m_width, m_height;
   bool                                m_init;
+  bool                                m_is_overview_widget;
+
+
 };
 
 

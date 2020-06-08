@@ -8,7 +8,7 @@
 #include "glwidget.h"
 #include "colors.h"
 
-GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
+GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidget, QWidget* parent)
   : QOpenGLWidget(parent),
   m_yaxis(0),
   m_xaxis(0),
@@ -55,6 +55,8 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, QWidget* parent)
 
   m_height = 0;
   m_width = 0;
+
+  m_is_overview_widget = isOverviewWidget;
 }
 
 GLWidget::~GLWidget()
@@ -1017,7 +1019,7 @@ void GLWidget::setVisibleStructures()
     Object* object_p = (*iter).second;
     int currentID = object_p->getHVGXID();
 
-    if (currentID == m_hvgx_id || object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id))
+    if (m_is_overview_widget || currentID == m_hvgx_id || object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id))
     {
       m_visible_structures.push_back(currentID);
     }

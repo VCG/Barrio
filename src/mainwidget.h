@@ -12,7 +12,7 @@ class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
-  bool addGLWidget(int ID);
+  bool addGLWidget(int ID, bool isOverviewWidget);
   bool deleteWidget(int ID);
 
 protected:
