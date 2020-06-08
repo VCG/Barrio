@@ -228,8 +228,9 @@ void GLWidget::initializeGL()
   m_fsQuad_vao.release();
   GL_Error();
 
+  initVisibilitySSBO();
+  
   m_mesh_program->release();
-
 
   if (m_FDL_running) {
     stopForecDirectedLayout();
@@ -250,6 +251,8 @@ void GLWidget::paintGL()
   pass1();
   glFlush();
   pass2();
+  
+  GL_Error();
 
   m_mesh_program->release();
 }
@@ -983,6 +986,52 @@ void GLWidget::drawScene()
   glDrawElements(GL_TRIANGLES, m_shared_resources.index_count, GL_UNSIGNED_INT, 0);
 
   m_mesh_vao.release();
+}
+
+void GLWidget::initVisibilitySSBO()
+{ 
+  setVisibleStructures();
+
+  int bufferSize = m_visible_structures.size() * sizeof(int);
+
+  glGenBuffers(1, &m_visibility_ssbo);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_visibility_ssbo);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, m_visible_structures.data(), GL_DYNAMIC_COPY);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, m_visibility_ssbo);
+  qDebug() << "m_ssbo_data buffer size: " << bufferSize;
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+  GL_Error();
+
+  //writeVisibilitySSBO();
+
+}
+
+void GLWidget::setVisibleStructures()
+{
+  std::map<int, Object*>* objects_map = m_data_containter->getObjectsMapPtr();
+
+  //iterate over all objects and add indices to the VBO
+  for (auto iter = objects_map->rbegin(); iter != objects_map->rend(); iter++)
+  {
+    Object* object_p = (*iter).second;
+    int currentID = object_p->getHVGXID();
+
+    if (currentID == m_hvgx_id || object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id))
+    {
+      m_visible_structures.push_back(currentID);
+    }
+  }
+}
+
+void GLWidget::writeVisibilitySSBO()
+{
+  int bufferSize = m_visible_structures.size() * sizeof(int);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_visibility_ssbo);
+  GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+  memcpy(p, m_visible_structures.data(), bufferSize);
+  glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 void GLWidget::prepareResize()

@@ -13,12 +13,12 @@ layout (early_fragment_tests) in;
 
 layout (location = 0) out vec4 FragColor;
 
-in float        hvgx_frag;
 in vec4         normal_frag;
 in vec3			    eye_frag;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
+in flat int     frag_hvgx;
 
 // ------------- order independent transparency variables ----------
 struct NodeType {
@@ -33,6 +33,12 @@ layout( binding = 0, std430 ) buffer linkedLists {
   NodeType nodes[];
 };
 
+// ----------------- SSBO data ------------------------------------
+layout (std430, binding=5) buffer mesh_data
+{
+    int SSBO_visibility[];
+};
+
 uniform int maxNodes;
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
@@ -45,6 +51,18 @@ vec3 lightDir1 = vec3(-2.5f, -2.5f, -0.9f);
 vec3 lightDir2 = vec3(2.5f, 2.5f, 1.0f);
 float k_a = 0.3;
 float k_s = 0.5;
+
+int isVisible(int hvgx)
+{
+  for(int i = 0; i < SSBO_visibility.length(); i++)
+  {
+    if(hvgx == SSBO_visibility[i])
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
 
 vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
 {
@@ -102,6 +120,12 @@ vec4 computeColor()
 
 subroutine(RenderPassType) void pass1()
 {
+  //check visibility
+  if(isVisible(frag_hvgx) == 0)
+  {
+    discard;
+  }
+
   // Get the index of the next empty slot in the buffer
   uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
 
@@ -168,5 +192,5 @@ subroutine(RenderPassType) void pass1()
 
 void main()
 {
-  RenderPass();
+    RenderPass(); 
 }

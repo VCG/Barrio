@@ -23,8 +23,8 @@ struct Face {
 struct VertexData {
   QVector4D   mesh_vertex;
   float       distance_to_cell;
-  int         structure_type;
-  int         hvgxID;
+  GLint         structure_type;
+  GLint         hvgxID;
 
   QVector4D   skeleton_vertex;
   int		  index;

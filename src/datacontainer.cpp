@@ -1178,7 +1178,7 @@ bool DataContainer::importObj(QString path)
 
       vertexCounter++;
 
-      QVector4D mesh_vertex(x, y, z, hvgxID);
+      QVector4D mesh_vertex(x, y, z, float(hvgxID));
       QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
 
       meshVertexList->emplace_back();

@@ -117,6 +117,9 @@ public:
 
   int getSynapseSize();
 
+  bool isChild(int hvgxID);
+  bool isParent(int hvgxID);
+
   
 private:
 

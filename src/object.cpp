@@ -335,3 +335,24 @@ int Object::getSynapseSize()
 
   return synapse_size;
 }
+
+bool Object::isChild(int hvgxID)
+{
+  for (Object* child : m_children)
+  {
+    if (child->getHVGXID() == hvgxID)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Object::isParent(int hvgxID)
+{
+  if (hasParent() && m_parentID == hvgxID)
+  {
+    return true;
+  }
+  return false;
+}

@@ -49,6 +49,10 @@ public:
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
   void drawScene();
+
+  void initVisibilitySSBO();
+  void setVisibleStructures();
+  void writeVisibilitySSBO();
  
 
 
@@ -202,6 +206,9 @@ protected:
 
   QOpenGLShaderProgram*                m_mesh_program;
   QOpenGLVertexArrayObject             m_mesh_vao;
+
+  std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
+  GLuint                              m_visibility_ssbo;
 
   /* order independent transparency vars*/
   QOpenGLVertexArrayObject            m_fsQuad_vao;
