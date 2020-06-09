@@ -1140,7 +1140,7 @@ bool DataContainer::importObj(QString path)
     {
       QList<QString> nameList = elements[1].split('_');
       hvgxID = nameList.last().toInt();
-
+      
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i];
@@ -1160,12 +1160,12 @@ bool DataContainer::importObj(QString path)
         int parentID = m_parents[hvgxID];
         obj->setParentID(parentID);
 
-        if (m_objects.find(parentID) != m_objects.end()) {
+        /*if (m_objects.find(parentID) != m_objects.end()) {
           m_objects[parentID]->addChild(obj);
         }
         else {
           qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
-        }
+        }*/
       }
     }
 
@@ -1229,12 +1229,25 @@ bool DataContainer::importObj(QString path)
   inputFile.close();
 
   m_mesh->computeNormalsPerVertex();
+  processParentChildStructure();
 
   qDebug() << "Done reading .obj file";
   qDebug() << vertexCounter << " vertices";
   qDebug() << normalCounter << " normals";
 
   return true;
+}
+
+void DataContainer::processParentChildStructure()
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    int parent = obj->getParentID() + 1;
+    if (m_objects.find(parent) != m_objects.end()) 
+    {
+      m_objects[parent]->addChildID(obj->getHVGXID());
+    }
+  }
 }
 
 //----------------------------------------------------------------------------

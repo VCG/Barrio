@@ -272,6 +272,16 @@ void Object::addChild(Object* child)
   m_children.push_back(child);
 }
 
+void Object::addChildID(int hvgxID)
+{
+  m_chidren_ids.push_back(hvgxID);
+}
+
+std::vector<int>* Object::getChildrenIDs()
+{
+  return &m_chidren_ids;
+}
+
 
 // if object type == synapse
 void Object::UpdateSynapseData(int axon_id, int dendrite_id, int spine_id, int bouton_id)

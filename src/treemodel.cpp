@@ -34,10 +34,11 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
 
       paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
 
-      std::vector<Object*> children = object_p->getChildren();
+      std::vector<int>* childrenIDs = object_p->getChildrenIDs();
       int j = 0;
-      for (Object* child : children)
+      for (int i=0; i < childrenIDs->size(); i++)
       {
+        Object* child = objects_map->at(childrenIDs->at(i));
         QString child_name(child->getName().c_str());
         QStandardItem* item_child_name = new QStandardItem(child_name);
         item_child_name->setEditable(false);

@@ -87,6 +87,10 @@ public:
   //void setParent(Object* parent) { m_parent = parent; }
 
   void addChild(Object* child);
+  void addChildID(int hvgxID);
+
+  std::vector<int>* getChildrenIDs();
+
   // skeleton management
   void addSkeletonNode(QVector3D coords);
   void addSkeletonPoint(QVector3D coords);

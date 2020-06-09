@@ -1019,7 +1019,7 @@ void GLWidget::setVisibleStructures()
     Object* object_p = (*iter).second;
     int currentID = object_p->getHVGXID();
 
-    if (m_is_overview_widget || currentID == m_hvgx_id || object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id))
+    if (m_is_overview_widget || currentID == m_hvgx_id /*|| object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id)*/)
     {
       m_visible_structures.push_back(currentID);
     }
