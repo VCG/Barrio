@@ -202,7 +202,7 @@ protected:
 
   SharedGLResources                   m_shared_resources;
 
-  int                                 m_hvgx_id;
+  int                                 m_selected_hvgx_id;
 
   QOpenGLShaderProgram*                m_mesh_program;
   QOpenGLVertexArrayObject             m_mesh_vao;

@@ -48,7 +48,7 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidg
   m_xy_slice_z = 0.5f * MESH_MAX_Z;
 
   m_shared_resources = resources;
-  m_hvgx_id = hvgx_id;
+  m_selected_hvgx_id = hvgx_id;
 
   headPtrClearBuf = new std::vector<GLuint>();
   m_init = false;
@@ -1019,7 +1019,7 @@ void GLWidget::setVisibleStructures()
     Object* object_p = (*iter).second;
     int currentID = object_p->getHVGXID();
 
-    if (m_is_overview_widget || currentID == m_hvgx_id /*|| object_p->isChild(m_hvgx_id) || object_p->isParent(m_hvgx_id)*/)
+    if (m_is_overview_widget || currentID == m_selected_hvgx_id || objects_map->at(m_selected_hvgx_id)->isChild(currentID) || objects_map->at(m_selected_hvgx_id)->isParent(currentID))
     {
       m_visible_structures.push_back(currentID);
     }

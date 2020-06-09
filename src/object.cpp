@@ -348,9 +348,9 @@ int Object::getSynapseSize()
 
 bool Object::isChild(int hvgxID)
 {
-  for (Object* child : m_children)
+  for (size_t i = 0; i < m_chidren_ids.size(); i++)
   {
-    if (child->getHVGXID() == hvgxID)
+    if (hvgxID == m_chidren_ids.at(i))
     {
       return true;
     }
@@ -360,7 +360,7 @@ bool Object::isChild(int hvgxID)
 
 bool Object::isParent(int hvgxID)
 {
-  if (hasParent() && m_parentID == hvgxID)
+  if (hasParent() && ((m_parentID + 1) == hvgxID))
   {
     return true;
   }

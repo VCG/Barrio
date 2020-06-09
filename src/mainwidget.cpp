@@ -71,7 +71,7 @@ void MainWidget::initializeGL()
 
 void MainWidget::paintGL()
 {
-  glClearColor(1.0, 0.0, 0.0, 1.0);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
 }
 
 void MainWidget::resizeGL(int width, int height)
