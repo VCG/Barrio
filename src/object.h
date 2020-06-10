@@ -63,7 +63,7 @@ public:
   Object_t getObjectType();
   std::string getName() { return m_name; }
   QVector4D getColor();
-  QVector4D getCenter() { return m_center; }
+  QVector4D getCenter();
   QVector4D getAstPoint() { return m_ast_point; }
   int getVolume() { return m_volume; }
   int getHVGXID() { return m_ID; }
@@ -99,7 +99,7 @@ public:
   void fixSkeleton(Object* parent);
   void setSkeletonOffset(int offset) { m_skeleton->setIndexOffset(offset); }
   int  getSkeletonOffset() { return m_skeleton->getIndexOffset(); }
-  void setNodeIdx(int node_index) { m_nodeIdx = node_index; }
+  void setNodeIdx(int node_index) { m_nodeIdx = node_index;}
   int  getNodeIdx() { return m_nodeIdx; }
 
   void markChildSubSkeleton(SkeletonBranch* branch, int ID);
@@ -143,7 +143,8 @@ private:
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
   std::vector<int>                        m_chidren_ids;
 
-  QVector4D                               m_center;           
+  QVector4D                               m_center;
+  float                                   x_center, y_center, z_center, w_center;
   QVector4D                               m_ast_point;    // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
   QVector4D                               m_color;
 
@@ -177,7 +178,9 @@ private:
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
-      m_synapse_ids, m_synapse_data);
+      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center);
+
+
   }
 };
 

@@ -31,6 +31,6 @@ public:
   MeshProcessing();
   ~MeshProcessing();
 
-  int computeCenters(QString obj_path);
+  int computeCenter(Object* obj, std::vector<VertexData>* vertices);
   int compute_distance(Object* mito, Object* cell, std::vector<VertexData>* vertices) const;
 };

@@ -31,7 +31,7 @@ Object::Object(std::string name, int ID)
   m_object_t = getObjectType(); // obect type
   m_color = QVector4D(1.0, 1.0, 0.0, 1.0);    // default one
   m_volume = 0;
-  m_center = QVector4D(0, 0, 0, 0);
+  //m_center = QVector4D(0, 0, 0, 0);
 
   m_closest_astro_vertex.second = 1000000.0;
   m_closest_astro_vertex.first = -1;
@@ -43,6 +43,9 @@ Object::Object(std::string name, int ID)
   m_function = -1;
   m_averageDistance = 0;
   m_mappedValue = 0;
+
+  m_center = QVector4D(x_center, y_center, z_center, w_center);
+
 }
 
 Object::~Object()
@@ -133,9 +136,19 @@ QVector4D Object::getColor()
   return m_color;
 }
 
+QVector4D Object::getCenter()
+{
+  return QVector4D(x_center, y_center, z_center, w_center);
+}
+
 void Object::setCenter(QVector4D center)
 {
   m_center = center;
+
+  x_center = m_center.x();
+  y_center = m_center.y();
+  z_center = m_center.z();
+  w_center = m_center.w();
 }
 
 void Object::setAstPoint(QVector4D ast_point)
@@ -159,7 +172,7 @@ struct ssbo_mesh Object::getSSBOData()
 
   ssbo_data.color.setW(hasMito);
 
-  ssbo_data.center = m_center;
+  ssbo_data.center = getCenter();
   int type = (int)m_object_t;
 
   ssbo_data.center.setW(type);
@@ -171,8 +184,8 @@ struct ssbo_mesh Object::getSSBOData()
   ssbo_data.info.setZ(m_parentID);
 
   ssbo_data.info.setW(0); // 1 bit: visibility, 2 bit: marked
-  ssbo_data.layout1 = m_center.toVector2D();
-  ssbo_data.layout2 = m_center.toVector2D();
+  ssbo_data.layout1 = getCenter().toVector2D();
+  ssbo_data.layout2 = getCenter().toVector2D();
   return ssbo_data;
 }
 

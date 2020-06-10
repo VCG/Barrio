@@ -22,6 +22,9 @@ DataContainer::DataContainer(InputForm* input_form) :
   m_faces_offset(0),
   m_debug_msg(false)
 {
+
+  m_mesh_processing = new MeshProcessing();
+
   input_files_dir = input_form->getInputFilesPath();
 
   m_limit = input_form->getObjectsCountLimit();
@@ -101,7 +104,10 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
+    
+    computeCenters();
     computeDistanceMitoCellBoundary();
+    
     writeDataToCache(cache_path);
   }
   else
@@ -406,7 +412,7 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
       float y = wordList[20].toFloat();
       float z = wordList[21].toFloat();
 
-      m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
+      //m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
 
       // volume
       //int volume = wordList[25].toInt();
@@ -656,7 +662,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
         float x = stringlist.at(0).toDouble();
         float y = stringlist.at(1).toDouble();
         float z = stringlist.at(2).toDouble();
-        obj->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
+        //obj->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
         // set ssbo with this center
       }
       else if (xml.name() == "ast_point") {
@@ -814,10 +820,10 @@ void DataContainer::parseMeshNoVertexnoFace(QXmlStreamReader& xml, Object* obj)
           // get any vertex that belong to the synapse
           std::vector< struct VertexData >* vertixList = m_mesh->getVerticesList();
           struct Face f = facesList->at(faceIdx);
-          struct VertexData vertex = vertixList->at(f.v[0] + m_vertex_offset);
+          /*struct VertexData vertex = vertixList->at(f.v[0] + m_vertex_offset);
           obj->setCenter(QVector4D(vertex.mesh_vertex.x(),
             vertex.mesh_vertex.y(),
-            vertex.mesh_vertex.z(), 0));
+            vertex.mesh_vertex.z(), 0));*/
 
         }
 
@@ -1150,7 +1156,7 @@ bool DataContainer::importObj(QString path)
       obj = new Object(name.toUtf8().constData(), hvgxID);
 
       obj->setVolume(2.0f);
-      obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
+      //obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
       obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 
       m_objects[hvgxID] = obj;
@@ -1438,14 +1444,21 @@ void DataContainer::loadDataFromCache(QString cache_path)
 
 void DataContainer::computeDistanceMitoCellBoundary()
 {
-  MeshProcessing* mp = new MeshProcessing();
   std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
 
   for (int i = 0; i < mitos.size(); ++i)
   {
-    Object* m = mitos[i];
-    Object* parent = m_objects[m->getParentID() + 1];
-    mp->compute_distance(m, parent, m_mesh->getVerticesList());
+    Object* mito = mitos[i];
+    Object* parent = m_objects[mito->getParentID() + 1];
+    m_mesh_processing->compute_distance(mito, parent, m_mesh->getVerticesList());
+  }
+}
+
+void DataContainer::computeCenters()
+{
+  for (auto const& [hvgxID, obj] : m_objects)
+  {
+    m_mesh_processing->computeCenter(obj, m_mesh->getVerticesList());
   }
 }
 

@@ -50,6 +50,7 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidg
   m_shared_resources = resources;
   m_selected_hvgx_id = hvgx_id;
 
+
   headPtrClearBuf = new std::vector<GLuint>();
   m_init = false;
 
@@ -279,7 +280,16 @@ void GLWidget::resizeGL(int w, int h)
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
+  if (m_is_overview_widget) 
+  {
+    m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
+  }
+  else
+  {
+    Object* selectedObject = m_data_containter->getObjectsMapPtr()->at(m_selected_hvgx_id);
+    m_center = selectedObject->getCenter().toVector3D();
+  }
+ 
   m_cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
   

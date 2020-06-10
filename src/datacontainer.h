@@ -32,6 +32,7 @@
 #include "inputform.h"
 
 #include "globalParameters.h"
+#include "mesh_preprocessing.h"
 
 //#include "dbscan.h"
 
@@ -99,6 +100,7 @@ public:
   void writeDataToCache(QString cache_path);
   void loadDataFromCache(QString cache_path);
   void computeDistanceMitoCellBoundary();
+  void computeCenters();
 
 
   int   getSkeletonPointsSize();
@@ -181,6 +183,8 @@ protected:
  private:
    std::map<int, Object>                     serializable_objects;
    QString                                   objs_filename;
+
+   MeshProcessing*                            m_mesh_processing;
 };
 
 #endif // OBJECTMANAGER_H
