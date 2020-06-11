@@ -10,26 +10,35 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
 
 bool MainWidget::addGLWidget(int ID, bool isOverviewWidget)
 {
+  QString name;
+  if (isOverviewWidget)
+  {
+    name = "Overview";
+  }
+  else
+  {
+    name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+  }
+  QGroupBox* groupBox = new QGroupBox(name, this);
+  QVBoxLayout* vbox = new QVBoxLayout;
 
   GLWidget* widget = new GLWidget(ID, m_shared_resources, isOverviewWidget, this);
-  
   widget->init(m_input_form); // todo delete dependecy of input form later
+  vbox->addWidget(widget);
+  
+  groupBox->setLayout(vbox);
+  m_layout->addWidget(groupBox, m_current_row, m_current_col);
 
-  m_widgets[ID] = widget;
-
-  m_layout->addWidget(widget, m_current_row, m_current_col);
+  m_widgets[ID] = widget;  
 
   if (m_current_col < m_max_cols - 1) 
   {
     m_current_col++;
-    
   }
   else {
     m_current_row++;
     m_current_col = 0;
   }
-
-  
 
   return true;
 }
@@ -55,8 +64,6 @@ void MainWidget::keyPressEvent(QKeyEvent* event)
 void MainWidget::initializeGL()
 {
   initializeOpenGLFunctions();
-  
-  qDebug() << "init mainwidget";
 
   m_layout = new QGridLayout(this);
 
@@ -71,7 +78,7 @@ void MainWidget::initializeGL()
 
 void MainWidget::paintGL()
 {
-  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
 void MainWidget::resizeGL(int width, int height)

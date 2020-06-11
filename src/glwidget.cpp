@@ -161,7 +161,8 @@ void GLWidget::initializeGL()
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/mesh_frag_simplified.glsl");
   m_mesh_program->link();
 
-  //f->glEnable(GL_DEPTH_TEST);
+  //f->glEnable(GL_CULL_FACE);
+  //f->glCullFace(GL_BACK);
   f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   int success = m_mesh_program->bind();
