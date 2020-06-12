@@ -90,13 +90,18 @@ vec4 computeColor()
   vec3 obj_color;
   vec4 out_color;
 
-  if(frag_structure_type != MITO)
-  {
-    obj_color = vec3(0.6, 1.0, 0.6);
-  } 
-  else
+  if(frag_structure_type == MITO)
   {
     obj_color = vec3(1.0, 0.0, 0.0);
+    
+  } 
+  else if(frag_structure_type == SYNPS)
+  {
+    obj_color = vec3(0.58, 0.0, 0.83);
+  }
+  else
+  {
+    obj_color = vec3(0.6, 1.0, 0.6);
   } 
 
   vec3 result = computeLight(lightDir1, lightColor1, obj_color);
@@ -109,9 +114,13 @@ vec4 computeColor()
   {
     out_color = vec4(result, 1.0);
   }
+  else if(frag_structure_type == SYNPS)
+  {
+    out_color = vec4(result, 1.0);
+  }
   else
   {
-    out_color = vec4(result, 0.1);
+    out_color = vec4(result, 0.25);
   }
 
   return out_color;

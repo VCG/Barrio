@@ -83,6 +83,8 @@ public:
   void setAstPoint(QVector4D ast_point);
   void setVolume(int volume) { m_volume = volume; }
 
+  void setDistanceToStructure(int structure_hvgx, double distance) { m_distance_map[structure_hvgx] = distance; };
+
   void setParentID(int parentID) { m_parentID = parentID; }
   //void setParent(Object* parent) { m_parent = parent; }
 
@@ -124,11 +126,10 @@ public:
   bool isChild(int hvgxID);
   bool isParent(int hvgxID);
 
+  std::map<int, double>* get_distance_map_ptr() { return &m_distance_map; };
+
   
 private:
-
-  
-
 
   std::string                             m_name;
   int                                     m_ID;           // hvgx
@@ -142,6 +143,8 @@ private:
   int                                     m_parentID;
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
   std::vector<int>                        m_chidren_ids;
+
+  std::map<int, double>                   m_distance_map;
 
   QVector4D                               m_center;
   float                                   x_center, y_center, z_center, w_center;
@@ -178,7 +181,7 @@ private:
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
-      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center);
+      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center, m_distance_map);
 
 
   }

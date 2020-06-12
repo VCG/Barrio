@@ -42,7 +42,7 @@ public:
   GlycogenAnalysisManager* getGlycogenAnalysisManager() { return m_glycogenAnalysisManager; }
   OpenGLManager* getOpenGLManager() { return m_opengl_mngr; }
   DataContainer* getDataContainer() { return m_data_containter; }
-  float getZoomFactor() { return m_distance; }
+  float getZoomFactor() { return m_camera_distance; }
 
   int pickObject(QMouseEvent* event);
   void insertInTable(int);
@@ -174,7 +174,7 @@ protected:
 
   /* rotation */
   QPoint                              m_lastPos;
-  double                              m_distance;
+  double                              m_camera_distance;
   QQuaternion                         m_rotation;
   QVector3D                           m_rotationAxis;
   QVector3D                           m_translation;
@@ -222,6 +222,8 @@ protected:
   int                                 m_width, m_height;
   bool                                m_init;
   bool                                m_is_overview_widget;
+
+  double                              m_distance_threshold;
 
 
 };

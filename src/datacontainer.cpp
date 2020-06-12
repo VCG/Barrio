@@ -81,7 +81,7 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/2_mitos.obj";
+  QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/dends_mitos_synapses_corrected.obj";
   QString astro_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
 
@@ -105,8 +105,9 @@ void DataContainer::loadData()
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
     
-    computeCenters();
-    computeDistanceMitoCellBoundary();
+    compute_centers();
+    //compute_distance_mito_cell_boundary();
+    compute_closest_distance_to_structures();
     
     writeDataToCache(cache_path);
   }
@@ -1204,8 +1205,8 @@ bool DataContainer::importObj(QString path)
     }
 
     // parse faces
-    else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
-      std::string vertex1, vertex2, vertex3;
+    else if (!strcmp(elements[0].toStdString().c_str(), "f")) // read triangulated faces
+    { 
       int vertexIndex[3];
 
       vertexIndex[0] = elements[1].toInt();
@@ -1442,7 +1443,7 @@ void DataContainer::loadDataFromCache(QString cache_path)
   readObjects(cache_path + objs_filename);
 }
 
-void DataContainer::computeDistanceMitoCellBoundary()
+void DataContainer::compute_distance_mito_cell_boundary()
 {
   std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
 
@@ -1450,15 +1451,34 @@ void DataContainer::computeDistanceMitoCellBoundary()
   {
     Object* mito = mitos[i];
     Object* parent = m_objects[mito->getParentID() + 1];
-    m_mesh_processing->compute_distance(mito, parent, m_mesh->getVerticesList());
+    m_mesh_processing->compute_distance_distribution(mito, parent, m_mesh->getVerticesList());
   }
 }
 
-void DataContainer::computeCenters()
+void DataContainer::compute_centers()
 {
   for (auto const& [hvgxID, obj] : m_objects)
   {
     m_mesh_processing->computeCenter(obj, m_mesh->getVerticesList());
+  }
+}
+
+void DataContainer::compute_synapse_distances(Object* mito)
+{
+  std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
+  for (Object* syn: synapses)
+  {
+    double closest_distance = m_mesh_processing->compute_closest_distance(mito, syn, m_mesh->getVerticesList());
+    mito->setDistanceToStructure(syn->getHVGXID(), closest_distance);
+  }
+}
+
+void DataContainer::compute_closest_distance_to_structures()
+{
+  std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
+  for (Object* mito : mitos)
+  {
+    compute_synapse_distances(mito);
   }
 }
 

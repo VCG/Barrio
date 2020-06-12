@@ -16,7 +16,10 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidg
   m_2D(false),
   m_hover(false)
 {
-  m_distance = 1.0;
+  m_camera_distance = 1.0;
+
+  m_distance_threshold = 1.0;
+
   m_rotation = QQuaternion();
   //reset rotation
   m_rotation.setScalar(1.0f);
@@ -97,7 +100,7 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   // Center Zoom
   m_mMatrix.translate(m_center);
-  m_mMatrix.scale(m_distance);
+  m_mMatrix.scale(m_camera_distance);
   m_mMatrix.translate(-1.0 * m_center);
 
   //// Translation
@@ -463,12 +466,12 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 
   if (event->orientation() == Qt::Vertical) {
     if (delta < 0) {
-      m_distance *= 1.1;
+      m_camera_distance *= 1.1;
     }
     else {
-      m_distance *= 0.9;
+      m_camera_distance *= 0.9;
     }
-    m_opengl_mngr->setZoom(m_distance);
+    m_opengl_mngr->setZoom(m_camera_distance);
     update();
   }
 }
@@ -484,8 +487,8 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
     //reset translation
     m_translation = QVector3D(0.0, 0.0, 0.0);
     //reset zoom
-    m_distance = 1.0f;
-    m_opengl_mngr->setZoom(m_distance);
+    m_camera_distance = 1.0f;
+    m_opengl_mngr->setZoom(m_camera_distance);
     update();
     break;
   case(Qt::Key_X): // stop layouting algorithm
@@ -1033,6 +1036,16 @@ void GLWidget::setVisibleStructures()
     if (m_is_overview_widget || currentID == m_selected_hvgx_id || objects_map->at(m_selected_hvgx_id)->isChild(currentID) || objects_map->at(m_selected_hvgx_id)->isParent(currentID))
     {
       m_visible_structures.push_back(currentID);
+    }
+  }
+
+  if (!m_is_overview_widget) {
+    std::map<int, double>* distance_map = objects_map->at(m_selected_hvgx_id)->get_distance_map_ptr();
+    for (auto const& [hvgx_id, distance] : *distance_map)
+    {
+      if (distance < m_distance_threshold) {
+        m_visible_structures.push_back(hvgx_id);
+      }
     }
   }
 }

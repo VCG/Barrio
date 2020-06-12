@@ -71,7 +71,7 @@ int MeshProcessing::computeCenter(Object* obj, std::vector<VertexData>* vertices
 // for each other object, check against the astrocyte, and get the closest vertices from neurites to skeleton mesh
 // Goal: find all closest points to astrocyte
 
-int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<VertexData>* vertices) const
+int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, std::vector<VertexData>* vertices) const
 {
   struct MyStructure my_cell;
   my_cell.name = cell->getName();
@@ -128,4 +128,62 @@ int MeshProcessing::compute_distance(Object* mito, Object* cell, std::vector<Ver
   }
 
   return EXIT_SUCCESS;
+}
+
+double MeshProcessing::compute_closest_distance(Object* mito, Object* synapse, std::vector<VertexData>* vertices)
+{
+  struct MyStructure my_synapse;
+  my_synapse.name = synapse->getName();
+
+  std::vector<int>* cell_indices = synapse->get_indices_list();
+
+  // extract vertex data
+  for (auto i = 0; i < cell_indices->size(); i = i + 3)
+  {
+    // vertex 0
+    const int idx_0 = (*cell_indices)[i]; // dereferencing pointer
+    auto v0 = vertices->at(idx_0);
+    point p0(v0.x(), v0.y(), v0.z());
+    my_synapse.vertices.push_back(p0);
+
+    // vertex 1
+    const int idx_1 = (*cell_indices)[i + 1]; // dereferencing pointer
+    auto v1 = vertices->at(idx_1);
+    point p1(v1.x(), v1.y(), v1.z());
+    my_synapse.vertices.push_back(p1);
+
+    // vertex 2
+    const int idx_2 = (*cell_indices)[i + 2]; // dereferencing pointer
+    auto v2 = vertices->at(idx_2);
+    point p2(v2.x(), v2.y(), v2.z());
+    my_synapse.vertices.push_back(p2);
+
+    // add face
+    my_synapse.triangles.emplace_back(p0, p1, p2);
+  }
+
+  // load astrocyte into a tree
+  qDebug() << QString(my_synapse.name.c_str()) << " has: " << my_synapse.triangles.size() << " Triangles";
+
+  qDebug() << "Started building distance tree ...";
+  tree tree(my_synapse.triangles.begin(), my_synapse.triangles.end());
+  tree.accelerate_distance_queries();
+  qDebug() << "Finished building distance tree ...";
+
+  const auto mito_indices = mito->get_indices_list();
+
+  double min_distance = std::numeric_limits<double>::max();
+
+  // compute distances for each mitochondrion vertex
+  for (int idx : *mito_indices)
+  {
+    // dereferencing pointer
+    auto vertex = &vertices->at(idx);
+    point point_query(vertex->x(), vertex->y(), vertex->z());
+    const auto distance = std::sqrt(tree.squared_distance(point_query));
+    if (distance < min_distance)
+      min_distance = distance;
+  }
+
+  return min_distance;
 }
