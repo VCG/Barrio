@@ -8,6 +8,19 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   setFocusPolicy(Qt::StrongFocus);
 }
 
+void MainWidget::on_synapse_distance_slider_changed(int value)
+{
+  double distance = ((double)value / 100.0) * 6;
+
+  for (auto const& [id, widget] : m_widgets) 
+  {
+    if (id != 0) 
+    {
+      widget->update_synapse_distance_threshold(distance);
+    }
+  }
+}
+
 bool MainWidget::addGLWidget(int ID, bool isOverviewWidget)
 {
   QString name;

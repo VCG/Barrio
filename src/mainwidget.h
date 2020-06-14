@@ -10,10 +10,14 @@
 
 class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
+  Q_OBJECT;
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
   bool addGLWidget(int ID, bool isOverviewWidget);
   bool deleteWidget(int ID);
+
+public slots:
+  void on_synapse_distance_slider_changed(int value);
 
 protected:
   void initializeGL() override;

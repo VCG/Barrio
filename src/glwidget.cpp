@@ -235,7 +235,7 @@ void GLWidget::initializeGL()
   m_fsQuad_vao.release();
   GL_Error();
 
-  initVisibilitySSBO();
+  updateVisibilitySSBO();
   
   m_mesh_program->release();
 
@@ -1004,8 +1004,9 @@ void GLWidget::drawScene()
   m_mesh_vao.release();
 }
 
-void GLWidget::initVisibilitySSBO()
+void GLWidget::updateVisibilitySSBO()
 { 
+  makeCurrent();
   setVisibleStructures();
 
   int bufferSize = m_visible_structures.size() * sizeof(int);
@@ -1017,15 +1018,15 @@ void GLWidget::initVisibilitySSBO()
   qDebug() << "m_ssbo_data buffer size: " << bufferSize;
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+  update();
+
   GL_Error();
-
-  //writeVisibilitySSBO();
-
 }
 
 void GLWidget::setVisibleStructures()
 {
   std::map<int, Object*>* objects_map = m_data_containter->getObjectsMapPtr();
+  m_visible_structures.clear();
 
   //iterate over all objects and add indices to the VBO
   for (auto iter = objects_map->rbegin(); iter != objects_map->rend(); iter++)
@@ -1050,14 +1051,10 @@ void GLWidget::setVisibleStructures()
   }
 }
 
-void GLWidget::writeVisibilitySSBO()
+void GLWidget::update_synapse_distance_threshold(double distance)
 {
-  int bufferSize = m_visible_structures.size() * sizeof(int);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_visibility_ssbo);
-  GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-  memcpy(p, m_visible_structures.data(), bufferSize);
-  glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+  m_distance_threshold = distance;
+  updateVisibilitySSBO();
 }
 
 void GLWidget::prepareResize()

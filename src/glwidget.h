@@ -50,9 +50,10 @@ public:
 
   void drawScene();
 
-  void initVisibilitySSBO();
+  void updateVisibilitySSBO();
   void setVisibleStructures();
-  void writeVisibilitySSBO();
+
+  void update_synapse_distance_threshold(double distance);
  
 
 

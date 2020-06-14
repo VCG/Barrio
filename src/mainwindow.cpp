@@ -34,11 +34,15 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_clusters = 0;
 
   // setup the table view
-  tableView = new QStandardItemModel(0, 2, this); //0 Rows and 2 Columns
-  tableView->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
-  tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
+  //tableView = new QStandardItemModel(0, 2, this); //0 Rows and 2 Columns
+  //tableView->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
+  //tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
 
-  mainwindow_ui->tableView->setModel(tableView);
+  //mainwindow_ui->tableView->setModel(tableView);
+
+  QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
+
+  connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), m_mainWidget, SLOT(on_synapse_distance_slider_changed(int)));
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
@@ -133,6 +137,8 @@ void MainWindow::setupSignalsNSlots()
 
   QObject::connect(this, SIGNAL(update_glycogen_granules_mapping_timing(QString)),
     mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
+
+  
 }
 
 //------------------------------------------------------
