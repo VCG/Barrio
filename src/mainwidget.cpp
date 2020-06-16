@@ -1,5 +1,7 @@
 #include "MainWidget.h"
 
+namespace fs = std::filesystem;
+
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
   : QOpenGLWidget(parent)
 {
@@ -61,15 +63,45 @@ bool MainWidget::deleteWidget(int ID)
   return false;
 }
 
+bool MainWidget::addInfoVisWidget(int ID)
+{
+  fs::path current_path = fs::current_path();
+  qDebug() << current_path.parent_path().c_str();
+
+  // process html path 
+  QString base_path = QString(current_path.parent_path().string().c_str());
+  base_path.replace("\\", "/");
+  QString url = base_path + QString("/src/web/colorGame.html");
+
+  InfoVisWidget* widget = new InfoVisWidget(QUrl(url));
+
+  QGroupBox* groupBox = new QGroupBox("InfoVisView", this);
+  QVBoxLayout* vbox = new QVBoxLayout;
+
+  vbox->addWidget(widget);
+
+  groupBox->setLayout(vbox);
+  m_layout->addWidget(groupBox, m_current_row, m_current_col);
+
+  if (m_current_col < m_max_cols - 1)
+  {
+    m_current_col++;
+  }
+  else {
+    m_current_row++;
+    m_current_col = 0;
+  }
+
+  return true;
+}
+
 void MainWidget::keyPressEvent(QKeyEvent* event)
 {
   qDebug() << "Key pressed";
   switch (event->key())
   {
   case(Qt::Key_A):
-    m_lastID++;
-    m_current_row++;
-    addGLWidget(m_lastID, false);
+    addInfoVisWidget(m_lastID);
     break;
   }
 }
@@ -100,6 +132,63 @@ void MainWidget::resizeGL(int width, int height)
 }
 
 void MainWidget::initSharedVBOs()
+{
+  initSharedMeshVBOs();
+  //initSharedSliceVBOs();
+
+}
+
+void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
+{
+  unsigned int size = sizeX * sizeY * sizeZ;
+  unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
+
+  //load data into a 3D texture
+  glGenTextures(1, &texture);
+  glActiveTexture(texture_unit);
+  glBindTexture(GL_TEXTURE_3D, texture);
+
+  // set the texture parameters
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  //glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
+
+  delete[] rawData;
+}
+
+void MainWidget::initSharedSliceVBOs()
+{
+  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
+
+  float sliceVertices[] =
+  {
+    // vertices                  // uv - coords
+    0.0,          0.0,          0.0,              0.0, 0.0,
+    0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0,
+
+    0.0,          MESH_MAX_Y,   MESH_MAX_Z,       1.0, 1.0,
+    0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
+    0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0
+  };
+
+  m_slice_vertex_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+  m_slice_vertex_vbo.create();
+  m_slice_vertex_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+  m_slice_vertex_vbo.bind();
+
+  m_slice_vertex_vbo.allocate(sliceVertices, sizeof(sliceVertices));
+
+  m_slice_vertex_vbo.release();
+
+  m_shared_resources.slice_vertex_vbo = &m_slice_vertex_vbo;
+}
+
+void MainWidget::initSharedMeshVBOs()
 {
   m_mesh_index_vbo = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
   m_mesh_index_vbo.create();
@@ -149,5 +238,4 @@ void MainWidget::initSharedVBOs()
   m_shared_resources.mesh_vertex_vbo = &m_mesh_vertex_vbo;
   m_shared_resources.mesh_normal_vbo = &m_mesh_normal_vbo;
   m_shared_resources.index_count = neurites_index_count;
-
 }

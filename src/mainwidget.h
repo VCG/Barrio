@@ -4,9 +4,12 @@
 #include <QOpenGLFunctions>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <filesystem>
 
 #include "glwidget.h"
 #include "datacontainer.h"
+#include "infoviswidget.h"
+
 
 class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -15,6 +18,8 @@ public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
   bool addGLWidget(int ID, bool isOverviewWidget);
   bool deleteWidget(int ID);
+
+  bool addInfoVisWidget(int ID);
 
 public slots:
   void on_synapse_distance_slider_changed(int value);
@@ -37,7 +42,14 @@ private:
   QOpenGLBuffer m_mesh_vertex_vbo;
   QOpenGLBuffer m_mesh_normal_vbo;
 
+  QOpenGLBuffer m_slice_vertex_vbo;
+  GLuint        m_slice_texture;
+
   void initSharedVBOs();
+  void initSharedSliceVBOs();
+  void initSharedMeshVBOs();
+
+  void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
   int m_lastID;
   int m_current_row = 0;

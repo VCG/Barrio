@@ -10,7 +10,7 @@
 #include <QPixmap>
 #include "ui_mainwindow.h"
 #include "webviewer.h"
-#include <filesystem>
+//#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -33,35 +33,27 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
-  // setup the table view
-  //tableView = new QStandardItemModel(0, 2, this); //0 Rows and 2 Columns
-  //tableView->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
-  //tableView->setHorizontalHeaderItem(1, new QStandardItem(QString("Name")));
-
-  //mainwindow_ui->tableView->setModel(tableView);
-
   QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
-
   connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), m_mainWidget, SLOT(on_synapse_distance_slider_changed(int)));
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
 
-  fs::path current_path = fs::current_path();
-  qDebug() << current_path.parent_path().c_str();
+  //fs::path current_path = fs::current_path();
+  //qDebug() << current_path.parent_path().c_str();
 
-  // process html path 
-  QString base_path = QString(current_path.parent_path().string().c_str());
-  base_path.replace("\\", "/");
-  QString url = base_path + QString("/src/web/colorGame.html");
+  //// process html path 
+  //QString base_path = QString(current_path.parent_path().string().c_str());
+  //base_path.replace("\\", "/");
+  //QString url = base_path + QString("/src/web/colorGame.html");
 
-  QWebEngineView *view = new QWebEngineView();
-  view->load(QUrl(url));
+  //QWebEngineView *view = new QWebEngineView();
+  //view->load(QUrl(url));
 
-  QGridLayout *layout = new QGridLayout;
-  layout->addWidget(view);
-  mainwindow_ui->frame_65->setLayout(layout);
+  //QGridLayout *layout = new QGridLayout;
+  //layout->addWidget(view);
+  //mainwindow_ui->frame_65->setLayout(layout);
 }
 
 //------------------------------------------------------

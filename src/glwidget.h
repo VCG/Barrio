@@ -28,6 +28,8 @@ struct SharedGLResources
   QOpenGLBuffer* mesh_vertex_vbo;
   QOpenGLBuffer* mesh_normal_vbo;
   int            index_count;
+
+  QOpenGLBuffer* slice_vertex_vbo;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL

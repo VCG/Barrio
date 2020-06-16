@@ -90,7 +90,8 @@ set(project_headers
     mainWidget.h
     mainwidget.h
     treemodel.h
-    treeitem.h)
+    treeitem.h
+    infoviswidget.h)
 
 set(project_sources
     main.cpp
@@ -126,6 +127,7 @@ set(project_sources
     mainwidget.cpp
     treemodel.cpp
     treeitem.cpp
+    infoviswidget.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl
