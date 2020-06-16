@@ -9,7 +9,7 @@ layout (early_fragment_tests) in;
 #define ASTRO 6
 #define SYNPS 7
 
-#define MAX_FRAGMENTS 50
+#define MAX_FRAGMENTS 25
 
 layout (location = 0) out vec4 FragColor;
 
