@@ -4,6 +4,8 @@
 #include "mainwindow.h"
 #include "inputform.h"
 
+
+
 int main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
@@ -26,5 +28,10 @@ int main(int argc, char* argv[])
 
     window->show();
   }
+
+#ifdef QT_DEBUG
+  qputenv("QTWEBENGINE_REMOTE_DEBUGGING", "23654");
+#endif
+
   return app.exec();
 }

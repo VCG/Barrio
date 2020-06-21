@@ -39,21 +39,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
-
-  //fs::path current_path = fs::current_path();
-  //qDebug() << current_path.parent_path().c_str();
-
-  //// process html path 
-  //QString base_path = QString(current_path.parent_path().string().c_str());
-  //base_path.replace("\\", "/");
-  //QString url = base_path + QString("/src/web/colorGame.html");
-
-  //QWebEngineView *view = new QWebEngineView();
-  //view->load(QUrl(url));
-
-  //QGridLayout *layout = new QGridLayout;
-  //layout->addWidget(view);
-  //mainwindow_ui->frame_65->setLayout(layout);
+  
 }
 
 //------------------------------------------------------
@@ -170,37 +156,37 @@ void MainWindow::clearTable()
 //
 void MainWindow::checkAllListWidget()
 {
-  qDebug() << "checkAllListWidget";
+ /* qDebug() << "checkAllListWidget";
   for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
     QListWidgetItem* item = mainwindow_ui->listWidget->item(row);
     qDebug() << item->text();
     item->setCheckState(Qt::Checked);
-  }
+  }*/
 }
 
 void MainWindow::checkByType(std::map<QString, int> checkStateByType)
 {
-  bool oldState = mainwindow_ui->listWidget->blockSignals(true);
+  //bool oldState = mainwindow_ui->listWidget->blockSignals(true);
 
-  for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
-    QListWidgetItem* item = mainwindow_ui->listWidget->item(row);
-    int flag = checkStateByType[item->text()];
+  //for (int row = 0; row < mainwindow_ui->listWidget->count(); row++) {
+  //  QListWidgetItem* item = mainwindow_ui->listWidget->item(row);
+  //  int flag = checkStateByType[item->text()];
 
-    if (flag == 0) {
-      item->setCheckState(Qt::Unchecked);
-    }
-    else if (flag == 1) {
-      item->setCheckState(Qt::Checked);
-    }
-    else {
-      item->setCheckState(Qt::PartiallyChecked);
-    }
-  }
+  //  if (flag == 0) {
+  //    item->setCheckState(Qt::Unchecked);
+  //  }
+  //  else if (flag == 1) {
+  //    item->setCheckState(Qt::Checked);
+  //  }
+  //  else {
+  //    item->setCheckState(Qt::PartiallyChecked);
+  //  }
+  //}
 
-  mainwindow_ui->listWidget->blockSignals(oldState);
+  ////mainwindow_ui->listWidget->blockSignals(oldState);
 
-  // SEND THIS LSIT WIDGET TO GLWIDGET
-  signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
+  //// SEND THIS LSIT WIDGET TO GLWIDGET
+  //signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
 }
 
 //------------------------------------------------------

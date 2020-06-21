@@ -71,9 +71,9 @@ bool MainWidget::addInfoVisWidget(int ID)
   // process html path 
   QString base_path = QString(current_path.parent_path().string().c_str());
   base_path.replace("\\", "/");
-  QString url = base_path + QString("/src/web/colorGame.html");
+  QString url = base_path + QString("/src/index.html");
 
-  InfoVisWidget* widget = new InfoVisWidget(QUrl(url));
+  InfoVisWidget* widget = new InfoVisWidget(QUrl::fromLocalFile(url));
 
   QGroupBox* groupBox = new QGroupBox("InfoVisView", this);
   QVBoxLayout* vbox = new QVBoxLayout;

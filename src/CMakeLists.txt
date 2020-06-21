@@ -45,7 +45,7 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView WebChannel)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -91,7 +91,8 @@ set(project_headers
     mainwidget.h
     treemodel.h
     treeitem.h
-    infoviswidget.h)
+    infoviswidget.h
+    javascriptproxy.h)
 
 set(project_sources
     main.cpp
@@ -128,6 +129,7 @@ set(project_sources
     treemodel.cpp
     treeitem.cpp
     infoviswidget.cpp
+    javascriptproxy.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl
@@ -199,4 +201,5 @@ target_link_libraries(NeCo
     Qt5::WebEngine
     Qt5::WebEngineCore
     Qt5::WebEngineWidgets
-    Qt5::WebView)
+    Qt5::WebView
+    Qt5::WebChannel)

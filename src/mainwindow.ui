@@ -227,7 +227,7 @@
                <item>
                 <widget class="QGroupBox" name="groupBox_8">
                  <property name="title">
-                  <string>Object 1</string>
+                  <string>Gloabal Visualization Parameters</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
@@ -262,82 +262,172 @@
                     </layout>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_25">
+                    <property name="title">
+                     <string>Cell Opacity</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_18">
+                     <item>
+                      <widget class="QSlider" name="horizontalSlider_4">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_5">
                  <property name="title">
-                  <string>Filter By Type:</string>
+                  <string>Visualization Presets</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
-                  <item row="0" column="0">
-                   <widget class="QListWidget" name="listWidget">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                  <item row="1" column="0">
+                   <widget class="QGroupBox" name="groupBox_22">
+                    <property name="title">
+                     <string>User Task</string>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>Astrocyte</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                     <property name="flags">
-                      <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Axons</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Dendrites</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Spines</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Boutons</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Mitochondria</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Synapse</string>
-                     </property>
-                     <property name="checkState">
-                      <enum>Checked</enum>
-                     </property>
-                    </item>
+                    <layout class="QVBoxLayout" name="verticalLayout_17">
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_7">
+                       <property name="text">
+                        <string>Mitochondria to Branching Pattern</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_6">
+                       <property name="text">
+                        <string>Mitochondria to Cell</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_8">
+                       <property name="text">
+                        <string>Mitochondria to Synapses</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QGroupBox" name="groupBox_23">
+                    <property name="title">
+                     <string>Number of Structures</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_4">
+                     <item row="2" column="0">
+                      <widget class="QCheckBox" name="checkBox_10">
+                       <property name="text">
+                        <string>high ( 16 - 50 )</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="checkBox_11">
+                       <property name="text">
+                        <string>medium ( 7 - 15 )</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QCheckBox" name="checkBox_9">
+                       <property name="text">
+                        <string>low ( 1 - 6 )</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QGroupBox" name="groupBox_7">
+                    <property name="title">
+                     <string>Structures</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_2">
+                     <item row="2" column="0">
+                      <widget class="QCheckBox" name="checkBox_3">
+                       <property name="text">
+                        <string>Mitochondria</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QCheckBox" name="checkBox">
+                       <property name="text">
+                        <string>Axons</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QCheckBox" name="checkBox_2">
+                       <property name="text">
+                        <string>Dendrites</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QCheckBox" name="checkBox_5">
+                       <property name="text">
+                        <string>Synapses</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QCheckBox" name="checkBox_12">
+                       <property name="text">
+                        <string>Slice View</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QGroupBox" name="groupBox_24">
+                    <property name="title">
+                     <string>Preview</string>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_40">
+                     <item>
+                      <widget class="QFrame" name="frame_2">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="frame_43">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_3" native="true"/>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QPushButton" name="pushButton">
+                    <property name="text">
+                     <string>Dispaly Visualization</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -345,6 +435,19 @@
                </item>
               </layout>
              </widget>
+            </item>
+            <item row="1" column="0">
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>
@@ -1906,7 +2009,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>297</width>
+                 <width>277</width>
                  <height>1338</height>
                 </rect>
                </property>
