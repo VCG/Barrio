@@ -29,9 +29,9 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidg
   //reset translation
   m_translation = QVector3D(0.0, 0.0, 0.0);
 
-  m_lockRotation2D_timer = new QTimer(this);
+  /*m_lockRotation2D_timer = new QTimer(this);
   connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(update()));
-  m_lockRotation2D_timer->start(0);
+  m_lockRotation2D_timer->start(0);*/
 
   m_lockRotation2D_timer = new QTimer(this);
   connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(lockRotation2D()));
@@ -122,19 +122,15 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int mMatrix = program->uniformLocation("mMatrix");
   if (mMatrix >= 0) program->setUniformValue(mMatrix, m_mMatrix);
-  GL_Error();
 
   int vMatrix = program->uniformLocation("vMatrix");
   if (vMatrix >= 0) program->setUniformValue(vMatrix, m_vMatrix);
-  GL_Error();
 
   int pMatrix = program->uniformLocation("pMatrix");
   if (pMatrix >= 0) program->setUniformValue(pMatrix, m_projection);
-  GL_Error();
 
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
-  GL_Error();
 
   //const qreal retinaScale = devicePixelRatio();
   //QVector4D viewport = QVector4D(0, 0, width() * retinaScale, height() * retinaScale);
@@ -247,19 +243,18 @@ void GLWidget::initializeGL()
 }
 
 
+
 void GLWidget::paintGL()
 {
   startRotation();
     
-  bool success = m_mesh_program->bind();
+  m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
 
   clearBuffers();
   pass1();
   glFlush();
   pass2();
-  
-  GL_Error();
 
   m_mesh_program->release();
 }
@@ -303,7 +298,7 @@ void GLWidget::resizeGL(int w, int h)
 
   initMeshShaderStorage(m_width, m_height);
 
-  update();
+  //update();
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -553,7 +548,7 @@ void GLWidget::getSliderX(int value)
 
   m_xaxis = value;
 
-  update();
+  //update();
 }
 
 void GLWidget::getSliderY(int value)
@@ -566,7 +561,7 @@ void GLWidget::getSliderY(int value)
     value = 100;
   m_yaxis = value;
 
-  update();
+  //update();
 }
 
 void GLWidget::getIntervalID(int ID)
@@ -682,7 +677,7 @@ void GLWidget::getFilteredID(QString value)
   std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
   this->getToggleCheckBox(visibilityUpdate);
 
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -740,7 +735,7 @@ void GLWidget::getNodeSizeEncoding(QString encoding)
     m_opengl_mngr->updateNodeSizeEncoding(Size_e::ASTRO_COVERAGE);
   else if (encoding == "Synapse Size")
     m_opengl_mngr->updateNodeSizeEncoding(Size_e::SYNAPSE_SIZE);
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -756,7 +751,7 @@ void GLWidget::getColorEncoding(QString encoding)
     m_opengl_mngr->updateColorEncoding(Color_e::FUNCTION);
   else if (encoding == "Glycogen Distribution")
     m_opengl_mngr->updateColorEncoding(Color_e::GLYCOGEN_MAPPING);
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -768,7 +763,7 @@ void GLWidget::get2DtextureEncoding(QString encoding)
     m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::ASTRO_COVERAGE);
   else if (encoding == "Glycogen Distribution")
     m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::GLYCOGEN_MAPPING);
-  update();
+  //update();
 }
 
 
@@ -790,7 +785,7 @@ void GLWidget::getItemChanged(QListWidgetItem* item)
 
   getFilteredType(item->text(), flag);
 
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -823,7 +818,7 @@ void GLWidget::getFilteredType(QString value, bool flag)
   // start force layout
   m_lockRotation2D_timer->start(0);
 
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -850,7 +845,7 @@ void GLWidget::getFitlerButtonClicked(bool)
   std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
   this->getToggleCheckBox(visibilityUpdate);
 
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -859,7 +854,7 @@ void GLWidget::getResetFitlerButtonClicked(bool)
 {
   m_opengl_mngr->showAll();
   checkAllListWidget_GL();
-  update();
+  //update();
 }
 
 //------------------------------------------------------
@@ -879,7 +874,7 @@ void GLWidget::hideSelectedObjects()
   //  check whatever needed to be updated in the checkbox
   std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
   this->getToggleCheckBox(visibilityUpdate);
-  update();
+  //update();
 }
 
 void GLWidget::highlightSelected(QModelIndex index)
@@ -1019,8 +1014,6 @@ void GLWidget::updateVisibilitySSBO()
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
   update();
-
-  GL_Error();
 }
 
 void GLWidget::setVisibleStructures()
