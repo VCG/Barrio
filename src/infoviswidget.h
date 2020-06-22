@@ -8,5 +8,5 @@ public:
   InfoVisWidget(QUrl url);
 
 private:
-  MyJavaScriptProxy*    m_jsproxy;
+  BarChartSharedData*    m_jsproxy;
 };

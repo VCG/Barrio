@@ -6,9 +6,9 @@ InfoVisWidget::InfoVisWidget(QUrl url)
   QWebChannel* channel = new QWebChannel(page());
   page()->setWebChannel(channel);
   // Create proxy object
-  MyJavaScriptProxy* data = new MyJavaScriptProxy(5);
+  BarChartSharedData* data = new BarChartSharedData();
   // Register object
-  channel->registerObject(QString("test"), data);
+  channel->registerObject(QString("data"), data);
 
   load(url);
 }

@@ -2,20 +2,25 @@
 #define JAVASCRIPTPROXY_H
 
 #include <QObject>
+#include <QList>
 
-class MyJavaScriptProxy : public QObject
+class BarChartSharedData : public QObject
 {
   Q_OBJECT
 
 public:
-  MyJavaScriptProxy(int data, QObject* parent = nullptr);
+  BarChartSharedData(QObject* parent = nullptr);
 
-  Q_INVOKABLE int getData();
-  Q_PROPERTY(int myIntCppSide READ getData);
+  Q_INVOKABLE QList<float> getData();
+  Q_PROPERTY(QList<float> values READ getData);
+
+  Q_INVOKABLE QList<QString> getLabels();
+  Q_PROPERTY(QList<QString> labels READ getLabels);
 
 
 private:
-  int m_data;
+  QList<float>    m_data;
+  QList<QString>  m_labels;
 };
 
 #endif
