@@ -7,6 +7,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
 {
   m_datacontainer = datacontainer;
   m_input_form = input_form;
+  m_abstraction_space = new AbstractionSpace();
   setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -95,6 +96,11 @@ bool MainWidget::addInfoVisWidget(int ID)
   return true;
 }
 
+void MainWidget::setupMainWidget(VisConfiguration vis_config)
+{
+  m_abstraction_space->configureVisMethods(vis_config);
+}
+
 void MainWidget::keyPressEvent(QKeyEvent* event)
 {
   qDebug() << "Key pressed";
@@ -117,8 +123,6 @@ void MainWidget::initializeGL()
  
   // add first widget
   addGLWidget(0, true);
-
-
 }
 
 void MainWidget::paintGL()

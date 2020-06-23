@@ -21,6 +21,8 @@ public:
 
   bool addInfoVisWidget(int ID);
 
+  void setupMainWidget(VisConfiguration vis_config);
+
 public slots:
   void on_synapse_distance_slider_changed(int value);
 
@@ -45,7 +47,7 @@ private:
   QOpenGLBuffer m_slice_vertex_vbo;
   GLuint        m_slice_texture;
 
-  AbstractionSpace m_abstraction_space;
+  AbstractionSpace* m_abstraction_space;
 
   void initSharedVBOs();
   void initSharedSliceVBOs();
