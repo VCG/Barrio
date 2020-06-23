@@ -45,6 +45,8 @@ private:
   QOpenGLBuffer m_slice_vertex_vbo;
   GLuint        m_slice_texture;
 
+  AbstractionSpace m_abstraction_space;
+
   void initSharedVBOs();
   void initSharedSliceVBOs();
   void initSharedMeshVBOs();

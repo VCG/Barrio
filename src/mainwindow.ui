@@ -288,36 +288,6 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
                   <item row="1" column="0">
-                   <widget class="QGroupBox" name="groupBox_22">
-                    <property name="title">
-                     <string>User Task</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_17">
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_7">
-                       <property name="text">
-                        <string>Mitochondria to Branching Pattern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_6">
-                       <property name="text">
-                        <string>Mitochondria to Cell</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_8">
-                       <property name="text">
-                        <string>Mitochondria to Synapses</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
                    <widget class="QGroupBox" name="groupBox_23">
                     <property name="title">
                      <string>Number of Structures</string>
@@ -392,6 +362,13 @@
                    </widget>
                   </item>
                   <item row="3" column="0">
+                   <widget class="QPushButton" name="displayVisButton">
+                    <property name="text">
+                     <string>Dispaly Visualization</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
                    <widget class="QGroupBox" name="groupBox_24">
                     <property name="title">
                      <string>Preview</string>
@@ -421,13 +398,6 @@
                       <widget class="QWidget" name="widget_3" native="true"/>
                      </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QPushButton" name="pushButton">
-                    <property name="text">
-                     <string>Dispaly Visualization</string>
-                    </property>
                    </widget>
                   </item>
                  </layout>

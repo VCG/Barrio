@@ -77,13 +77,10 @@ GLWidget::~GLWidget()
 
 void GLWidget::init(InputForm* input_form)
 {
-  // 2D abstraction space, with intervals properties intializaiton and geometry
-  m_2dspace = new AbstractionSpace(100, 100);
-
   m_data_containter = new DataContainer(input_form);
 
   // objects manager with all objects data
-  m_opengl_mngr = new OpenGLManager(m_data_containter, m_2dspace);
+  m_opengl_mngr = new OpenGLManager(m_data_containter);
 
   // graph manager with 4 graphs and 2D space layouted data
   m_graphManager = new GraphManager(m_data_containter, m_opengl_mngr);
@@ -566,7 +563,7 @@ void GLWidget::getSliderY(int value)
 
 void GLWidget::getIntervalID(int ID)
 {
-  m_2dspace->updateID(ID);
+ 
 }
 
 void GLWidget::getActiveGraphTab(int tab_graph)

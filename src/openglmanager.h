@@ -25,7 +25,7 @@ enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 class OpenGLManager : public MainOpenGL
 {
 public:
-  OpenGLManager(DataContainer* obj_mnger, AbstractionSpace* absSpace);
+  OpenGLManager(DataContainer* obj_mnger);
   ~OpenGLManager();
   void fillSSBO(Object*);
   int fillMeshVBO(Object* object_p, int offset, std::string vboLabel);
@@ -186,7 +186,6 @@ public:
 
 protected:
   DataContainer* m_dataContainer;
-  AbstractionSpace* m_2dspace;
 
   bool                                    m_glFunctionsSet;
   bool                                    m_2D;

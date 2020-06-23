@@ -116,6 +116,8 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(this, SIGNAL(update_glycogen_granules_mapping_timing(QString)),
     mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
 
+  QObject::connect(mainwindow_ui->displayVisButton, SIGNAL(released()), this, SLOT(on_display_vis_button_clicked()));
+
   
 }
 
@@ -572,4 +574,22 @@ void MainWindow::on_filterByProximityListWidget_itemChanged(QListWidgetItem* ite
 void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 {
   signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
+}
+
+void MainWindow::on_display_vis_button_clicked()
+{
+  bool axons = mainwindow_ui->checkBox->isChecked();
+  bool dends = mainwindow_ui->checkBox_2->isChecked();
+  bool mitos = mainwindow_ui->checkBox_3->isChecked();
+  bool syn = mainwindow_ui->checkBox_5->isChecked();
+
+  bool sliceView = mainwindow_ui->checkBox_12->isChecked();
+
+  VisConfiguration config;
+  config.axons = axons;
+  config.dends = dends;
+  config.mitos = mitos;
+  config.syn = syn;
+  config.sliceView = sliceView;
+
 }

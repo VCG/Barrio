@@ -12,27 +12,23 @@ struct abstractionPoint {
   int       ID;
 };
 
+struct VisConfiguration 
+{
+  bool axons;
+  bool dends;
+  bool mitos;
+  bool syn;
+
+  bool sliceView;
+};
+
+
+
 class AbstractionSpace : public MainOpenGL
 {
 public:
-  AbstractionSpace(int xdim, int ydim);
+  AbstractionSpace();
   ~AbstractionSpace();
-
-  void defineAbstractionState(int x, int y, std::string name, int dx = -1, int dy = -1);
-  void initOpenGLFunctions();
-  // ssbo buffer data
-  bool initBuffer();
-  bool updateBuffer();
-
-  void defineQuadrant(QVector2D leftMin, int dim, struct ssbo_2DState data);
-  void updateID(int ID);
-
-
-  void initRect(QVector2D x_interval, QVector2D y_interval, int ID);
-  void initLine(QVector2D end1, QVector2D end2, int ID);
-  void initTriangle(QVector2D coords1, QVector2D coords2, QVector2D coords3, int ID);
-
-  void iniGridtLine(QVector2D end1, QVector2D end2, int ID);
 
 
   std::vector<struct abstractionPoint> get2DSpaceVertices() { return m_vertices; }
@@ -43,6 +39,8 @@ public:
   std::vector<struct abstractionPoint> get2DSpaceGridIlligalIndices() { return m_grid_illigal_vertices; }
 
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
+
+  void configureVisMethods(VisConfiguration config);
 
 private:
   struct pair_hash {

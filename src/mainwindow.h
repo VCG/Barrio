@@ -74,6 +74,9 @@ public slots:
 
   void on_listWidget_itemChanged(QListWidgetItem*);
 
+  void on_display_vis_button_clicked();
+
+
 signals:
   void getDeletedData(int);
   void getIDAtSelectedRow(int);
@@ -88,6 +91,7 @@ signals:
   void update_glycogen_clustering_timing(QString);
   void update_glycogen_cluter_mapping_timing(QString);
   void update_glycogen_granules_mapping_timing(QString);
+
 
 private:
   Ui::MainWindow* mainwindow_ui;
