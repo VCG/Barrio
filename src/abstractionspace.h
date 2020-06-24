@@ -4,9 +4,11 @@
 #include <vector>
 #include <string>
 #include <QVector4D>
+
 #include "mainopengl.h"
 #include "ssbo_structs.h"
 #include "vismethod.h"
+#include "barchart.h"
 
 struct abstractionPoint {
   QVector2D point;

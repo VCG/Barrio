@@ -1,15 +1,21 @@
-#include <QString>
-#include "infoviswidget.h"
+#ifndef VISMETHOD_H
+#define VISMETHOD_H
 
-class IVisMethod
+#include <QString>
+#include <QWebEngineView>
+#include <QObject>
+#include <QResource>
+#include <QFile>
+
+class IVisMethod: public QObject
 {
+  Q_OBJECT
 public:
-  IVisMethod();
-  virtual ~IVisMethod();
-  virtual QString getName() = 0;
-  virtual InfoVisWidget* getVisWidget() = 0;
+  virtual QWebEngineView* getVisWidget() = 0;
 
 protected:
   QString m_name;
 };
+
+#endif
 

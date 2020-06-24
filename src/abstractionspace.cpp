@@ -23,6 +23,12 @@ AbstractionSpace::~AbstractionSpace()
 SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config)
 {
   qDebug() << "Decide on Vis Methods";
+
   SelectedVisMethods methods;
+
+  methods.low = new Barchart();
+  methods.medium = new Barchart();
+  methods.high = new Barchart();
+
   return methods;
 }

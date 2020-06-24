@@ -49,6 +49,8 @@ private:
 
   AbstractionSpace* m_abstraction_space;
 
+  SelectedVisMethods m_vis_methods;
+
   void initSharedVBOs();
   void initSharedSliceVBOs();
   void initSharedMeshVBOs();
