@@ -62,5 +62,7 @@ private:
 
   int m_max_cols = 3;
 
+  int m_number_of_selected_structures = 0;
+
 };
 

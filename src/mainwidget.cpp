@@ -56,11 +56,14 @@ bool MainWidget::addGLWidget(int ID, bool isOverviewWidget)
     m_current_col = 0;
   }
 
+  m_number_of_selected_structures++;
+  
   return true;
 }
 
 bool MainWidget::deleteWidget(int ID)
 {
+  m_number_of_selected_structures--;
   return false;
 }
 
@@ -93,6 +96,8 @@ bool MainWidget::addInfoVisWidget(int ID)
     m_current_col = 0;
   }
 
+  m_number_of_selected_structures++;
+  
   return true;
 }
 

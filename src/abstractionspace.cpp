@@ -20,7 +20,9 @@ AbstractionSpace::~AbstractionSpace()
   qDebug() << "~AbstractionSpace";
 }
 
-void AbstractionSpace::configureVisMethods(VisConfiguration config)
+SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config)
 {
   qDebug() << "Decide on Vis Methods";
+  SelectedVisMethods methods;
+  return methods;
 }

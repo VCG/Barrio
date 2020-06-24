@@ -6,6 +6,7 @@
 #include <QVector4D>
 #include "mainopengl.h"
 #include "ssbo_structs.h"
+#include "vismethod.h"
 
 struct abstractionPoint {
   QVector2D point;
@@ -20,6 +21,13 @@ struct VisConfiguration
   bool syn;
 
   bool sliceView;
+};
+
+struct SelectedVisMethods 
+{
+  IVisMethod* low;
+  IVisMethod* medium;
+  IVisMethod* high;
 };
 
 
@@ -40,7 +48,7 @@ public:
 
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
 
-  void configureVisMethods(VisConfiguration config);
+  SelectedVisMethods configureVisMethods(VisConfiguration config);
 
 private:
   struct pair_hash {

@@ -92,7 +92,10 @@ set(project_headers
     treemodel.h
     treeitem.h
     infoviswidget.h
-    javascriptproxy.h)
+    javascriptproxy.h
+    vismethod.h
+    barchart.h
+    scatterplot.h)
 
 set(project_sources
     main.cpp
@@ -130,6 +133,8 @@ set(project_sources
     treeitem.cpp
     infoviswidget.cpp
     javascriptproxy.cpp
+    barchart.cpp
+    scatterplot.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

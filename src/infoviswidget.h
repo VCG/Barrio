@@ -1,3 +1,7 @@
+#ifndef INFOVISWIDGET_H
+#define INFOVISWIDGET_H
+
+
 #include <qwebengineview.h>
 #include "javascriptproxy.h"
 
@@ -10,3 +14,5 @@ public:
 private:
   BarChartSharedData*    m_jsproxy;
 };
+
+#endif
