@@ -9,8 +9,6 @@
 #include <map>
 #include <QPixmap>
 #include "ui_mainwindow.h"
-#include "webviewer.h"
-//#include <filesystem>
 
 namespace fs = std::filesystem;
 

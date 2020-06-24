@@ -8,7 +8,6 @@
 
 #include "glwidget.h"
 #include "datacontainer.h"
-#include "infoviswidget.h"
 
 
 class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions

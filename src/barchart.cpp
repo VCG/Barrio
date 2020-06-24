@@ -36,15 +36,10 @@ QWebEngineView* Barchart::getVisWidget()
   base_path.replace("\\", "/");
   QString url = base_path + QString("/src/barchart_index.html");
 
-
   QWebEngineView* view = new QWebEngineView();
-  
   QWebChannel* channel = new QWebChannel(view->page());
   view->page()->setWebChannel(channel);
   channel->registerObject(QString("data"), this);
-
-  /*QResource index_resource(m_index_url);
-  QString path = index_resource.fileName();*/
   view->load(QUrl(url));
 
   return view;

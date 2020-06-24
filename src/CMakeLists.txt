@@ -85,14 +85,11 @@ set(project_headers
     performancerate.h
     inputform.h
     mesh_preprocessing.h
-    webviewer.h
     globalParameters.h
     mainWidget.h
     mainwidget.h
     treemodel.h
     treeitem.h
-    infoviswidget.h
-    javascriptproxy.h
     vismethod.h
     barchart.h
     scatterplot.h)
@@ -127,12 +124,9 @@ set(project_sources
     performancerate.cpp
     inputform.cpp
     mesh_preprocessing.cpp
-    webviewer.cpp
     mainwidget.cpp
     treemodel.cpp
     treeitem.cpp
-    infoviswidget.cpp
-    javascriptproxy.cpp
     barchart.cpp
     scatterplot.cpp
     shaders/coord_system_vert.glsl

@@ -3,7 +3,6 @@
 #include <set>
 #include <QDomDocument>
 
-#include "webviewer.h"
 #include "mesh_preprocessing.h"
 
 /*
@@ -84,9 +83,6 @@ void DataContainer::loadData()
   QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_dends_corrected.obj";
   QString astro_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
-
-  MyWebViewer* wv = new MyWebViewer();
-  wv->renderWebContent();
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
