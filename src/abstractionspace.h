@@ -8,8 +8,10 @@
 #include "mainopengl.h"
 #include "ssbo_structs.h"
 #include "vismethod.h"
-#include "barchart.h"
+
 #include "distancetree.h"
+#include "barchart.h"
+#include "distancematrix.h"
 
 struct abstractionPoint {
   QVector2D point;

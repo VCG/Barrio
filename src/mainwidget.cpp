@@ -8,6 +8,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   m_datacontainer = datacontainer;
   m_input_form = input_form;
   m_abstraction_space = new AbstractionSpace();
+  m_number_of_entities = NumberOfEntities::LOW;
   setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -15,7 +16,7 @@ void MainWidget::on_synapse_distance_slider_changed(int value)
 {
   double distance = ((double)value / 100.0) * 6;
 
-  for (auto const& [id, widget] : m_widgets) 
+  for (auto const& [id, widget] : m_GL_widgets) 
   {
     if (id != 0) 
     {
@@ -35,8 +36,37 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   {
     name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
   }
+
+  // low configuration
+  if (m_number_of_selected_structures < m_max_cols) 
+  {
+    addInfoVisWidget(ID, name, m_vis_methods.low);
+    m_number_of_entities = NumberOfEntities::LOW;
+  }
+  // medium configuration
+  else if(m_number_of_selected_structures >= m_max_cols && m_number_of_selected_structures < 2 * m_max_cols)
+  {
+    if (m_number_of_entities == NumberOfEntities::LOW)
+    {
+      m_number_of_entities = NumberOfEntities::MEDIUM;
+      deleteAllInfoVisWidgets();
+      addInfoVisWidget(ID, "#Medium Structures", m_vis_methods.medium);
+    }
+    
+   // TODO update infovis data
+  }
+  // high configuration
+  else 
+  {
+    if (m_number_of_entities == NumberOfEntities::MEDIUM)
+    {
+      m_number_of_entities = NumberOfEntities::HIGH;
+      deleteAllInfoVisWidgets();
+      addInfoVisWidget(ID, "#High Structures", m_vis_methods.high);
+    }
+    //TODO update vis data
+  }
   
-  addInfoVisWidget(ID, name);
   addGLWidget(ID, name, isOverviewWidget);
 
   if (m_current_col < m_max_cols - 1) 
@@ -53,25 +83,51 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   return true;
 }
 
-bool MainWidget::deleteWidget(int ID)
+bool MainWidget::deleteInfoVisWidget(int ID)
 {
-  m_number_of_selected_structures--;
-  return false;
+  QGroupBox* widget = m_info_vis_widgets[ID];
+  widget->hide();
+  m_gl_layout->removeWidget(widget);
+  delete widget;
+  
+  return true;
 }
 
-bool MainWidget::addInfoVisWidget(int ID, QString name)
+bool MainWidget::deleteAllInfoVisWidgets()
 {
-  QWebEngineView* widget = m_vis_methods.low->getVisWidget();
+  for (auto it = m_info_vis_widgets.cbegin(); it != m_info_vis_widgets.cend() /* not hoisted */; /* no increment */)
+  {
+    int ID = (*it).first;
+    deleteInfoVisWidget(ID);
+    it = m_info_vis_widgets.erase(it);
+  }
+  return true;
+}
+
+bool MainWidget::addInfoVisWidget(int ID, QString name, IVisMethod* visMethod)
+{
+  QWebEngineView* widget = visMethod->getVisWidget();
 
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
 
   vbox->addWidget(widget);
-
   groupBox->setLayout(vbox);
-  m_layout->addWidget(groupBox, m_current_row, m_current_col);
 
-  m_number_of_selected_structures++;
+  if (m_number_of_entities == NumberOfEntities::LOW) 
+  {
+    m_gl_layout->addWidget(groupBox, m_current_row, m_current_col);
+  }
+  else if(m_number_of_entities == NumberOfEntities::MEDIUM)
+  {
+    m_gl_layout->addWidget(groupBox, 0, 0, 1, -1);
+  }
+  else if(m_number_of_entities == NumberOfEntities::HIGH)
+  {
+    m_gl_layout->addWidget(groupBox, 0, 0, 1, -1);
+  }
+
+  m_info_vis_widgets[ID] = groupBox;
   
   return true;
 }
@@ -86,9 +142,9 @@ bool MainWidget::addGLWidget(int ID, QString name, bool isOverviewWidget)
   vbox->addWidget(widget);
 
   groupBox->setLayout(vbox);
-  m_layout->addWidget(groupBox, m_current_row + 1, m_current_col);
+  m_gl_layout->addWidget(groupBox, m_current_row + 1, m_current_col);
 
-  m_widgets[ID] = widget;
+  m_GL_widgets[ID] = widget;
 
   return true;
 }
@@ -101,7 +157,7 @@ void MainWidget::setupMainWidget(VisConfiguration vis_config)
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
 {
-  /*qDebug() << "Key pressed";
+ /* qDebug() << "Key pressed";
   switch (event->key())
   {
   case(Qt::Key_A):
@@ -114,7 +170,7 @@ void MainWidget::initializeGL()
 {
   initializeOpenGLFunctions();
 
-  m_layout = new QGridLayout(this);
+  m_gl_layout = new QGridLayout(this);
 
   // setup shared resources
   initSharedVBOs();

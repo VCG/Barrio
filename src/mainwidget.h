@@ -9,6 +9,10 @@
 #include "glwidget.h"
 #include "datacontainer.h"
 
+enum NumberOfEntities
+{
+  LOW, MEDIUM, HIGH
+};
 
 class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -16,9 +20,10 @@ class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
   bool addWidgetGroup(int ID, bool isOverviewWidget);
-  bool deleteWidget(int ID);
+  bool deleteInfoVisWidget(int ID);
+  bool deleteAllInfoVisWidgets();
 
-  bool addInfoVisWidget(int ID, QString name);
+  bool addInfoVisWidget(int ID, QString name, IVisMethod* visMethod);
   bool addGLWidget(int ID, QString name, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
@@ -35,8 +40,12 @@ protected:
 private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
-  std::map<int, GLWidget*> m_widgets;
-  QGridLayout* m_layout;
+
+  std::map<int, GLWidget*> m_GL_widgets;
+  std::map<int, QGroupBox*> m_info_vis_widgets;
+  
+  QGridLayout* m_gl_layout;
+
   SharedGLResources m_shared_resources;
 
   // shared resource variables
@@ -65,6 +74,8 @@ private:
   int m_max_cols = 3;
 
   int m_number_of_selected_structures = 0;
+
+  NumberOfEntities m_number_of_entities;
 
 };
 
