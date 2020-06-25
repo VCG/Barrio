@@ -1,15 +1,6 @@
 #include "abstractionspace.h"
 #include <QDebug>
 
-//case 1: pos1 = mesh_vertex; break;
-//case 2: pos1 = vec4(Vskeleton_vx.xyz, 1.0); break;
-//case 3: pos1 = center4d; break;
-//case 4: pos1 = projected_point; break;
-
-/*
- * Todo: add the interpolation states for the abstract graph and the 3D data
- * complete the space
- */
 AbstractionSpace::AbstractionSpace()
 {
   qDebug() << "Hello abstraction space!";
@@ -23,12 +14,84 @@ AbstractionSpace::~AbstractionSpace()
 SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config)
 {
   qDebug() << "Decide on Vis Methods";
-
   SelectedVisMethods methods;
 
-  methods.low = new Barchart();
-  methods.medium = new Barchart();
-  methods.high = new Barchart();
+  methods.low = new BarChart();
+  methods.medium = new BarChart();
+  methods.high = new BarChart();
 
+  if (config.axons && !config.dends && !config.mitos && !config.syn) 
+  {
+    // low - skeleton
+    // medium - scatterplot
+    // high - scatterplot
+  }
+  else if (!config.axons && config.dends && !config.mitos && !config.syn)
+  {
+    // low - skeleton
+    // medium - scatterplot
+    // high - scatterplot
+  }
+  else if (!config.axons && !config.dends && config.mitos && !config.syn)
+  {
+    // low - skeleton
+    // medium - todo
+    // high - scatterplot
+  }
+  else if (!config.axons && !config.dends && !config.mitos && config.syn)
+  {
+    // low - 3D view
+    // medium - barchart
+    // high - barchart
+  }
+
+
+  else if (config.axons && config.dends && !config.mitos && !config.syn)
+  {
+
+  }
+  else if (config.axons && !config.dends && config.mitos && !config.syn)
+  {
+
+  }
+  else if (config.axons && !config.dends && !config.mitos && config.syn)
+  {
+
+  }
+
+
+  else if (!config.axons && config.dends && config.mitos && config.syn)
+  {
+    // low: distance tree
+    // medium: barchart
+    // high: distance matrix
+    methods.low = new DistanceTree();
+    methods.medium = new BarChart();
+    methods.high = new BarChart(); // todo change to distance matrix
+  }
+  else if (!config.axons && config.dends && !config.mitos && config.syn)
+  {
+
+  }
+  else if (!config.axons && !config.dends && config.mitos && config.syn)
+  {
+
+  }
+
+
+  else if (config.axons && config.dends && config.mitos && !config.syn)
+  {
+
+  }
+  else if (config.axons && config.dends && !config.mitos && config.syn)
+  {
+
+  }
+
+  else if (config.axons && config.dends && config.mitos && config.syn)
+  {
+
+  }
+ 
   return methods;
 }

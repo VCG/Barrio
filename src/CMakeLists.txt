@@ -92,7 +92,9 @@ set(project_headers
     treeitem.h
     vismethod.h
     barchart.h
-    scatterplot.h)
+    scatterplot.h
+    distancetree.h
+    distancematrix.h)
 
 set(project_sources
     main.cpp
@@ -129,6 +131,8 @@ set(project_sources
     treeitem.cpp
     barchart.cpp
     scatterplot.cpp
+    distancetree.cpp
+    distancematrix.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

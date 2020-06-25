@@ -4,11 +4,11 @@
 #include <QWebChannel>
 #include "vismethod.h"
 
-class Barchart : public IVisMethod
+class BarChart : public IVisMethod
 {
 public:
-  Barchart();
-  ~Barchart();
+  BarChart();
+  ~BarChart();
 
   Q_INVOKABLE QList<float> getData();
   Q_PROPERTY(QList<float> values READ getData);
@@ -26,7 +26,7 @@ private:
   QString m_y_title;
   QString m_title;
 
-  const char* m_index_url = ":/barchart_index.html";
+  QString m_index_filename = "barchart_index.html";
 };
 
 #endif

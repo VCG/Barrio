@@ -69,16 +69,6 @@ bool MainWidget::deleteWidget(int ID)
 
 bool MainWidget::addInfoVisWidget(int ID)
 {
-  //fs::path current_path = fs::current_path();
-  //qDebug() << current_path.parent_path().c_str();
-
-  //// process html path 
-  //QString base_path = QString(current_path.parent_path().string().c_str());
-  //base_path.replace("\\", "/");
-  //QString url = base_path + QString("/src/index.html");
-
-  //InfoVisWidget* widget = new InfoVisWidget(QUrl::fromLocalFile(url));
-
   QWebEngineView* widget = m_vis_methods.low->getVisWidget();
 
   QGroupBox* groupBox = new QGroupBox("InfoVisView", this);

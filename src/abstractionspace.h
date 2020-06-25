@@ -9,6 +9,7 @@
 #include "ssbo_structs.h"
 #include "vismethod.h"
 #include "barchart.h"
+#include "distancetree.h"
 
 struct abstractionPoint {
   QVector2D point;
