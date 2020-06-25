@@ -15,10 +15,11 @@ class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
   Q_OBJECT;
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
-  bool addGLWidget(int ID, bool isOverviewWidget);
+  bool addWidgetGroup(int ID, bool isOverviewWidget);
   bool deleteWidget(int ID);
 
-  bool addInfoVisWidget(int ID);
+  bool addInfoVisWidget(int ID, QString name);
+  bool addGLWidget(int ID, QString name, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
 

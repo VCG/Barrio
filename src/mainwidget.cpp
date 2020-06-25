@@ -1,6 +1,6 @@
 #include "MainWidget.h"
 
-namespace fs = std::filesystem;
+//namespace fs = std::filesystem;
 
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
   : QOpenGLWidget(parent)
@@ -24,7 +24,7 @@ void MainWidget::on_synapse_distance_slider_changed(int value)
   }
 }
 
-bool MainWidget::addGLWidget(int ID, bool isOverviewWidget)
+bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 {
   QString name;
   if (isOverviewWidget)
@@ -35,24 +35,16 @@ bool MainWidget::addGLWidget(int ID, bool isOverviewWidget)
   {
     name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
   }
-  QGroupBox* groupBox = new QGroupBox(name, this);
-  QVBoxLayout* vbox = new QVBoxLayout;
-
-  GLWidget* widget = new GLWidget(ID, m_shared_resources, isOverviewWidget, this);
-  widget->init(m_input_form); // todo delete dependecy of input form later
-  vbox->addWidget(widget);
   
-  groupBox->setLayout(vbox);
-  m_layout->addWidget(groupBox, m_current_row, m_current_col);
-
-  m_widgets[ID] = widget;  
+  addInfoVisWidget(ID, name);
+  addGLWidget(ID, name, isOverviewWidget);
 
   if (m_current_col < m_max_cols - 1) 
   {
     m_current_col++;
   }
   else {
-    m_current_row++;
+    m_current_row = m_current_row + 2;
     m_current_col = 0;
   }
 
@@ -67,11 +59,11 @@ bool MainWidget::deleteWidget(int ID)
   return false;
 }
 
-bool MainWidget::addInfoVisWidget(int ID)
+bool MainWidget::addInfoVisWidget(int ID, QString name)
 {
   QWebEngineView* widget = m_vis_methods.low->getVisWidget();
 
-  QGroupBox* groupBox = new QGroupBox("InfoVisView", this);
+  QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
 
   vbox->addWidget(widget);
@@ -79,17 +71,25 @@ bool MainWidget::addInfoVisWidget(int ID)
   groupBox->setLayout(vbox);
   m_layout->addWidget(groupBox, m_current_row, m_current_col);
 
-  if (m_current_col < m_max_cols - 1)
-  {
-    m_current_col++;
-  }
-  else {
-    m_current_row++;
-    m_current_col = 0;
-  }
-
   m_number_of_selected_structures++;
   
+  return true;
+}
+
+bool MainWidget::addGLWidget(int ID, QString name, bool isOverviewWidget)
+{
+  QGroupBox* groupBox = new QGroupBox(name, this);
+  QVBoxLayout* vbox = new QVBoxLayout;
+
+  GLWidget* widget = new GLWidget(ID, m_shared_resources, isOverviewWidget, this);
+  widget->init(m_input_form); // todo delete dependecy of input form later
+  vbox->addWidget(widget);
+
+  groupBox->setLayout(vbox);
+  m_layout->addWidget(groupBox, m_current_row + 1, m_current_col);
+
+  m_widgets[ID] = widget;
+
   return true;
 }
 
@@ -101,13 +101,13 @@ void MainWidget::setupMainWidget(VisConfiguration vis_config)
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
 {
-  qDebug() << "Key pressed";
+  /*qDebug() << "Key pressed";
   switch (event->key())
   {
   case(Qt::Key_A):
     addInfoVisWidget(m_lastID);
     break;
-  }
+  }*/
 }
 
 void MainWidget::initializeGL()
@@ -120,7 +120,7 @@ void MainWidget::initializeGL()
   initSharedVBOs();
  
   // add first widget
-  addGLWidget(0, true);
+  //addGLWidget(0, true);
 }
 
 void MainWidget::paintGL()
