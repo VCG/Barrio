@@ -26,8 +26,6 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_mainWidget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
   mainwindow_ui->gridLayout_5->addWidget(m_mainWidget, 0, 0);
  
-  setupSignalsNSlots();
-
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
@@ -37,6 +35,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
+  setupSignalsNSlots();
   
 }
 
@@ -57,7 +56,6 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(this, SIGNAL(update_glycogen_clustering_timing(QString)),
     mainwindow_ui->glycogen_clustering_ms, SLOT(setText(QString)));
 
-
   QObject::connect(this, SIGNAL(update_glycogen_cluter_mapping_timing(QString)),
     mainwindow_ui->glycogen_cluster_mapping_ms, SLOT(setText(QString)));
 
@@ -65,6 +63,8 @@ void MainWindow::setupSignalsNSlots()
     mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
 
   QObject::connect(mainwindow_ui->displayVisButton, SIGNAL(released()), this, SLOT(on_display_vis_button_clicked()));
+
+  QObject::connect(m_treemodel, &QTreeView::doubleClicked, m_treemodel, &TreeModel::selectItem);
 
   
 }

@@ -39,11 +39,11 @@ class GLWidget : public QOpenGLWidget, MainOpenGL
 public:
   GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidget, QWidget* parent = 0);
   ~GLWidget();
-  void init(InputForm* input_form);
+  void init(DataContainer* data_container);
 
   GlycogenAnalysisManager* getGlycogenAnalysisManager() { return m_glycogenAnalysisManager; }
   OpenGLManager* getOpenGLManager() { return m_opengl_mngr; }
-  DataContainer* getDataContainer() { return m_data_containter; }
+  DataContainer* getDataContainer() { return m_data_container; }
   float getZoomFactor() { return m_camera_distance; }
 
   int pickObject(QMouseEvent* event);
@@ -157,7 +157,7 @@ protected:
   bool                                m_2D;
 
   /* mesh */
-  DataContainer* m_data_containter;
+  DataContainer* m_data_container;
   OpenGLManager* m_opengl_mngr;
   GraphManager* m_graphManager;
   GlycogenAnalysisManager* m_glycogenAnalysisManager;

@@ -8,10 +8,12 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     console.log(values);
     console.log(labels);
 
-    var margin = {top: 20, right: 20, bottom: 50, left: 40},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    var margin = {top: 10, right: 10, bottom: 30, left: 30},
+        width = $("#barchart").width() - margin.left - margin.right,
+        height = $("#barchart").height() - margin.top - margin.bottom;
 
+    console.log("width: " + width + ", height: " + height);
+    
     var svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)

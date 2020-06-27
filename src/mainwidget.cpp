@@ -138,7 +138,7 @@ bool MainWidget::addGLWidget(int ID, QString name, bool isOverviewWidget)
   QVBoxLayout* vbox = new QVBoxLayout;
 
   GLWidget* widget = new GLWidget(ID, m_shared_resources, isOverviewWidget, this);
-  widget->init(m_input_form); // todo delete dependecy of input form later
+  widget->init(m_datacontainer); // todo delete dependecy of input form later
   vbox->addWidget(widget);
 
   groupBox->setLayout(vbox);

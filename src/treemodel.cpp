@@ -4,11 +4,8 @@
 
 TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainWidget): QTreeView(parent)
 {
-  connect(this, &QTreeView::doubleClicked, this, &TreeModel::selectItem);
-
   paramList = new QStandardItemModel();
   m_mainwidget = mainWidget;
-
 
   paramList->setColumnCount(2);
   paramList->setHeaderData(0, Qt::Horizontal, "Name");

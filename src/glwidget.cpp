@@ -70,20 +70,21 @@ GLWidget::~GLWidget()
   makeCurrent();
   delete m_2dspace;
   delete m_graphManager;
-  delete m_data_containter;
+  delete m_data_container;
   delete m_glycogenAnalysisManager;
   doneCurrent();
 }
 
-void GLWidget::init(InputForm* input_form)
+void GLWidget::init(DataContainer* data_container)
 {
-  m_data_containter = new DataContainer(input_form);
+
+  m_data_container = data_container;
 
   // objects manager with all objects data
-  m_opengl_mngr = new OpenGLManager(m_data_containter);
+  m_opengl_mngr = new OpenGLManager(m_data_container);
 
   // graph manager with 4 graphs and 2D space layouted data
-  m_graphManager = new GraphManager(m_data_containter, m_opengl_mngr);
+  m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
 
 }
 
@@ -282,7 +283,7 @@ void GLWidget::resizeGL(int w, int h)
   }
   else
   {
-    Object* selectedObject = m_data_containter->getObjectsMapPtr()->at(m_selected_hvgx_id);
+    Object* selectedObject = m_data_container->getObjectsMapPtr()->at(m_selected_hvgx_id);
     m_center = selectedObject->getCenter().toVector3D();
   }
  
@@ -312,7 +313,7 @@ int GLWidget::pickObject(QMouseEvent* event)
     hvgxID = 0;
   }
   setHoveredID(hvgxID);
-  std::string name = m_data_containter->getObjectName(hvgxID);
+  std::string name = m_data_container->getObjectName(hvgxID);
   QString oname = QString::fromUtf8(name.c_str());
   setHoveredName(oname);
   return hvgxID;
@@ -353,7 +354,7 @@ quit:
 void GLWidget::insertInTable(int hvgxID)
 {
 
-  std::string name = m_data_containter->getObjectName(hvgxID);
+  std::string name = m_data_container->getObjectName(hvgxID);
   if (name == "Unknown")
     return;
 
@@ -1015,7 +1016,7 @@ void GLWidget::updateVisibilitySSBO()
 
 void GLWidget::setVisibleStructures()
 {
-  std::map<int, Object*>* objects_map = m_data_containter->getObjectsMapPtr();
+  std::map<int, Object*>* objects_map = m_data_container->getObjectsMapPtr();
   m_visible_structures.clear();
 
   //iterate over all objects and add indices to the VBO
@@ -1148,7 +1149,7 @@ void GLWidget::initMeshShaderStorage(int width, int height)
 void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
 {
   qDebug() << "getListWidget" << treeWidget->topLevelItemCount();
-  std::map<int, Object*>* objectMap = m_data_containter->getObjectsMapPtr();
+  std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
 
   // iterate over these
   // use ID to get type of object
@@ -1173,7 +1174,7 @@ void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
 
 void GLWidget::selectAllVisible()
 {
-  std::map<int, Object*>* objectMap = m_data_containter->getObjectsMapPtr();
+  std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
   for (auto iter = objectMap->rbegin(); iter != objectMap->rend(); iter++) {
     Object* obj = (*iter).second;
     if (obj->isFiltered())
