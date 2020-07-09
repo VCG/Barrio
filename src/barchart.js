@@ -1,12 +1,12 @@
+
+
 new QWebChannel(qt.webChannelTransport, function (channel) {
+
     // Set global Qt proxy object
-    var jsobject = channel.objects.data;
+    var jsobject = channel.objects.barchart_data;
 
     var values = jsobject.values;
     var labels = jsobject.labels;
-
-    console.log(values);
-    console.log(labels);
 
     var margin = {top: 10, right: 10, bottom: 30, left: 30},
         width = $("#barchart").width() - margin.left - margin.right,
@@ -26,8 +26,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var values = [0.7, 0.8, 0.9];
-    var labels = ["dend1", "dend2", "dend3"];
+    // var values = [0.7, 0.8, 0.9];
+    // var labels = ["dend1", "dend2", "dend3"];
     var data = [];
 
     values.forEach(function (v, index) {

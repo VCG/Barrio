@@ -4,11 +4,14 @@
 #include <QWebChannel>
 #include "vismethod.h"
 
-class BarChart : public IVisMethod
+class BarChartData : public QObject
 {
+  Q_OBJECT
+
+
 public:
-  BarChart();
-  ~BarChart();
+  BarChartData(QList<QString> labels, QList<float> values);
+  ~BarChartData();
 
   Q_INVOKABLE QList<float> getData();
   Q_PROPERTY(QList<float> values READ getData);
@@ -16,11 +19,21 @@ public:
   Q_INVOKABLE QList<QString> getLabels();
   Q_PROPERTY(QList<QString> labels READ getLabels);
 
+  QList<QString> m_labels;
+  QList<float> m_values;
+
+};
+
+class BarChart : public IVisMethod
+{
+public:
+  BarChart();
+  ~BarChart();
+
   QWebEngineView* getVisWidget();
 
 private:
-  QList<QString> m_labels;
-  QList<float> m_values;
+  BarChartData* data;
 
   QString m_x_title;
   QString m_y_title;
