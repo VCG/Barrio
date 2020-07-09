@@ -1469,12 +1469,28 @@ void DataContainer::compute_synapse_distances(Object* mito)
   }
 }
 
+void DataContainer::compute_mito_distances(Object* synapse)
+{
+  std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
+  for (Object* mito : mitos)
+  {
+    double closest_distance = m_mesh_processing->compute_closest_distance(synapse, mito, m_mesh->getVerticesList());
+    synapse->setDistanceToStructure(mito->getHVGXID(), closest_distance);
+  }
+}
+
 void DataContainer::compute_closest_distance_to_structures()
 {
   std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
   for (Object* mito : mitos)
   {
     compute_synapse_distances(mito);
+  }
+
+  std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
+  for (Object* syn : synapses)
+  {
+    compute_mito_distances(syn);
   }
 }
 

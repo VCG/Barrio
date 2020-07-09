@@ -2,6 +2,7 @@
 #define DISTANCETREE_H
 
 #include <QWebChannel>
+#include <QChar>
 #include "vismethod.h"
 
 class DistanceTreeData : public QObject 
@@ -21,7 +22,7 @@ public:
 class DistanceTree : public IVisMethod
 {
 public:
-  DistanceTree();
+  DistanceTree(DataContainer* datacontainer);
   ~DistanceTree();
 
   QWebEngineView* getVisWidget();
@@ -29,6 +30,7 @@ public:
 private:
 
   DistanceTreeData* data;
+  DataContainer* m_datacontainer;
 
   QString m_title;
   QString m_index_filename = "distancetree_index.html";

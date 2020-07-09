@@ -102,7 +102,8 @@ public:
   void compute_distance_mito_cell_boundary();
   void compute_centers();
 
-  void compute_synapse_distances(Object* mito);
+  void compute_synapse_distances(Object* mito); // computes distance to closest synapse for the given mitochondrion
+  void compute_mito_distances(Object* synapse); // computes distance to closest mitochondrion for the given synapse
   void compute_closest_distance_to_structures();
 
 

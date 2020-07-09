@@ -8,6 +8,8 @@
 #include <QFile>
 #include <filesystem>
 
+#include "datacontainer.h"
+
 namespace fs = std::filesystem;
 
 class IVisMethod: public QObject

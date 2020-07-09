@@ -13,9 +13,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     function edgeStyler(dom_element, edge_object)
     {
-        console.log(dom_element);
-        console.log(edge_object);
-
         if ("bootstrap" in edge_object.target) {
             dom_element.style("stroke-width", bootstrap_scale(edge_object.target.bootstrap) + "pt");
         }

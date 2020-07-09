@@ -8,6 +8,7 @@
 #include "mainopengl.h"
 #include "ssbo_structs.h"
 #include "vismethod.h"
+#include "datacontainer.h"
 
 #include "distancetree.h"
 #include "barchart.h"
@@ -40,7 +41,7 @@ struct SelectedVisMethods
 class AbstractionSpace : public MainOpenGL
 {
 public:
-  AbstractionSpace();
+  AbstractionSpace(DataContainer* datacontainer);
   ~AbstractionSpace();
 
 
@@ -54,6 +55,8 @@ public:
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
 
   SelectedVisMethods configureVisMethods(VisConfiguration config);
+
+  DataContainer* m_datacontainer;
 
 private:
   struct pair_hash {

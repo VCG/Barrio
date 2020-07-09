@@ -27,13 +27,15 @@ public:
 class BarChart : public IVisMethod
 {
 public:
-  BarChart();
+  BarChart(DataContainer* datacontainer);
   ~BarChart();
 
   QWebEngineView* getVisWidget();
 
 private:
   BarChartData* data;
+
+  DataContainer* m_datacontainer;
 
   QString m_x_title;
   QString m_y_title;

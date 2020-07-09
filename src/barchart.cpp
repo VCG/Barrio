@@ -1,8 +1,9 @@
 #include "barchart.h"
 
 
-BarChart::BarChart()
+BarChart::BarChart(DataContainer* datacontainer)
 {
+  m_datacontainer = datacontainer;
 
   QList<QString> labels;
   labels.append("Syn1");

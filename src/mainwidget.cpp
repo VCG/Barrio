@@ -7,7 +7,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
 {
   m_datacontainer = datacontainer;
   m_input_form = input_form;
-  m_abstraction_space = new AbstractionSpace();
+  m_abstraction_space = new AbstractionSpace(datacontainer);
   m_number_of_entities = NumberOfEntities::LOW;
   setFocusPolicy(Qt::StrongFocus);
 }

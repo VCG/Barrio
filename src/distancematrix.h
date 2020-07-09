@@ -7,7 +7,7 @@
 class DistanceMatrix : public IVisMethod
 {
 public:
-  DistanceMatrix();
+  DistanceMatrix(DataContainer* datacontainer);
   ~DistanceMatrix();
 
   Q_INVOKABLE QList<float> getData();
@@ -22,6 +22,7 @@ private:
   QList<QString> m_labels;
   QList<float> m_values;
 
+  DataContainer* m_datacontainer;
   QString m_x_title;
   QString m_y_title;
   QString m_title;

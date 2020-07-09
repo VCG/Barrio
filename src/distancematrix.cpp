@@ -1,7 +1,8 @@
 #include "distancematrix.h"
 
-DistanceMatrix::DistanceMatrix()
+DistanceMatrix::DistanceMatrix(DataContainer* datacontainer)
 {
+  m_datacontainer = datacontainer;
 }
 
 DistanceMatrix::~DistanceMatrix()
