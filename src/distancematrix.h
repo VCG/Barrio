@@ -16,7 +16,7 @@ public:
   Q_INVOKABLE QList<QString> getLabels();
   Q_PROPERTY(QList<QString> labels READ getLabels);
 
-  QWebEngineView* getVisWidget();
+  QWebEngineView* getVisWidget(int ID);
 
 private:
   QList<QString> m_labels;

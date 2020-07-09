@@ -24,7 +24,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         if ("bootstrap" in node_object && node_object.bootstrap) {
             var label = dom_element.selectAll(".bootstrap");
             if (label.empty()) {
-                dom_element.append("text").classed("bootstrap", true).text(node_object.bootstrap).attr("dx", ".3em").attr("text-anchor", "start").attr("alignment-baseline", "middle");
+                dom_element.append("text").classed("bootstrap", true).text(node_object.bootstrap).attr("dx", ".10em").attr("text-anchor", "start").attr("alignment-baseline", "top");
             } else {
                 if (tree.radial()) { // do not show internal node labels in radial mode
                     label.remove();
@@ -42,7 +42,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 // make nodes and branches not selectable
                 'collapsible': false,
                 // turn off the menu on internal nodes
+                'left-right-spacing': 'fit-to-size',
+                'top-bottom-spacing': 'fit-to-size'
             })
+            .size([600, 500])
             .style_edges(edgeStyler)
             .style_nodes(nodeStyler)
             .node_circle_size(3); // do not draw clickable circles for internal nodes
@@ -60,7 +63,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             }
         });
 
-        tree.spacing_x(25).spacing_y(100);
+        //tree.spacing_x(25).spacing_y(100);
 
         if ($("#layout").prop("checked")) {
             tree.radial(true);

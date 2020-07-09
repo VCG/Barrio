@@ -30,7 +30,7 @@ public:
   BarChart(DataContainer* datacontainer);
   ~BarChart();
 
-  QWebEngineView* getVisWidget();
+  QWebEngineView* getVisWidget(int ID);
 
 private:
   BarChartData* data;

@@ -10,9 +10,9 @@ DistanceTree::~DistanceTree()
   // destruct distance tree
 }
 
-QWebEngineView* DistanceTree::getVisWidget()
+QWebEngineView* DistanceTree::getVisWidget(int ID)
 {
-  QString newickString = createNewickString(1053, 0.9);
+  QString newickString = createNewickString(ID, 0.5);
   data = new DistanceTreeData(newickString);
 
   QWebEngineView* view = new QWebEngineView();
@@ -33,46 +33,51 @@ QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
   std::map<int, Object*>* object_map = m_datacontainer->getObjectsMapPtr();
   Object* object = object_map->at(hvgxID);
 
-  QString root_name = QString(object->getName().c_str());
-
-  std::map<int, double>* mito_distance_map = object->get_distance_map_ptr();
-
-  for (auto const& [syn_id, syn_distance] : *mito_distance_map)
+  if (object->getObjectType() == Object_t::MITO)
   {
-    std::map<int, double>* syn_distance_map = m_datacontainer->getObjectsMapPtr()->at(syn_id)->get_distance_map_ptr();
-    bool distance_ok = syn_distance <= distanceThreshold;
-    bool type_ok = object_map->at(syn_id)->getObjectType() == Object_t::SYNAPSE;
+    QString root_name = QString(object->getName().c_str());
 
-    if (distance_ok && type_ok)
+    std::map<int, double>* mito_distance_map = object->get_distance_map_ptr();
+
+    for (auto const& [syn_id, syn_distance] : *mito_distance_map)
     {
-      QString syn_sub_newick = "";
-      QString name = ""; 
+      std::map<int, double>* syn_distance_map = m_datacontainer->getObjectsMapPtr()->at(syn_id)->get_distance_map_ptr();
+      bool distance_ok = syn_distance <= distanceThreshold;
+      bool type_ok = object_map->at(syn_id)->getObjectType() == Object_t::SYNAPSE;
 
-      for (auto const& [mito_id, mito_dist] : *syn_distance_map) 
+      if (distance_ok && type_ok)
       {
-        distance_ok = mito_dist < distanceThreshold;
-        type_ok = object_map->at(mito_id)->getObjectType() == Object_t::MITO;
+        QString syn_sub_newick = "";
+        QString name = "";
 
-        if(distance_ok && type_ok)
+        for (auto const& [mito_id, mito_dist] : *syn_distance_map)
         {
-          QString mito_sub_newick = "";
-          name = object_map->at(mito_id)->getName().c_str();
-          mito_sub_newick = name + ":" + QString::number(mito_dist);
-          syn_sub_newick += mito_sub_newick + ",";
+          distance_ok = mito_dist < distanceThreshold;
+          type_ok = object_map->at(mito_id)->getObjectType() == Object_t::MITO;
+
+          if (distance_ok && type_ok)
+          {
+            QString mito_sub_newick = "";
+            name = object_map->at(mito_id)->getName().c_str();
+            mito_sub_newick = name + ":" + QString::number(mito_dist);
+            syn_sub_newick += mito_sub_newick + ",";
+          }
         }
+
+        syn_sub_newick = syn_sub_newick.left(syn_sub_newick.lastIndexOf(","));
+        name = object_map->at(syn_id)->getName().c_str();
+        syn_sub_newick = "(" + syn_sub_newick + ")" + name + ":" + QString::number(syn_distance);
+
+        newickString += syn_sub_newick + ",";
       }
-
-      syn_sub_newick = syn_sub_newick.left(syn_sub_newick.lastIndexOf(","));
-      name = object_map->at(syn_id)->getName().c_str();
-      syn_sub_newick = "(" + syn_sub_newick + ")" + name + ":" + QString::number(syn_distance);
-
-      newickString += syn_sub_newick + ",";
     }
+    newickString = newickString.left(newickString.lastIndexOf(","));
+    newickString = "(" + newickString + ")" + root_name;
   }
-  newickString = newickString.left(newickString.lastIndexOf(","));
-  newickString = "(" + newickString + ")" + root_name;
-
-  //qDebug() << newickString;
+  else
+  {
+    qDebug() << "PLEASE SELECT A MITO TO VIEW THE DISTANCE TREE";
+  }
   
   return newickString;
 }

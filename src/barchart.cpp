@@ -23,7 +23,7 @@ BarChart::~BarChart()
   // destruct
 }
 
-QWebEngineView* BarChart::getVisWidget()
+QWebEngineView* BarChart::getVisWidget(int ID)
 {
   QWebEngineView* view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(view->page());

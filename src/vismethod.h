@@ -17,7 +17,7 @@ class IVisMethod: public QObject
   Q_OBJECT
 public:
 
-  virtual QWebEngineView* getVisWidget() = 0;
+  virtual QWebEngineView* getVisWidget(int ID) = 0;
 
   QUrl getHTMLPath(QString filename) 
   {

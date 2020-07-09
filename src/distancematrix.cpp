@@ -19,7 +19,7 @@ Q_INVOKABLE QList<QString> DistanceMatrix::getLabels()
     return Q_INVOKABLE QList<QString>();
 }
 
-QWebEngineView* DistanceMatrix::getVisWidget()
+QWebEngineView* DistanceMatrix::getVisWidget(int ID)
 {
   QWebEngineView* view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(view->page());

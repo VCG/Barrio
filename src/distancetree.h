@@ -25,7 +25,7 @@ public:
   DistanceTree(DataContainer* datacontainer);
   ~DistanceTree();
 
-  QWebEngineView* getVisWidget();
+  QWebEngineView* getVisWidget(int ID);
 
 private:
 

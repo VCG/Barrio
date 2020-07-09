@@ -106,7 +106,7 @@ bool MainWidget::deleteAllInfoVisWidgets()
 
 bool MainWidget::addInfoVisWidget(int ID, QString name, IVisMethod* visMethod)
 {
-  QWebEngineView* widget = visMethod->getVisWidget();
+  QWebEngineView* widget = visMethod->getVisWidget(ID);
 
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
