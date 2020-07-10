@@ -42,8 +42,9 @@ private:
   InputForm* m_input_form; // bad
 
   std::map<int, GLWidget*> m_GL_widgets;
-  std::map<int, QGroupBox*> m_info_vis_widgets;
-  
+  std::map<int, QGroupBox*> m_info_vis_boxes;
+  std::map<int, IVisMethod*> m_views;
+
   QGridLayout* m_gl_layout;
 
   SharedGLResources m_shared_resources;

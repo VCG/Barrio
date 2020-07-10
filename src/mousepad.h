@@ -111,12 +111,12 @@ private:
   GLuint                                  m_buffer_color;
   GLuint                                  m_bindColorIdx;
 
-  std::vector<struct abstractionPoint>    m_vertices;
+  std::vector<struct AbstractionPoint>    m_vertices;
   std::vector<GLuint>                     m_indices;
 
-  std::vector<struct abstractionPoint>    m_grid_vertices;
+  std::vector<struct AbstractionPoint>    m_grid_vertices;
   std::vector<GLuint>                     m_grid_indices;
-  std::vector<struct abstractionPoint>    m_grid_illigal_vertices;
+  std::vector<struct AbstractionPoint>    m_grid_illigal_vertices;
 
   QOpenGLVertexArrayObject                m_vao_2DSpace_debug;
   QOpenGLVertexArrayObject                m_vao_2DSpace_grid;

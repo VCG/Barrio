@@ -14,7 +14,7 @@
 #include "barchart.h"
 #include "distancematrix.h"
 
-struct abstractionPoint {
+struct AbstractionPoint {
   QVector2D point;
   int       ID;
 };
@@ -29,14 +29,12 @@ struct VisConfiguration
   bool sliceView;
 };
 
-struct SelectedVisMethods 
+struct SelectedVisMethods
 {
   IVisMethod* low;
   IVisMethod* medium;
   IVisMethod* high;
 };
-
-
 
 class AbstractionSpace : public MainOpenGL
 {
@@ -45,16 +43,25 @@ public:
   ~AbstractionSpace();
 
 
-  std::vector<struct abstractionPoint> get2DSpaceVertices() { return m_vertices; }
+  std::vector<struct AbstractionPoint> get2DSpaceVertices() { return m_vertices; }
   std::vector<GLuint> get2DSpaceIndices() { return m_indices; }
 
-  std::vector<struct abstractionPoint> get2DSpaceGridVertices() { return m_grid_vertices; }
+  std::vector<struct AbstractionPoint> get2DSpaceGridVertices() { return m_grid_vertices; }
   std::vector<GLuint> get2DSpaceGridIndices() { return m_grid_indices; }
-  std::vector<struct abstractionPoint> get2DSpaceGridIlligalIndices() { return m_grid_illigal_vertices; }
+  std::vector<struct AbstractionPoint> get2DSpaceGridIlligalIndices() { return m_grid_illigal_vertices; }
 
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
 
   SelectedVisMethods configureVisMethods(VisConfiguration config);
+
+  void setThresholdDistance(double distance) { m_global_vis_parameters.distance_threshold = distance; }
+  double getThresholdDistance() { return m_global_vis_parameters.distance_threshold; }
+
+  void setCellOpacity(float opacity) { m_global_vis_parameters.opacity = opacity; }
+  float getCellOpacity() { return m_global_vis_parameters.opacity; }
+
+  void setSliceDepth(float depth) { m_global_vis_parameters.slice_depth = depth; }
+  float getSliceDepth() { return m_global_vis_parameters.slice_depth; }
 
   DataContainer* m_datacontainer;
 
@@ -82,17 +89,18 @@ private:
 
   std::vector< struct ast_neu_properties >    m_IntervalXY;
 
-  std::vector<struct abstractionPoint>        m_vertices;
+  std::vector<struct AbstractionPoint>        m_vertices;
   std::vector<GLuint>                         m_indices;
   std::map<std::pair<int, int>, struct properties>
     m_neu_states;
   std::map<std::pair<int, int>, struct properties>
     m_ast_states;
 
-  std::vector<struct abstractionPoint>        m_grid_vertices;
+  std::vector<struct AbstractionPoint>        m_grid_vertices;
   std::vector<GLuint>                         m_grid_indices;
-  std::vector<struct abstractionPoint>                         m_grid_illigal_vertices;
+  std::vector<struct AbstractionPoint>        m_grid_illigal_vertices;
 
+  GlobalVisParameters m_global_vis_parameters;
 };
 
 #endif // ABSTRACTIONSPACE_H

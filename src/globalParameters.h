@@ -10,3 +10,10 @@
 #define DIM_G		64
 
 #define RECOMPUTE_DATA FALSE
+
+struct GlobalVisParameters
+{
+  double distance_threshold;
+  float opacity;
+  float slice_depth;
+};

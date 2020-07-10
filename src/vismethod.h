@@ -17,7 +17,10 @@ class IVisMethod: public QObject
   Q_OBJECT
 public:
 
-  virtual QWebEngineView* getVisWidget(int ID) = 0;
+  virtual QWebEngineView* initVisWidget(int ID) = 0;
+  virtual bool            update() = 0;
+  virtual QWebEngineView* getWebEngineView() = 0;
+  virtual IVisMethod*     clone() = 0;
 
   QUrl getHTMLPath(QString filename) 
   {
@@ -31,6 +34,7 @@ public:
 
 protected:
   QString m_index_filename;
+  QWebEngineView* m_web_engine_view;
 };
 
 #endif

@@ -23,15 +23,30 @@ BarChart::~BarChart()
   // destruct
 }
 
-QWebEngineView* BarChart::getVisWidget(int ID)
+QWebEngineView* BarChart::initVisWidget(int ID)
 {
-  QWebEngineView* view = new QWebEngineView();
-  QWebChannel* channel = new QWebChannel(view->page());
-  view->page()->setWebChannel(channel);
+  QWebEngineView* m_web_engine_view = new QWebEngineView();
+  QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
+  m_web_engine_view->page()->setWebChannel(channel);
   channel->registerObject(QStringLiteral("barchart_data"), data);
-  view->load(getHTMLPath(m_index_filename));
+  m_web_engine_view->load(getHTMLPath(m_index_filename));
 
-  return view;
+  return m_web_engine_view;
+}
+
+bool BarChart::update()
+{
+    return false;
+}
+
+QWebEngineView* BarChart::getWebEngineView()
+{
+    return m_web_engine_view;
+}
+
+BarChart* BarChart::clone()
+{
+  return nullptr;
 }
 
 

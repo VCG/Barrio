@@ -7,14 +7,16 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
 {
   m_datacontainer = datacontainer;
   m_input_form = input_form;
-  m_abstraction_space = new AbstractionSpace(datacontainer);
   m_number_of_entities = NumberOfEntities::LOW;
   setFocusPolicy(Qt::StrongFocus);
+
+  m_abstraction_space = new AbstractionSpace(datacontainer);
 }
 
 void MainWidget::on_synapse_distance_slider_changed(int value)
 {
-  double distance = ((double)value / 100.0) * 6;
+  double distance = ((double)value / 100.0) * sqrt(3) * MESH_MAX_X;
+  m_abstraction_space->setThresholdDistance(distance);
 
   for (auto const& [id, widget] : m_GL_widgets) 
   {
@@ -22,6 +24,12 @@ void MainWidget::on_synapse_distance_slider_changed(int value)
     {
       widget->update_synapse_distance_threshold(distance);
     }
+  }
+
+  for (auto const& [id, view] : m_views)
+  {
+    view->update();
+    view->getWebEngineView()->reload();
   }
 }
 
@@ -40,7 +48,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // low configuration
   if (m_number_of_selected_structures < m_max_cols) 
   {
-    addInfoVisWidget(ID, name, m_vis_methods.low);
+    addInfoVisWidget(ID, name, m_vis_methods.low->clone());
     m_number_of_entities = NumberOfEntities::LOW;
   }
   // medium configuration
@@ -85,7 +93,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 
 bool MainWidget::deleteInfoVisWidget(int ID)
 {
-  QGroupBox* widget = m_info_vis_widgets[ID];
+  QGroupBox* widget = m_info_vis_boxes[ID];
   widget->hide();
   m_gl_layout->removeWidget(widget);
   delete widget;
@@ -95,18 +103,18 @@ bool MainWidget::deleteInfoVisWidget(int ID)
 
 bool MainWidget::deleteAllInfoVisWidgets()
 {
-  for (auto it = m_info_vis_widgets.cbegin(); it != m_info_vis_widgets.cend() /* not hoisted */; /* no increment */)
+  for (auto it = m_info_vis_boxes.cbegin(); it != m_info_vis_boxes.cend() /* not hoisted */; /* no increment */)
   {
     int ID = (*it).first;
     deleteInfoVisWidget(ID);
-    it = m_info_vis_widgets.erase(it);
+    it = m_info_vis_boxes.erase(it);
   }
   return true;
 }
 
 bool MainWidget::addInfoVisWidget(int ID, QString name, IVisMethod* visMethod)
 {
-  QWebEngineView* widget = visMethod->getVisWidget(ID);
+  QWebEngineView* widget = visMethod->initVisWidget(ID);
 
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
@@ -127,7 +135,8 @@ bool MainWidget::addInfoVisWidget(int ID, QString name, IVisMethod* visMethod)
     m_gl_layout->addWidget(groupBox, 0, 0, 1, -1);
   }
 
-  m_info_vis_widgets[ID] = groupBox;
+  m_info_vis_boxes[ID] = groupBox;
+  m_views[ID] = visMethod;
   
   return true;
 }

@@ -5,6 +5,10 @@ AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
 {
   qDebug() << "Hello abstraction space!";
   m_datacontainer = datacontainer;
+  
+  m_global_vis_parameters.distance_threshold = 1.0;
+  m_global_vis_parameters.opacity = 0.0;
+  m_global_vis_parameters.slice_depth = 0.0;
 }
 
 AbstractionSpace::~AbstractionSpace()
@@ -66,7 +70,7 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
     // low: distance tree
     // medium: barchart
     // high: distance matrix
-    methods.low = new DistanceTree(m_datacontainer);
+    methods.low = new DistanceTree(&m_global_vis_parameters, m_datacontainer);
     methods.medium = new BarChart(m_datacontainer);
     methods.high = new DistanceMatrix(m_datacontainer); // todo change to distance matrix
   }

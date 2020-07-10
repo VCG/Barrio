@@ -1,8 +1,16 @@
 #include "distancetree.h"
 
-DistanceTree::DistanceTree(DataContainer* datacontainer)
+
+DistanceTree::DistanceTree(DistanceTree* distanceTree)
+{
+  m_datacontainer = distanceTree->m_datacontainer;
+  m_global_vis_parameters = distanceTree->m_global_vis_parameters;
+}
+
+DistanceTree::DistanceTree(GlobalVisParameters* visparams, DataContainer* datacontainer)
 {
   m_datacontainer = datacontainer;
+  m_global_vis_parameters = visparams;
 }
 
 DistanceTree::~DistanceTree()
@@ -10,18 +18,39 @@ DistanceTree::~DistanceTree()
   // destruct distance tree
 }
 
-QWebEngineView* DistanceTree::getVisWidget(int ID)
+QWebEngineView* DistanceTree::initVisWidget(int ID)
 {
-  QString newickString = createNewickString(ID, 0.5);
-  data = new DistanceTreeData(newickString);
+  QString newickString = createNewickString(ID, m_global_vis_parameters->distance_threshold);
+  data = new DistanceTreeData(ID, newickString);
 
-  QWebEngineView* view = new QWebEngineView();
-  QWebChannel* channel = new QWebChannel(view->page());
-  view->page()->setWebChannel(channel);
+  m_web_engine_view = new QWebEngineView();
+  QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
+  m_web_engine_view->page()->setWebChannel(channel);
   channel->registerObject(QString("distance_tree_data"), data);
-  view->load(getHTMLPath(m_index_filename));
+  m_web_engine_view->load(getHTMLPath(m_index_filename));
 
-  return view;
+  return m_web_engine_view;
+}
+
+
+QWebEngineView* DistanceTree::getWebEngineView()
+{
+  return m_web_engine_view;
+}
+
+
+
+bool DistanceTree::update()
+{
+  int id = data->m_hvgxID;
+  QString newick = createNewickString(id, m_global_vis_parameters->distance_threshold);
+  data->setNewickString(newick);
+  return true;
+}
+
+DistanceTree* DistanceTree::clone()
+{
+  return new DistanceTree(this);
 }
 
 /*
@@ -82,8 +111,9 @@ QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
   return newickString;
 }
 
-DistanceTreeData::DistanceTreeData(QString newickString) 
+DistanceTreeData::DistanceTreeData(int ID, QString newickString) 
 {
+  m_hvgxID = ID;
   m_newickString = newickString;
 }
 

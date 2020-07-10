@@ -19,13 +19,28 @@ Q_INVOKABLE QList<QString> DistanceMatrix::getLabels()
     return Q_INVOKABLE QList<QString>();
 }
 
-QWebEngineView* DistanceMatrix::getVisWidget(int ID)
+QWebEngineView* DistanceMatrix::initVisWidget(int ID)
 {
-  QWebEngineView* view = new QWebEngineView();
-  QWebChannel* channel = new QWebChannel(view->page());
-  view->page()->setWebChannel(channel);
+  QWebEngineView* m_web_engine_view = new QWebEngineView();
+  QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
+  m_web_engine_view->page()->setWebChannel(channel);
   channel->registerObject(QString("data"), this);
-  view->load(getHTMLPath(m_index_filename));
+  m_web_engine_view->load(getHTMLPath(m_index_filename));
 
-  return view;
+  return m_web_engine_view;
+}
+
+bool DistanceMatrix::update()
+{
+  return false;
+}
+
+QWebEngineView* DistanceMatrix::getWebEngineView()
+{
+  return m_web_engine_view;
+}
+
+DistanceMatrix* DistanceMatrix::clone()
+{
+  return nullptr;
 }

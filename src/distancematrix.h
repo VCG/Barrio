@@ -16,7 +16,10 @@ public:
   Q_INVOKABLE QList<QString> getLabels();
   Q_PROPERTY(QList<QString> labels READ getLabels);
 
-  QWebEngineView* getVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID);
+  bool            update();
+  QWebEngineView* getWebEngineView();
+  DistanceMatrix* clone();
 
 private:
   QList<QString> m_labels;
@@ -28,6 +31,7 @@ private:
   QString m_title;
 
   QString m_index_filename = "distancematrix_index.html";
+  QWebEngineView* m_web_engine_view;
 };
 
 #endif

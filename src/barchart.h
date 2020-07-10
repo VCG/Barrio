@@ -30,7 +30,10 @@ public:
   BarChart(DataContainer* datacontainer);
   ~BarChart();
 
-  QWebEngineView* getVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID);
+  bool            update();
+  QWebEngineView* getWebEngineView();
+  BarChart*       clone();
 
 private:
   BarChartData* data;
@@ -42,6 +45,7 @@ private:
   QString m_title;
 
   QString m_index_filename = "barchart_index.html";
+  QWebEngineView* m_web_engine_view;
 };
 
 #endif

@@ -30,6 +30,12 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_clusters = 0;
 
   QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
+  //synapse_threshold_slider->setMinimum(0);
+  //synapse_threshold_slider->setMaximum(sqrt(3) * MESH_MAX_X); // diagonal of cube is the maximum length possible
+  //synapse_threshold_slider->setValue(1.0);
+  int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
+  synapse_threshold_slider->setValue(initial_tick_position);
+
   connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), m_mainWidget, SLOT(on_synapse_distance_slider_changed(int)));
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);

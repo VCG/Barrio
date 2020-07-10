@@ -3,6 +3,8 @@
 
 #include <QWebChannel>
 #include <QChar>
+#include <QWebEngineView>
+
 #include "vismethod.h"
 
 class DistanceTreeData : public QObject 
@@ -10,22 +12,31 @@ class DistanceTreeData : public QObject
   Q_OBJECT
 
 public:
-  DistanceTreeData(QString newickString);
+  DistanceTreeData(int ID, QString newickString);
   ~DistanceTreeData();
 
   Q_INVOKABLE QString getNewickString();
   Q_PROPERTY(QString newickString READ getNewickString);
 
+  void setNewickString(QString newick) { m_newickString = newick; };
+  void setHvgxID(int ID) { m_hvgxID = ID; };
+
+  int m_hvgxID;
   QString m_newickString;
 };
 
 class DistanceTree : public IVisMethod
 {
 public:
-  DistanceTree(DataContainer* datacontainer);
+  DistanceTree(DistanceTree* distanceTree);
+  DistanceTree(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~DistanceTree();
 
-  QWebEngineView* getVisWidget(int ID);
+  //inherited functions
+  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* getWebEngineView();
+  bool            update();
+  DistanceTree*   clone();
 
 private:
 
@@ -36,6 +47,9 @@ private:
   QString m_index_filename = "distancetree_index.html";
 
   QString createNewickString(int hvgxID, float distanceThreshold);
+
+  GlobalVisParameters* m_global_vis_parameters;
+  QWebEngineView* m_web_engine_view;
 };
 
 #endif
