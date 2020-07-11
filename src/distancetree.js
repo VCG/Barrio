@@ -45,7 +45,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'left-right-spacing': 'fit-to-size',
                 'top-bottom-spacing': 'fit-to-size'
             })
-            .size([600, 500])
+            .size([600, 600])
             .style_edges(edgeStyler)
             .style_nodes(nodeStyler)
             .node_circle_size(3); // do not draw clickable circles for internal nodes
