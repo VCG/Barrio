@@ -2,6 +2,10 @@
 #define BARCHART_H
 
 #include <QWebChannel>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
 #include "vismethod.h"
 
 class BarChartData : public QObject
@@ -10,17 +14,13 @@ class BarChartData : public QObject
 
 
 public:
-  BarChartData(QList<QString> labels, QList<float> values);
+  BarChartData(QString json_string);
   ~BarChartData();
 
-  Q_INVOKABLE QList<float> getData();
-  Q_PROPERTY(QList<float> values READ getData);
+  Q_INVOKABLE QString getData();
+  Q_PROPERTY(QString json_string READ getData);
 
-  Q_INVOKABLE QList<QString> getLabels();
-  Q_PROPERTY(QList<QString> labels READ getLabels);
-
-  QList<QString> m_labels;
-  QList<float> m_values;
+  QString m_json_string;
 
 };
 
@@ -34,6 +34,8 @@ public:
   bool            update();
   QWebEngineView* getWebEngineView();
   BarChart*       clone();
+
+  QString         createJSONString(QList<int>* selected_mitos, double distance_threshold);
 
 private:
   BarChartData* data;

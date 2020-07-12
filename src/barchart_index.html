@@ -1,33 +1,161 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<head>
-    <style>
+<style>
 
-        .bar {
-            fill: steelblue;
-        }
+    .axis {
+        font: 10px sans-serif;
+    }
 
-        .bar:hover {
-            fill: brown;
-        }
+    .axis path, .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
 
-        .axis--x path {
-            display: none;
-        }
-    </style>
-</head>
+    div.tooltip {
+        position: absolute;
+        text-align: match-parent;
+        width: auto;
+        height: auto;
+        padding: 3px;
+        font: 12px sans-serif;
+        background: white;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+    }
+
+</style>
 <body>
-
-<div id="barchart" style="height: 100vh;">
-        
-</div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://d3js.org/d3.v5.min.js"></script>
+<div id="chart"></div>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
-<script src="barchart.js"></script>
+<script>
+    new QWebChannel(qt.webChannelTransport, function (channel) {
 
-</body>
+        var jsobject = channel.objects.barchart_data;
+        let json_string = jsobject.json_string;
+
+        var m = {top: 10, right: 10, bottom: 50, left: 110},
+            w = 2000 - m.left - m.right,
+            h = 400 - m.top - m.bottom,
+            pad = .1;
+
+        var x = d3.scale.ordinal().rangeRoundBands([0, w]);
+        var y = d3.scale.linear().range([h, 0]);
+
+
+        var color = d3.scale.category20c();
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(5);
+
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", w + m.right + m.left + 100)
+            .attr("height", h + m.top + m.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + m.left + "," + m.top + ")");
+
+        // This moves the SVG over by m.left(110)
+        // and down by m.top (10)
+
+        data = JSON.parse(json_string);
+
+        console.log(data);
+        data.forEach(function (d) {
+            d.votes = +d.votes;
+        });
+
+
+        var nested = d3.nest()
+            .key(function (d) {
+                return d.district;
+            })
+            .entries(data);
+
+
+        x.domain(nested.map(function (d) {
+            return d.key;
+        }));
+        y.domain([0, d3.max(data, function (d) {
+            return d.votes;
+        })]);
+
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + h + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "middle");
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text");
+
+        var district = svg.selectAll(".district")
+            .data(nested)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) {
+                console.log(d);
+                return "translate(" + x(d.key) + ", 0)";
+            });
+
+        var bars = district.selectAll(".bar")
+            .data(function (d) {
+                return d.values
+            })
+            .enter().append("rect");
+
+
+        bars.style("fill", function (d, i) {
+            return color(i - 2);
+        })
+            .attr("y", function (d) {
+                return y(d.votes)
+            })
+            .attr("x", function (d, i) {
+                if (i % 2 == 0) {
+                    return (x.rangeBand() / 2 - 10) + (i / 2 + 0.5) * 10
+                } else {
+                    return (x.rangeBand() / 2 - 10) - (i / 2) * 10
+                }
+            })
+            .attr("width", 10)
+            .attr("height", function (d) {
+                return h - y(d.votes);
+            });
+
+        bars.append("title")
+            .text(function (d) {
+                return d.candidate + ", " + d.votes
+            });
+        //
+        // var labels = district.selectAll(".label")
+        //     .data(function(d){return d.values})
+        //     .enter().append("text");
+        //
+        // labels.text(function(d) {
+        //     return (d.votes);
+        // })
+        //     .attr("text-anchor", "start")
+        //     .attr("x", function(d) { return x(d.votes) + 4})
+        //     .attr("y", function(d, i) {
+        //         if(i % 2== 0){ return (y.rangeBand()/2 -2)+ (i/2 + 0.5)*10}
+        //         else { return (y.rangeBand()/2 -2)- (i/2)*10}
+        //     })
+        //     .attr("class", "axis");
+
+    });
+</script>
+
