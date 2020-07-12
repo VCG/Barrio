@@ -28,6 +28,8 @@ public:
 
   void setupMainWidget(VisConfiguration vis_config);
 
+  void updateInfoVisViews();
+
 public slots:
   void on_synapse_distance_slider_changed(int value);
 

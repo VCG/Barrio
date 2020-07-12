@@ -20,6 +20,9 @@ public:
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
 
+  void setJsonString(QString json) { m_json_string = json; }
+  QString getJsonString() { return m_json_string; }
+
   QString m_json_string;
 
 };
@@ -27,7 +30,8 @@ public:
 class BarChart : public IVisMethod
 {
 public:
-  BarChart(DataContainer* datacontainer);
+  BarChart(BarChart* barchart);
+  BarChart(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~BarChart();
 
   QWebEngineView* initVisWidget(int ID);
@@ -48,6 +52,8 @@ private:
 
   QString m_index_filename = "barchart_index.html";
   QWebEngineView* m_web_engine_view;
+
+  GlobalVisParameters* m_global_vis_parameters;
 };
 
 #endif

@@ -26,11 +26,7 @@ void MainWidget::on_synapse_distance_slider_changed(int value)
     }
   }
 
-  for (auto const& [id, view] : m_views)
-  {
-    view->update();
-    view->getWebEngineView()->reload();
-  }
+  updateInfoVisViews();
 }
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
@@ -45,6 +41,8 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
   }
 
+  m_abstraction_space->addToSelectedIndices(ID);
+
   // low configuration
   if (m_number_of_selected_structures < m_max_cols) 
   {
@@ -58,8 +56,14 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     {
       m_number_of_entities = NumberOfEntities::MEDIUM;
       deleteAllInfoVisWidgets();
-      addInfoVisWidget(ID, "#Medium Structures", m_vis_methods.medium);
+      addInfoVisWidget(ID, "#Medium Structures", m_vis_methods.medium->clone());
     }
+    else
+    {
+      updateInfoVisViews();
+    }
+
+
     
    // TODO update infovis data
   }
@@ -103,12 +107,20 @@ bool MainWidget::deleteInfoVisWidget(int ID)
 
 bool MainWidget::deleteAllInfoVisWidgets()
 {
-  for (auto it = m_info_vis_boxes.cbegin(); it != m_info_vis_boxes.cend() /* not hoisted */; /* no increment */)
+  // clear group box map
+  for (auto it = m_info_vis_boxes.cbegin(); it != m_info_vis_boxes.cend();)
   {
     int ID = (*it).first;
     deleteInfoVisWidget(ID);
     it = m_info_vis_boxes.erase(it);
   }
+
+  // clear view map
+  for (auto it = m_views.cbegin(); it != m_views.cend();)
+  {
+    it = m_views.erase(it);
+  }
+
   return true;
 }
 
@@ -162,6 +174,15 @@ void MainWidget::setupMainWidget(VisConfiguration vis_config)
 {
   m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
   qDebug() << "Decided on Vis methods";
+}
+
+void MainWidget::updateInfoVisViews()
+{
+  for (auto const& [id, view] : m_views)
+  {
+    view->update();
+    view->getWebEngineView()->reload();
+  }
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)

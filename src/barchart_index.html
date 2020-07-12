@@ -56,6 +56,11 @@
             .orient("bottom")
             .ticks(5);
 
+            // Append Div for tooltip to SVG
+        let div = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
         var svg = d3.select("#chart").append("svg")
             .attr("width", w + m.right + m.left + 100)
@@ -69,7 +74,6 @@
 
         data = JSON.parse(json_string);
 
-        console.log(data);
         data.forEach(function (d) {
             d.votes = +d.votes;
         });
@@ -134,6 +138,22 @@
             .attr("width", 10)
             .attr("height", function (d) {
                 return h - y(d.votes);
+            })
+            .on("mouseover", function(d){
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text(function(d){
+                        return d.candidate;
+                    })
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d){
+                div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
             });
 
         bars.append("title")

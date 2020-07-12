@@ -1,8 +1,15 @@
 #include "barchart.h"
 
 
-BarChart::BarChart(DataContainer* datacontainer)
+BarChart::BarChart(BarChart* barchart)
 {
+  m_datacontainer = barchart->m_datacontainer;
+  m_global_vis_parameters = barchart->m_global_vis_parameters;
+}
+
+BarChart::BarChart(GlobalVisParameters* visparams, DataContainer* datacontainer)
+{
+  m_global_vis_parameters = visparams;
   m_datacontainer = datacontainer;
 }
 
@@ -13,8 +20,7 @@ BarChart::~BarChart()
 
 QWebEngineView* BarChart::initVisWidget(int ID)
 {
-  QList<int> ids({ 1079, 1061, 1054, 1049, 1064, 1046 });
-  QString json = createJSONString(&ids, 1.0);
+  QString json = createJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
   data = new BarChartData(json);
 
   m_web_engine_view = new QWebEngineView();
@@ -28,7 +34,9 @@ QWebEngineView* BarChart::initVisWidget(int ID)
 
 bool BarChart::update()
 {
-    return false;
+  QString json = createJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
+  data->setJsonString(json);
+  return true;
 }
 
 QWebEngineView* BarChart::getWebEngineView()
@@ -38,7 +46,7 @@ QWebEngineView* BarChart::getWebEngineView()
 
 BarChart* BarChart::clone()
 {
-  return nullptr;
+  return new BarChart(this);
 }
 
 QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_threshold)

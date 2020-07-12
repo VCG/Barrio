@@ -11,9 +11,13 @@
 
 #define RECOMPUTE_DATA FALSE
 
+#include <QList>
+
 struct GlobalVisParameters
 {
   double distance_threshold;
   float opacity;
   float slice_depth;
+
+  QList<int> selectedObjects;
 };

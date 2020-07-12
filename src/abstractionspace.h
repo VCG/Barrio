@@ -63,6 +63,9 @@ public:
   void setSliceDepth(float depth) { m_global_vis_parameters.slice_depth = depth; }
   float getSliceDepth() { return m_global_vis_parameters.slice_depth; }
 
+  void addToSelectedIndices(int id) { m_global_vis_parameters.selectedObjects.append(id); }
+  QList<int>* getSelectedIndexList() { return &m_global_vis_parameters.selectedObjects; }
+
   DataContainer* m_datacontainer;
 
 private:
