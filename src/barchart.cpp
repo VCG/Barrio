@@ -57,35 +57,48 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
 
   for each  (int id in *selected_mitos)
   {
-    //QJsonObject mito_object;
-    //QJsonArray syn_array;
-
     Object* mito = objects->at(id);
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
+    std::map<QString, float> selected_syns;
 
+    int group_synapse_counter = 0;
     for each (Object* syn in synapses)
     {
       QString syn_name = syn->getName().c_str();
       double distance_to_mito = distance_map->at(syn->getHVGXID());
       if (distance_to_mito < distance_threshold)
       {
-        QJsonObject synapse_object;
-        synapse_object.insert("district", QJsonValue::fromVariant(mito->getName().c_str()));
-        synapse_object.insert("candidate", QJsonValue::fromVariant(syn_name));
-        synapse_object.insert("votes", QJsonValue::fromVariant(distance_to_mito));
-        json.push_back(synapse_object);
+        selected_syns[syn_name] = distance_to_mito;
+        group_synapse_counter++;
       }
     }
 
-    //mito_object.insert("categorie", QJsonValue::fromVariant(mito->getName().c_str()));
-    //mito_object.insert("values", QJsonValue::fromVariant(syn_array));
+    // sort map
+    std::vector<std::pair<QString, float>> vec;
+    std::map<QString, float> ::iterator it2;
 
-    //json.push_back(mito_object);
+    for (it2 = selected_syns.begin(); it2 != selected_syns.end(); it2++)
+    {
+      vec.push_back(std::make_pair(it2->first, it2->second));
+    }
+    std::sort(vec.begin(), vec.end(), sortByVal);
+
+    for (int i = 0; i < vec.size(); i++)
+    {
+      QJsonObject synapse_object;
+      synapse_object.insert("district", QJsonValue::fromVariant(mito->getName().c_str()));
+      synapse_object.insert("candidate", QJsonValue::fromVariant(vec[i].first));
+      synapse_object.insert("votes", QJsonValue::fromVariant(vec[i].second));
+      synapse_object.insert("group_size", QJsonValue::fromVariant(group_synapse_counter));
+      json.push_back(synapse_object);
+    }
+
   }
 
-  QJsonDocument doc(json);
-  qDebug() << doc.toJson();
+  
 
+
+  QJsonDocument doc(json);
   return doc.toJson(QJsonDocument::Compact);
 }
 

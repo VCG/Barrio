@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <algorithm>
 
 #include "vismethod.h"
 
@@ -54,6 +55,12 @@ private:
   QWebEngineView* m_web_engine_view;
 
   GlobalVisParameters* m_global_vis_parameters;
+
+  static bool sortByVal(const std::pair<QString, float> &a,
+    const std::pair<QString, float> &b)
+  {
+    return (a.second < b.second);
+  }
 };
 
 #endif

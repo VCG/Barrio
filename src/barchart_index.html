@@ -25,6 +25,16 @@
         pointer-events: none;
     }
 
+    .bar {
+        fill: rgb(148,0,212);
+        border-width: medium;
+        border-color: #000;
+    }
+
+    .bar:hover{
+        fill: #ffa500 ;
+    }
+
 </style>
 <body>
 <div id="chart"></div>
@@ -37,7 +47,7 @@
         let json_string = jsobject.json_string;
 
         var m = {top: 10, right: 10, bottom: 50, left: 110},
-            w = 2000 - m.left - m.right,
+            w = 1750 - m.left - m.right,
             h = 400 - m.top - m.bottom,
             pad = .1;
 
@@ -111,7 +121,6 @@
             .enter()
             .append("g")
             .attr("transform", function (d) {
-                console.log(d);
                 return "translate(" + x(d.key) + ", 0)";
             });
 
@@ -119,23 +128,18 @@
             .data(function (d) {
                 return d.values
             })
-            .enter().append("rect");
+            .enter()
+            .append("rect")
+            .attr("class", "bar");
 
 
-        bars.style("fill", function (d, i) {
-            return color(i - 2);
-        })
-            .attr("y", function (d) {
+        bars.attr("y", function (d) {
                 return y(d.votes)
             })
             .attr("x", function (d, i) {
-                if (i % 2 == 0) {
-                    return (x.rangeBand() / 2 - 10) + (i / 2 + 0.5) * 10
-                } else {
-                    return (x.rangeBand() / 2 - 10) - (i / 2) * 10
-                }
+                return (x.rangeBand() / 2)  - (10 * d.group_size / 2) + i * 10;
             })
-            .attr("width", 10)
+            .attr("width", 9)
             .attr("height", function (d) {
                 return h - y(d.votes);
             })
@@ -144,9 +148,7 @@
                     .duration(200)
                     .style("opacity", .9);
 
-                div.text(function(d){
-                        return d.candidate;
-                    })
+                div.text(d.candidate)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
             })
@@ -156,10 +158,10 @@
                         .style("opacity", 0);
             });
 
-        bars.append("title")
-            .text(function (d) {
-                return d.candidate + ", " + d.votes
-            });
+        // bars.append("title")
+        //     .text(function (d) {
+        //         return d.candidate + ", " + d.votes
+        //     });
         //
         // var labels = district.selectAll(".label")
         //     .data(function(d){return d.values})
