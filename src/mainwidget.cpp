@@ -214,42 +214,31 @@ void MainWidget::updateInfoVisViews()
 
 void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
 {
-
   if (new_entities_selection == NumberOfEntities::MEDIUM)
   {
-    if (m_number_of_entities == NumberOfEntities::LOW)
-    {
-      m_number_of_entities = NumberOfEntities::MEDIUM;
-      deleteAllInfoVisWidgets();
-      addInfoVisWidget(m_lastID, "#Medium Structures", m_vis_methods.medium->clone());
-    }
-
-    if (m_number_of_entities == NumberOfEntities::HIGH)
-    {
-
-    }
+    m_number_of_entities = NumberOfEntities::MEDIUM;
+    deleteAllInfoVisWidgets();
+    addInfoVisWidget(m_lastID, "#Medium Structures", m_vis_methods.medium->clone());
   }
   else if(new_entities_selection == NumberOfEntities::LOW)
   {
-     if(m_number_of_entities == NumberOfEntities::MEDIUM)
+     m_number_of_entities = NumberOfEntities::LOW;
+     QList<int> currentlySelectedIDs = getSelectedIDs();
+     deleteAllInfoVisWidgets();
+     deleteAllGLWidgets();
+
+     for each (int ID in currentlySelectedIDs)
      {
-       m_number_of_entities = NumberOfEntities::LOW;
-       QList<int> currentlySelectedIDs = getSelectedIDs();
-       deleteAllInfoVisWidgets();
-       deleteAllGLWidgets();
-
-       for each (int ID in currentlySelectedIDs)
-       {
-         addWidgetGroup(ID, false);
-       }
-     }
-
-     if (m_number_of_entities == NumberOfEntities::HIGH)
-     {
-
+       addWidgetGroup(ID, false);
      }
   }
 
+  else if (new_entities_selection == NumberOfEntities::HIGH) 
+  {
+    m_number_of_entities = NumberOfEntities::HIGH;
+    deleteAllInfoVisWidgets();
+    addInfoVisWidget(m_lastID, "#High Structures", m_vis_methods.high->clone());
+  }
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
