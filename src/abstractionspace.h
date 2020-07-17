@@ -34,6 +34,10 @@ struct SelectedVisMethods
   IVisMethod* low;
   IVisMethod* medium;
   IVisMethod* high;
+
+  QString low_icon;
+  QString medium_icon;
+  QString high_icon;
 };
 
 class AbstractionSpace : public MainOpenGL
@@ -63,7 +67,14 @@ public:
   void setSliceDepth(float depth) { m_global_vis_parameters.slice_depth = depth; }
   float getSliceDepth() { return m_global_vis_parameters.slice_depth; }
 
-  void addToSelectedIndices(int id) { m_global_vis_parameters.selectedObjects.append(id); }
+  void addToSelectedIndices(int id) 
+  {
+    if (!m_global_vis_parameters.selectedObjects.contains(id))
+    {
+      m_global_vis_parameters.selectedObjects.append(id);
+    }
+  }
+
   QList<int>* getSelectedIndexList() { return &m_global_vis_parameters.selectedObjects; }
 
   DataContainer* m_datacontainer;

@@ -41,6 +41,21 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
+  mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  mainwindow_ui->pushButton->setIconSize(QSize(60, 60));
+  mainwindow_ui->pushButton->setMinimumSize(60, 60);
+  mainwindow_ui->pushButton->setMaximumSize(60, 60);
+
+  mainwindow_ui->pushButton_2->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  mainwindow_ui->pushButton_2->setIconSize(QSize(60, 60));
+  mainwindow_ui->pushButton_2->setMinimumSize(60, 60);
+  mainwindow_ui->pushButton_2->setMaximumSize(60, 60);
+
+  mainwindow_ui->pushButton_3->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  mainwindow_ui->pushButton_3->setIconSize(QSize(60, 60));
+  mainwindow_ui->pushButton_3->setMinimumSize(60, 60);
+  mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
+
   setupSignalsNSlots();
   
 }
@@ -68,11 +83,17 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(this, SIGNAL(update_glycogen_granules_mapping_timing(QString)),
     mainwindow_ui->glycogen_granules_mapping_ms, SLOT(setText(QString)));
 
-  QObject::connect(mainwindow_ui->displayVisButton, SIGNAL(released()), this, SLOT(on_display_vis_button_clicked()));
-
   QObject::connect(m_treemodel, &QTreeView::doubleClicked, m_treemodel, &TreeModel::selectItem);
 
-  
+  QObject::connect(mainwindow_ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+  QObject::connect(mainwindow_ui->checkBox_2, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+  QObject::connect(mainwindow_ui->checkBox_3, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+  QObject::connect(mainwindow_ui->checkBox_5, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+
+  QObject::connect(mainwindow_ui->pushButton, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
+  QObject::connect(mainwindow_ui->pushButton_2, SIGNAL(released()), this, SLOT(on_medium_detail_vis_clicked()));
+  QObject::connect(mainwindow_ui->pushButton_3, SIGNAL(released()), this, SLOT(on_low_detail_vis_clicked()));
+
 }
 
 void MainWindow::onAddWebWidget()
@@ -189,21 +210,54 @@ void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
   signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
 }
 
-void MainWindow::on_display_vis_button_clicked()
+void MainWindow::on_structure_selection_changed(int state)
 {
-  bool axons = mainwindow_ui->checkBox->isChecked();
-  bool dends = mainwindow_ui->checkBox_2->isChecked();
-  bool mitos = mainwindow_ui->checkBox_3->isChecked();
-  bool syn = mainwindow_ui->checkBox_5->isChecked();
-
-  bool sliceView = mainwindow_ui->checkBox_12->isChecked();
-
+  qDebug() << "seting image";
   VisConfiguration config;
-  config.axons = axons;
-  config.dends = dends;
-  config.mitos = mitos;
-  config.syn = syn;
-  config.sliceView = sliceView;
+  config.axons = mainwindow_ui->checkBox->isChecked();
+  config.dends = mainwindow_ui->checkBox_2->isChecked();
+  config.mitos = mainwindow_ui->checkBox_3->isChecked();
+  config.syn = mainwindow_ui->checkBox_3->isChecked();
+  config.sliceView = mainwindow_ui->checkBox_12->isChecked();
 
-  m_mainWidget->setupMainWidget(config);
+  SelectedVisMethods visMethods = m_mainWidget->setThumbnailIcons(config);
+
+  // low detail
+  mainwindow_ui->pushButton_3->setIcon(QIcon(visMethods.high_icon));
+   
+  // medium detail
+  mainwindow_ui->pushButton_2->setIcon(QIcon(visMethods.medium_icon));
+
+  // high detail
+  mainwindow_ui->pushButton->setIcon(QIcon(visMethods.low_icon));
+}
+
+void MainWindow::on_high_detail_vis_clicked()
+{
+  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
+  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid gray");
+
+  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid orange");
+
+  m_mainWidget->setNumberOfEntities(NumberOfEntities::LOW);
+}
+
+void MainWindow::on_medium_detail_vis_clicked()
+{
+  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
+  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
+
+  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid orange");
+
+  m_mainWidget->setNumberOfEntities(NumberOfEntities::MEDIUM);
+}
+
+void MainWindow::on_low_detail_vis_clicked()
+{
+  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
+  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid gray");
+
+  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");
+
+  m_mainWidget->setNumberOfEntities(NumberOfEntities::HIGH);
 }

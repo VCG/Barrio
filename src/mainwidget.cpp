@@ -42,19 +42,18 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   }
 
   m_abstraction_space->addToSelectedIndices(ID);
+  m_lastID = ID;
 
   // low configuration
-  if (m_number_of_selected_structures < m_max_cols) 
+  if (m_number_of_entities == NumberOfEntities::LOW) 
   {
     addInfoVisWidget(ID, name, m_vis_methods.low->clone());
-    m_number_of_entities = NumberOfEntities::LOW;
   }
   // medium configuration
-  else if(m_number_of_selected_structures >= m_max_cols && m_number_of_selected_structures < 2 * m_max_cols)
+  else if(m_number_of_entities == NumberOfEntities::MEDIUM)
   {
     if (m_number_of_entities == NumberOfEntities::LOW)
     {
-      m_number_of_entities = NumberOfEntities::MEDIUM;
       deleteAllInfoVisWidgets();
       addInfoVisWidget(ID, "#Medium Structures", m_vis_methods.medium->clone());
     }
@@ -62,10 +61,6 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     {
       updateInfoVisViews();
     }
-
-
-    
-   // TODO update infovis data
   }
   // high configuration
   else 
@@ -124,6 +119,31 @@ bool MainWidget::deleteAllInfoVisWidgets()
   return true;
 }
 
+bool MainWidget::deleteAllGLWidgets()
+{
+  // clear group box map
+  for (auto it = m_gl_boxes.cbegin(); it != m_gl_boxes.cend();)
+  {
+    int ID = (*it).first;
+    QGroupBox* widget = (*it).second;
+    widget->hide();
+    m_gl_layout->removeWidget(widget);
+    delete widget;
+    it = m_gl_boxes.erase(it);
+  }
+
+  // clear group box map
+  for (auto it = m_GL_widgets.cbegin(); it != m_GL_widgets.cend();)
+  {
+    it = m_GL_widgets.erase(it);
+  }
+
+  m_current_col = 0;
+  m_current_row = 0;
+
+  return true;
+}
+
 bool MainWidget::addInfoVisWidget(int ID, QString name, IVisMethod* visMethod)
 {
   QWebEngineView* widget = visMethod->initVisWidget(ID);
@@ -166,6 +186,7 @@ bool MainWidget::addGLWidget(int ID, QString name, bool isOverviewWidget)
   m_gl_layout->addWidget(groupBox, m_current_row + 1, m_current_col);
 
   m_GL_widgets[ID] = widget;
+  m_gl_boxes[ID] = groupBox;
 
   return true;
 }
@@ -176,6 +197,12 @@ void MainWidget::setupMainWidget(VisConfiguration vis_config)
   qDebug() << "Decided on Vis methods";
 }
 
+SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
+{
+  m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
+  return m_vis_methods;
+}
+
 void MainWidget::updateInfoVisViews()
 {
   for (auto const& [id, view] : m_views)
@@ -183,6 +210,46 @@ void MainWidget::updateInfoVisViews()
     view->update();
     view->getWebEngineView()->reload();
   }
+}
+
+void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
+{
+
+  if (new_entities_selection == NumberOfEntities::MEDIUM)
+  {
+    if (m_number_of_entities == NumberOfEntities::LOW)
+    {
+      m_number_of_entities = NumberOfEntities::MEDIUM;
+      deleteAllInfoVisWidgets();
+      addInfoVisWidget(m_lastID, "#Medium Structures", m_vis_methods.medium->clone());
+    }
+
+    if (m_number_of_entities == NumberOfEntities::HIGH)
+    {
+
+    }
+  }
+  else if(new_entities_selection == NumberOfEntities::LOW)
+  {
+     if(m_number_of_entities == NumberOfEntities::MEDIUM)
+     {
+       m_number_of_entities = NumberOfEntities::LOW;
+       QList<int> currentlySelectedIDs = getSelectedIDs();
+       deleteAllInfoVisWidgets();
+       deleteAllGLWidgets();
+
+       for each (int ID in currentlySelectedIDs)
+       {
+         addWidgetGroup(ID, false);
+       }
+     }
+
+     if (m_number_of_entities == NumberOfEntities::HIGH)
+     {
+
+     }
+  }
+
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
@@ -217,6 +284,16 @@ void MainWidget::paintGL()
 void MainWidget::resizeGL(int width, int height)
 {
   // do nothing
+}
+
+QList<int> MainWidget::getSelectedIDs()
+{
+  QList<int> selectedIDs;
+  for (const auto [ID, widget] : m_GL_widgets)
+  {
+    selectedIDs.push_back(ID);
+  }
+  return selectedIDs;
 }
 
 void MainWidget::initSharedVBOs()

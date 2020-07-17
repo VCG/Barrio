@@ -53,7 +53,12 @@ public slots:
 
   void on_listWidget_itemChanged(QListWidgetItem*);
 
-  void on_display_vis_button_clicked();
+  void on_structure_selection_changed(int state);
+
+  void on_high_detail_vis_clicked();
+  void on_medium_detail_vis_clicked();
+  void on_low_detail_vis_clicked();
+
 
 
 signals:

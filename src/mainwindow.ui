@@ -294,27 +294,70 @@
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_40">
                      <item>
-                      <widget class="QFrame" name="frame_2">
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
+                      <widget class="QGroupBox" name="groupBox_26">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>80</height>
+                        </size>
                        </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
+                       <property name="title">
+                        <string>High Detail</string>
                        </property>
+                       <layout class="QGridLayout" name="gridLayout_8">
+                        <item row="0" column="0">
+                         <widget class="QPushButton" name="pushButton">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QFrame" name="frame_43">
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
+                      <widget class="QGroupBox" name="groupBox_23">
+                       <property name="baseSize">
+                        <size>
+                         <width>0</width>
+                         <height>80</height>
+                        </size>
                        </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
+                       <property name="title">
+                        <string>Medium Detail</string>
                        </property>
+                       <layout class="QGridLayout" name="gridLayout_4">
+                        <item row="0" column="0">
+                         <widget class="QPushButton" name="pushButton_2">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_3" native="true"/>
+                      <widget class="QGroupBox" name="groupBox_22">
+                       <property name="baseSize">
+                        <size>
+                         <width>0</width>
+                         <height>80</height>
+                        </size>
+                       </property>
+                       <property name="title">
+                        <string>Low Detail</string>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_3">
+                        <item row="0" column="0">
+                         <widget class="QPushButton" name="pushButton_3">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -361,13 +404,6 @@
                       </widget>
                      </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QPushButton" name="displayVisButton">
-                    <property name="text">
-                     <string>Dispaly Visualization</string>
-                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1949,7 +1985,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>277</width>
+                 <width>296</width>
                  <height>1338</height>
                 </rect>
                </property>

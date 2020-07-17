@@ -67,12 +67,12 @@ GLWidget::~GLWidget()
 {
   qDebug() << "~GLWidget()";
 
-  makeCurrent();
-  delete m_2dspace;
-  delete m_graphManager;
-  delete m_data_container;
-  delete m_glycogenAnalysisManager;
-  doneCurrent();
+  //makeCurrent();
+  ////delete m_2dspace;
+  //delete m_graphManager;
+  //delete m_data_container;
+  //delete m_glycogenAnalysisManager;
+  //doneCurrent();
 }
 
 void GLWidget::init(DataContainer* data_container)

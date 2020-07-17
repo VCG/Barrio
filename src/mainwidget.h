@@ -23,12 +23,17 @@ public:
   bool deleteInfoVisWidget(int ID);
   bool deleteAllInfoVisWidgets();
 
+  bool deleteAllGLWidgets();
+
   bool addInfoVisWidget(int ID, QString name, IVisMethod* visMethod);
   bool addGLWidget(int ID, QString name, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
+  SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
 
   void updateInfoVisViews();
+  void setNumberOfEntities(NumberOfEntities number_of_entities);
+  
 
 public slots:
   void on_synapse_distance_slider_changed(int value);
@@ -43,9 +48,13 @@ private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
 
+  std::map<int, QGroupBox*> m_gl_boxes;
   std::map<int, GLWidget*> m_GL_widgets;
+  
   std::map<int, QGroupBox*> m_info_vis_boxes;
   std::map<int, IVisMethod*> m_views;
+
+  QList<int>    getSelectedIDs();
 
   QGridLayout* m_gl_layout;
 
@@ -77,8 +86,9 @@ private:
   int m_max_cols = 3;
 
   int m_number_of_selected_structures = 0;
-
   NumberOfEntities m_number_of_entities;
+
+  
 
 };
 

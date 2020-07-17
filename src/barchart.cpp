@@ -95,9 +95,6 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
 
   }
 
-  
-
-
   QJsonDocument doc(json);
   return doc.toJson(QJsonDocument::Compact);
 }
