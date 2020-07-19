@@ -7,6 +7,7 @@
 class DistanceMatrix : public IVisMethod
 {
 public:
+  DistanceMatrix(DistanceMatrix* matrix);
   DistanceMatrix(DataContainer* datacontainer);
   ~DistanceMatrix();
 

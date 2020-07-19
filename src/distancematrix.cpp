@@ -1,5 +1,10 @@
 #include "distancematrix.h"
 
+DistanceMatrix::DistanceMatrix(DistanceMatrix* matrix)
+{
+  m_datacontainer = matrix->m_datacontainer;
+}
+
 DistanceMatrix::DistanceMatrix(DataContainer* datacontainer)
 {
   m_datacontainer = datacontainer;
@@ -42,5 +47,5 @@ QWebEngineView* DistanceMatrix::getWebEngineView()
 
 DistanceMatrix* DistanceMatrix::clone()
 {
-  return nullptr;
+  return new DistanceMatrix(this);
 }
