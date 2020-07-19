@@ -1,9 +1,7 @@
 #ifndef DISTANCETREE_H
 #define DISTANCETREE_H
 
-#include <QWebChannel>
 #include <QChar>
-#include <QWebEngineView>
 
 #include "vismethod.h"
 

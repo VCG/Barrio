@@ -1,8 +1,25 @@
 #ifndef DISTANCEMATRIX_H
 #define DISTANCEMATRIX_H
 
-#include <QWebChannel>
 #include "vismethod.h"
+
+class DistanceMatrixData : public QObject
+{
+  Q_OBJECT
+
+public:
+  DistanceMatrixData(QString json_string);
+  ~DistanceMatrixData();
+
+  Q_INVOKABLE QString getData();
+  Q_PROPERTY(QString json_string READ getData);
+
+  void setJsonString(QString json) { m_json_string = json; }
+  QString getJsonString() { return m_json_string; }
+
+  QString m_json_string;
+
+};
 
 class DistanceMatrix : public IVisMethod
 {
@@ -11,28 +28,21 @@ public:
   DistanceMatrix(DataContainer* datacontainer);
   ~DistanceMatrix();
 
-  Q_INVOKABLE QList<float> getData();
-  Q_PROPERTY(QList<float> values READ getData);
-
-  Q_INVOKABLE QList<QString> getLabels();
-  Q_PROPERTY(QList<QString> labels READ getLabels);
-
   QWebEngineView* initVisWidget(int ID);
   bool            update();
   QWebEngineView* getWebEngineView();
   DistanceMatrix* clone();
 
 private:
-  QList<QString> m_labels;
-  QList<float> m_values;
+  DistanceMatrixData* data;
 
   DataContainer* m_datacontainer;
-  QString m_x_title;
-  QString m_y_title;
   QString m_title;
 
   QString m_index_filename = "distancematrix_index.html";
   QWebEngineView* m_web_engine_view;
+
+  QString getJSONString(QList<int>* selected_mitos);
 };
 
 #endif

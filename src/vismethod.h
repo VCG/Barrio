@@ -8,6 +8,12 @@
 #include <QFile>
 #include <filesystem>
 
+#include <QWebChannel>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <algorithm>
+
 #include "datacontainer.h"
 
 namespace fs = std::filesystem;

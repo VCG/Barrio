@@ -55,7 +55,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     if (m_number_of_entities == NumberOfEntities::LOW)
     {
       deleteAllInfoVisWidgets();
-      addInfoVisWidget(ID, "#Medium Structures", m_vis_methods.medium->clone());
+      addInfoVisWidget(ID, m_medium_detail_name, m_vis_methods.medium->clone());
     }
     else
     {
@@ -69,7 +69,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     {
       m_number_of_entities = NumberOfEntities::HIGH;
       deleteAllInfoVisWidgets();
-      addInfoVisWidget(ID, "#High Structures", m_vis_methods.high);
+      addInfoVisWidget(ID, m_low_detail_name, m_vis_methods.high);
     }
     //TODO update vis data
   }
@@ -218,7 +218,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
     deleteAllInfoVisWidgets();
-    addInfoVisWidget(m_lastID, "#Medium Structures", m_vis_methods.medium->clone());
+    addInfoVisWidget(m_lastID, m_medium_detail_name, m_vis_methods.medium->clone());
   }
   else if(new_entities_selection == NumberOfEntities::LOW)
   {
@@ -237,7 +237,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
   {
     m_number_of_entities = NumberOfEntities::HIGH;
     deleteAllInfoVisWidgets();
-    addInfoVisWidget(m_lastID, "#High Structures", m_vis_methods.high->clone());
+    addInfoVisWidget(m_lastID, m_low_detail_name, m_vis_methods.high->clone());
   }
 }
 

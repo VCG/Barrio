@@ -16,75 +16,67 @@
 <body>
 <svg></svg>
 <script src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
 <script type='text/javascript'>
 
-    var w = 400,
-        h = 400;
-    
-    var margin = {top: 50, right: 20, bottom: 70, left: 20};
-    var pad = 80;
-    var width = 2 * w + pad;
+    new QWebChannel(qt.webChannelTransport, function (channel) {
 
-    var svg = d3.select('svg')
-        .attr({
-            'width': width + margin.left + margin.right,
-            'height': h + margin.top + margin.bottom
-        })
-        .append('g')
-        .attr({
-            'transform': 'translate(' + margin.left + ',' + margin.top + ')',
-            'width': width,
-            'height': h
-        });
+        var jsobject = channel.objects.distancematrix_data;
+        let json_string = jsobject.json_string;
+        
+        let rect_width = 10;
+        let rect_height = 10;
 
-    var corrplot = svg.append('g')
-        .attr({
-            'id': 'corrplot'
-        });
+        let my_data = JSON.parse(json_string);
 
-    var scatterplot = svg.append('g')
-        .attr({
-            'id': 'scatterplot',
-            'transform': 'translate(' + (w + pad) + ',0)'
-        });
+        console.log(my_data);
 
-    corrplot.append('text')
-        .text('Correlation matrix')
-        .attr({
-            'class': 'plottitle',
-            'x': w/2,
-            'y': -margin.top/2,
-            'dominant-baseline': 'middle',
-            'text-anchor': 'middle'
-        });
+        var w = 1800,
+            h = 300;
 
-    scatterplot.append('text')
-        .text('Scatter plot')
-        .attr({
-            'class': 'plottitle',
-            'x': w/2,
-            'y': -margin.top/2,
-            'dominant-baseline': 'middle',
-            'text-anchor': 'middle'
-        });
+        var margin = {top: 20, right: 40, bottom: 10, left: 10};
+        var width = w;
 
-    var corXscale = d3.scale.ordinal().rangeRoundBands([0,w]),
-        corYscale = d3.scale.ordinal().rangeRoundBands([h,0]),
-        corColScale = d3.scale.linear().domain([-1,0,1]).range(['crimson','white','slateblue']);
-    var corRscale = d3.scale.sqrt().domain([0,1]);
+        var svg = d3.select('svg')
+            .attr({
+                'width': width + margin.left + margin.right,
+                'height': h + margin.top + margin.bottom
+            })
+            .append('g')
+            .attr({
+                'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+                'width': width,
+                'height': h
+            });
 
-    d3.json('housing.json', function(err, data) {
-        var nind = data.ind.length,
-            nvar = data.vars.length;
+        var corrplot = svg.append('g')
+            .attr({
+                'id': 'corrplot'
+            });
 
-        corXscale.domain(d3.range(nvar));
-        corYscale.domain(d3.range(nvar));
-        corRscale.range([0,0.5*corXscale.rangeBand()]);
+        // corrplot.append('text')
+        //     .text('Correlation matrix')
+        //     .attr({
+        //         'class': 'plottitle',
+        //         'x': w / 2,
+        //         'y': -margin.top / 2,
+        //         'dominant-baseline': 'middle',
+        //         'text-anchor': 'middle'
+        //     });
+
+        var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
+            corYscale = d3.scale.ordinal().rangeRoundBands([h, 0]),
+            corColScale = d3.scale.linear().domain([0, 5]).range(['purple', 'white']);
+        var corRscale = d3.scale.sqrt().domain([0, 1]);
+
+        corXscale.domain(d3.range(my_data[0].synapses.length));
+        corYscale.domain(d3.range(my_data.length));
+        corRscale.range([0, 0.5 * corXscale.rangeBand()]);
 
         var corr = [];
-        for (var i = 0; i < data.corr.length; ++i) {
-            for (var j = 0; j < data.corr[i].length; ++j) {
-                corr.push({row: i, col: j, value:data.corr[i][j]});
+        for (var i = 0; i < my_data.length; ++i) {
+            for (var j = 0; j < my_data[i].synapses.length; ++j) {
+                corr.push({row: i, col: j, value: my_data[i].synapses[j].distance});
             }
         }
 
@@ -100,23 +92,35 @@
 
         var rects = cells.append('rect')
             .attr({
-                'x': function(d) { return corXscale(d.col); },
-                'y': function(d) { return corXscale(d.row); },
-                'width': corXscale.rangeBand(),
-                'height': corYscale.rangeBand(),
+                'x': function (d) {
+                    return corXscale(d.col) - rect_width / 2;
+                },
+                'y': function (d) {
+                    return corXscale(d.row) - rect_height / 2;
+                },
+                'width': rect_width,
+                'height': rect_height,
                 'fill': 'none',
                 'stroke': 'none',
                 'stroke-width': '1'
             });
 
         var circles = cells.append('circle')
-            .attr('cx', function(d) {return corXscale(d.col) + 0.5*corXscale.rangeBand(); })
-            .attr('cy', function(d) {return corXscale(d.row) + 0.5*corYscale.rangeBand(); })
-            .attr('r', function(d) {return corRscale(Math.abs(d.value)); })
-            .style('fill', function(d) { return corColScale(d.value); });
+            .attr('cx', function (d) {
+                return corXscale(d.col);
+            })
+            .attr('cy', function (d) {
+                return corXscale(d.row);
+            })
+            .attr('r', function (d) {
+                return 4;
+            })
+            .style('fill', function (d) {
+                return corColScale(d.value);
+            });
 
         corrplot.selectAll('g.cell')
-            .on('mouseover', function(d) {
+            .on('mouseover', function (d) {
                 d3.select(this)
                     .select('rect')
                     .attr('stroke', 'black');
@@ -128,25 +132,24 @@
                     .attr({
                         'class': 'corrlabel',
                         'x': corXscale(d.col),
-                        'y': h + margin.bottom*0.2
+                        'y': h + margin.bottom * 0.2
                     })
-                    .text(data.vars[d.col])
+                    .text(my_data[d.row].synapses[d.col].name)
                     .attr({
                         'dominant-baseline': 'middle',
                         'text-anchor': 'middle'
                     });
 
+
                 corrplot.append('text')
                     .attr({
-                        'class': 'corrlabel'
-                        // 'x': -margin.left*0.1,
-                        // 'y': corXscale(d.row)
+                        'class': 'corrlabel',
                     })
-                    .text(data.vars[d.row])
+                    .text(my_data[d.row].name)
                     .attr({
                         'dominant-baseline': 'middle',
                         'text-anchor': 'middle',
-                        'transform': 'translate(' + (-margin.left*0.1) + ',' + corXscale(d.row) + ')rotate(270)'
+                        'transform': 'translate(' + (-margin.left * 0.1) + ',' + corXscale(d.row) + ')rotate(270)'
                     });
 
                 corrplot.append('rect')
@@ -173,7 +176,7 @@
                     })
                     .text(d3.format('.2f')(d.value));
             })
-            .on('mouseout', function(d) {
+            .on('mouseout', function (d) {
                 d3.select('#corrtext').remove();
                 d3.selectAll('.corrlabel').remove();
                 d3.select(this)
@@ -182,82 +185,10 @@
                 //Hide the tooltip
                 d3.selectAll('.tooltip').remove();
             })
-            .on('click', function(d) {
-                drawScatter(d.col, d.row);
+            .on('click', function (d) {
+                //drawScatter(d.col, d.row);
             });
-
-        var drawScatter = function(col, row) {
-            console.log('column ' + col + ', row ' + row);
-
-            d3.selectAll('.points').remove();
-            d3.selectAll('.axis').remove();
-            d3.selectAll('.scatterlabel').remove();
-
-            var xScale = d3.scale.linear()
-                .domain(d3.extent(data.dat[col]))
-                .range([0, w]);
-            var yScale = d3.scale.linear()
-                .domain(d3.extent(data.dat[row]))
-                .range([h, 0]);
-
-            var xAxis = d3.svg.axis()
-                .scale(xScale)
-                .orient('bottom')
-                .ticks(5);
-
-            var yAxis = d3.svg.axis()
-                .scale(yScale)
-                .orient('left');
-
-            scatterplot.append('g')
-                .attr('class', 'points')
-                .selectAll('empty')
-                .data(d3.range(nind))
-                .enter().append('circle')
-                .attr({
-                    'class': 'point',
-                    'cx': function(d) {
-                        return xScale(data.dat[col][d]);
-                    },
-                    'cy': function(d) {
-                        return yScale(data.dat[row][d]);
-                    },
-                    'r': 2,
-                    'stroke': 'none',
-                    'fill': 'black'
-                });
-
-            scatterplot.append('g')
-                .attr('class', 'x axis')
-                .attr('transform', 'translate(0,' + h + ')')
-                .call(xAxis);
-
-            scatterplot.append('g')
-                .attr('class', 'y axis')
-                .call(yAxis);
-
-            scatterplot.append('text')
-                .text(data.vars[col])
-                .attr({
-                    'class': 'scatterlabel',
-                    'x': w/2,
-                    'y': h + margin.bottom/2,
-                    'text-anchor': 'middle',
-                    'dominant-baseline': 'middle'
-                });
-
-            scatterplot.append('text')
-                .text(data.vars[row])
-                .attr({
-                    'class': 'scatterlabel',
-                    'transform': 'translate(' + (-pad/1.25) + ',' + (h/2) + ')rotate(270)',
-                    'dominant-baseline': 'middle',
-                    'text-anchor': 'middle'
-                });
-
-        }
     });
-
 
 
 </script>

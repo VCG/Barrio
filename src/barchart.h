@@ -1,18 +1,11 @@
 #ifndef BARCHART_H
 #define BARCHART_H
 
-#include <QWebChannel>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <algorithm>
-
 #include "vismethod.h"
 
 class BarChartData : public QObject
 {
   Q_OBJECT
-
 
 public:
   BarChartData(QString json_string);
