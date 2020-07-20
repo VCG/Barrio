@@ -14,7 +14,7 @@ layout (early_fragment_tests) in;
 layout (location = 0) out vec4 FragColor;
 
 in vec4         normal_frag;
-in vec3			    eye_frag;
+in vec3			eye_frag;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
@@ -40,6 +40,7 @@ layout (std430, binding=5) buffer mesh_data
 };
 
 uniform int maxNodes;
+uniform float cell_opacity;
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 
@@ -120,7 +121,7 @@ vec4 computeColor()
   }
   else
   {
-    out_color = vec4(result, 0.25);
+    out_color = vec4(result, cell_opacity);
   }
 
   return out_color;

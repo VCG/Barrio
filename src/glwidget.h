@@ -30,6 +30,8 @@ struct SharedGLResources
   int            index_count;
 
   QOpenGLBuffer* slice_vertex_vbo;
+
+  float         cell_opacity;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL
@@ -37,7 +39,7 @@ class GLWidget : public QOpenGLWidget, MainOpenGL
   Q_OBJECT
 
 public:
-  GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidget, QWidget* parent = 0);
+  GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent = 0);
   ~GLWidget();
   void init(DataContainer* data_container);
 
@@ -56,6 +58,8 @@ public:
   void setVisibleStructures();
 
   void update_synapse_distance_threshold(double distance);
+
+  void updateVisParameters();
  
 
 
@@ -145,8 +149,6 @@ protected:
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
-  void resetMVPAttrib();
-  void loadMesh();
 
 
   void stopForecDirectedLayout();
@@ -203,7 +205,7 @@ protected:
   float                               m_rot_ydiff;
   float                               m_xy_slice_z;
 
-  SharedGLResources                   m_shared_resources;
+  SharedGLResources*                   m_shared_resources;
 
   int                                 m_selected_hvgx_id;
 

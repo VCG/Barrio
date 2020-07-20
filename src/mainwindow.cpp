@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_clusters = 0;
 
   initializeSynapseThresholdSlider();
+  initializeOpacitySlider();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
@@ -61,6 +62,20 @@ void MainWindow::initializeSynapseThresholdSlider()
   mainwindow_ui->lineEdit->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
 
   connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
+}
+
+void MainWindow::initializeOpacitySlider()
+{
+  QSlider* opacity_slider = mainwindow_ui->horizontalSlider_4;
+  int initial_tick_position = 30;
+  opacity_slider->setValue(initial_tick_position);
+  double opacity_value = (double)initial_tick_position / 100.0;
+
+  connect(opacity_slider, SIGNAL(valueChanged(int)), this, SLOT(on_opacity_slider_changed(int)));
+
+  on_opacity_slider_changed(initial_tick_position);
+
+  
 }
 
 //------------------------------------------------------
@@ -269,4 +284,11 @@ void MainWindow::on_synapse_distance_slider_changed(int value)
 {
   double slider_value = m_mainWidget->on_synapse_distance_slider_changed(value);
   mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
+}
+
+void MainWindow::on_opacity_slider_changed(int value)
+{
+  //qDebug() << value;
+  m_mainWidget->on_opacity_slider_changed(value);
+  mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }

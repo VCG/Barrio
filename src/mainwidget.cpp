@@ -32,6 +32,17 @@ double MainWidget::on_synapse_distance_slider_changed(int value)
   return distance;
 }
 
+void MainWidget::on_opacity_slider_changed(int value)
+{
+  m_shared_resources.cell_opacity = (float)value / 100.0;
+  qDebug() << m_shared_resources.cell_opacity;
+
+  for (auto const& [id, widget] : m_GL_widgets)
+  {
+    widget->updateVisParameters();
+  }
+}
+
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 {
   QString name;
@@ -181,7 +192,7 @@ bool MainWidget::addGLWidget(int ID, QString name, bool isOverviewWidget)
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
 
-  GLWidget* widget = new GLWidget(ID, m_shared_resources, isOverviewWidget, this);
+  GLWidget* widget = new GLWidget(ID, &m_shared_resources, isOverviewWidget, this);
   widget->init(m_datacontainer); // todo delete dependecy of input form later
   vbox->addWidget(widget);
 

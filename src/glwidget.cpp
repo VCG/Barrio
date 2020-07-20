@@ -8,7 +8,7 @@
 #include "glwidget.h"
 #include "colors.h"
 
-GLWidget::GLWidget(int hvgx_id, SharedGLResources resources, bool isOverviewWidget, QWidget* parent)
+GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent)
   : QOpenGLWidget(parent),
   m_yaxis(0),
   m_xaxis(0),
@@ -129,17 +129,23 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
+}
 
-  //const qreal retinaScale = devicePixelRatio();
-  //QVector4D viewport = QVector4D(0, 0, width() * retinaScale, height() * retinaScale);
 
-  //int max_astro_coverage = m_data_containter->getMaxAstroCoverage();
-  //int max_volume = m_data_containter->getMaxVolume();
+void GLWidget::updateVisParameters()
+{
+  makeCurrent();
+  m_mesh_program->bind();
+  
+  int opacity = m_mesh_program->uniformLocation("cell_opacity");
+  if (opacity >= 0) m_mesh_program->setUniformValue(opacity, m_shared_resources->cell_opacity);
 
-  //// graph model matrix without rotation, apply rotation to nodes directly
-  //m_uniforms = { m_yaxis, m_xaxis, m_mMatrix.data(), m_vMatrix.data(), m_projection.data(), m_model_noRotation.data(),
-  //  m_rotationMatrix, viewport, max_volume, max_astro_coverage, 0.0001, m_xy_slice_z};
-  //m_opengl_mngr->updateUniformsData(m_uniforms);
+  qDebug() << m_shared_resources->cell_opacity;
+
+  update();
+  m_mesh_program->release();
+
+  GL_Error();
 }
 
 void GLWidget::initializeGL()
@@ -170,7 +176,7 @@ void GLWidget::initializeGL()
 
 
   // bind vbos to vao
-  m_shared_resources.mesh_vertex_vbo->bind();
+  m_shared_resources->mesh_vertex_vbo->bind();
 
   // setting up vertex attributes
   GLsizei stride = sizeof(VertexData);
@@ -195,7 +201,7 @@ void GLWidget::initializeGL()
   glEnableVertexAttribArray(3);
   glVertexAttribIPointer(3, 1, GL_INT, stride, (GLvoid*)offset);
 
-  m_shared_resources.mesh_normal_vbo->bind();
+  m_shared_resources->mesh_normal_vbo->bind();
   glEnableVertexAttribArray(4);
   glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -236,6 +242,8 @@ void GLWidget::initializeGL()
   if (m_FDL_running) {
     stopForecDirectedLayout();
   }
+
+  updateVisParameters();
 
   m_lockRotation2D_timer->start(500);
 }
@@ -991,8 +999,8 @@ void GLWidget::drawScene()
 {
   m_mesh_vao.bind();
  
-  m_shared_resources.mesh_index_vbo->bind();
-  glDrawElements(GL_TRIANGLES, m_shared_resources.index_count, GL_UNSIGNED_INT, 0);
+  m_shared_resources->mesh_index_vbo->bind();
+  glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
 
   m_mesh_vao.release();
 }
@@ -1047,6 +1055,7 @@ void GLWidget::update_synapse_distance_threshold(double distance)
   m_distance_threshold = distance;
   updateVisibilitySSBO();
 }
+
 
 void GLWidget::prepareResize()
 {

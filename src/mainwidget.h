@@ -35,6 +35,7 @@ public:
   void setNumberOfEntities(NumberOfEntities number_of_entities);
 
   double on_synapse_distance_slider_changed(int value);
+  void on_opacity_slider_changed(int value);
 
 protected:
   void initializeGL() override;

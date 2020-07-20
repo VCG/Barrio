@@ -60,6 +60,7 @@ public slots:
   void on_low_detail_vis_clicked();
 
   void on_synapse_distance_slider_changed(int value);
+  void on_opacity_slider_changed(int value);
 
 
 
@@ -90,6 +91,7 @@ private:
   DataContainer* m_data_container;
 
   void initializeSynapseThresholdSlider();
+  void initializeOpacitySlider();
 
 };
 
