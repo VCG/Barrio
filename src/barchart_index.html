@@ -37,7 +37,14 @@
 
 </style>
 <body>
-<div id="chart"></div>
+
+<div id="chart" style="width: auto; height: 400px">
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
 <script>
@@ -47,9 +54,8 @@
         let json_string = jsobject.json_string;
 
         var m = {top: 10, right: 10, bottom: 50, left: 110},
-            w = 1750 - m.left - m.right,
-            h = 400 - m.top - m.bottom,
-            pad = .1;
+            w = $("#chart").width() - m.left - m.right,
+            h = $("#chart").height() - m.top - m.bottom;
 
         var x = d3.scale.ordinal().rangeRoundBands([0, w]);
         var y = d3.scale.linear().range([h, 0]);

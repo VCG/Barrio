@@ -3,6 +3,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var jsobject = channel.objects.distance_tree_data;
     let data = jsobject.newickString;
 
+    let margin = {top: 20, right: 40, bottom: 10, left: 10};
+    let width = $("#tree_display").width() - margin.left - margin.right;
+    let height = $("#tree_display").height() - margin.top - margin.bottom;
+
     var tree;
 
     // default scheme to color by date
@@ -43,9 +47,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'collapsible': false,
                 // turn off the menu on internal nodes
                 'left-right-spacing': 'fit-to-size',
-                'top-bottom-spacing': 'fit-to-size'
+                'top-bottom-spacing': 'fixed-step'
             })
-            .size([600, 600])
+            .size([height, width])
             .style_edges(edgeStyler)
             .style_nodes(nodeStyler)
             .node_circle_size(3); // do not draw clickable circles for internal nodes

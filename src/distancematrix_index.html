@@ -15,9 +15,9 @@
 </style>
 <body>
 
-<svg id="matrix_svg" style="display: inline-block">
+<div id="matrix" style="width: auto; height: 100vh">
 
-</svg>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -36,20 +36,19 @@
 
         let my_data = JSON.parse(json_string);
 
-        console.log(my_data);
-
         let margin = {top: 20, right: 40, bottom: 10, left: 10};
-        let w = $("#matrix_svg").width() - margin.left - margin.right;
-        let h = $("#matrix_svg").height() - margin.top - margin.bottom;
+        let w = $("#matrix").width() - margin.left - margin.right;
+        let h = $("#matrix").height() - margin.top - margin.bottom;
 
-        let svg = d3.select('svg')
+        let svg = d3.select("#matrix")
+            .append('svg')
             .attr({
                 'width': w,
                 'height': h
             })
             .append('g')
             .attr({
-                //'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+                'transform': 'translate(' + margin.left + ',' + margin.top + ')',
                 'width': w,
                 'height': h
             });
@@ -71,7 +70,7 @@
 
         var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
             corYscale = d3.scale.ordinal().rangeRoundBands([h, 0]),
-            corColScale = d3.scale.linear().domain([0, 5]).range(['purple', 'white']);
+            corColScale = d3.scale.linear().domain([0, 6]).range(['purple', 'white']);
         var corRscale = d3.scale.sqrt().domain([0, 1]);
 
         corXscale.domain(d3.range(my_data[0].synapses.length));
