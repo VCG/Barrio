@@ -14,7 +14,14 @@
     }
 </style>
 <body>
-<svg></svg>
+
+<svg id="matrix_svg" style="display: inline-block">
+
+</svg>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
 <script type='text/javascript'>
@@ -31,25 +38,23 @@
 
         console.log(my_data);
 
-        var w = 1800,
-            h = 300;
+        let margin = {top: 20, right: 40, bottom: 10, left: 10};
+        let w = $("#matrix_svg").width() - margin.left - margin.right;
+        let h = $("#matrix_svg").height() - margin.top - margin.bottom;
 
-        var margin = {top: 20, right: 40, bottom: 10, left: 10};
-        var width = w;
-
-        var svg = d3.select('svg')
+        let svg = d3.select('svg')
             .attr({
-                'width': width + margin.left + margin.right,
-                'height': h + margin.top + margin.bottom
+                'width': w,
+                'height': h
             })
             .append('g')
             .attr({
-                'transform': 'translate(' + margin.left + ',' + margin.top + ')',
-                'width': width,
+                //'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+                'width': w,
                 'height': h
             });
 
-        var corrplot = svg.append('g')
+        let corrplot = svg.append('g')
             .attr({
                 'id': 'corrplot'
             });

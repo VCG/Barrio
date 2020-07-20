@@ -13,9 +13,10 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   m_abstraction_space = new AbstractionSpace(datacontainer);
 }
 
-void MainWidget::on_synapse_distance_slider_changed(int value)
+double MainWidget::on_synapse_distance_slider_changed(int value)
 {
   double distance = ((double)value / 100.0) * sqrt(3) * MESH_MAX_X;
+  
   m_abstraction_space->setThresholdDistance(distance);
 
   for (auto const& [id, widget] : m_GL_widgets) 
@@ -27,6 +28,8 @@ void MainWidget::on_synapse_distance_slider_changed(int value)
   }
 
   updateInfoVisViews();
+
+  return distance;
 }
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)

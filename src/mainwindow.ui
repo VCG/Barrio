@@ -235,11 +235,21 @@
                     <property name="title">
                      <string>Slice Position</string>
                     </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_5">
+                    <layout class="QHBoxLayout" name="horizontalLayout_44">
                      <item>
                       <widget class="QSlider" name="horizontalSlider">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_5">
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>16777215</height>
+                        </size>
                        </property>
                       </widget>
                      </item>
@@ -251,11 +261,21 @@
                     <property name="title">
                      <string>Synapse Threshold</string>
                     </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_16">
+                    <layout class="QHBoxLayout" name="horizontalLayout_41">
                      <item>
                       <widget class="QSlider" name="horizontalSlider_3">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit">
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>16777215</height>
+                        </size>
                        </property>
                       </widget>
                      </item>
@@ -267,11 +287,27 @@
                     <property name="title">
                      <string>Cell Opacity</string>
                     </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_18">
+                    <layout class="QHBoxLayout" name="horizontalLayout_42">
                      <item>
                       <widget class="QSlider" name="horizontalSlider_4">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_4">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>16777215</height>
+                        </size>
                        </property>
                       </widget>
                      </item>

@@ -3,11 +3,13 @@
 DistanceMatrix::DistanceMatrix(DistanceMatrix* matrix)
 {
   m_datacontainer = matrix->m_datacontainer;
+  m_global_vis_parameters = matrix->m_global_vis_parameters;
 }
 
-DistanceMatrix::DistanceMatrix(DataContainer* datacontainer)
+DistanceMatrix::DistanceMatrix(GlobalVisParameters* visparams, DataContainer* datacontainer)
 {
   m_datacontainer = datacontainer;
+  m_global_vis_parameters = visparams;
 }
 
 DistanceMatrix::~DistanceMatrix()
@@ -17,8 +19,7 @@ DistanceMatrix::~DistanceMatrix()
 
 QWebEngineView* DistanceMatrix::initVisWidget(int ID)
 {
-  QList<int> list({ 1064, 1073 });
-  QString json = getJSONString(&list);
+  QString json = getJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
   data = new DistanceMatrixData(json);
 
   m_web_engine_view = new QWebEngineView();
@@ -32,7 +33,9 @@ QWebEngineView* DistanceMatrix::initVisWidget(int ID)
 
 bool DistanceMatrix::update()
 {
-  return false;
+  QString json = getJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
+  data->setJsonString(json);
+  return true;
 }
 
 QWebEngineView* DistanceMatrix::getWebEngineView()
@@ -45,24 +48,40 @@ DistanceMatrix* DistanceMatrix::clone()
   return new DistanceMatrix(this);
 }
 
-QString DistanceMatrix::getJSONString(QList<int>* selected_mitos)
+QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanceThreshold)
 {
   QJsonArray json;
   std::map<int, Object*>* objects = m_datacontainer->getObjectsMapPtr();
   std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
 
-  for each (int id in *selected_mitos)
+  QList<int> selected_synapses;
+  for each (int mito_id in *selected_mitos)
+  {
+    Object* mito = objects->at(mito_id);
+    std::map<int, double>* distance_map = mito->get_distance_map_ptr();
+
+    for each(Object* syn in synapses)
+    {
+      double distance_to_mito = distance_map->at(syn->getHVGXID());
+      if (distance_to_mito < distanceThreshold && !selected_synapses.contains(syn->getHVGXID()))
+      {
+        selected_synapses.append(syn->getHVGXID());
+      }
+    }
+  }
+
+  for each (int mito_id in *selected_mitos)
   {
     QJsonObject mito_object;
-    Object* mito = objects->at(id);
+    Object* mito = objects->at(mito_id);
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
     mito_object.insert("name", QJsonValue::fromVariant(mito->getName().c_str()));
     
     QJsonArray syn_array;
-    for each (Object* syn in synapses)
+    for each (int syn_id in selected_synapses)
     {
-      int id = syn->getHVGXID();
-      double distance_to_mito = distance_map->at(id);
+      Object* syn = objects->at(syn_id);
+      double distance_to_mito = distance_map->at(syn_id);
 
       QJsonObject syn_object;
       syn_object.insert("name", QJsonValue::fromVariant(syn->getName().c_str()));

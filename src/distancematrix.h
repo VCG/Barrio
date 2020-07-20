@@ -25,7 +25,7 @@ class DistanceMatrix : public IVisMethod
 {
 public:
   DistanceMatrix(DistanceMatrix* matrix);
-  DistanceMatrix(DataContainer* datacontainer);
+  DistanceMatrix(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~DistanceMatrix();
 
   QWebEngineView* initVisWidget(int ID);
@@ -42,7 +42,8 @@ private:
   QString m_index_filename = "distancematrix_index.html";
   QWebEngineView* m_web_engine_view;
 
-  QString getJSONString(QList<int>* selected_mitos);
+  GlobalVisParameters* m_global_vis_parameters;
+  QString getJSONString(QList<int>* selected_mitos, double distanceThreshold);
 };
 
 #endif

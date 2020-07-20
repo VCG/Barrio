@@ -33,10 +33,8 @@ public:
 
   void updateInfoVisViews();
   void setNumberOfEntities(NumberOfEntities number_of_entities);
-  
 
-public slots:
-  void on_synapse_distance_slider_changed(int value);
+  double on_synapse_distance_slider_changed(int value);
 
 protected:
   void initializeGL() override;

@@ -59,6 +59,8 @@ public slots:
   void on_medium_detail_vis_clicked();
   void on_low_detail_vis_clicked();
 
+  void on_synapse_distance_slider_changed(int value);
+
 
 
 signals:
@@ -86,6 +88,8 @@ private:
   MainWidget* m_mainWidget;
   TreeModel* m_treemodel;
   DataContainer* m_data_container;
+
+  void initializeSynapseThresholdSlider();
 
 };
 

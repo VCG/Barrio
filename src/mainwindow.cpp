@@ -1,4 +1,4 @@
-#include "glwidget.h"
+﻿#include "glwidget.h"
 #include "glycogenanalysismanager.h"
 #include "glycogencluster.h"
 #include "object.h"
@@ -29,14 +29,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
-  QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
-  //synapse_threshold_slider->setMinimum(0);
-  //synapse_threshold_slider->setMaximum(sqrt(3) * MESH_MAX_X); // diagonal of cube is the maximum length possible
-  //synapse_threshold_slider->setValue(1.0);
-  int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
-  synapse_threshold_slider->setValue(initial_tick_position);
-
-  connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), m_mainWidget, SLOT(on_synapse_distance_slider_changed(int)));
+  initializeSynapseThresholdSlider();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
@@ -57,7 +50,17 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
 
   setupSignalsNSlots();
-  
+}
+
+void MainWindow::initializeSynapseThresholdSlider()
+{
+  QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
+  int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
+  synapse_threshold_slider->setValue(initial_tick_position);
+  double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+  mainwindow_ui->lineEdit->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
+
+  connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
 }
 
 //------------------------------------------------------
@@ -260,4 +263,10 @@ void MainWindow::on_low_detail_vis_clicked()
   mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");
 
   m_mainWidget->setNumberOfEntities(NumberOfEntities::HIGH);
+}
+
+void MainWindow::on_synapse_distance_slider_changed(int value)
+{
+  double slider_value = m_mainWidget->on_synapse_distance_slider_changed(value);
+  mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
 }

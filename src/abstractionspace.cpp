@@ -75,7 +75,7 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
     // high: distance matrix
     methods.low = new DistanceTree(&m_global_vis_parameters, m_datacontainer);
     methods.medium = new BarChart(&m_global_vis_parameters, m_datacontainer);
-    methods.high = new DistanceMatrix(m_datacontainer); // todo change to distance matrix
+    methods.high = new DistanceMatrix(&m_global_vis_parameters, m_datacontainer); // todo change to distance matrix
     
     methods.low_icon = ":/icons/distance_tree.png";
     methods.medium_icon = ":/icons/barchart.png";
