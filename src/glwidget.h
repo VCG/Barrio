@@ -32,6 +32,8 @@ struct SharedGLResources
   QOpenGLBuffer* slice_vertex_vbo;
 
   float         cell_opacity;
+
+  QVector<int>*   highlighted_objects;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL
@@ -54,7 +56,9 @@ public:
 
   void drawScene();
 
+  void updateHighlightedSSBO();
   void updateVisibilitySSBO();
+  
   void setVisibleStructures();
 
   void update_synapse_distance_threshold(double distance);
@@ -214,6 +218,7 @@ protected:
 
   std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
   GLuint                              m_visibility_ssbo;
+  GLuint                              m_highlighted_ssbo;
 
   /* order independent transparency vars*/
   QOpenGLVertexArrayObject            m_fsQuad_vao;

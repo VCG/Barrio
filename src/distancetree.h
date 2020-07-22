@@ -10,17 +10,22 @@ class DistanceTreeData : public QObject
   Q_OBJECT
 
 public:
-  DistanceTreeData(int ID, QString newickString);
+  DistanceTreeData(int ID, QString newickString, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
   ~DistanceTreeData();
 
   Q_INVOKABLE QString getNewickString();
   Q_PROPERTY(QString newickString READ getNewickString);
+
+  Q_INVOKABLE void setHighlightedStructure(const QString& name); const
 
   void setNewickString(QString newick) { m_newickString = newick; };
   void setHvgxID(int ID) { m_hvgxID = ID; };
 
   int m_hvgxID;
   QString m_newickString;
+
+  GlobalVisParameters* m_global_vis_parameters;
+  DataContainer*       m_datacontainer;
 };
 
 class DistanceTree : public IVisMethod

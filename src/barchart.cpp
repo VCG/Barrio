@@ -20,8 +20,8 @@ BarChart::~BarChart()
 
 QWebEngineView* BarChart::initVisWidget(int ID)
 {
-  QString json = createJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
-  data = new BarChartData(json);
+  QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
+  data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
@@ -34,7 +34,7 @@ QWebEngineView* BarChart::initVisWidget(int ID)
 
 bool BarChart::update()
 {
-  QString json = createJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
+  QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   data->setJsonString(json);
   return true;
 }
@@ -100,9 +100,12 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
 }
 
 
-BarChartData::BarChartData(QString json_string) 
+BarChartData::BarChartData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters) 
 {
   m_json_string = json_string;
+
+  m_datacontainer = datacontainer;
+  m_global_vis_parameters = visparameters;
 }
 
 BarChartData::~BarChartData() 
@@ -114,4 +117,29 @@ BarChartData::~BarChartData()
 Q_INVOKABLE QString BarChartData::getData()
 {
   return Q_INVOKABLE m_json_string;
+}
+
+Q_INVOKABLE void BarChartData::setHighlightedStructure(const QString& name)
+{
+  int hvgx_id = m_datacontainer->getIndexByName(name);
+  if (!m_global_vis_parameters->highlighted_objects.contains(hvgx_id))
+  {
+    m_global_vis_parameters->highlighted_objects.append(hvgx_id);
+  }
+}
+
+Q_INVOKABLE void BarChartData::removeHighlightedStructure(const QString& name_to_remove)
+{
+  int hvgx_id = m_datacontainer->getIndexByName(name_to_remove);
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_objects;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
 }

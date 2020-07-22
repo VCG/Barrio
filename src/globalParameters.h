@@ -19,5 +19,6 @@ struct GlobalVisParameters
   float opacity;
   float slice_depth;
 
-  QList<int> selectedObjects;
+  QList<int> selected_objects;
+  QVector<int> highlighted_objects;
 };

@@ -256,6 +256,7 @@ void GLWidget::paintGL()
     
   m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
+  updateHighlightedSSBO();
 
   clearBuffers();
   pass1();
@@ -263,6 +264,8 @@ void GLWidget::paintGL()
   pass2();
 
   m_mesh_program->release();
+
+  update();
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -1005,6 +1008,20 @@ void GLWidget::drawScene()
   m_mesh_vao.release();
 }
 
+void GLWidget::updateHighlightedSSBO()
+{
+  //makeCurrent();
+
+  int bufferSize = m_shared_resources->highlighted_objects->size() * sizeof(int);
+  
+  glGenBuffers(1, &m_highlighted_ssbo);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_highlighted_ssbo);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, m_shared_resources->highlighted_objects->data(), GL_DYNAMIC_COPY);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, m_highlighted_ssbo);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+  
+}
+
 void GLWidget::updateVisibilitySSBO()
 { 
   makeCurrent();
@@ -1016,7 +1033,7 @@ void GLWidget::updateVisibilitySSBO()
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_visibility_ssbo);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, m_visible_structures.data(), GL_DYNAMIC_COPY);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, m_visibility_ssbo);
-  qDebug() << "m_ssbo_data buffer size: " << bufferSize;
+  qDebug() << "visibility ssbo buffer size: " << bufferSize;
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
   update();

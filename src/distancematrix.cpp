@@ -19,7 +19,7 @@ DistanceMatrix::~DistanceMatrix()
 
 QWebEngineView* DistanceMatrix::initVisWidget(int ID)
 {
-  QString json = getJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
+  QString json = getJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   data = new DistanceMatrixData(json);
 
   m_web_engine_view = new QWebEngineView();
@@ -33,7 +33,7 @@ QWebEngineView* DistanceMatrix::initVisWidget(int ID)
 
 bool DistanceMatrix::update()
 {
-  QString json = getJSONString(&m_global_vis_parameters->selectedObjects, m_global_vis_parameters->distance_threshold);
+  QString json = getJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   data->setJsonString(json);
   return true;
 }

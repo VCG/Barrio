@@ -35,7 +35,6 @@ double MainWidget::on_synapse_distance_slider_changed(int value)
 void MainWidget::on_opacity_slider_changed(int value)
 {
   m_shared_resources.cell_opacity = (float)value / 100.0;
-  qDebug() << m_shared_resources.cell_opacity;
 
   for (auto const& [id, widget] : m_GL_widgets)
   {
@@ -274,6 +273,7 @@ void MainWidget::initializeGL()
 
   // setup shared resources
   initSharedVBOs();
+  m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
  
   // add first widget
   //addGLWidget(0, true);

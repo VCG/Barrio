@@ -97,6 +97,8 @@ public:
   std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
   std::vector<QVector2D>  getNeuritesEdges();
 
+  int getIndexByName(QString name);
+
   void writeDataToCache(QString cache_path);
   void loadDataFromCache(QString cache_path);
   void compute_distance_mito_cell_boundary();

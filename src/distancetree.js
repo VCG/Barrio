@@ -9,6 +9,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     var tree;
 
+    jsobject.setHighlightedStructure("SynD062s01A039b01");
+
     // default scheme to color by date
     var coloring_scheme = d3.scale.category10();
 

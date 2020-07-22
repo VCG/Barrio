@@ -39,6 +39,13 @@ layout (std430, binding=5) buffer mesh_data
     int SSBO_visibility[];
 };
 
+layout (std430, binding=6) buffer highlight_data
+{
+    int SSBO_highlighted[];
+};
+
+
+
 uniform int maxNodes;
 uniform float cell_opacity;
 subroutine void RenderPassType();
@@ -58,6 +65,18 @@ int isVisible(int hvgx)
   for(int i = 0; i < SSBO_visibility.length(); i++)
   {
     if(hvgx == SSBO_visibility[i])
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int isHighlighted(int hvgx)
+{
+  for(int i = 0; i < SSBO_highlighted.length(); i++)
+  {
+    if(hvgx == SSBO_highlighted[i])
     {
       return 1;
     }
@@ -91,7 +110,11 @@ vec4 computeColor()
   vec3 obj_color;
   vec4 out_color;
 
-  if(frag_structure_type == MITO)
+  if(isHighlighted(frag_hvgx) == 1)
+  {
+  	obj_color = vec3(1.0, 0.65, 0.0); //orange
+  }
+  else if(frag_structure_type == MITO)
   {
     obj_color = vec3(1.0, 0.0, 0.0);
     

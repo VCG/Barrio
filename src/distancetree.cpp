@@ -21,7 +21,7 @@ DistanceTree::~DistanceTree()
 QWebEngineView* DistanceTree::initVisWidget(int ID)
 {
   QString newickString = createNewickString(ID, m_global_vis_parameters->distance_threshold);
-  data = new DistanceTreeData(ID, newickString);
+  data = new DistanceTreeData(ID, newickString, m_global_vis_parameters, m_datacontainer);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
@@ -32,13 +32,10 @@ QWebEngineView* DistanceTree::initVisWidget(int ID)
   return m_web_engine_view;
 }
 
-
 QWebEngineView* DistanceTree::getWebEngineView()
 {
   return m_web_engine_view;
 }
-
-
 
 bool DistanceTree::update()
 {
@@ -111,10 +108,13 @@ QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
   return newickString;
 }
 
-DistanceTreeData::DistanceTreeData(int ID, QString newickString) 
+DistanceTreeData::DistanceTreeData(int ID, QString newickString, GlobalVisParameters* global_vis_parameters, DataContainer* data_container)
 {
   m_hvgxID = ID;
   m_newickString = newickString;
+
+  m_global_vis_parameters = global_vis_parameters;
+  m_datacontainer = data_container;
 }
 
 DistanceTreeData::~DistanceTreeData()
@@ -125,4 +125,13 @@ DistanceTreeData::~DistanceTreeData()
 Q_INVOKABLE QString DistanceTreeData::getNewickString()
 {
   return Q_INVOKABLE m_newickString;
+}
+
+Q_INVOKABLE void DistanceTreeData::setHighlightedStructure(const QString& name)
+{
+  int hvgx_id = m_datacontainer->getIndexByName(name);
+  if (!m_global_vis_parameters->highlighted_objects.contains(hvgx_id)) 
+  {
+    m_global_vis_parameters->highlighted_objects.append(hvgx_id);
+  }
 }

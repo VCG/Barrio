@@ -69,15 +69,16 @@ public:
 
   void addToSelectedIndices(int id) 
   {
-    if (!m_global_vis_parameters.selectedObjects.contains(id))
+    if (!m_global_vis_parameters.selected_objects.contains(id))
     {
-      m_global_vis_parameters.selectedObjects.append(id);
+      m_global_vis_parameters.selected_objects.append(id);
     }
   }
 
-  QList<int>* getSelectedIndexList() { return &m_global_vis_parameters.selectedObjects; }
+  QList<int>* getSelectedIndexList() { return &m_global_vis_parameters.selected_objects; }
 
   DataContainer* m_datacontainer;
+  GlobalVisParameters m_global_vis_parameters;
 
 private:
   struct pair_hash {
@@ -113,8 +114,6 @@ private:
   std::vector<struct AbstractionPoint>        m_grid_vertices;
   std::vector<GLuint>                         m_grid_indices;
   std::vector<struct AbstractionPoint>        m_grid_illigal_vertices;
-
-  GlobalVisParameters m_global_vis_parameters;
 };
 
 #endif // ABSTRACTIONSPACE_H

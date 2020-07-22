@@ -288,7 +288,6 @@ void MainWindow::on_synapse_distance_slider_changed(int value)
 
 void MainWindow::on_opacity_slider_changed(int value)
 {
-  //qDebug() << value;
   m_mainWidget->on_opacity_slider_changed(value);
   mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }

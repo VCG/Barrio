@@ -1427,6 +1427,20 @@ std::vector<QVector2D> DataContainer::getNeuritesEdges()
   return neurites_neurite_edge;
 }
 
+int DataContainer::getIndexByName(QString name)
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    QString map_name = obj->getName().c_str();
+    if (QString::compare(map_name, name) == 0) 
+    {
+      return id;
+    }
+  }
+
+  return -1;
+}
+
 void DataContainer::writeDataToCache(QString cache_path)
 {
   m_mesh->dumpMesh(cache_path);
