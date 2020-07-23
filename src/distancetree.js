@@ -9,8 +9,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     var tree;
 
-    jsobject.setHighlightedStructure("SynD062s01A039b01");
-
     // default scheme to color by date
     var coloring_scheme = d3.scale.category10();
 
@@ -37,7 +35,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         {
             circle.style("fill", "#ff0000");
         }
-        
+
         if ("bootstrap" in node_object && node_object.bootstrap) {
             var label = dom_element.selectAll(".bootstrap");
             if (label.empty()) {
@@ -66,7 +64,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             .size([height, width])
             //.style_edges(edgeStyler)
             .style_nodes(nodeStyler)
-            .node_circle_size(3); // do not draw clickable circles for internal nodes
+            .node_circle_size(4); // do not draw clickable circles for internal nodes
 
 
 
@@ -81,7 +79,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             }
         });
 
-        //tree.spacing_x(25).spacing_y(100);
+        tree.spacing_x(30);
 
         if ($("#layout").prop("checked")) {
             tree.radial(true);
