@@ -19,14 +19,25 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     function edgeStyler(dom_element, edge_object)
     {
-        if ("bootstrap" in edge_object.target) {
-            dom_element.style("stroke-width", bootstrap_scale(edge_object.target.bootstrap) + "pt");
-        }
-        dom_element.style("stroke", "cluster" in edge_object.target ? coloring_scheme(edge_object.target.cluster) : null);
+        // if ("bootstrap" in edge_object.target) {
+        //     dom_element.style("stroke-width", bootstrap_scale(edge_object.target.bootstrap) + "pt");
+        // }
+        //dom_element.style("stroke", "cluster" in edge_object.target ? coloring_scheme(edge_object.target.cluster) : null);
+        //dom_element.style("stroke", "red");
 
     }
 
     function nodeStyler(dom_element, node_object) {
+        var circle = dom_element.selectAll("circle");
+        if(node_object.name.includes("Syn"))
+        {
+            circle.style("fill", "rgb(148,0,212)");
+        }
+        if(node_object.name.includes("Mito"))
+        {
+            circle.style("fill", "#ff0000");
+        }
+        
         if ("bootstrap" in node_object && node_object.bootstrap) {
             var label = dom_element.selectAll(".bootstrap");
             if (label.empty()) {
@@ -36,6 +47,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                     label.remove();
                 }
             }
+
         }
     }
 
@@ -52,7 +64,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'top-bottom-spacing': 'fixed-step'
             })
             .size([height, width])
-            .style_edges(edgeStyler)
+            //.style_edges(edgeStyler)
             .style_nodes(nodeStyler)
             .node_circle_size(3); // do not draw clickable circles for internal nodes
 
