@@ -86,6 +86,16 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }
         tree.placenodes().layout();
 
+        tree.selection_callback(selection=> {
+            jsobject.removeAllHighlightedStructures();
+            var names = selection.map(d=>d.name);
+            names.forEach(function (name){
+                jsobject.setHighlightedStructure(name);
+            });
+        });
+
+
+
 
         // UI handlers
         $("#layout").on("click", function(e) {

@@ -15,7 +15,6 @@ public:
   Q_PROPERTY(QString json_string READ getData);
 
   Q_INVOKABLE void setHighlightedStructure(const QString& name);
-
   Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
 
   void setJsonString(QString json) { m_json_string = json; }

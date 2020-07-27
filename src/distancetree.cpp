@@ -135,3 +135,25 @@ Q_INVOKABLE void DistanceTreeData::setHighlightedStructure(const QString& name)
     m_global_vis_parameters->highlighted_objects.append(hvgx_id);
   }
 }
+
+Q_INVOKABLE void DistanceTreeData::removeHighlightedStructure(const QString& name_to_remove) 
+{
+  int hvgx_id = m_datacontainer->getIndexByName(name_to_remove);
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_objects;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
+}
+
+Q_INVOKABLE void DistanceTreeData::removeAllHighlightedStructures() 
+{
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_objects;
+  highlighted->clear();
+}

@@ -16,7 +16,9 @@ public:
   Q_INVOKABLE QString getNewickString();
   Q_PROPERTY(QString newickString READ getNewickString);
 
-  Q_INVOKABLE void setHighlightedStructure(const QString& name); const
+  Q_INVOKABLE void setHighlightedStructure(const QString& name);
+  Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
+  Q_INVOKABLE void removeAllHighlightedStructures();
 
   void setNewickString(QString newick) { m_newickString = newick; };
   void setHvgxID(int ID) { m_hvgxID = ID; };
