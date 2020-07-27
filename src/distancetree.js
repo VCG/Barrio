@@ -15,24 +15,21 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     // this will be used to map bootstrap support values to edge thickness
     var bootstrap_scale = d3.scale.linear().domain([0, 0.5, 0.7, 0.9, 0.95, 1]).range([1, 2, 3, 4, 5, 6]).interpolate(d3.interpolateRound);
 
-    function edgeStyler(dom_element, edge_object)
-    {
+    function edgeStyler(dom_element, edge_object) {
         // if ("bootstrap" in edge_object.target) {
         //     dom_element.style("stroke-width", bootstrap_scale(edge_object.target.bootstrap) + "pt");
         // }
         //dom_element.style("stroke", "cluster" in edge_object.target ? coloring_scheme(edge_object.target.cluster) : null);
-        //dom_element.style("stroke", "red");
+        //dom_element.style("stroke", edge_object.selected ? "#ff9900" : "#8a8986");
 
     }
 
     function nodeStyler(dom_element, node_object) {
         var circle = dom_element.selectAll("circle");
-        if(node_object.name.includes("Syn"))
-        {
+        if (node_object.name.includes("Syn")) {
             circle.style("fill", "rgb(148,0,212)");
         }
-        if(node_object.name.includes("Mito"))
-        {
+        if (node_object.name.includes("Mito")) {
             circle.style("fill", "#ff0000");
         }
 
@@ -49,15 +46,22 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }
     }
 
+    function selectNode() {
+        tree.modify_selection(function (d) {
+            if (jsobject.new_selected_node == d.target.name) {
+                return true;
+            }
+            return false;
+        });
+    }
+
     function drawATree(data) {
 
         tree = d3.layout.phylotree()
             .svg(d3.select("#tree_display"))
             .options({
                 'selectable': true,
-                // make nodes and branches not selectable
                 'collapsible': false,
-                // turn off the menu on internal nodes
                 'left-right-spacing': 'fit-to-size',
                 'top-bottom-spacing': 'fixed-step'
             })
@@ -66,14 +70,12 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             .style_nodes(nodeStyler)
             .node_circle_size(4); // do not draw clickable circles for internal nodes
 
-
-
         /* the next call creates the tree object, and tree nodes */
         tree(d3.layout.newick_parser(data));
 
 
         // parse bootstrap support from internal node names
-        _.each(tree.get_nodes(), function(node) {
+        _.each(tree.get_nodes(), function (node) {
             if (node.children) {
                 node.bootstrap = node.name;
             }
@@ -86,22 +88,28 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }
         tree.placenodes().layout();
 
-        tree.selection_callback(selection=> {
+        tree.selection_callback(selection => {
             jsobject.removeAllHighlightedStructures();
-            var names = selection.map(d=>d.name);
-            names.forEach(function (name){
+            var names = selection.map(d => d.name);
+            names.forEach(function (name) {
                 jsobject.setHighlightedStructure(name);
             });
+
+            // let branches = d3.selectAll("path")
+            //     .style("stroke", function (d) {
+            //         if (d.selected == true) {
+            //             console.log(d);
+            //             return "#8a8986";
+            //         }
+            //         return "#ff9900";
+            //     });
         });
-
-
 
 
         // UI handlers
-        $("#layout").on("click", function(e) {
+        $("#layout").on("click", function (e) {
             tree.radial($(this).prop("checked")).placenodes().update();
         });
-
     }
 
     drawATree(data);

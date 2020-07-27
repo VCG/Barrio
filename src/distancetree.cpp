@@ -127,6 +127,16 @@ Q_INVOKABLE QString DistanceTreeData::getNewickString()
   return Q_INVOKABLE m_newickString;
 }
 
+Q_INVOKABLE void DistanceTreeData::setSelectedNode(QString name)
+{
+  m_selected_node = name;
+}
+
+Q_INVOKABLE QString DistanceTreeData::getSelectedNode()
+{
+  return Q_INVOKABLE m_selected_node;
+}
+
 Q_INVOKABLE void DistanceTreeData::setHighlightedStructure(const QString& name)
 {
   int hvgx_id = m_datacontainer->getIndexByName(name);

@@ -15,6 +15,10 @@ public:
 
   Q_INVOKABLE QString getNewickString();
   Q_PROPERTY(QString newickString READ getNewickString);
+  
+  Q_INVOKABLE void setSelectedNode(QString name);
+  Q_INVOKABLE QString getSelectedNode();
+  Q_PROPERTY(QString new_selected_node READ getSelectedNode);
 
   Q_INVOKABLE void setHighlightedStructure(const QString& name);
   Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
@@ -25,6 +29,7 @@ public:
 
   int m_hvgxID;
   QString m_newickString;
+  QString m_selected_node;
 
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer*       m_datacontainer;
