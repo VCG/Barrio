@@ -60,9 +60,6 @@
         var x = d3.scale.ordinal().rangeRoundBands([0, w]);
         var y = d3.scale.linear().range([h, 0]);
 
-
-        var color = d3.scale.category20c();
-
         var yAxis = d3.svg.axis()
             .scale(y)
             .orient("left");
@@ -84,9 +81,6 @@
             .append("g")
             .attr("transform",
                 "translate(" + m.left + "," + m.top + ")");
-
-        // This moves the SVG over by m.left(110)
-        // and down by m.top (10)
 
         data = JSON.parse(json_string);
 
@@ -138,6 +132,19 @@
             .append("rect")
             .attr("class", "bar");
 
+        function highlightBars(bar_name)
+        {
+            bars.style("fill", function (d) {
+                if(d.candidate == bar_name)
+                {
+                    return "#ffa500";
+                }
+                else
+                {
+                    return "rgb(148,0,212)";
+                }
+            })
+        }
 
         bars.attr("y", function (d) {
                 return y(d.votes)
@@ -159,6 +166,7 @@
                     .style("top", (d3.event.pageY - 28) + "px");
 
                 jsobject.setHighlightedStructure(d.candidate);
+                highlightBars(d.candidate);
             })
             .on("mouseout", function(d){
                 div.transition()
