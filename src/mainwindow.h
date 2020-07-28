@@ -92,6 +92,7 @@ private:
 
   void initializeSynapseThresholdSlider();
   void initializeOpacitySlider();
+  void initializeVisualizationPresets()l
 
 };
 

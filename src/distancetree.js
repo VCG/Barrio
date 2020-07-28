@@ -94,15 +94,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             names.forEach(function (name) {
                 jsobject.setHighlightedStructure(name);
             });
-
-            // let branches = d3.selectAll("path")
-            //     .style("stroke", function (d) {
-            //         if (d.selected == true) {
-            //             console.log(d);
-            //             return "#8a8986";
-            //         }
-            //         return "#ff9900";
-            //     });
         });
 
 

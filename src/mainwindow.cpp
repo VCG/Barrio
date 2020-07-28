@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
 
   setupSignalsNSlots();
+  initializeVisualizationPresets();
+ 
 }
 
 void MainWindow::initializeSynapseThresholdSlider()
@@ -76,6 +78,16 @@ void MainWindow::initializeOpacitySlider()
   on_opacity_slider_changed(initial_tick_position);
 
   
+}
+
+void MainWindow::initializeVisualizationPresets()
+{
+  mainwindow_ui->checkBox_2->setChecked(true);
+  mainwindow_ui->checkBox_3->setChecked(true);
+  mainwindow_ui->checkBox_5->setChecked(true);
+
+  on_structure_selection_changed(-1);
+  on_high_detail_vis_clicked();
 }
 
 //------------------------------------------------------
