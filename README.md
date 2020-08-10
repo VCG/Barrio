@@ -10,7 +10,7 @@
 To get started you first need to **install all required dependencies**.
 * [cmake](https://cmake.org/)
 * open source version of [QT](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5)
-* [CGGAL](https://www.cgal.org/download.html) library, CGAL also requires [boost](https://www.boost.org/)
+* [CGGAL](https://www.cgal.org/download.html) library, CGAL also requires [boost](https://sourceforge.net/projects/boost/files/boost-binaries/1.71.0/)
 * [cereal](https://uscilab.github.io/cereal/) serialization library
 
 ## Building the project
