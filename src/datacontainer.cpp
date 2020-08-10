@@ -78,8 +78,8 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString neurites_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/2_mitos.obj";
-  QString astro_path = "C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_astrocyte.obj";
+  QString neurites_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/2_mitos.obj";
+  QString astro_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
 
   MyWebViewer* wv = new MyWebViewer();

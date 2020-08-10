@@ -86,7 +86,7 @@ void OpenGLManager::drawAll()
 // todo: if the file doesn't open or doesn't exist, then don't load the data here and in GLSL
 bool OpenGLManager::initOpenGLFunctions()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
+  QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
   QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_tom.png");
 
   m_glFunctionsSet = true;
