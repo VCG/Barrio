@@ -19,14 +19,18 @@ class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
   Q_OBJECT;
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
+  
   bool addWidgetGroup(int ID, bool isOverviewWidget);
-  bool deleteInfoVisWidget(int ID);
+  //bool deleteInfoVisWidget(int ID);
+  
   bool deleteAllInfoVisWidgets();
-
   bool deleteAllGLWidgets();
+  bool deleteAllWidgets();
 
-  bool addInfoVisWidget(int ID, QString name, IVisMethod* visMethod);
-  bool addGLWidget(int ID, QString name, bool isOverviewWidget);
+  void addCloseButtonToWidget(QGroupBox* groupBox);
+
+  bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod);
+  bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
   SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
@@ -36,6 +40,10 @@ public:
 
   double on_synapse_distance_slider_changed(int value);
   void on_opacity_slider_changed(int value);
+  
+
+public slots:
+  void on_widget_close_button_clicked();
 
 protected:
   void initializeGL() override;
@@ -47,15 +55,13 @@ private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
 
-  std::map<int, QGroupBox*> m_gl_boxes;
-  std::map<int, GLWidget*> m_GL_widgets;
-  
-  std::map<int, QGroupBox*> m_info_vis_boxes;
-  std::map<int, IVisMethod*> m_views;
+  std::map<int, QGroupBox*> m_groupboxes;
+  std::map<int, GLWidget*> m_opengl_views;
+  std::map<int, IVisMethod*> m_infovis_views;
 
   QList<int>    getSelectedIDs();
 
-  QGridLayout* m_gl_layout;
+  QGridLayout* m_main_layout;
 
   SharedGLResources m_shared_resources;
 
