@@ -25,7 +25,7 @@ public:
   
   bool deleteAllInfoVisWidgets();
   bool deleteAllGLWidgets();
-  bool deleteAllWidgets();
+  bool deleteAllWidgets(bool deleteGeneralInfoVisWidgets);
 
   void addCloseButtonToWidget(QGroupBox* groupBox);
 

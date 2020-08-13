@@ -75,6 +75,14 @@ public:
     }
   }
 
+  void removeFromSelectedindices(int id)
+  {
+    if (m_global_vis_parameters.selected_objects.contains(id))
+    {
+      m_global_vis_parameters.selected_objects.removeAll(id);
+    }
+  }
+
   QList<int>* getSelectedIndexList() { return &m_global_vis_parameters.selected_objects; }
 
   DataContainer* m_datacontainer;

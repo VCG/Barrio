@@ -59,7 +59,7 @@ void MainWidget::on_widget_close_button_clicked()
 
   QList<int> currentlySelectedIDs = getSelectedIDs();
 
-  deleteAllWidgets();
+  deleteAllWidgets(false);
 
   for each (int ID in currentlySelectedIDs)
   {
@@ -68,6 +68,8 @@ void MainWidget::on_widget_close_button_clicked()
       addWidgetGroup(ID, false);
     }
   }
+
+  updateInfoVisViews();
 }
 
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
@@ -262,33 +264,41 @@ bool MainWidget::deleteAllGLWidgets()
   return false;
 }
 
-bool MainWidget::deleteAllWidgets()
+bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 {
   for (auto it = m_groupboxes.cbegin(); it != m_groupboxes.cend();)
   {
     int ID = (*it).first;
-    QGroupBox* groupBox = (*it).second;
-
-    groupBox->hide();
-    m_main_layout->removeWidget(groupBox);
-    delete groupBox;
-    
-    // delete respective element in gl map
-    if (m_opengl_views.find(ID) != m_opengl_views.end())
+    if (ID > 0 || deleteGeneralInfoVisWidgets)
     {
-      auto gl_it = m_opengl_views.find(ID);
-      m_opengl_views.erase(gl_it);
-    }
+      m_abstraction_space->removeFromSelectedindices(ID);
 
-    // delete respective elements in the infovis map
-    if (m_infovis_views.find(ID) != m_infovis_views.end()) 
+      QGroupBox* groupBox = (*it).second;
+
+      groupBox->hide();
+      m_main_layout->removeWidget(groupBox);
+      delete groupBox;
+
+      // delete respective element in gl map
+      if (m_opengl_views.find(ID) != m_opengl_views.end())
+      {
+        auto gl_it = m_opengl_views.find(ID);
+        m_opengl_views.erase(gl_it);
+      }
+
+      // delete respective elements in the infovis map
+      if (m_infovis_views.find(ID) != m_infovis_views.end())
+      {
+        auto infovis_it = m_infovis_views.find(ID);
+        m_infovis_views.erase(infovis_it);
+      }
+
+      it = m_groupboxes.erase(it);
+    }
+    else 
     {
-      auto infovis_it = m_infovis_views.find(ID);
-      m_infovis_views.erase(infovis_it);
+      ++it;
     }
-
-    it = m_groupboxes.erase(it);
-
   }
 
   m_current_col = 0;
@@ -375,7 +385,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
      m_number_of_entities = NumberOfEntities::LOW;
      QList<int> currentlySelectedIDs = getSelectedIDs();
 
-     deleteAllWidgets();
+     deleteAllWidgets(true);
 
      for each (int ID in currentlySelectedIDs)
      {
