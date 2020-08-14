@@ -370,15 +370,16 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
   if (new_entities_selection == NumberOfEntities::MEDIUM)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
+    int medium_entities_id = -1;
     
     deleteAllInfoVisWidgets();
 
     QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
-    m_groupboxes[-1] = groupBox;
+    m_groupboxes[medium_entities_id] = groupBox;
     
-    addInfoVisWidget(m_lastID, groupBox, m_vis_methods.medium->clone());
+    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.medium->clone());
   }
   else if(new_entities_selection == NumberOfEntities::LOW)
   {
@@ -395,6 +396,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
 
   else if (new_entities_selection == NumberOfEntities::HIGH) 
   {
+    int high_entities_id = -2;
     m_number_of_entities = NumberOfEntities::HIGH;
 
     deleteAllInfoVisWidgets();
@@ -402,9 +404,9 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
     QGroupBox* groupBox = new QGroupBox(m_low_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
-    m_groupboxes[-2] = groupBox;
+    m_groupboxes[high_entities_id] = groupBox;
     
-    addInfoVisWidget(m_lastID, groupBox, m_vis_methods.high->clone());
+    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.high->clone());
   }
 }
 
