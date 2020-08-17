@@ -63,7 +63,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'selectable': true,
                 'collapsible': false,
                 'left-right-spacing': 'fit-to-size',
-                'top-bottom-spacing': 'fixed-step'
+                'top-bottom-spacing': 'fixed-step',
+                'zoom': true,
+                'align-tips': true
             })
             .size([height, width])
             //.style_edges(edgeStyler)
