@@ -75,11 +75,9 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
 
     // sort map
     std::vector<std::pair<QString, float>> vec;
-    std::map<QString, float> ::iterator it2;
-
-    for (it2 = selected_syns.begin(); it2 != selected_syns.end(); it2++)
+    for (auto it = selected_syns.begin(); it != selected_syns.end(); it++)
     {
-      vec.push_back(std::make_pair(it2->first, it2->second));
+      vec.push_back(std::make_pair(it->first, it->second));
     }
     std::sort(vec.begin(), vec.end(), sortByVal);
 

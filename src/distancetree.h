@@ -60,6 +60,12 @@ private:
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;
+
+  static bool sortByVal(const std::pair<int, double>& a,
+    const std::pair<int, double>& b)
+  {
+    return (a.second < b.second);
+  }
 };
 
 #endif

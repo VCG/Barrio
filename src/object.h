@@ -127,6 +127,7 @@ public:
   bool isParent(int hvgxID);
 
   std::map<int, double>* get_distance_map_ptr() { return &m_distance_map; };
+  std::vector<std::pair<int, double>>* get_distance_vector_ptr();
 
   
 private:
@@ -145,6 +146,7 @@ private:
   std::vector<int>                        m_chidren_ids;
 
   std::map<int, double>                   m_distance_map;
+  std::vector<std::pair<int, double>>     m_distance_vector;
 
   QVector4D                               m_center;
   float                                   x_center, y_center, z_center, w_center;

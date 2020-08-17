@@ -379,3 +379,13 @@ bool Object::isParent(int hvgxID)
   }
   return false;
 }
+
+std::vector<std::pair<int, double>>* Object::get_distance_vector_ptr()
+{
+  m_distance_vector.clear();
+  for (auto it = m_distance_map.begin(); it != m_distance_map.end(); it++)
+  {
+    m_distance_vector.push_back(std::make_pair(it->first, it->second));
+  }
+  return &m_distance_vector;
+}
