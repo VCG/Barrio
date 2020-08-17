@@ -53,17 +53,17 @@ DistanceTree* DistanceTree::clone()
 /*
   hvgxID must be a mitochondrion
 */
-QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
+QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThreshold)
 {
   QString newickString = "";
   std::map<int, Object*>* object_map = m_datacontainer->getObjectsMapPtr();
-  Object* object = object_map->at(hvgxID);
+  Object* root_object = object_map->at(root_hvgx_id);
 
-  if (object->getObjectType() == Object_t::MITO)
+  if (root_object->getObjectType() == Object_t::MITO)
   {
-    QString root_name = QString(object->getName().c_str());
+    QString root_name = QString(root_object->getName().c_str());
 
-    std::map<int, double>* mito_distance_map = object->get_distance_map_ptr();
+    std::map<int, double>* mito_distance_map = root_object->get_distance_map_ptr();
 
     for (auto const& [syn_id, syn_distance] : *mito_distance_map)
     {
@@ -81,7 +81,7 @@ QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
           distance_ok = mito_dist < distanceThreshold;
           type_ok = object_map->at(mito_id)->getObjectType() == Object_t::MITO;
 
-          if (distance_ok && type_ok)
+          if (distance_ok && type_ok && mito_id != root_hvgx_id)
           {
             QString mito_sub_newick = "";
             name = object_map->at(mito_id)->getName().c_str();
@@ -92,7 +92,12 @@ QString DistanceTree::createNewickString(int hvgxID, float distanceThreshold)
 
         syn_sub_newick = syn_sub_newick.left(syn_sub_newick.lastIndexOf(","));
         name = object_map->at(syn_id)->getName().c_str();
-        syn_sub_newick = "(" + syn_sub_newick + ")" + name + ":" + QString::number(syn_distance);
+        
+        if (!syn_sub_newick.isEmpty())
+        {
+          syn_sub_newick = "(" + syn_sub_newick + ')';
+        }
+        syn_sub_newick += name + ":" + QString::number(syn_distance);
 
         newickString += syn_sub_newick + ",";
       }
