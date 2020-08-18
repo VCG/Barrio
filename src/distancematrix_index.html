@@ -31,8 +31,8 @@
         var jsobject = channel.objects.distancematrix_data;
         let json_string = jsobject.json_string;
         
-        let rect_width = 10;
-        let rect_height = 10;
+        /*let rect_width = 10;
+        let rect_height = 10;*/
 
         let my_data = JSON.parse(json_string);
 
@@ -58,6 +58,14 @@
                 'id': 'corrplot'
             });
 
+        let rect_height = 30;
+        let rect_margin = 3;
+
+        let number_of_cols = my_data[0].synapses.length;
+        let number_of_rows = my_data.length;
+
+
+
         // corrplot.append('text')
         //     .text('Correlation matrix')
         //     .attr({
@@ -69,12 +77,12 @@
         //     });
 
         var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
-            corYscale = d3.scale.ordinal().rangeRoundBands([h, 0]),
+            corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
             corColScale = d3.scale.linear().domain([0, 6]).range(['purple', 'white']);
         var corRscale = d3.scale.sqrt().domain([0, 1]);
 
-        corXscale.domain(d3.range(my_data[0].synapses.length));
-        corYscale.domain(d3.range(my_data.length));
+        corXscale.domain(d3.range(number_of_cols));
+        corYscale.domain(d3.range(number_of_rows));
         corRscale.range([0, 0.5 * corXscale.rangeBand()]);
 
         var corr = [];
@@ -94,7 +102,9 @@
             })
             .style('pointer-events', 'all');
 
-        var rects = cells.append('rect')
+
+
+/*        var rects = cells.append('rect')
             .attr({
                 'x': function (d) {
                     return corXscale(d.col) - rect_width / 2;
@@ -107,91 +117,94 @@
                 'fill': 'none',
                 'stroke': 'none',
                 'stroke-width': '1'
-            });
+            });*/
 
-        var circles = cells.append('circle')
-            .attr('cx', function (d) {
+        var circles = cells.append('rect')
+            .attr('x', function (d) {
                 return corXscale(d.col);
             })
-            .attr('cy', function (d) {
-                return corXscale(d.row);
+            .attr('y', function (d) {
+                return corYscale(d.row);
             })
-            .attr('r', function (d) {
-                return 4;
+            .attr('width', function (d) {
+                return w / number_of_cols - rect_margin;
+            })
+            .attr('height', function (d) {
+                return rect_height;
             })
             .style('fill', function (d) {
                 return corColScale(d.value);
             });
 
-        corrplot.selectAll('g.cell')
-            .on('mouseover', function (d) {
-                d3.select(this)
-                    .select('rect')
-                    .attr('stroke', 'black');
-
-                var xPos = parseFloat(d3.select(this).select('rect').attr('x'));
-                var yPos = parseFloat(d3.select(this).select('rect').attr('y'));
-
-                corrplot.append('text')
-                    .attr({
-                        'class': 'corrlabel',
-                        'x': corXscale(d.col),
-                        'y': h + margin.bottom * 0.2
-                    })
-                    .text(my_data[d.row].synapses[d.col].name)
-                    .attr({
-                        'dominant-baseline': 'middle',
-                        'text-anchor': 'middle'
-                    });
-
-
-                corrplot.append('text')
-                    .attr({
-                        'class': 'corrlabel',
-                    })
-                    .text(my_data[d.row].name)
-                    .attr({
-                        'dominant-baseline': 'middle',
-                        'text-anchor': 'middle',
-                        'transform': 'translate(' + (-margin.left * 0.1) + ',' + corXscale(d.row) + ')rotate(270)'
-                    });
-
-                corrplot.append('rect')
-                    .attr({
-                        'class': 'tooltip',
-                        'x': xPos + 10,
-                        'y': yPos - 30,
-                        'width': 40,
-                        'height': 20,
-                        'fill': 'rgba(200, 200, 200, 0.5)',
-                        'stroke': 'black'
-                    });
-
-                corrplot.append('text')
-                    .attr({
-                        'class': 'tooltip',
-                        'x': xPos + 30,
-                        'y': yPos - 15,
-                        'text-anchor': 'middle',
-                        'font-family': 'sans-serif',
-                        'font-size': '14px',
-                        'font-weight': 'bold',
-                        'fill': 'black'
-                    })
-                    .text(d3.format('.2f')(d.value));
-            })
-            .on('mouseout', function (d) {
-                d3.select('#corrtext').remove();
-                d3.selectAll('.corrlabel').remove();
-                d3.select(this)
-                    .select('rect')
-                    .attr('stroke', 'none');
-                //Hide the tooltip
-                d3.selectAll('.tooltip').remove();
-            })
-            .on('click', function (d) {
-                //drawScatter(d.col, d.row);
-            });
+        // corrplot.selectAll('g.cell')
+        //     .on('mouseover', function (d) {
+        //         d3.select(this)
+        //             .select('rect')
+        //             .attr('stroke', 'black');
+        //
+        //         var xPos = parseFloat(d3.select(this).select('rect').attr('x'));
+        //         var yPos = parseFloat(d3.select(this).select('rect').attr('y'));
+        //
+        //         corrplot.append('text')
+        //             .attr({
+        //                 'class': 'corrlabel',
+        //                 'x': corXscale(d.col),
+        //                 'y': h + margin.bottom * 0.2
+        //             })
+        //             .text(my_data[d.row].synapses[d.col].name)
+        //             .attr({
+        //                 'dominant-baseline': 'middle',
+        //                 'text-anchor': 'middle'
+        //             });
+        //
+        //
+        //         corrplot.append('text')
+        //             .attr({
+        //                 'class': 'corrlabel',
+        //             })
+        //             .text(my_data[d.row].name)
+        //             .attr({
+        //                 'dominant-baseline': 'middle',
+        //                 'text-anchor': 'middle',
+        //                 'transform': 'translate(' + (-margin.left * 0.1) + ',' + corXscale(d.row) + ')rotate(270)'
+        //             });
+        //
+        //         corrplot.append('rect')
+        //             .attr({
+        //                 'class': 'tooltip',
+        //                 'x': xPos + 10,
+        //                 'y': yPos - 30,
+        //                 'width': 40,
+        //                 'height': 20,
+        //                 'fill': 'rgba(200, 200, 200, 0.5)',
+        //                 'stroke': 'black'
+        //             });
+        //
+        //         corrplot.append('text')
+        //             .attr({
+        //                 'class': 'tooltip',
+        //                 'x': xPos + 30,
+        //                 'y': yPos - 15,
+        //                 'text-anchor': 'middle',
+        //                 'font-family': 'sans-serif',
+        //                 'font-size': '14px',
+        //                 'font-weight': 'bold',
+        //                 'fill': 'black'
+        //             })
+        //             .text(d3.format('.2f')(d.value));
+        //     })
+        //     .on('mouseout', function (d) {
+        //         d3.select('#corrtext').remove();
+        //         d3.selectAll('.corrlabel').remove();
+        //         d3.select(this)
+        //             .select('rect')
+        //             .attr('stroke', 'none');
+        //         //Hide the tooltip
+        //         d3.selectAll('.tooltip').remove();
+        //     })
+        //     .on('click', function (d) {
+        //         //drawScatter(d.col, d.row);
+        //     });
     });
 
 
