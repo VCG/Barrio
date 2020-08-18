@@ -72,6 +72,9 @@ public:
   void clearBuffers();
 
   void initMeshShaderStorage(int width, int height);
+  void initSelectionFrameBuffer(int width, int height);
+
+  int processSelection(float x, float y);
 
 public slots:
   void getSliderX(int value);
@@ -219,6 +222,9 @@ protected:
   std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
   GLuint                              m_visibility_ssbo;
   GLuint                              m_highlighted_ssbo;
+
+  GLuint                              m_selectionFrameBuffer;
+  GLuint                              m_selectionRenderBuffer;
 
   /* order independent transparency vars*/
   QOpenGLVertexArrayObject            m_fsQuad_vao;

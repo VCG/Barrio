@@ -306,6 +306,7 @@ void GLWidget::resizeGL(int w, int h)
 
 
   initMeshShaderStorage(m_width, m_height);
+  initSelectionFrameBuffer(m_width, m_height);
 
   //update();
 }
@@ -318,11 +319,13 @@ int GLWidget::pickObject(QMouseEvent* event)
 
   int x = event->x() * retinaScale;
   int y = viewport[3] - event->y() * retinaScale;
-  int hvgxID = m_opengl_mngr->processSelection(x, y);
+  int hvgxID = processSelection(x, y);
   if (hvgxID == 16777215)
   {
     hvgxID = 0;
   }
+
+  qDebug() << "Selected ID: " << hvgxID;
   setHoveredID(hvgxID);
   std::string name = m_data_container->getObjectName(hvgxID);
   QString oname = QString::fromUtf8(name.c_str());
@@ -337,11 +340,12 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
 
   makeCurrent();
 
-  /*m_opengl_mngr->renderSelection(&m_uniforms);
+  //m_opengl_mngr->renderSelection(&m_uniforms);
 
-  int hvgxID = pickObject(event);
+  //int hvgxID = pickObject(event);
+  
 
-  if (hvgxID == 0)    goto quit;
+  /*if (hvgxID == 0)    goto quit;
   m_opengl_mngr->highlightObject(hvgxID);
 
   if (event->modifiers() == Qt::ControlModifier) {
@@ -405,10 +409,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
     m_opengl_mngr->renderSelection(&m_uniforms);
 
-    int hvgxID = pickObject(event); // hovered object
+    //int hvgxID = pickObject(event); // hovered object
 
     // mark it by lighter color
-    m_opengl_mngr->highlightObject(hvgxID);
+    //m_opengl_mngr->highlightObject(hvgxID);
 
     doneCurrent();
   }
@@ -1161,6 +1165,47 @@ void GLWidget::initMeshShaderStorage(int width, int height)
   glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf->size() * sizeof(GLuint), headPtrClearBuf->data(), GL_STATIC_COPY);
   
   m_init = true;
+}
+
+void GLWidget::initSelectionFrameBuffer(int width, int height)
+{
+  qDebug() << "initSelectionFrameBuffer";
+
+  // create FBO
+  glGenFramebuffers(1, &m_selectionFrameBuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
+
+  glGenRenderbuffers(1, &m_selectionRenderBuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, m_selectionRenderBuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_selectionRenderBuffer);
+
+  GLuint depthBuffer;
+  glGenRenderbuffers(1, &depthBuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+int GLWidget::processSelection(float x, float y)
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
+  glEnable(GL_DEPTH_TEST);
+
+  GLubyte pixel[3];
+
+  glReadPixels(x, y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (void*)pixel);
+  int pickedID = pixel[0] + pixel[1] * 256 + pixel[2] * 65536;
+  qDebug() << pixel[0] << " " << pixel[1] << " " << pixel[2];
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  GL_Error();
+
+  return pickedID;
 }
 
 

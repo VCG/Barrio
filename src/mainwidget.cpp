@@ -103,6 +103,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
     m_groupboxes[ID] = groupBox;
+    
     addCloseButtonToWidget(groupBox);
 
     addInfoVisWidget(ID, groupBox, m_vis_methods.low->clone());
@@ -117,22 +118,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // medium configuration
   else if(m_number_of_entities == NumberOfEntities::MEDIUM)
   {
-    if (m_number_of_entities == NumberOfEntities::LOW)
-    {
-      QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
-      QVBoxLayout* vbox = new QVBoxLayout;
-      groupBox->setLayout(vbox);
-      m_groupboxes[ID] = groupBox;
-
-      addCloseButtonToWidget(groupBox);
-
-      deleteAllInfoVisWidgets();
-      addInfoVisWidget(ID, groupBox, m_vis_methods.medium->clone());
-    }
-    else
-    {
-      updateInfoVisViews();
-    }
+    updateInfoVisViews();
 
     QGroupBox* groupBox = new QGroupBox(name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
@@ -146,29 +132,16 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // high configuration
   else 
   {
-    if (m_number_of_entities == NumberOfEntities::MEDIUM)
-    {
-      m_number_of_entities = NumberOfEntities::HIGH;
+    updateInfoVisViews();
 
-      QGroupBox* groupBox = new QGroupBox(m_low_detail_name, this);
-      QVBoxLayout* vbox = new QVBoxLayout;
-      groupBox->setLayout(vbox);
-      m_groupboxes[ID] = groupBox;
-
-      addCloseButtonToWidget(groupBox);
-
-      deleteAllInfoVisWidgets();
-      addInfoVisWidget(ID, groupBox, m_vis_methods.high);
-    }
-    //TODO update vis data
-    
     QGroupBox* groupBox = new QGroupBox(name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
-    addGLWidget(ID, groupBox, isOverviewWidget);
     m_groupboxes[ID] = groupBox;
 
     addCloseButtonToWidget(groupBox);
+
+    addGLWidget(ID, groupBox, isOverviewWidget);
   }
 
   if (m_current_col < m_max_cols - 1) 

@@ -143,7 +143,7 @@ public:
   // ********** Selection ************************
   void updateCanvasDim(int w, int h, int retianScale);
   void initSelectionFrameBuffer();
-  int processSelection(float x, float y);
+  //int processSelection(float x, float y);
   void renderSelection(WidgetUniforms* uniforms);
 
 

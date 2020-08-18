@@ -2008,21 +2008,21 @@ void OpenGLManager::initSelectionFrameBuffer()
 
 // ----------------------------------------------------------------------------
 //
-int OpenGLManager::processSelection(float x, float y)
-{
-  glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
-  glEnable(GL_DEPTH_TEST);
-
-  GLubyte pixel[3];
-
-  glReadPixels(x, y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (void*)pixel);
-  int pickedID = pixel[0] + pixel[1] * 256 + pixel[2] * 65536;
-  qDebug() << pixel[0] << " " << pixel[1] << " " << pixel[2];
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  return pickedID;
-}
+//int OpenGLManager::processSelection(float x, float y)
+//{
+//  glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
+//  glEnable(GL_DEPTH_TEST);
+//
+//  GLubyte pixel[3];
+//
+//  glReadPixels(x, y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (void*)pixel);
+//  int pickedID = pixel[0] + pixel[1] * 256 + pixel[2] * 65536;
+//  qDebug() << pixel[0] << " " << pixel[1] << " " << pixel[2];
+//
+//  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//
+//  return pickedID;
+//}
 
 // ----------------------------------------------------------------------------
 //
