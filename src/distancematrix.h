@@ -8,7 +8,7 @@ class DistanceMatrixData : public QObject
   Q_OBJECT
 
 public:
-  DistanceMatrixData(QString json_string);
+  DistanceMatrixData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters);
   ~DistanceMatrixData();
 
   Q_INVOKABLE QString getData();
@@ -17,7 +17,13 @@ public:
   void setJsonString(QString json) { m_json_string = json; }
   QString getJsonString() { return m_json_string; }
 
+  Q_INVOKABLE void setHighlightedStructure(const QString& name);
+  Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
+
   QString m_json_string;
+
+  GlobalVisParameters* m_global_vis_parameters;
+  DataContainer* m_datacontainer;
 
 };
 
