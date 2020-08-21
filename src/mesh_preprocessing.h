@@ -31,6 +31,10 @@ public:
   MeshProcessing();
   ~MeshProcessing();
 
-  int computeCenters(QString obj_path);
-  int compute_distance(Object* mito, Object* cell, std::vector<VertexData>* vertices) const;
+  int computeCenter(Object* obj, std::vector<VertexData>* vertices);
+  int compute_distance_distribution(Object* mito, Object* cell, std::vector<VertexData>* vertices) const;
+  
+  
+  double compute_closest_distance(Object* mito, Object* synapse, std::vector<VertexData>* vertices);
+
 };

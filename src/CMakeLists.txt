@@ -45,7 +45,9 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui OpenGL Xml WebEngine WebEngineCore WebEngineWidgets WebView WebChannel)
+
+set(CMAKE_CXX_STANDARD 17)
 
 set(project_ui
   inputform.ui
@@ -83,7 +85,19 @@ set(project_headers
     performancerate.h
     inputform.h
     mesh_preprocessing.h
-    webviewer.h)
+    globalParameters.h
+    mainWidget.h
+    mainwidget.h
+    treemodel.h
+    treeitem.h
+
+    vismethods/vismethod.h
+    vismethods/barchart.h
+    vismethods/scatterplot.h
+    vismethods/distancetree.h
+    vismethods/distancematrix.h
+    vismethods/histogram.h
+    vismethods/boxplot.h)
 
 set(project_sources
     main.cpp
@@ -115,7 +129,17 @@ set(project_sources
     performancerate.cpp
     inputform.cpp
     mesh_preprocessing.cpp
-    webviewer.cpp
+    mainwidget.cpp
+    treemodel.cpp
+    treeitem.cpp
+
+    vismethods/barchart.cpp
+    vismethods/scatterplot.cpp
+    vismethods/distancetree.cpp
+    vismethods/distancematrix.cpp
+    vismethods/histogram.cpp
+    vismethods/boxplot.cpp
+
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl
@@ -162,7 +186,9 @@ set(project_sources
     shaders/path_vert.glsl
     shaders/space2d_grid_points_geom.glsl
     shaders/space2d_grid_triangle_geom.glsl
-    shaders/skeleton_point_frag.glsl)
+    shaders/skeleton_point_frag.glsl
+    shaders/mesh_vert_simplified.glsl
+    shaders/mesh_frag_simplified.glsl)
 
 # Creating entries for target: NeCo
 
@@ -185,4 +211,5 @@ target_link_libraries(NeCo
     Qt5::WebEngine
     Qt5::WebEngineCore
     Qt5::WebEngineWidgets
-    Qt5::WebView)
+    Qt5::WebView
+    Qt5::WebChannel)

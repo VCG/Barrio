@@ -3,7 +3,6 @@
 #include <set>
 #include <QDomDocument>
 
-#include "webviewer.h"
 #include "mesh_preprocessing.h"
 
 /*
@@ -22,6 +21,9 @@ DataContainer::DataContainer(InputForm* input_form) :
   m_faces_offset(0),
   m_debug_msg(false)
 {
+
+  m_mesh_processing = new MeshProcessing();
+
   input_files_dir = input_form->getInputFilesPath();
 
   m_limit = input_form->getObjectsCountLimit();
@@ -78,12 +80,9 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString neurites_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/2_mitos.obj";
+  QString neurites_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_dends_corrected.obj";
   QString astro_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_astrocyte.obj";
-  QString cache_path("C:/Users/jtroidl/Desktop/NeuroComparer/data/cache");
-
-  MyWebViewer* wv = new MyWebViewer();
-  wv->renderWebContent();
+  QString cache_path("C:/Users/jtroidl/Desktop/resources/NeuroComparer/data/cache");
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
@@ -101,7 +100,11 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
-    computeDistanceMitoCellBoundary();
+    
+    compute_centers();
+    //compute_distance_mito_cell_boundary();
+    compute_closest_distance_to_structures();
+    
     writeDataToCache(cache_path);
   }
   else
@@ -127,8 +130,6 @@ bool DataContainer::isNormalsEnabled()
 //
 char* DataContainer::loadRawFile(QString path, int size)
 {
-  qDebug() << "Func: loadRawFile";
-
   QFile  file(path);
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << "Could not open the file for reading";
@@ -140,7 +141,8 @@ char* DataContainer::loadRawFile(QString path, int size)
   char* buffer = new char[size];
   in.device()->reset();
   int nbytes = in.readRawData(buffer, size);
-  qDebug() << nbytes;
+
+  qDebug() << "loaded .raw file with " << nbytes << "bytes";
 
   return  buffer;
 }
@@ -407,7 +409,7 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
       float y = wordList[20].toFloat();
       float z = wordList[21].toFloat();
 
-      m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
+      //m_objects[hvgxID]->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
 
       // volume
       //int volume = wordList[25].toInt();
@@ -657,7 +659,7 @@ void DataContainer::parseObject(QXmlStreamReader& xml, Object* obj)
         float x = stringlist.at(0).toDouble();
         float y = stringlist.at(1).toDouble();
         float z = stringlist.at(2).toDouble();
-        obj->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
+        //obj->setCenter(QVector4D(x / MESH_MAX_X, y / MESH_MAX_X, z / MESH_MAX_X, 0));
         // set ssbo with this center
       }
       else if (xml.name() == "ast_point") {
@@ -815,10 +817,10 @@ void DataContainer::parseMeshNoVertexnoFace(QXmlStreamReader& xml, Object* obj)
           // get any vertex that belong to the synapse
           std::vector< struct VertexData >* vertixList = m_mesh->getVerticesList();
           struct Face f = facesList->at(faceIdx);
-          struct VertexData vertex = vertixList->at(f.v[0] + m_vertex_offset);
+          /*struct VertexData vertex = vertixList->at(f.v[0] + m_vertex_offset);
           obj->setCenter(QVector4D(vertex.mesh_vertex.x(),
             vertex.mesh_vertex.y(),
-            vertex.mesh_vertex.z(), 0));
+            vertex.mesh_vertex.z(), 0));*/
 
         }
 
@@ -1141,7 +1143,7 @@ bool DataContainer::importObj(QString path)
     {
       QList<QString> nameList = elements[1].split('_');
       hvgxID = nameList.last().toInt();
-
+      
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i];
@@ -1151,7 +1153,7 @@ bool DataContainer::importObj(QString path)
       obj = new Object(name.toUtf8().constData(), hvgxID);
 
       obj->setVolume(2.0f);
-      obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
+      //obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
       obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 
       m_objects[hvgxID] = obj;
@@ -1161,42 +1163,46 @@ bool DataContainer::importObj(QString path)
         int parentID = m_parents[hvgxID];
         obj->setParentID(parentID);
 
-        if (m_objects.find(parentID) != m_objects.end()) {
+        /*if (m_objects.find(parentID) != m_objects.end()) {
           m_objects[parentID]->addChild(obj);
         }
         else {
           qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
-        }
+        }*/
       }
     }
 
     // parse vertices
     else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
 
-      float x = elements[1].toFloat();
-      float y = elements[2].toFloat();
-      float z = elements[3].toFloat();
+      float x = abs(elements[1].toFloat());
+      float y = abs(elements[2].toFloat());
+      float z = abs(elements[3].toFloat());
 
       vertexCounter++;
 
-      QVector4D mesh_vertex(x, y, z, hvgxID);
+      QVector4D mesh_vertex(x, y, z, float(hvgxID));
       QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
 
       meshVertexList->emplace_back();
       int vertexIdx = (int)meshVertexList->size() - 1;
       struct VertexData* v = &meshVertexList->at(vertexIdx);
-
-      v->index = vertexIdx;
+      
       v->mesh_vertex = mesh_vertex;
+      v->distance_to_cell = 0.0; // first init all distances with the default value
+      v->hvgxID = hvgxID;
+      v->structure_type = (int)obj->getObjectType();
+
       v->skeleton_vertex = skeleton_vertex; // place holder
+      v->index = vertexIdx;
       //v->distance_to_astro = 0.0; //place holder
 
       vertexIdx = m_mesh->addVertex(v, obj->getObjectType());
     }
 
     // parse faces
-    else if (!strcmp(elements[0].toStdString().c_str(), "f")) { // read triangulated faces
-      std::string vertex1, vertex2, vertex3;
+    else if (!strcmp(elements[0].toStdString().c_str(), "f")) // read triangulated faces
+    { 
       int vertexIndex[3];
 
       vertexIndex[0] = elements[1].toInt();
@@ -1208,15 +1214,15 @@ bool DataContainer::importObj(QString path)
         return false;
       }
 
+      // safe indices counter clockwise
       obj->addTriangleIndex(vertexIndex[0] - 1);
-      obj->addTriangleIndex(vertexIndex[1] - 1);
       obj->addTriangleIndex(vertexIndex[2] - 1);
+      obj->addTriangleIndex(vertexIndex[1] - 1);
       
-
-      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[1] - 1, vertexIndex[2] - 1);
+      // safe indices counter clockwise
+      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[2] - 1, vertexIndex[1] - 1);
       m_indices_size += 3;
 
-      // todo check what that is for
       if (m_indices_size_byType.find(obj->getObjectType()) == m_indices_size_byType.end()) {
         m_indices_size_byType[obj->getObjectType()] = 0;
       }
@@ -1226,12 +1232,25 @@ bool DataContainer::importObj(QString path)
   inputFile.close();
 
   m_mesh->computeNormalsPerVertex();
+  processParentChildStructure();
 
   qDebug() << "Done reading .obj file";
   qDebug() << vertexCounter << " vertices";
   qDebug() << normalCounter << " normals";
 
   return true;
+}
+
+void DataContainer::processParentChildStructure()
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    int parent = obj->getParentID() + 1;
+    if (m_objects.find(parent) != m_objects.end()) 
+    {
+      m_objects[parent]->addChildID(obj->getHVGXID());
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1367,7 +1386,7 @@ int DataContainer::getSkeletonPointsSize()
 
 //----------------------------------------------------------------------------
 //
-Mesh* DataContainer::getMeshPointer()
+Mesh* DataContainer::getMesh()
 {
   return m_mesh;
 }
@@ -1408,6 +1427,20 @@ std::vector<QVector2D> DataContainer::getNeuritesEdges()
   return neurites_neurite_edge;
 }
 
+int DataContainer::getIndexByName(QString name)
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    QString map_name = obj->getName().c_str();
+    if (QString::compare(map_name, name) == 0) 
+    {
+      return id;
+    }
+  }
+
+  return -1;
+}
+
 void DataContainer::writeDataToCache(QString cache_path)
 {
   m_mesh->dumpMesh(cache_path);
@@ -1420,16 +1453,58 @@ void DataContainer::loadDataFromCache(QString cache_path)
   readObjects(cache_path + objs_filename);
 }
 
-void DataContainer::computeDistanceMitoCellBoundary()
+void DataContainer::compute_distance_mito_cell_boundary()
 {
-  MeshProcessing* mp = new MeshProcessing();
   std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
 
   for (int i = 0; i < mitos.size(); ++i)
   {
-    Object* m = mitos[i];
-    Object* parent = m_objects[m->getParentID() + 1];
-    mp->compute_distance(m, parent, m_mesh->getVerticesList());
+    Object* mito = mitos[i];
+    Object* parent = m_objects[mito->getParentID() + 1];
+    m_mesh_processing->compute_distance_distribution(mito, parent, m_mesh->getVerticesList());
+  }
+}
+
+void DataContainer::compute_centers()
+{
+  for (auto const& [hvgxID, obj] : m_objects)
+  {
+    m_mesh_processing->computeCenter(obj, m_mesh->getVerticesList());
+  }
+}
+
+void DataContainer::compute_synapse_distances(Object* mito)
+{
+  std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
+  for (Object* syn: synapses)
+  {
+    double closest_distance = m_mesh_processing->compute_closest_distance(mito, syn, m_mesh->getVerticesList());
+    mito->setDistanceToStructure(syn->getHVGXID(), closest_distance);
+  }
+}
+
+void DataContainer::compute_mito_distances(Object* synapse)
+{
+  std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
+  for (Object* mito : mitos)
+  {
+    double closest_distance = m_mesh_processing->compute_closest_distance(synapse, mito, m_mesh->getVerticesList());
+    synapse->setDistanceToStructure(mito->getHVGXID(), closest_distance);
+  }
+}
+
+void DataContainer::compute_closest_distance_to_structures()
+{
+  std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
+  for (Object* mito : mitos)
+  {
+    compute_synapse_distances(mito);
+  }
+
+  std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
+  for (Object* syn : synapses)
+  {
+    compute_mito_distances(syn);
   }
 }
 

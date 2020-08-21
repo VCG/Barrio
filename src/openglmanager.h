@@ -18,8 +18,6 @@
 #include "rendervertexdata.h"
 #include "globalParameters.h"
 
-
-
 enum class Size_e { VOLUME, ASTRO_COVERAGE, SYNAPSE_SIZE };
 enum class Color_e { TYPE, FUNCTION, ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
@@ -27,7 +25,7 @@ enum class HeatMap2D_e { ASTRO_COVERAGE, GLYCOGEN_MAPPING };
 class OpenGLManager : public MainOpenGL
 {
 public:
-  OpenGLManager(DataContainer* obj_mnger, AbstractionSpace* absSpace);
+  OpenGLManager(DataContainer* obj_mnger);
   ~OpenGLManager();
   void fillSSBO(Object*);
   int fillMeshVBO(Object* object_p, int offset, std::string vboLabel);
@@ -38,7 +36,7 @@ public:
   void updateAbstractUniformsLocation(GLuint program);
   void update2Dflag(bool is2D);
 
-  void updateUniformsData(struct GlobalUniforms grid_uniforms) { m_uniforms = grid_uniforms; }
+  void updateUniformsData(struct WidgetUniforms grid_uniforms) { m_uniforms = grid_uniforms; }
 
   void drawAll();
 
@@ -52,14 +50,21 @@ public:
   // Coordinate System debug shaders
   bool initCoordSystemShaders();
   bool initCoordSystemVertexAttrib();
-  void drawCoordSystem();
+  void drawCoordSystem(WidgetUniforms* uniforms);
   void renderVBOCoordSystem(std::string vbolabel);
 
   // *********** 1) Mesh Triangles     ***********
   bool initMeshTrianglesShaders();
+  void initMeshBuffers();
+  void initNormalsAttrib();
   bool initMeshVertexAttrib();
-  void updateMeshPrograms(GLuint program);
-  void drawMeshTriangles(bool selection);
+  void updateMeshPrograms(GLuint program, WidgetUniforms* uniforms);
+  void drawMeshTriangles(bool selection, WidgetUniforms* uniforms);
+
+  GLuint useMeshProgram() {
+    m_TMesh.vaoBind("Mesh");
+    m_TMesh.useProgram("3Dtriangles");
+    return m_TMesh.getProgram("3Dtriangles"); }
 
   void renderVBOMesh(std::string vbolabel, int indices);
   void renderOrderToggle();
@@ -67,8 +72,8 @@ public:
   // *********** slice shaders *************
   bool initSliceShaders();
   bool initSliceVertexAttrib();
-  void updateSliceProgram(GLuint program);
-  void drawSlice();
+  void updateSliceProgram(GLuint program, WidgetUniforms* uniforms);
+  void drawSlice(WidgetUniforms* uniforms);
   void renderVBOSlice(std::string vbolabel);
 
 
@@ -138,8 +143,9 @@ public:
   // ********** Selection ************************
   void updateCanvasDim(int w, int h, int retianScale);
   void initSelectionFrameBuffer();
-  int processSelection(float x, float y);
-  void renderSelection();
+  //int processSelection(float x, float y);
+  void renderSelection(WidgetUniforms* uniforms);
+
 
   void highlightObject(int hvgxID);
 
@@ -180,11 +186,10 @@ public:
 
 protected:
   DataContainer* m_dataContainer;
-  AbstractionSpace* m_2dspace;
 
   bool                                    m_glFunctionsSet;
   bool                                    m_2D;
-  struct GlobalUniforms                   m_uniforms;
+  struct WidgetUniforms                   m_uniforms;
 
   // *********** 0) SSBO objects Data    ***********
   std::vector<struct ssbo_mesh>           m_ssbo_data; // Color, Cenert, Type
@@ -293,6 +298,7 @@ protected:
   bool                                    m_weighted_coverage;
 
   std::map<Object_t, std::pair<int, int>> m_visibleByType; // <number of objects of this type, visible objects of this type>
+
 };
 
 #endif // OPENGLMANAGER_H

@@ -32,6 +32,7 @@
 #include "inputform.h"
 
 #include "globalParameters.h"
+#include "mesh_preprocessing.h"
 
 //#include "dbscan.h"
 
@@ -61,6 +62,7 @@ public:
   void parseBranch(QXmlStreamReader& xml, Object* obj);
   void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
   bool importObj(QString path);
+  void processParentChildStructure();
 
   void loadConnectivityGraph(QString path);
   void addEdgeToConnectivityGraph(int, int, std::set< std::tuple<int, int> >&);
@@ -95,23 +97,30 @@ public:
   std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
   std::vector<QVector2D>  getNeuritesEdges();
 
+  int getIndexByName(QString name);
+
   void writeDataToCache(QString cache_path);
   void loadDataFromCache(QString cache_path);
-  void computeDistanceMitoCellBoundary();
+  void compute_distance_mito_cell_boundary();
+  void compute_centers();
+
+  void compute_synapse_distances(Object* mito); // computes distance to closest synapse for the given mitochondrion
+  void compute_mito_distances(Object* synapse); // computes distance to closest mitochondrion for the given synapse
+  void compute_closest_distance_to_structures();
 
 
   int   getSkeletonPointsSize();
   int   getMeshIndicesSize();
-  Mesh* getMeshPointer();
+  Mesh* getMesh();
 
-  Object_t getObjectTypeByID(int hvgxID);
-  std::string getObjectName(int hvgxID);
-  std::vector<Object*> getObjectsByType(Object_t type);
-  Object* getObject(int hvgxID);
+  Object_t              getObjectTypeByID(int hvgxID);
+  std::string           getObjectName(int hvgxID);
+  std::vector<Object*>  getObjectsByType(Object_t type);
+  Object*               getObject(int hvgxID);
 
-  float getMaxAstroCoverage() { return max_astro_coverage; }
-  int getMaxVolume() { return max_volume; }
-  int getMaxSynapseVolume() { return max_synapse_volume; }
+  float   getMaxAstroCoverage() { return max_astro_coverage; }
+  int     getMaxVolume() { return max_volume; }
+  int     getMaxSynapseVolume() { return max_synapse_volume; }
 
   // iterate over objects and get max volume and astro coverage
   void recomputeMaxValues(bool weighted);
@@ -180,6 +189,8 @@ protected:
  private:
    std::map<int, Object>                     serializable_objects;
    QString                                   objs_filename;
+
+   MeshProcessing*                            m_mesh_processing;
 };
 
 #endif // OBJECTMANAGER_H

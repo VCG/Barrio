@@ -3,7 +3,7 @@
 
 #include <QMatrix4x4>
 
-struct GlobalUniforms {
+struct WidgetUniforms {
   /* 0 */    int y_axis;
   /* 1 */    int x_axis;
   /* 2 */    float* mMatrix;
@@ -16,6 +16,7 @@ struct GlobalUniforms {
   /* 9 */    int max_astro_coverage; // maximum vertices from neurites covered by astrocyte
   /* 10*/    float AST_DIST_THRSH; // distance to strocyte threshold
              float slice_z;
+             GLuint maxNodes;
 };
 
 #endif // GLSLUNIFORM_STRUCTS_H

@@ -14,24 +14,67 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
+enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
+
+struct ListNode {
+  QVector4D color;
+  GLfloat depth;
+  GLuint next;
+};
+
+struct SharedGLResources
+{
+  QOpenGLBuffer* mesh_index_vbo;
+  QOpenGLBuffer* mesh_vertex_vbo;
+  QOpenGLBuffer* mesh_normal_vbo;
+  int            index_count;
+
+  QOpenGLBuffer* slice_vertex_vbo;
+
+  float         cell_opacity;
+
+  QVector<int>*   highlighted_objects;
+};
+
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT
 
 public:
-  GLWidget(QWidget* parent = 0);
+  GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent = 0);
   ~GLWidget();
-  void init(InputForm* input_form);
+  void init(DataContainer* data_container);
 
   GlycogenAnalysisManager* getGlycogenAnalysisManager() { return m_glycogenAnalysisManager; }
   OpenGLManager* getOpenGLManager() { return m_opengl_mngr; }
-  DataContainer* getDataContainer() { return m_data_containter; }
-  float getZoomFactor() { return m_distance; }
+  DataContainer* getDataContainer() { return m_data_container; }
+  float getZoomFactor() { return m_camera_distance; }
 
   int pickObject(QMouseEvent* event);
   void insertInTable(int);
   void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
+  void drawScene();
+
+  void updateHighlightedSSBO();
+  void updateVisibilitySSBO();
+  
+  void setVisibleStructures();
+
+  void update_synapse_distance_threshold(double distance);
+
+  void updateVisParameters();
+ 
+
+
+  void pass1();
+  void pass2();
+  void clearBuffers();
+
+  void initMeshShaderStorage(int width, int height);
+  void initSelectionFrameBuffer(int width, int height);
+
+  int processSelection(float x, float y);
 
 public slots:
   void getSliderX(int value);
@@ -88,6 +131,7 @@ public slots:
 
   void autoRotation();
   void startRotation();
+  void prepareResize();
 
 signals:
   void setAbstractionData(AbstractionSpace* space_instance);
@@ -111,8 +155,7 @@ protected:
   void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
-  void updateMVPAttrib();
-  void loadMesh();
+  void updateMVPAttrib(QOpenGLShaderProgram* program);
 
 
   void stopForecDirectedLayout();
@@ -123,12 +166,12 @@ protected:
   bool                                m_2D;
 
   /* mesh */
-  DataContainer* m_data_containter;
+  DataContainer* m_data_container;
   OpenGLManager* m_opengl_mngr;
   GraphManager* m_graphManager;
   GlycogenAnalysisManager* m_glycogenAnalysisManager;
 
-  struct GlobalUniforms               m_uniforms;
+  struct WidgetUniforms               m_uniforms;
 
   /* matrices */
   QMatrix4x4                          m_projection;
@@ -137,11 +180,13 @@ protected:
   QMatrix4x4                          m_model_noRotation;
   QMatrix4x4                          m_rotationMatrix;
 
-  QVector3D                           m_cameraPosition;
+  QVector3D                           m_center;
+  QVector3D                           m_eye;
+  QVector3D                           m_cameraUpDirection;
 
   /* rotation */
   QPoint                              m_lastPos;
-  double                              m_distance;
+  double                              m_camera_distance;
   QQuaternion                         m_rotation;
   QVector3D                           m_rotationAxis;
   QVector3D                           m_translation;
@@ -158,21 +203,45 @@ protected:
   QTimer* m_auto_rotation_timer;
 
   std::set<int>                       m_selectedObjects;
-
   bool                                m_hover;
-
   bool                                m_hide_toggle;
-
   int                                 m_active_graph_tab;
-
   PerformanceRate                     m_performaceMeasure;
-
   QVector3D                           m_filterByProximityType;
-
   bool                                m_auto_rotate;
   float                               m_rot_ydiff;
-
   float                               m_xy_slice_z;
+
+  SharedGLResources*                   m_shared_resources;
+
+  int                                 m_selected_hvgx_id;
+
+  QOpenGLShaderProgram*                m_mesh_program;
+  QOpenGLVertexArrayObject             m_mesh_vao;
+
+  std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
+  GLuint                              m_visibility_ssbo;
+  GLuint                              m_highlighted_ssbo;
+
+  GLuint                              m_selectionFrameBuffer;
+  GLuint                              m_selectionRenderBuffer;
+
+  /* order independent transparency vars*/
+  QOpenGLVertexArrayObject            m_fsQuad_vao;
+  GLuint                              oit_buffers[2], headPtrTex;
+  GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
+  GLuint                              clear_oit_buffers;
+  GLint                               m_maxNodes;
+
+  std::vector<GLuint>*                 headPtrClearBuf;
+
+  int                                 m_width, m_height;
+  bool                                m_init;
+  bool                                m_is_overview_widget;
+
+  double                              m_distance_threshold;
+
+
 };
 
 

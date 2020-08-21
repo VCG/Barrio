@@ -6,6 +6,8 @@
 #include <QStandardItemModel>
 #include <QListWidgetItem>
 #include "inputform.h"
+#include "mainwidget.h"
+#include "treemodel.h"
 
 namespace Ui {
   class MainWindow;
@@ -27,20 +29,10 @@ public:
 
   void setupSignalsNSlots();
 
-  GLWidget* getGLWidget();
-  MousePad* getMousePad();
   void onAddWebWidget();
 
 public slots:
-  void on_glycogenVisibilityCheckBox_toggled(bool);
-  //------------- glycogen clustering ----------------------------
-  void on_clusterButton_clicked();
-  void on_glycogenClustersTreeWidget_itemChanged(QTreeWidgetItem* item, int column);
-  void on_glycogenClustersTreeWidget_itemSelectionChanged();
 
-  //------------- glycogen mapping -------------------------------
-  void on_mapGlycogenGranulesButton_clicked();
-  void on_mapGlycogenClustersButton_clicked();
   void on_mitoRadioButton_toggled(bool);
   void on_boutonsSpinesRadioButton_toggled(bool);
 
@@ -51,26 +43,26 @@ public slots:
   void clearTable();
   void RemoveRowAt(QModelIndex);
   void getIDAt(QModelIndex);
-  void checkAllListWidget();
-
-  void checkByType(std::map<QString, int>);
 
   // Path Management
   void getPath(QString);
   void getSelectedPathIndex(QModelIndex);
   void deleteSelectedPath(QModelIndex);
 
-  //------ splatting toggle
-  void on_splatAstroCheckBox_toggled(bool checked);
-  void on_splatGlycoCheckBox_toggled(bool checked);
-  void on_splatNMitoCheckBox_toggled(bool checked);
-  void on_splatAMitoCheckBox_toggled(bool checked);
-
-  void on_specularLightCheckBox_toggled(bool checked);
-
   void on_filterByProximityListWidget_itemChanged(QListWidgetItem*);
 
   void on_listWidget_itemChanged(QListWidgetItem*);
+
+  void on_structure_selection_changed(int state);
+
+  void on_high_detail_vis_clicked();
+  void on_medium_detail_vis_clicked();
+  void on_low_detail_vis_clicked();
+
+  void on_synapse_distance_slider_changed(int value);
+  void on_opacity_slider_changed(int value);
+
+
 
 signals:
   void getDeletedData(int);
@@ -87,11 +79,21 @@ signals:
   void update_glycogen_cluter_mapping_timing(QString);
   void update_glycogen_granules_mapping_timing(QString);
 
+
 private:
   Ui::MainWindow* mainwindow_ui;
   std::map<int, Clustering::GlycogenCluster*>* m_clusters;
   QTreeWidgetItem* m_currentSelectedCluster;
   QStandardItemModel* tableView;
+
+  MainWidget* m_mainWidget;
+  TreeModel* m_treemodel;
+  DataContainer* m_data_container;
+
+  void initializeSynapseThresholdSlider();
+  void initializeOpacitySlider();
+  void initializeVisualizationPresets();
+
 };
 
 #endif // MAINWINDOW_H

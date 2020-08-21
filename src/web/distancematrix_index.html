@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: none;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 12px;
+    }
+
+    .label{
+        font-family: sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+    }
+
+    .selected{
+        stroke: orange;
+        stroke-width: 3;
+    }
+
+    .not_selected{
+        stroke: none;
+        stroke-width: 1;
+    }
+
+    #legend-svg {
+        vertical-align: top;
+    }
+</style>
+<body>
+
+<div id="matrix" style="width: 100%; height: 120vh">
+
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script type='text/javascript'>
+
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+
+        var jsobject = channel.objects.distancematrix_data;
+        let json_string = jsobject.json_string;
+
+        let my_data = JSON.parse(json_string);
+
+        let margin = {top: 20, right: 10, bottom: 10, left: 60};
+        let w = $("#matrix").width() - margin.left - margin.right;
+        let h = $("#matrix").height() - margin.top - margin.bottom;
+
+        let svg = d3.select("#matrix")
+            .append('svg')
+            .attr({
+                'width': w,
+                'height': h
+            });
+
+        let matrix = svg.append('g')
+            .attr({
+                'id': 'corrplot',
+                'transform': 'translate(' + margin.left + ',' + (margin.top + 50) + ')',
+                'width': w,
+                'height': h
+            });
+
+        let rect_height = 30;
+        let rect_margin = 3;
+
+        let number_of_cols = my_data[0].synapses.length;
+        let number_of_rows = my_data.length;
+
+        let min_value = 0;
+        let min_color = '#800080';
+
+        let max_value = 6;
+        let max_color = '#ffffff';
+
+        var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
+            corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
+            corColScale = d3.scale.linear().domain([min_value, max_value]).range([min_color, max_color]);
+
+        corXscale.domain(d3.range(number_of_cols));
+        corYscale.domain(d3.range(number_of_rows));
+
+        let corr = [];
+        for (let i = 0; i < my_data.length; ++i) {
+            for (let j = 0; j < my_data[i].synapses.length; ++j) {
+                corr.push({row: i, col: j, value: my_data[i].synapses[j].distance});
+            }
+        }
+
+        let cells = matrix.attr('id', 'cells')
+            .selectAll('empty')
+            .data(corr)
+            .enter().append('g')
+            .attr({
+                'class': 'cell'
+            })
+            .style('pointer-events', 'all');
+
+        let circles = cells.append('rect')
+            .attr('x', function (d) {
+                return corXscale(d.col);
+            })
+            .attr('y', function (d) {
+                return corYscale(d.row);
+            })
+            .attr('width', w / number_of_cols - rect_margin)
+            .attr('height', rect_height)
+            .style('fill', function (d) {
+                return corColScale(d.value);
+            });
+
+        let counter = 0;
+        my_data.forEach(function (d){
+            matrix.append('text')
+                .attr({
+                    'class': 'label'
+                })
+                .text(d.name)
+                .attr('dominant-baseline', 'hanging')
+                .attr('transform', 'translate(' + (-margin.left) + ',' + corYscale(counter)  + ')');
+
+            counter++;
+        });
+        console.log(counter);
+
+
+
+        cells.on('mouseover', function (d) {
+
+            let selected_structure = my_data[d.row].synapses[d.col];
+
+                d3.select(this)
+                    .select('rect')
+                    .attr({
+                        'class': 'selected'
+                    });
+
+                var xPos = parseFloat(d3.select(this).select('rect').attr('x'));
+                var yPos = 0.0; //parseFloat(d3.select(this).select('rect').attr('y'));
+
+
+                matrix.append('text')
+                    .attr({
+                        'class': 'tooltip',
+                        'font-family': 'sans-serif',
+                        'font-size': '12px',
+                        'font-weight': 'normal',
+                        'x': xPos + 30,
+                        'y': yPos - 15,
+                        'text-anchor': 'middle',
+                    })
+                    .text(selected_structure.name + ' - ' + (d3.format('.2f')(d.value)));
+
+
+                jsobject.setHighlightedStructure(selected_structure.name);
+
+            })
+            .on('mouseout', function (d) {
+                d3.select(this)
+                    .select('rect')
+                    .attr({
+                        'class': 'not_selected'
+                    });
+                d3.select('.tooltip').remove();
+
+                let selected_structure = my_data[d.row].synapses[d.col];
+                jsobject.removeHighlightedStructure(selected_structure.name);
+            })
+            .on('click', function (d) {
+
+            });
+
+        drawLegend();
+
+
+        function drawLegend() {
+            let legend = svg.append('g')
+            .attr({
+                'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+                'width': w,
+                'height': h
+            })
+            const data = [{"color": min_color, "value": min_value}, {"color": max_color, "value": max_value}];
+            let extent = d3.extent(data, d => d.value);
+
+            let defs = svg.append("defs");
+            let linearGradient = defs.append("linearGradient").attr("id", "myGradient");
+            linearGradient.selectAll("stop")
+                .data(data)
+                .enter().append("stop")
+                .attr("offset", d => ((d.value - extent[0]) / (extent[1] - extent[0]) * 100) + "%")
+                .attr("stop-color", d => d.color);
+
+            let padding = 9;
+            let width = 320;
+            let innerWidth = width - (padding * 2);
+            let barHeight = 8;
+
+            let xScale = d3.scale.linear()
+                .range([0, innerWidth])
+                .domain(extent);
+
+            let xAxis = d3.svg.axis().scale(xScale)
+                .tickValues([0, 1, 2, 3, 4, 5, 6]);
+
+            legend.append("rect")
+                .attr("width", innerWidth)
+                .attr("height", barHeight)
+                .style("fill", "url(#myGradient)");
+
+            legend.append("g")
+                .call(xAxis)
+                .select(".domain").remove();
+        }
+    });
+
+</script>

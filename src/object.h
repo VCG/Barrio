@@ -35,8 +35,8 @@ struct synapse {
 };
 
 // type identifiers for objects
-enum class Object_t { AXON = 2, DENDRITE = 4, BOUTON = 3, SPINE = 5, MITO = 1, 
-  SYNAPSE = 7, ASTROCYTE = 6, GLYCOGEN = 8, UNKNOWN = 0, ASTRO_MITO = 9 };
+enum class Object_t { UNKNOWN = 0, MITO = 1, AXON = 2, BOUTON = 3, DENDRITE = 4, SPINE = 5, ASTROCYTE = 6,
+  SYNAPSE = 7, GLYCOGEN = 8, ASTRO_MITO = 9 };
 
 class Skeleton;
 class Object
@@ -53,7 +53,7 @@ public:
   // mesh indices functions
   void addTriangleIndex(int faces);
   size_t get_indices_size() { return m_meshIndices.size(); }
-  void* get_indices_forVBO() { return m_meshIndices.data(); }
+  void* getIndexData() { return m_meshIndices.data(); }
   std::vector<int>* get_indices_list(){ return &m_meshIndices; }
 
 
@@ -63,7 +63,7 @@ public:
   Object_t getObjectType();
   std::string getName() { return m_name; }
   QVector4D getColor();
-  QVector4D getCenter() { return m_center; }
+  QVector4D getCenter();
   QVector4D getAstPoint() { return m_ast_point; }
   int getVolume() { return m_volume; }
   int getHVGXID() { return m_ID; }
@@ -83,10 +83,16 @@ public:
   void setAstPoint(QVector4D ast_point);
   void setVolume(int volume) { m_volume = volume; }
 
+  void setDistanceToStructure(int structure_hvgx, double distance) { m_distance_map[structure_hvgx] = distance; };
+
   void setParentID(int parentID) { m_parentID = parentID; }
   //void setParent(Object* parent) { m_parent = parent; }
 
   void addChild(Object* child);
+  void addChildID(int hvgxID);
+
+  std::vector<int>* getChildrenIDs();
+
   // skeleton management
   void addSkeletonNode(QVector3D coords);
   void addSkeletonPoint(QVector3D coords);
@@ -95,7 +101,7 @@ public:
   void fixSkeleton(Object* parent);
   void setSkeletonOffset(int offset) { m_skeleton->setIndexOffset(offset); }
   int  getSkeletonOffset() { return m_skeleton->getIndexOffset(); }
-  void setNodeIdx(int node_index) { m_nodeIdx = node_index; }
+  void setNodeIdx(int node_index) { m_nodeIdx = node_index;}
   int  getNodeIdx() { return m_nodeIdx; }
 
   void markChildSubSkeleton(SkeletonBranch* branch, int ID);
@@ -117,11 +123,14 @@ public:
 
   int getSynapseSize();
 
+  bool isChild(int hvgxID);
+  bool isParent(int hvgxID);
+
+  std::map<int, double>* get_distance_map_ptr() { return &m_distance_map; };
+  std::vector<std::pair<int, double>>* get_distance_vector_ptr();
+
   
 private:
-
-  
-
 
   std::string                             m_name;
   int                                     m_ID;           // hvgx
@@ -136,7 +145,11 @@ private:
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
   std::vector<int>                        m_chidren_ids;
 
-  QVector4D                               m_center;           
+  std::map<int, double>                   m_distance_map;
+  std::vector<std::pair<int, double>>     m_distance_vector;
+
+  QVector4D                               m_center;
+  float                                   x_center, y_center, z_center, w_center;
   QVector4D                               m_ast_point;    // closest point from astrocyte skeleton to this object so we can project the object on skeleton and be part of it
   QVector4D                               m_color;
 
@@ -170,7 +183,9 @@ private:
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
-      m_synapse_ids, m_synapse_data);
+      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center, m_distance_map);
+
+
   }
 };
 

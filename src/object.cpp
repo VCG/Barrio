@@ -31,7 +31,7 @@ Object::Object(std::string name, int ID)
   m_object_t = getObjectType(); // obect type
   m_color = QVector4D(1.0, 1.0, 0.0, 1.0);    // default one
   m_volume = 0;
-  m_center = QVector4D(0, 0, 0, 0);
+  //m_center = QVector4D(0, 0, 0, 0);
 
   m_closest_astro_vertex.second = 1000000.0;
   m_closest_astro_vertex.first = -1;
@@ -43,6 +43,9 @@ Object::Object(std::string name, int ID)
   m_function = -1;
   m_averageDistance = 0;
   m_mappedValue = 0;
+
+  m_center = QVector4D(x_center, y_center, z_center, w_center);
+
 }
 
 Object::~Object()
@@ -133,9 +136,19 @@ QVector4D Object::getColor()
   return m_color;
 }
 
+QVector4D Object::getCenter()
+{
+  return QVector4D(x_center, y_center, z_center, w_center);
+}
+
 void Object::setCenter(QVector4D center)
 {
   m_center = center;
+
+  x_center = m_center.x();
+  y_center = m_center.y();
+  z_center = m_center.z();
+  w_center = m_center.w();
 }
 
 void Object::setAstPoint(QVector4D ast_point)
@@ -159,7 +172,7 @@ struct ssbo_mesh Object::getSSBOData()
 
   ssbo_data.color.setW(hasMito);
 
-  ssbo_data.center = m_center;
+  ssbo_data.center = getCenter();
   int type = (int)m_object_t;
 
   ssbo_data.center.setW(type);
@@ -171,8 +184,8 @@ struct ssbo_mesh Object::getSSBOData()
   ssbo_data.info.setZ(m_parentID);
 
   ssbo_data.info.setW(0); // 1 bit: visibility, 2 bit: marked
-  ssbo_data.layout1 = m_center.toVector2D();
-  ssbo_data.layout2 = m_center.toVector2D();
+  ssbo_data.layout1 = getCenter().toVector2D();
+  ssbo_data.layout2 = getCenter().toVector2D();
   return ssbo_data;
 }
 
@@ -272,6 +285,16 @@ void Object::addChild(Object* child)
   m_children.push_back(child);
 }
 
+void Object::addChildID(int hvgxID)
+{
+  m_chidren_ids.push_back(hvgxID);
+}
+
+std::vector<int>* Object::getChildrenIDs()
+{
+  return &m_chidren_ids;
+}
+
 
 // if object type == synapse
 void Object::UpdateSynapseData(int axon_id, int dendrite_id, int spine_id, int bouton_id)
@@ -334,4 +357,35 @@ int Object::getSynapseSize()
   }
 
   return synapse_size;
+}
+
+bool Object::isChild(int hvgxID)
+{
+  for (size_t i = 0; i < m_chidren_ids.size(); i++)
+  {
+    if (hvgxID == m_chidren_ids.at(i))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Object::isParent(int hvgxID)
+{
+  if (hasParent() && ((m_parentID + 1) == hvgxID))
+  {
+    return true;
+  }
+  return false;
+}
+
+std::vector<std::pair<int, double>>* Object::get_distance_vector_ptr()
+{
+  m_distance_vector.clear();
+  for (auto it = m_distance_map.begin(); it != m_distance_map.end(); it++)
+  {
+    m_distance_vector.push_back(std::make_pair(it->first, it->second));
+  }
+  return &m_distance_vector;
 }

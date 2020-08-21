@@ -9,4 +9,16 @@
 #define DIM_Z       449
 #define DIM_G		64
 
-#define RECOMPUTE_DATA TRUE
+#define RECOMPUTE_DATA FALSE
+
+#include <QList>
+
+struct GlobalVisParameters
+{
+  double distance_threshold;
+  float opacity;
+  float slice_depth;
+
+  QList<int> selected_objects;
+  QVector<int> highlighted_objects;
+};

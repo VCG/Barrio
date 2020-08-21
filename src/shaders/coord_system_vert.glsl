@@ -10,7 +10,7 @@ uniform mat4    vMatrix;
 
 // Projection transformation
 uniform mat4    pMatrix;
-uniform mat4    rMatrix;
+//uniform mat4    rMatrix;
 
 out vec3 geom_color;
 

@@ -187,11 +187,11 @@ void  MousePad::init2D_DebugSpaceGL()
 
   int offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct abstractionPoint), 0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct AbstractionPoint), 0);
 
   offset += sizeof(QVector2D);
   glEnableVertexAttribArray(1);
-  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct abstractionPoint), (GLvoid*)offset);
+  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct AbstractionPoint), (GLvoid*)offset);
 
   int isSelectionLoc = glGetUniformLocation(m_program_2DSpace_degbug, "is_selection_shader");
   int isSelection = 0;
@@ -240,11 +240,11 @@ void  MousePad::init2D_GridSpaceGL()
 
   int offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct abstractionPoint), 0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct AbstractionPoint), 0);
 
   offset += sizeof(QVector2D);
   glEnableVertexAttribArray(1);
-  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct abstractionPoint), (GLvoid*)offset);
+  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct AbstractionPoint), (GLvoid*)offset);
   GL_Error();
 
   m_vbo_2DSpaceGridIndix.release();
@@ -260,11 +260,11 @@ void  MousePad::init2D_GridSpaceGL()
   m_vbo_2DSpaceGridIlligalVertix.bind();
   offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct abstractionPoint), 0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct AbstractionPoint), 0);
 
   offset += sizeof(QVector2D);
   glEnableVertexAttribArray(1);
-  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct abstractionPoint), (GLvoid*)offset);
+  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct AbstractionPoint), (GLvoid*)offset);
   GL_Error();
   m_vbo_2DSpaceGridIlligalVertix.release();
   m_vao_2DSpace_gridIlligal.release();
@@ -290,11 +290,11 @@ void  MousePad::init2D_SelectionSpaceGL()
 
   int offset = 0;
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct abstractionPoint), 0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(struct AbstractionPoint), 0);
 
   offset += sizeof(QVector2D);
   glEnableVertexAttribArray(1);
-  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct abstractionPoint), (GLvoid*)offset);
+  glVertexAttribIPointer(1, 1, GL_INT, sizeof(struct AbstractionPoint), (GLvoid*)offset);
 
 
   int isSelectionLoc = glGetUniformLocation(m_program_2DSpace_Selection, "is_selection_shader");

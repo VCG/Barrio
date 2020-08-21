@@ -21,12 +21,13 @@ struct Face {
 
 // mesh vertex
 struct VertexData {
-  QVector4D   mesh_vertex;        // w: Object ID (hvgx ID)
-  QVector4D   skeleton_vertex;    // w: markers distance to astrocyte (since this is per vertex, compute the distance from each vertex to astrocyte)
+  QVector4D   mesh_vertex;
+  float       distance_to_cell;
+  GLint         structure_type;
+  GLint         hvgxID;
 
-  
-  int			index;
-  //bool		isGlycogen;			//because glycogen ids and object ids are seperate
+  QVector4D   skeleton_vertex;
+  int		  index;
 
   float  x()  const
   {
@@ -62,6 +63,7 @@ public:
 
   std::vector< struct VertexData >* getVerticesList() { return &m_vertices; }
   std::vector< VertexData* >* getVerticesListByType(Object_t type) { return &(m_typeVertexList[(int)type]); }
+  std::vector<QVector4D>* getNormalsList() { return &m_normals; }
 
   void addFace(int index1, int index2, int index3);
   void getVertexNeighbors(int v_index, std::set< int >& neighs);

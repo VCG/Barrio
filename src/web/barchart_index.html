@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .axis {
+        font: 10px sans-serif;
+    }
+
+    .axis path, .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    div.tooltip {
+        position: absolute;
+        text-align: match-parent;
+        width: auto;
+        height: auto;
+        padding: 3px;
+        font: 12px sans-serif;
+        background: white;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+    }
+
+    .bar {
+        fill: rgb(148,0,212);
+        border-width: medium;
+        border-color: #000;
+    }
+
+    .bar:hover{
+        fill: #ffa500 ;
+    }
+
+</style>
+<body>
+
+<div id="chart" style="width: auto; height: 400px">
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script>
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+
+        var jsobject = channel.objects.barchart_data;
+        let json_string = jsobject.json_string;
+
+        var m = {top: 10, right: 10, bottom: 50, left: 110},
+            w = $("#chart").width() - m.left - m.right,
+            h = $("#chart").height() - m.top - m.bottom;
+
+        var x = d3.scale.ordinal().rangeRoundBands([0, w]);
+        var y = d3.scale.linear().range([h, 0]);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(5);
+
+            // Append Div for tooltip to SVG
+        let div = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", w + m.right + m.left + 100)
+            .attr("height", h + m.top + m.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + m.left + "," + m.top + ")");
+
+        data = JSON.parse(json_string);
+
+        data.forEach(function (d) {
+            d.votes = +d.votes;
+        });
+
+
+        var nested = d3.nest()
+            .key(function (d) {
+                return d.district;
+            })
+            .entries(data);
+
+
+        x.domain(nested.map(function (d) {
+            return d.key;
+        }));
+        y.domain([0, d3.max(data, function (d) {
+            return d.votes;
+        })]);
+
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + h + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "middle");
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text");
+
+        var district = svg.selectAll(".district")
+            .data(nested)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) {
+                return "translate(" + x(d.key) + ", 0)";
+            });
+
+        var bars = district.selectAll(".bar")
+            .data(function (d) {
+                return d.values
+            })
+            .enter()
+            .append("rect")
+            .attr("class", "bar");
+
+        function highlightBars(bar_name)
+        {
+            bars.style("fill", function (d) {
+                if(d.candidate == bar_name)
+                {
+                    return "#ffa500";
+                }
+                return "rgb(148,0,212)";
+
+            });
+        }
+
+        bars.attr("y", function (d) {
+                return y(d.votes)
+            })
+            .attr("x", function (d, i) {
+                return (x.rangeBand() / 2)  - (10 * d.group_size / 2) + i * 10;
+            })
+            .attr("width", 9)
+            .attr("height", function (d) {
+                return h - y(d.votes);
+            })
+            .on("mouseover", function(d){
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text(d.candidate)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+
+                jsobject.setHighlightedStructure(d.candidate);
+                highlightBars(d.candidate);
+            })
+            .on("mouseout", function(d){
+                div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                jsobject.removeHighlightedStructure(d.candidate);
+            });
+
+        // bars.append("title")
+        //     .text(function (d) {
+        //         return d.candidate + ", " + d.votes
+        //     });
+        //
+        // var labels = district.selectAll(".label")
+        //     .data(function(d){return d.values})
+        //     .enter().append("text");
+        //
+        // labels.text(function(d) {
+        //     return (d.votes);
+        // })
+        //     .attr("text-anchor", "start")
+        //     .attr("x", function(d) { return x(d.votes) + 4})
+        //     .attr("y", function(d, i) {
+        //         if(i % 2== 0){ return (y.rangeBand()/2 -2)+ (i/2 + 0.5)*10}
+        //         else { return (y.rangeBand()/2 -2)- (i/2)*10}
+        //     })
+        //     .attr("class", "axis");
+
+    });
+</script>
+

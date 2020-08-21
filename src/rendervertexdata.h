@@ -15,6 +15,7 @@ public:
   void initOpenGLFunctions();
   GLuint createProgram(std::string program_name);
   bool compileShader(std::string program, const char* vshader, const char* gshader, const char* fshader);
+  bool compileShader(std::string program, const char* vshader, const char* fshader);
   GLuint getProgram(std::string program_name) { return m_programs[program_name]; }
   void useProgram(std::string program_name);
   //void printProgramsNames();

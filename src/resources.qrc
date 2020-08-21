@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+    	<file>shaders/mesh_vert_simplified.glsl</file>
+        <file>shaders/mesh_frag_simplified.glsl</file>
         <file>shaders/coord_system_vert.glsl</file>
         <file>shaders/coord_system_geom.glsl</file>
         <file>shaders/coord_system_frag.glsl</file>
@@ -47,5 +49,17 @@
         <file>shaders/space2d_grid_points_geom.glsl</file>
         <file>shaders/space2d_grid_triangle_geom.glsl</file>
         <file>shaders/skeleton_point_frag.glsl</file>
+        
+        <file>icons/barchart.png</file>
+        <file>icons/boxplot.png</file>
+        <file>icons/distance_tree.png</file>
+        <file>icons/histogram.png</file>
+        <file>icons/matrix.png</file>
+        <file>icons/scatterplot.png</file>
+
+        <file>colormaps/colormap_tom.png</file>
+
+
+        
         </qresource>
 </RCC>
