@@ -4,6 +4,8 @@
 #include <QChar>
 
 #include "vismethod.h"
+#include "../globalParameters.h"
+#include "../datacontainer.h"
 
 class DistanceTreeData : public QObject 
 {

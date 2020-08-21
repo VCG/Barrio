@@ -3,6 +3,10 @@
 
 #include "vismethod.h"
 
+#include "../datacontainer.h"
+#include "../globalParameters.h"
+
+
 class BarChartData : public QObject
 {
   Q_OBJECT

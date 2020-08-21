@@ -90,12 +90,13 @@ set(project_headers
     mainwidget.h
     treemodel.h
     treeitem.h
-    vismethod.h
-    barchart.h
-    scatterplot.h
-    distancetree.h
-    distancematrix.h
-    histogram.h)
+
+    vismethods/vismethod.h
+    vismethods/barchart.h
+    vismethods/scatterplot.h
+    vismethods/distancetree.h
+    vismethods/distancematrix.h
+    vismethods/histogram.h)
 
 set(project_sources
     main.cpp
@@ -130,11 +131,13 @@ set(project_sources
     mainwidget.cpp
     treemodel.cpp
     treeitem.cpp
-    barchart.cpp
-    scatterplot.cpp
-    distancetree.cpp
-    distancematrix.cpp
-    histogram.cpp
+
+    vismethods/barchart.cpp
+    vismethods/scatterplot.cpp
+    vismethods/distancetree.cpp
+    vismethods/distancematrix.cpp
+    vismethods/histogram.cpp
+
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

@@ -14,7 +14,7 @@
 #include <QJsonDocument>
 #include <algorithm>
 
-#include "datacontainer.h"
+#include "../datacontainer.h"
 
 namespace fs = std::filesystem;
 

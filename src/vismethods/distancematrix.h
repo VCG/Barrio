@@ -3,6 +3,9 @@
 
 #include "vismethod.h"
 
+#include "../datacontainer.h"
+#include "../globalParameters.h"
+
 class DistanceMatrixData : public QObject
 {
   Q_OBJECT
