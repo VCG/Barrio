@@ -247,7 +247,7 @@ void MainWindow::on_structure_selection_changed(int state)
   config.axons = mainwindow_ui->checkBox->isChecked();
   config.dends = mainwindow_ui->checkBox_2->isChecked();
   config.mitos = mainwindow_ui->checkBox_3->isChecked();
-  config.syn = mainwindow_ui->checkBox_3->isChecked();
+  config.syn = mainwindow_ui->checkBox_5->isChecked();
   config.sliceView = mainwindow_ui->checkBox_12->isChecked();
 
   SelectedVisMethods visMethods = m_mainWidget->setThumbnailIcons(config);

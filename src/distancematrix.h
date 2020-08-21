@@ -45,7 +45,7 @@ private:
   DataContainer* m_datacontainer;
   QString m_title;
 
-  QString m_index_filename = "distancematrix_index.html";
+  QString m_index_filename = "web/distancematrix_index.html";
   QWebEngineView* m_web_engine_view;
 
   GlobalVisParameters* m_global_vis_parameters;

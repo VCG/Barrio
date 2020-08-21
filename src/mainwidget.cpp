@@ -113,6 +113,8 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     line->setFrameShadow(QFrame::Sunken);
     groupBox->layout()->addWidget(line);
 
+    m_seperation_elements[ID] = line;
+
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
   // medium configuration
@@ -181,6 +183,17 @@ bool MainWidget::deleteAllInfoVisWidgets()
 
     it = m_infovis_views.erase(it);
   }
+
+  //for (auto it = m_seperation_elements.cbegin(); it != m_seperation_elements.cend(); it++)
+  //{
+  //  QFrame* line = (*it).second;
+
+  //  //line->hide();
+  //  //line->layout()->removeWidget(line);
+  //  //delete line;
+  //}
+
+  m_seperation_elements.clear();
 
   // medium detail info vis view, if exists delete
   if (m_groupboxes.find(-1) != m_groupboxes.end())

@@ -1,21 +1,20 @@
-#ifndef DISTANCETREE_H
-#define DISTANCETREE_H
+#ifndef HISTOGRAM_H
+#define HISTOGRAM_H
 
 #include <QChar>
-
 #include "vismethod.h"
 
-class DistanceTreeData : public QObject 
+class HistogramData : public QObject
 {
   Q_OBJECT
 
 public:
-  DistanceTreeData(int ID, QString newickString, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
-  ~DistanceTreeData();
+  HistogramData(int ID, QString newickString, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
+  ~HistogramData();
 
-  Q_INVOKABLE QString getNewickString();
+  /*Q_INVOKABLE QString getNewickString();
   Q_PROPERTY(QString newickString READ getNewickString);
-  
+
   Q_INVOKABLE void setSelectedNode(QString name);
   Q_INVOKABLE QString getSelectedNode();
   Q_PROPERTY(QString new_selected_node READ getSelectedNode);
@@ -25,38 +24,38 @@ public:
   Q_INVOKABLE void removeAllHighlightedStructures();
 
   void setNewickString(QString newick) { m_newickString = newick; };
-  void setHvgxID(int ID) { m_hvgxID = ID; };
+  void setHvgxID(int ID) { m_hvgxID = ID; };*/
 
   int m_hvgxID;
   QString m_newickString;
   QString m_selected_node;
 
   GlobalVisParameters* m_global_vis_parameters;
-  DataContainer*       m_datacontainer;
+  DataContainer* m_datacontainer;
 };
 
-class DistanceTree : public IVisMethod
+class Histogram : public IVisMethod
 {
 public:
-  DistanceTree(DistanceTree* distanceTree);
-  DistanceTree(GlobalVisParameters* visparams, DataContainer* datacontainer);
-  ~DistanceTree();
+  Histogram(Histogram* distanceTree);
+  Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer);
+  ~Histogram();
 
   //inherited functions
   QWebEngineView* initVisWidget(int ID);
   QWebEngineView* getWebEngineView();
   bool            update();
-  DistanceTree*   clone();
+  Histogram*      clone();
 
 private:
 
-  DistanceTreeData* data;
+  HistogramData* data;
   DataContainer* m_datacontainer;
 
   QString m_title;
-  QString m_index_filename = "web/distancetree_index.html";
+  //QString m_index_filename = "distancetree_index.html";
 
-  QString createNewickString(int hvgxID, float distanceThreshold);
+  //QString createNewickString(int hvgxID, float distanceThreshold);
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;
@@ -69,3 +68,4 @@ private:
 };
 
 #endif
+

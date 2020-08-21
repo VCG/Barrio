@@ -50,7 +50,7 @@ private:
   QString m_y_title;
   QString m_title;
 
-  QString m_index_filename = "barchart_index.html";
+  QString m_index_filename = "web/barchart_index.html";
   QWebEngineView* m_web_engine_view;
 
   GlobalVisParameters* m_global_vis_parameters;

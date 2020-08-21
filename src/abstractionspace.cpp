@@ -33,41 +33,49 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
     // low - skeleton
     // medium - scatterplot
     // high - scatterplot
+    qDebug() << "Hello world";
   }
   else if (!config.axons && config.dends && !config.mitos && !config.syn)
   {
     // low - skeleton
     // medium - scatterplot
     // high - scatterplot
+    qDebug() << "Hello world";
   }
   else if (!config.axons && !config.dends && config.mitos && !config.syn)
   {
     // low - skeleton
     // medium - todo
     // high - scatterplot
+    qDebug() << "Hello world";
   }
   else if (!config.axons && !config.dends && !config.mitos && config.syn)
   {
     // low - 3D view
     // medium - barchart
     // high - barchart
+    qDebug() << "Hello world";
   }
-
-
   else if (config.axons && config.dends && !config.mitos && !config.syn)
   {
-
+    qDebug() << "Hello world";
   }
   else if (config.axons && !config.dends && config.mitos && !config.syn)
   {
+    //UT 3
+    methods.low = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.low_icon = ":/icons/histogram.png";
+    methods.medium = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.medium_icon = ":/icons/boxplot.png";
+    methods.high = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.high_icon = ":/icons/scatterplot.png";
+
 
   }
   else if (config.axons && !config.dends && !config.mitos && config.syn)
   {
-
+    qDebug() << "Hello world";
   }
-
-
   else if (!config.axons && config.dends && config.mitos && config.syn)
   {
     // low: distance tree
@@ -83,26 +91,23 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
   }
   else if (!config.axons && config.dends && !config.mitos && config.syn)
   {
-
+    qDebug() << "Hello world";
   }
   else if (!config.axons && !config.dends && config.mitos && config.syn)
   {
-
+    qDebug() << "Hello world";
   }
-
-
   else if (config.axons && config.dends && config.mitos && !config.syn)
   {
-
+    qDebug() << "Hello world";
   }
   else if (config.axons && config.dends && !config.mitos && config.syn)
   {
-
+    qDebug() << "Hello world";
   }
-
   else if (config.axons && config.dends && config.mitos && config.syn)
   {
-
+    qDebug() << "Hello world";
   }
  
   return methods;

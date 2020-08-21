@@ -94,7 +94,8 @@ set(project_headers
     barchart.h
     scatterplot.h
     distancetree.h
-    distancematrix.h)
+    distancematrix.h
+    histogram.h)
 
 set(project_sources
     main.cpp
@@ -133,6 +134,7 @@ set(project_sources
     scatterplot.cpp
     distancetree.cpp
     distancematrix.cpp
+    histogram.cpp
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl

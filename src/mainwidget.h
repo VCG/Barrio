@@ -55,9 +55,10 @@ private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
 
-  std::map<int, QGroupBox*> m_groupboxes;
-  std::map<int, GLWidget*> m_opengl_views;
-  std::map<int, IVisMethod*> m_infovis_views;
+  std::map<int, QGroupBox*>   m_groupboxes;
+  std::map<int, GLWidget*>    m_opengl_views;
+  std::map<int, IVisMethod*>  m_infovis_views;
+  std::map<int, QFrame*>      m_seperation_elements;
 
   QList<int>    getSelectedIDs();
 
