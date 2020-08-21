@@ -86,7 +86,7 @@ void OpenGLManager::drawAll()
 // todo: if the file doesn't open or doesn't exist, then don't load the data here and in GLSL
 bool OpenGLManager::initOpenGLFunctions()
 {
-  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/assets/colormaps/colormap_tom.png");
+  QString colormap_path(":/colormaps/colormap_tom.png");
 
   m_glFunctionsSet = true;
   initializeOpenGLFunctions();
