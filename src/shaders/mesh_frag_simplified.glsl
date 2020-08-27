@@ -20,6 +20,11 @@ in float        frag_cell_distance;
 in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
 
+uniform bool          show_mito_distance_to_cell;
+uniform sampler1D	  mito_colormap;
+uniform int           maxNodes;
+uniform float         cell_opacity;
+
 // ------------- order independent transparency variables ----------
 struct NodeType {
   vec4 color;
@@ -44,12 +49,8 @@ layout (std430, binding=6) buffer highlight_data
     int SSBO_highlighted[];
 };
 
-
-
-uniform int maxNodes;
-uniform float cell_opacity;
-subroutine void RenderPassType();
-subroutine uniform RenderPassType RenderPass;
+subroutine void       RenderPassType();
+subroutine uniform    RenderPassType RenderPass;
 
 //-------------------- DIFFUSE LIGHT PROPERTIES --------------------
 vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
@@ -116,7 +117,14 @@ vec4 computeColor()
   }
   else if(frag_structure_type == MITO)
   {
-    obj_color = vec3(1.0, 0.0, 0.0);
+    if(show_mito_distance_to_cell)
+    {
+      obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 6).xyz);
+    }
+    else
+    {
+      obj_color = vec3(1.0, 0.0, 0.0);
+    }
     
   } 
   else if(frag_structure_type == SYNPS)

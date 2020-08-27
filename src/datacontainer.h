@@ -117,6 +117,7 @@ public:
   std::string           getObjectName(int hvgxID);
   std::vector<Object*>  getObjectsByType(Object_t type);
   Object*               getObject(int hvgxID);
+  Object*               getObjectByName(QString name);
 
   float   getMaxAstroCoverage() { return max_astro_coverage; }
   int     getMaxVolume() { return max_volume; }

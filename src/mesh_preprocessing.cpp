@@ -75,6 +75,11 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
 {
   struct MyStructure my_cell;
   my_cell.name = cell->getName();
+
+  if (my_cell.name != "Dendrite035")
+  {
+    return 0;
+  }
  
   std::vector<int>* cell_indices = cell->get_indices_list();
 
@@ -118,7 +123,6 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
   // compute distances for each mitochondrion vertex
   for (int idx : *mito_indices)
   {
-    // dereferencing pointer
     auto vertex = &vertices->at(idx);
     point point_query(vertex->x(), vertex->y(), vertex->z());
     const auto distance = std::sqrt(tree.squared_distance(point_query));

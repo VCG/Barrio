@@ -143,7 +143,7 @@ private:
   //Object*                                 m_parent;       // NULL if none
   int                                     m_parentID;
   std::vector<Object*>                    m_children;     // axon-> bouton, den->spine
-  std::vector<int>                        m_chidren_ids;
+  std::vector<int>                        m_children_ids;
 
   std::map<int, double>                   m_distance_map;
   std::vector<std::pair<int, double>>     m_distance_vector;
@@ -179,7 +179,7 @@ private:
   {
     ar(m_name, m_ID, m_nodeIdx,
       m_object_t, m_volume, m_function,
-      m_parentID, m_chidren_ids,
+      m_parentID, m_children_ids,
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,

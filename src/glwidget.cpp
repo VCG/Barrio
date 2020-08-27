@@ -129,6 +129,10 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
+
+  int show_mcd_colormap = program->uniformLocation("show_mito_distance_to_cell");
+  if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, true);
+
 }
 
 
@@ -307,8 +311,6 @@ void GLWidget::resizeGL(int w, int h)
 
   initMeshShaderStorage(m_width, m_height);
   initSelectionFrameBuffer(m_width, m_height);
-
-  //update();
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -1004,8 +1006,18 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 void GLWidget::drawScene()
 {
+  int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
+  if (mito_colormap >= 0)
+  {
+    glUniform1i(mito_colormap, 0);
+    glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
+    GL_Error();
+    glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
+    GL_Error();
+  }
+
   m_mesh_vao.bind();
- 
+
   m_shared_resources->mesh_index_vbo->bind();
   glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
 
@@ -1117,6 +1129,7 @@ void GLWidget::pass2()
 
   int pMatrix = m_mesh_program->uniformLocation("pMatrix");
   if (pMatrix >= 0) m_mesh_program->setUniformValue(pMatrix, mat);
+ 
 
   // Draw a screen filler
   m_fsQuad_vao.bind();

@@ -101,8 +101,8 @@ void DataContainer::loadData()
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
     
-    compute_centers();
-    //compute_distance_mito_cell_boundary();
+    //compute_centers();
+    compute_distance_mito_cell_boundary();
     compute_closest_distance_to_structures();
     
     writeDataToCache(cache_path);
@@ -1146,7 +1146,8 @@ bool DataContainer::importObj(QString path)
       
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
-        name += nameList[i];
+        name += nameList[i] + "_";
+      name.remove(name.length() - 1, name.length() - 1); // remove last character
       
       qDebug() << "Reading " << name;
       
@@ -1158,18 +1159,6 @@ bool DataContainer::importObj(QString path)
 
       m_objects[hvgxID] = obj;
       m_objectsByType[obj->getObjectType()].push_back(obj);
-
-      if (m_parents.find(hvgxID) != m_parents.end()) {
-        int parentID = m_parents[hvgxID];
-        obj->setParentID(parentID);
-
-        /*if (m_objects.find(parentID) != m_objects.end()) {
-          m_objects[parentID]->addChild(obj);
-        }
-        else {
-          qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
-        }*/
-      }
     }
 
     // parse vertices
@@ -1189,7 +1178,7 @@ bool DataContainer::importObj(QString path)
       struct VertexData* v = &meshVertexList->at(vertexIdx);
       
       v->mesh_vertex = mesh_vertex;
-      v->distance_to_cell = 0.0; // first init all distances with the default value
+      v->distance_to_cell = 0.15; // first init all distances with the default value
       v->hvgxID = hvgxID;
       v->structure_type = (int)obj->getObjectType();
 
@@ -1243,14 +1232,31 @@ bool DataContainer::importObj(QString path)
 
 void DataContainer::processParentChildStructure()
 {
-  for (auto const& [id, obj] : m_objects)
+  std::vector<Object*> mitos = getObjectsByType(Object_t::MITO);
+  for (auto const& mito : mitos) 
   {
-    int parent = obj->getParentID() + 1;
-    if (m_objects.find(parent) != m_objects.end()) 
+    QString name = mito->getName().c_str();
+    QList<QString> nameList = name.split("_");
+
+    if (name.contains("A")) // mito of axon
     {
-      m_objects[parent]->addChildID(obj->getHVGXID());
+      name = nameList[1].replace("A", "Axon");
     }
+    else if(name.contains("D")) // mito of dendrite
+    {
+      name = nameList[1].replace("D", "Dendrite");
+    }
+    else if(name.contains("Astro")) // mito of astrocyte
+    {
+      // todo
+    }
+
+    Object* parent = getObjectByName(name);
+
+    mito->setParentID(parent->getHVGXID());
+    parent->addChildID(mito->getHVGXID());
   }
+  
 }
 
 //----------------------------------------------------------------------------
@@ -1457,10 +1463,10 @@ void DataContainer::compute_distance_mito_cell_boundary()
 {
   std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
 
-  for (int i = 0; i < mitos.size(); ++i)
+  for (int i = 0; i < mitos.size(); i++)
   {
     Object* mito = mitos[i];
-    Object* parent = m_objects[mito->getParentID() + 1];
+    Object* parent = m_objects[mito->getParentID()];
     m_mesh_processing->compute_distance_distribution(mito, parent, m_mesh->getVerticesList());
   }
 }
@@ -1545,6 +1551,18 @@ Object* DataContainer::getObject(int hvgxID)
   if (m_objects.find(hvgxID) == m_objects.end())
     return 0;
   else return m_objects.at(hvgxID);
+}
+
+Object* DataContainer::getObjectByName(QString name)
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    if (QString(obj->getName().c_str()) == name) 
+    {
+      return obj;
+    }
+  }
+  return nullptr;
 }
 
 //----------------------------------------------------------------------------

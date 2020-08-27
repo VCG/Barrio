@@ -1,5 +1,7 @@
 #include "MainWidget.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
 //namespace fs = std::filesystem;
 
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
@@ -415,6 +417,7 @@ void MainWidget::initializeGL()
 
   // setup shared resources
   initSharedVBOs();
+  initColormaps();
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
  
   // add first widget
@@ -446,6 +449,35 @@ void MainWidget::initSharedVBOs()
   initSharedMeshVBOs();
   //initSharedSliceVBOs();
 
+}
+
+void MainWidget::initColormaps()
+{
+  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/src/colormaps/colormap_tom.png");
+
+  int width, height, nrChannels;
+  unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
+  if (data)
+  {
+    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE4, data, width);
+  }
+  stbi_image_free(data);
+
+  m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
+}
+
+void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size)
+{
+  glGenTextures(1, &texture);
+
+  glActiveTexture(texture_unit);
+  glBindTexture(GL_TEXTURE_1D, texture);
+
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
@@ -549,3 +581,5 @@ void MainWidget::initSharedMeshVBOs()
   m_shared_resources.mesh_normal_vbo = &m_mesh_normal_vbo;
   m_shared_resources.index_count = neurites_index_count;
 }
+
+

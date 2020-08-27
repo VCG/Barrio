@@ -14,6 +14,8 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
+#include "stb_image.h"
+
 enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
 struct ListNode {
@@ -28,6 +30,8 @@ struct SharedGLResources
   QOpenGLBuffer* mesh_vertex_vbo;
   QOpenGLBuffer* mesh_normal_vbo;
   int            index_count;
+
+  GLuint*        mito_cell_distance_colormap;
 
   QOpenGLBuffer* slice_vertex_vbo;
 
@@ -240,6 +244,8 @@ protected:
   bool                                m_is_overview_widget;
 
   double                              m_distance_threshold;
+
+  GLuint                              m_mito_cell_distance_colormap;
 
 
 };

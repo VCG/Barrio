@@ -1,20 +1,19 @@
 #pragma once
-#include <QOpenGLWidget>
-#include <QOpenGLBuffer>
-#include <QOpenGLFunctions>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <filesystem>
 
 #include "glwidget.h"
 #include "datacontainer.h"
+#include "stb_image.h"
 
 enum NumberOfEntities
 {
   LOW, MEDIUM, HIGH
 };
 
-class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
+class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
@@ -71,6 +70,8 @@ private:
   QOpenGLBuffer m_mesh_vertex_vbo;
   QOpenGLBuffer m_mesh_normal_vbo;
 
+  GLuint        m_mito_cell_distance_colormap;
+
   QOpenGLBuffer m_slice_vertex_vbo;
   GLuint        m_slice_texture;
 
@@ -81,7 +82,9 @@ private:
   void initSharedVBOs();
   void initSharedSliceVBOs();
   void initSharedMeshVBOs();
+  void initColormaps();
 
+  void init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
   void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
   int m_lastID;

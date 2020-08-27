@@ -287,12 +287,12 @@ void Object::addChild(Object* child)
 
 void Object::addChildID(int hvgxID)
 {
-  m_chidren_ids.push_back(hvgxID);
+  m_children_ids.push_back(hvgxID);
 }
 
 std::vector<int>* Object::getChildrenIDs()
 {
-  return &m_chidren_ids;
+  return &m_children_ids;
 }
 
 
@@ -361,9 +361,9 @@ int Object::getSynapseSize()
 
 bool Object::isChild(int hvgxID)
 {
-  for (size_t i = 0; i < m_chidren_ids.size(); i++)
+  for (size_t i = 0; i < m_children_ids.size(); i++)
   {
-    if (hvgxID == m_chidren_ids.at(i))
+    if (hvgxID == m_children_ids.at(i))
     {
       return true;
     }
@@ -373,7 +373,7 @@ bool Object::isChild(int hvgxID)
 
 bool Object::isParent(int hvgxID)
 {
-  if (hasParent() && ((m_parentID + 1) == hvgxID))
+  if (hasParent() && (m_parentID  == hvgxID))
   {
     return true;
   }
