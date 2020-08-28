@@ -1,6 +1,6 @@
 # NeCo - Neuro Comparer
 
-## Prerequisits
+## Prerequisites
 * The application is developed and tested under `Windows 10`.
 * A recent Graphics Card (GPU). I used an `NVIDIA GeForce GTX TITAN Black` GPU. 
 * At least `XXX GB of RAM`
@@ -23,10 +23,14 @@ To get started you first need to **install all required dependencies**.
 * `CGAL_DIR` to `C:\dev\CGAL-5.0.1`
 * `CEREAL_DIR` to `C:\dev\cereal-1.3.0\include`
 
-Note that you do not have to restart youre machine after setting the environmental variables. **Restarting the programs (Visual Studio, the command line, cmake etc.) is enough the apply the changes**.  
+
+Note that you do not have to restart your machine after setting the environment variables. **Restarting the programs (Visual Studio, the command line, CMake, etc.) is enough the apply the changes**.  
+
+2. Create a `build` directory on the same level as the `src` directory
+3. Run CMake and use the src dir as the source dir and the newly created build dir
 
 ## Data Preprocessing
-For data preprocessing and input data specification please refer to this [repo](https://github.com/jakobtroidl/neco_convert). 
+For data preprocessing and input data specification, please refer to this [repo](https://github.com/jakobtroidl/neco_convert). 
 
 
 
