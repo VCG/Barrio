@@ -101,10 +101,11 @@ void DataContainer::loadData()
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
     
-    //compute_centers();
+    compute_centers();
     compute_distance_mito_cell_boundary();
     compute_closest_distance_to_structures();
     
+
     writeDataToCache(cache_path);
   }
   else
@@ -1178,7 +1179,7 @@ bool DataContainer::importObj(QString path)
       struct VertexData* v = &meshVertexList->at(vertexIdx);
       
       v->mesh_vertex = mesh_vertex;
-      v->distance_to_cell = 0.15; // first init all distances with the default value
+      v->distance_to_cell = 0.0; // first init all distances with the default value
       v->hvgxID = hvgxID;
       v->structure_type = (int)obj->getObjectType();
 

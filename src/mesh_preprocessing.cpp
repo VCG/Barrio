@@ -75,11 +75,6 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
 {
   struct MyStructure my_cell;
   my_cell.name = cell->getName();
-
-  if (my_cell.name != "Dendrite035")
-  {
-    return 0;
-  }
  
   std::vector<int>* cell_indices = cell->get_indices_list();
 

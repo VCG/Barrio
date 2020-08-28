@@ -119,7 +119,7 @@ vec4 computeColor()
   {
     if(show_mito_distance_to_cell)
     {
-      obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 6).xyz);
+      obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
     }
     else
     {
