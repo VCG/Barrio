@@ -90,6 +90,10 @@ Object_t Object::getObjectType()
   else if ((code.compare(0, 1, "d") == 0 && code.compare(0, 1, "e")) || code.compare("syn") == 0) {
     return Object_t::SYNAPSE;
   }
+  else if(code.compare("sli") == 0)
+  {
+    return Object_t::SLICE;
+  }
   else {
     return Object_t::UNKNOWN;
   }

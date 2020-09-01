@@ -71,6 +71,7 @@ private:
   QOpenGLBuffer m_mesh_normal_vbo;
 
   GLuint        m_mito_cell_distance_colormap;
+  GLuint        m_image_stack_texture;
 
   QOpenGLBuffer m_slice_vertex_vbo;
   GLuint        m_slice_texture;
@@ -80,9 +81,10 @@ private:
   SelectedVisMethods m_vis_methods;
 
   void initSharedVBOs();
-  void initSharedSliceVBOs();
+  void initSharedSlice();
   void initSharedMeshVBOs();
   void initColormaps();
+  void init3DVolumeTexture();
 
   void init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
   void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);

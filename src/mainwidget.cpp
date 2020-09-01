@@ -418,6 +418,8 @@ void MainWidget::initializeGL()
   // setup shared resources
   initSharedVBOs();
   initColormaps();
+  init3DVolumeTexture();
+
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
  
   // add first widget
@@ -447,8 +449,6 @@ QList<int> MainWidget::getSelectedIDs()
 void MainWidget::initSharedVBOs()
 {
   initSharedMeshVBOs();
-  //initSharedSliceVBOs();
-
 }
 
 void MainWidget::initColormaps()
@@ -459,11 +459,18 @@ void MainWidget::initColormaps()
   unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
   if (data)
   {
-    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE4, data, width);
+    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE0, data, width);
   }
   stbi_image_free(data);
 
   m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
+}
+
+void MainWidget::init3DVolumeTexture()
+{
+  QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
+  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE1, DIM_X, DIM_Y, DIM_Z);
+  m_shared_resources.image_stack_volume = &m_image_stack_texture;
 }
 
 void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size)
@@ -485,30 +492,32 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
   unsigned int size = sizeX * sizeY * sizeZ;
   unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
 
-  //load data into a 3D texture
-  glGenTextures(1, &texture);
-  glActiveTexture(texture_unit);
-  glBindTexture(GL_TEXTURE_3D, texture);
+  if (rawData)
+  {
+    glEnable(GL_TEXTURE_3D);
+    //load data into a 3D texture
+    glGenTextures(1, &texture);
+    glActiveTexture(texture_unit);
+    glBindTexture(GL_TEXTURE_3D, texture);
 
-  // set the texture parameters
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // set the texture parameters
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  //glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
-
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, rawData);
+  }
+  
   delete[] rawData;
 }
 
-void MainWidget::initSharedSliceVBOs()
+void MainWidget::initSharedSlice()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
-
   float sliceVertices[] =
   {
-    // vertices                  // uv - coords
+    // vertices                                   // uv - coords
     0.0,          0.0,          0.0,              0.0, 0.0,
     0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
     0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0,
@@ -567,7 +576,7 @@ void MainWidget::initSharedMeshVBOs()
   m_mesh_vertex_vbo.allocate(mesh->getVerticesList()->data(), mesh->getVerticesList()->size() * sizeof(VertexData));
   m_mesh_vertex_vbo.release();
 
-  // create and allocate index vbo
+  // create and allocate normal vbo
   m_mesh_normal_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
   m_mesh_normal_vbo.create();
   m_mesh_normal_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);

@@ -114,6 +114,7 @@ void DataContainer::loadData()
   }
 
   /* 3 */
+  
   PostloadMetaDataHVGX(input_files_dir.HVGX_metadata);
 }
 
@@ -1221,6 +1222,8 @@ bool DataContainer::importObj(QString path)
   }
   inputFile.close();
 
+  addSliceVertices();
+
   m_mesh->computeNormalsPerVertex();
   processParentChildStructure();
 
@@ -1564,6 +1567,56 @@ Object* DataContainer::getObjectByName(QString name)
     }
   }
   return nullptr;
+}
+
+void DataContainer::addSliceVertices()
+{
+  Object* obj = new Object("Slice", -1);
+  obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
+
+  m_objects[-1] = obj;
+  m_objectsByType[Object_t::SLICE].push_back(obj);
+
+  int idx0 = addSliceVertex(0.0,         0.0,          0.0,  0.0);
+  int idx1 = addSliceVertex(MESH_MAX_Y,  0.0,          0.0,  1.0);
+  int idx2 = addSliceVertex(0.0,         MESH_MAX_Z,   1.0,  0.0);
+  int idx3 = addSliceVertex(MESH_MAX_Y,  MESH_MAX_Z,   1.0,  1.0);
+
+  m_mesh->addFace(idx0, idx1, idx2);
+  m_mesh->addFace(idx3, idx1, idx2);
+
+  obj->addTriangleIndex(idx0);
+  obj->addTriangleIndex(idx1); 
+  obj->addTriangleIndex(idx2);
+
+  obj->addTriangleIndex(idx3);
+  obj->addTriangleIndex(idx1);
+  obj->addTriangleIndex(idx2);
+}
+
+int DataContainer::addSliceVertex(float x, float y, float u, float v)
+{
+  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
+
+  QVector4D mesh_vertex(x, y, u, v);
+  QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
+
+  meshVertexList->emplace_back();
+  int vertexIdx = (int)meshVertexList->size() - 1;
+  struct VertexData* vertex = &meshVertexList->at(vertexIdx);
+
+  vertex->mesh_vertex = mesh_vertex;
+  vertex->distance_to_cell = 0.0; // first init all distances with the default value
+  vertex->hvgxID = -1;
+  vertex->structure_type = (int)Object_t::SLICE;
+
+  vertex->skeleton_vertex = skeleton_vertex; // place holder
+  vertex->index = vertexIdx;
+  //v->distance_to_astro = 0.0; //place holder
+
+  m_mesh->addVertex(vertex, Object_t::SLICE);
+
+  return vertexIdx;
 }
 
 //----------------------------------------------------------------------------

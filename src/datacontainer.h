@@ -119,6 +119,9 @@ public:
   Object*               getObject(int hvgxID);
   Object*               getObjectByName(QString name);
 
+  void                  addSliceVertices();
+  int                   addSliceVertex(float x, float y, float u, float v);
+
   float   getMaxAstroCoverage() { return max_astro_coverage; }
   int     getMaxVolume() { return max_volume; }
   int     getMaxSynapseVolume() { return max_synapse_volume; }

@@ -26,7 +26,16 @@ vec3 eye = vec3(0.5, 0.5, 1.0);
 void main()
 {
     mat4 mvpMatrix = pMatrix * vMatrix * mMatrix;
-    gl_Position =  mvpMatrix * vec4(mesh_vtx.xyz, 1.0);
+    if(structure_type == 10)
+    {
+      gl_Position =  mvpMatrix * vec4(mesh_vtx.xy, 2.0, 1.0);
+    }
+    else
+    {
+      gl_Position =  mvpMatrix * vec4(mesh_vtx.xyz, 1.0);
+    }
+
+    
 
     normal_frag = normalize(normal);
     eye_frag = normalize(eye);

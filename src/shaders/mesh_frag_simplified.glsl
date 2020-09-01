@@ -8,6 +8,7 @@ layout (early_fragment_tests) in;
 #define SPINE 5
 #define ASTRO 6
 #define SYNPS 7
+#define SLICE 10
 
 #define MAX_FRAGMENTS 25
 
@@ -22,6 +23,11 @@ in flat int     frag_hvgx;
 
 uniform bool          show_mito_distance_to_cell;
 uniform sampler1D	  mito_colormap;
+
+uniform sampler3D     volume;
+uniform bool          showSlice;
+
+
 uniform int           maxNodes;
 uniform float         cell_opacity;
 
@@ -70,6 +76,12 @@ int isVisible(int hvgx)
       return 1;
     }
   }
+
+  if(showSlice && hvgx == -1)
+  {
+    return 1;
+  }
+
   return 0;
 }
 
@@ -125,11 +137,14 @@ vec4 computeColor()
     {
       obj_color = vec3(1.0, 0.0, 0.0);
     }
-    
   } 
   else if(frag_structure_type == SYNPS)
   {
     obj_color = vec3(0.58, 0.0, 0.83);
+  }
+  else if(frag_structure_type == SLICE)
+  {
+    obj_color = vec3(texture(volume, vec3(0.3, 0.5, 0.7)).x);
   }
   else
   {
@@ -140,13 +155,8 @@ vec4 computeColor()
   result += computeLight(lightDir2, lightColor2, obj_color);
 
   vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
-  //float alpha = abs(dot(viewDir, N));
 
-  if(frag_structure_type == MITO)
-  {
-    out_color = vec4(result, 1.0);
-  }
-  else if(frag_structure_type == SYNPS)
+  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE)
   {
     out_color = vec4(result, 1.0);
   }

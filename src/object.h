@@ -36,7 +36,7 @@ struct synapse {
 
 // type identifiers for objects
 enum class Object_t { UNKNOWN = 0, MITO = 1, AXON = 2, BOUTON = 3, DENDRITE = 4, SPINE = 5, ASTROCYTE = 6,
-  SYNAPSE = 7, GLYCOGEN = 8, ASTRO_MITO = 9 };
+  SYNAPSE = 7, GLYCOGEN = 8, ASTRO_MITO = 9, SLICE = 10 };
 
 class Skeleton;
 class Object

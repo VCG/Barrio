@@ -14,9 +14,8 @@ uniform mat4    rMatrix;
 
 uniform float slice_z;
 
-out vec2 TexCoord;
+out vec2 frag_tex_coord;
 out float out_slice_z;
-//out vec4 V_worldPos;
 
 void main()
 {
@@ -24,6 +23,6 @@ void main()
     vec3 out_pos = vec3(pos.yz, -slice_z);
     gl_Position = pvmMatrix * vec4(out_pos, 1.0);
     
-    TexCoord = texCoord;
+    frag_tex_coord = texCoord;
     out_slice_z = slice_z;
 }

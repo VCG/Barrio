@@ -32,6 +32,7 @@ struct SharedGLResources
   int            index_count;
 
   GLuint*        mito_cell_distance_colormap;
+  GLuint*        image_stack_volume;
 
   QOpenGLBuffer* slice_vertex_vbo;
 
@@ -79,6 +80,10 @@ public:
   void initSelectionFrameBuffer(int width, int height);
 
   int processSelection(float x, float y);
+
+
+
+  void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
 public slots:
   void getSliderX(int value);
@@ -160,6 +165,7 @@ protected:
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
+  void updateSliceProgram();
 
 
   void stopForecDirectedLayout();
@@ -223,6 +229,9 @@ protected:
   QOpenGLShaderProgram*                m_mesh_program;
   QOpenGLVertexArrayObject             m_mesh_vao;
 
+  QOpenGLShaderProgram*                m_slice_program;
+  QOpenGLVertexArrayObject             m_slice_vao;
+
   std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
   GLuint                              m_visibility_ssbo;
   GLuint                              m_highlighted_ssbo;
@@ -245,7 +254,11 @@ protected:
 
   double                              m_distance_threshold;
 
-  GLuint                              m_mito_cell_distance_colormap;
+  //GLuint                              m_mito_cell_distance_colormap;
+
+
+  GLuint        m_image_stack_texture;
+
 
 
 };
