@@ -144,7 +144,8 @@ vec4 computeColor()
   }
   else if(frag_structure_type == SLICE)
   {
-    obj_color = vec3(texture(volume, vec3(0.3, 0.5, 0.7)).x);
+    //ivec3 size = textureSize(volume, 0);
+    obj_color = vec3(texture(volume, vec3(0.3, 0.3, 0.3)).x); //vec3((float)size.x / 1000, (float)size.y / 1000, (float)size.z / 1000); 
   }
   else
   {

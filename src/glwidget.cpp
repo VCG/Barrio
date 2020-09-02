@@ -257,12 +257,23 @@ void GLWidget::initializeGL()
   glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
   glEnableVertexAttribArray(0);  // Vertex position
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  
 
   m_fsQuad_vao.release();
   GL_Error();
 
   updateVisibilitySSBO();
+
+  int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
+  if (mito_colormap >= 0)
+  {
+    glUniform1i(mito_colormap, 1);
+  }
+
+  int volumePos = m_mesh_program->uniformLocation("volume");
+  if (volumePos >= 0)
+  {
+    glUniform1i(volumePos, 0);
+  }
   
   m_mesh_program->release();
 
@@ -1075,21 +1086,26 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 void GLWidget::drawScene()
 {
-  int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
+ /* int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
   if (mito_colormap >= 0)
   {
-    glUniform1i(mito_colormap, 0);
-    glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
-    glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
-  }
+    glUniform1i(mito_colormap, 1);*/
 
-  int volumePos = m_mesh_program->uniformLocation("volume");
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_3D, *m_shared_resources->image_stack_volume);
+
+  glActiveTexture(GL_TEXTURE0 + 1); // activate the texture unit first before binding texture
+  glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
+  //}
+
+  /*int volumePos = m_mesh_program->uniformLocation("volume");
   if (volumePos >= 0)
   {
-    glUniform1i(volumePos, 10);
-    glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_3D, *m_shared_resources->image_stack_volume);
-  }
+    glUniform1i(volumePos, 0);*/
+    
+  //}
+
+  GL_Error();
 
   m_mesh_vao.bind();
 

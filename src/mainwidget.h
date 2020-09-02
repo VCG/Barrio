@@ -14,7 +14,7 @@ enum NumberOfEntities
   LOW, MEDIUM, HIGH
 };
 
-class MainWidget: public QWidget, MainOpenGL
+class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
@@ -43,17 +43,14 @@ public:
 
   //bool initOpenGLFunctions();
 
-  void initializeGL();
-  //void paintGL();
-  //void resizeGL(int width, int height) override;
+  void initializeGL() override;
+  void paintGL() override;
+  void resizeGL(int width, int height) override;
   //void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
   
 
 public slots:
   void on_widget_close_button_clicked();
-
-
-  
 
 private:
   DataContainer* m_datacontainer;

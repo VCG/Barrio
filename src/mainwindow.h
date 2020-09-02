@@ -63,7 +63,6 @@ public slots:
   void on_opacity_slider_changed(int value);
 
 
-
 signals:
   void getDeletedData(int);
   void getIDAtSelectedRow(int);

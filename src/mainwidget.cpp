@@ -5,7 +5,7 @@
 //namespace fs = std::filesystem;
 
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
-  : QWidget(parent)
+  : QOpenGLWidget(parent)
 {
   m_datacontainer = datacontainer;
   m_input_form = input_form;
@@ -427,15 +427,21 @@ void MainWidget::initializeGL()
 
 }
 
+
+
+void MainWidget::resizeGL(int width, int height)
+{
+}
+
 //bool MainWidget::initOpenGLFunctions()
 //{
 //  return false;
 //}
 
-//void MainWidget::paintGL()
-//{
-//  glClearColor(1.0, 1.0, 1.0, 1.0);
-//}
+void MainWidget::paintGL()
+{
+  glClearColor(1.0, 1.0, 1.0, 1.0);
+}
 
 //void MainWidget::resizeGL(int width, int height)
 //{
@@ -465,7 +471,7 @@ void MainWidget::initColormaps()
   unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
   if (data)
   {
-    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE0, data, width);
+    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, data, width);
   }
   stbi_image_free(data);
 
@@ -474,8 +480,9 @@ void MainWidget::initColormaps()
 
 void MainWidget::init3DVolumeTexture()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
-  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE10, DIM_X, DIM_Y, DIM_Z);
+  QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack_png.raw");
+
+  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE0, DIM_X, DIM_Y, DIM_Z);
   m_shared_resources.image_stack_volume = &m_image_stack_texture;
 }
 
@@ -496,10 +503,18 @@ void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* d
 void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
 {
   unsigned int size = sizeX * sizeY * sizeZ;
-  unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
+  //unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
 
-  if (rawData)
+  FILE* pFile = fopen(path.toStdString().c_str(), "rb");
+
+  if (NULL != pFile) 
   {
+    GLubyte* pVolume = new GLubyte[size];
+
+    qDebug() << "Size of volume: " << fread(pVolume, sizeof(GLubyte), size, pFile);
+    
+    fclose(pFile);
+
     //load data into a 3D texture
     glGenTextures(1, &texture);
     glActiveTexture(texture_unit);
@@ -512,10 +527,12 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED_INTEGER, GL_INT, pVolume);
+
+    delete[] pVolume;
   }
   
-  delete[] rawData;
+  
 }
 
 void MainWidget::initSharedSlice()

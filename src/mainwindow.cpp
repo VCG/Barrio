@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_data_container = new DataContainer(input_form);
 
   m_mainWidget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
-  m_mainWidget->initializeGL();
+  //m_mainWidget->initializeGL();
   mainwindow_ui->gridLayout_5->addWidget(m_mainWidget, 0, 0);
  
   m_currentSelectedCluster = 0;
