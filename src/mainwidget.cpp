@@ -5,7 +5,7 @@
 //namespace fs = std::filesystem;
 
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
-  : QOpenGLWidget(parent)
+  : QWidget(parent)
 {
   m_datacontainer = datacontainer;
   m_input_form = input_form;
@@ -398,16 +398,16 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
   }
 }
 
-void MainWidget::keyPressEvent(QKeyEvent* event)
-{
- /* qDebug() << "Key pressed";
-  switch (event->key())
-  {
-  case(Qt::Key_A):
-    addInfoVisWidget(m_lastID);
-    break;
-  }*/
-}
+//void MainWidget::keyPressEvent(QKeyEvent* event)
+//{
+// /* qDebug() << "Key pressed";
+//  switch (event->key())
+//  {
+//  case(Qt::Key_A):
+//    addInfoVisWidget(m_lastID);
+//    break;
+//  }*/
+//}
 
 void MainWidget::initializeGL()
 {
@@ -421,20 +421,26 @@ void MainWidget::initializeGL()
   init3DVolumeTexture();
 
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
- 
+
   // add first widget
   //addGLWidget(0, true);
+
 }
 
-void MainWidget::paintGL()
-{
-  glClearColor(1.0, 1.0, 1.0, 1.0);
-}
+//bool MainWidget::initOpenGLFunctions()
+//{
+//  return false;
+//}
 
-void MainWidget::resizeGL(int width, int height)
-{
-  // do nothing
-}
+//void MainWidget::paintGL()
+//{
+//  glClearColor(1.0, 1.0, 1.0, 1.0);
+//}
+
+//void MainWidget::resizeGL(int width, int height)
+//{
+//  // do nothing
+//}
 
 QList<int> MainWidget::getSelectedIDs()
 {
@@ -469,7 +475,7 @@ void MainWidget::initColormaps()
 void MainWidget::init3DVolumeTexture()
 {
   QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
-  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE1, DIM_X, DIM_Y, DIM_Z);
+  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE10, DIM_X, DIM_Y, DIM_Z);
   m_shared_resources.image_stack_volume = &m_image_stack_texture;
 }
 
@@ -494,7 +500,6 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
 
   if (rawData)
   {
-    glEnable(GL_TEXTURE_3D);
     //load data into a 3D texture
     glGenTextures(1, &texture);
     glActiveTexture(texture_unit);
@@ -507,7 +512,7 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, rawData);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
   }
   
   delete[] rawData;

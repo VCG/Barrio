@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <filesystem>
 
+#include "mainopengl.h"
 #include "glwidget.h"
 #include "datacontainer.h"
 #include "stb_image.h"
@@ -13,7 +14,7 @@ enum NumberOfEntities
   LOW, MEDIUM, HIGH
 };
 
-class MainWidget: public QOpenGLWidget, MainOpenGL
+class MainWidget: public QWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
@@ -39,16 +40,20 @@ public:
 
   double on_synapse_distance_slider_changed(int value);
   void on_opacity_slider_changed(int value);
+
+  //bool initOpenGLFunctions();
+
+  void initializeGL();
+  //void paintGL();
+  //void resizeGL(int width, int height) override;
+  //void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
   
 
 public slots:
   void on_widget_close_button_clicked();
 
-protected:
-  void initializeGL() override;
-  void paintGL() override;
-  void resizeGL(int width, int height) override;
-  void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+
+  
 
 private:
   DataContainer* m_datacontainer;

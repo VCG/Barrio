@@ -1086,8 +1086,8 @@ void GLWidget::drawScene()
   int volumePos = m_mesh_program->uniformLocation("volume");
   if (volumePos >= 0)
   {
-    glUniform1i(volumePos, 1);
-    glActiveTexture(GL_TEXTURE1);
+    glUniform1i(volumePos, 10);
+    glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_3D, *m_shared_resources->image_stack_volume);
   }
 
