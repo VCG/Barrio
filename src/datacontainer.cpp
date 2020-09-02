@@ -1594,11 +1594,11 @@ void DataContainer::addSliceVertices()
   obj->addTriangleIndex(idx2);
 }
 
-int DataContainer::addSliceVertex(float x, float y, float u, float v)
+int DataContainer::addSliceVertex(float y, float z, float u, float v)
 {
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
 
-  QVector4D mesh_vertex(x, y, u, v);
+  QVector4D mesh_vertex(u, y, z, v);
   QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
 
   meshVertexList->emplace_back();

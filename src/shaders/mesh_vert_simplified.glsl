@@ -1,5 +1,7 @@
 #version 430 core
 
+#define SLICE 10
+
 layout (location = 0) in vec4 mesh_vtx;
 layout (location = 1) in float distance_to_cell;
 layout (location = 2) in int structure_type;
@@ -26,9 +28,9 @@ vec3 eye = vec3(0.5, 0.5, 1.0);
 void main()
 {
     mat4 mvpMatrix = pMatrix * vMatrix * mMatrix;
-    if(structure_type == 10)
+    if(structure_type == SLICE)
     {
-      gl_Position =  mvpMatrix * vec4(mesh_vtx.xy, 2.0, 1.0);
+      gl_Position =  mvpMatrix * vec4(mesh_vtx.yz, 2.0, 1.0);
     }
     else
     {
@@ -41,6 +43,6 @@ void main()
     eye_frag = normalize(eye);
     frag_structure_type = structure_type;
     frag_cell_distance = distance_to_cell;
-    frag_vert_pos = rMatrix * mesh_vtx;
+    frag_vert_pos = /*rMatrix */ mesh_vtx;
     frag_hvgx = hvgxID;
 }

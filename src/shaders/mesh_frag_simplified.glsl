@@ -145,17 +145,26 @@ vec4 computeColor()
   else if(frag_structure_type == SLICE)
   {
     //ivec3 size = textureSize(volume, 0);
-    obj_color = vec3(texture(volume, vec3(0.3, 0.3, 0.3)).x); //vec3((float)size.x / 1000, (float)size.y / 1000, (float)size.z / 1000); 
+    obj_color = vec3(texture(volume, vec3(frag_vert_pos.x, frag_vert_pos.w, 0.3)).x);
   }
   else
   {
     obj_color = vec3(0.6, 1.0, 0.6);
   } 
 
-  vec3 result = computeLight(lightDir1, lightColor1, obj_color);
-  result += computeLight(lightDir2, lightColor2, obj_color);
+  vec3 result;
+  if(frag_structure_type != SLICE)
+  {
+    result = computeLight(lightDir1, lightColor1, obj_color);
+    result += computeLight(lightDir2, lightColor2, obj_color);
 
-  vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
+    //vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
+  }
+  else
+  {
+    result = obj_color;
+  }
+  
 
   if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE)
   {

@@ -503,13 +503,13 @@ void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* d
 void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
 {
   unsigned int size = sizeX * sizeY * sizeZ;
-  //unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
+  unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
 
   FILE* pFile = fopen(path.toStdString().c_str(), "rb");
 
-  if (NULL != pFile) 
+  if (rawData) 
   {
-    GLubyte* pVolume = new GLubyte[size];
+    unsigned char* pVolume = new unsigned char[size];
 
     qDebug() << "Size of volume: " << fread(pVolume, sizeof(GLubyte), size, pFile);
     
@@ -527,9 +527,9 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED_INTEGER, GL_INT, pVolume);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
 
-    delete[] pVolume;
+    delete[] rawData;
   }
   
   
