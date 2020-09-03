@@ -20,6 +20,7 @@ flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
+in float       frag_slice_z;
 
 uniform bool          show_mito_distance_to_cell;
 uniform sampler1D	  mito_colormap;
@@ -144,8 +145,8 @@ vec4 computeColor()
   }
   else if(frag_structure_type == SLICE)
   {
-    //ivec3 size = textureSize(volume, 0);
-    obj_color = vec3(texture(volume, vec3(frag_vert_pos.x, frag_vert_pos.w, 0.3)).x);
+    float depth_normed = frag_slice_z / 5.0;
+    obj_color = vec3(texture(volume, vec3(frag_vert_pos.x, frag_vert_pos.w, depth_normed)).x);
   }
   else
   {

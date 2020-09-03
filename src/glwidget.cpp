@@ -134,10 +134,10 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, true);
 
   int showSlice = program->uniformLocation("showSlice");
-  if (showSlice >= 0) program->setUniformValue(showSlice, true);
+  if (showSlice >= 0) program->setUniformValue(showSlice, m_shared_resources->show_slice);
 
   int zSlice = program->uniformLocation("slice_z");
-  if (zSlice >= 0) program->setUniformValue(zSlice, 2.5f);
+  if (zSlice >= 0) program->setUniformValue(zSlice, m_shared_resources->slice_depth);
 
   GL_Error();
 

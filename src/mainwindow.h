@@ -60,6 +60,7 @@ public slots:
   void on_low_detail_vis_clicked();
 
   void on_synapse_distance_slider_changed(int value);
+  void on_slice_position_slider_changed(int value);
   void on_opacity_slider_changed(int value);
 
 
@@ -85,12 +86,14 @@ private:
   QTreeWidgetItem* m_currentSelectedCluster;
   QStandardItemModel* tableView;
 
-  MainWidget* m_mainWidget;
+  MainWidget* m_main_widget;
   TreeModel* m_treemodel;
   DataContainer* m_data_container;
 
+  void initializeSlicePositionSlider();
   void initializeSynapseThresholdSlider();
   void initializeOpacitySlider();
+
   void initializeVisualizationPresets();
 
 };

@@ -23,17 +23,18 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   m_data_container = new DataContainer(input_form);
 
-  m_mainWidget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
+  m_main_widget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
   //m_mainWidget->initializeGL();
-  mainwindow_ui->gridLayout_5->addWidget(m_mainWidget, 0, 0);
+  mainwindow_ui->gridLayout_5->addWidget(m_main_widget, 0, 0);
  
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
+  initializeSlicePositionSlider();
   initializeSynapseThresholdSlider();
   initializeOpacitySlider();
  
-  m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_mainWidget);
+  m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
 
   mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
@@ -54,6 +55,18 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   setupSignalsNSlots();
   initializeVisualizationPresets();
  
+}
+
+void MainWindow::initializeSlicePositionSlider()
+{
+  QSlider* slice_position_slider = mainwindow_ui->horizontalSlider;
+  int initial_tick_position = 100.0 / (MESH_MAX_Z / 2.0);
+  slice_position_slider->setValue(initial_tick_position);
+  double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+  mainwindow_ui->lineEdit_5->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
+
+  connect(slice_position_slider, SIGNAL(valueChanged(int)), this, SLOT(on_slice_position_slider_changed(int)));
+  m_main_widget->set_slice_position(initial_tick_position);
 }
 
 void MainWindow::initializeSynapseThresholdSlider()
@@ -120,6 +133,7 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(mainwindow_ui->checkBox_2, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
   QObject::connect(mainwindow_ui->checkBox_3, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
   QObject::connect(mainwindow_ui->checkBox_5, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+  QObject::connect(mainwindow_ui->checkBox_12, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
 
   QObject::connect(mainwindow_ui->pushButton, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
   QObject::connect(mainwindow_ui->pushButton_2, SIGNAL(released()), this, SLOT(on_medium_detail_vis_clicked()));
@@ -251,7 +265,11 @@ void MainWindow::on_structure_selection_changed(int state)
   config.syn = mainwindow_ui->checkBox_5->isChecked();
   config.sliceView = mainwindow_ui->checkBox_12->isChecked();
 
-  SelectedVisMethods visMethods = m_mainWidget->setThumbnailIcons(config);
+  mainwindow_ui->horizontalSlider->setEnabled(config.sliceView);
+
+
+  SelectedVisMethods visMethods = m_main_widget->setThumbnailIcons(config);
+  m_main_widget->showSlice(config.sliceView);
 
   // low detail
   mainwindow_ui->pushButton_3->setIcon(QIcon(visMethods.high_icon));
@@ -270,7 +288,7 @@ void MainWindow::on_high_detail_vis_clicked()
 
   mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid orange");
 
-  m_mainWidget->setNumberOfEntities(NumberOfEntities::LOW);
+  m_main_widget->setNumberOfEntities(NumberOfEntities::LOW);
 }
 
 void MainWindow::on_medium_detail_vis_clicked()
@@ -280,7 +298,7 @@ void MainWindow::on_medium_detail_vis_clicked()
 
   mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid orange");
 
-  m_mainWidget->setNumberOfEntities(NumberOfEntities::MEDIUM);
+  m_main_widget->setNumberOfEntities(NumberOfEntities::MEDIUM);
 }
 
 void MainWindow::on_low_detail_vis_clicked()
@@ -290,17 +308,23 @@ void MainWindow::on_low_detail_vis_clicked()
 
   mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");
 
-  m_mainWidget->setNumberOfEntities(NumberOfEntities::HIGH);
+  m_main_widget->setNumberOfEntities(NumberOfEntities::HIGH);
 }
 
 void MainWindow::on_synapse_distance_slider_changed(int value)
 {
-  double slider_value = m_mainWidget->on_synapse_distance_slider_changed(value);
+  double slider_value = m_main_widget->on_synapse_distance_slider_changed(value);
   mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
+}
+
+void MainWindow::on_slice_position_slider_changed(int value)
+{
+  m_main_widget->on_slice_position_slider_changed(value);
+  mainwindow_ui->lineEdit_5->setText(QString::number(std::round(value) / (100.0 / MESH_MAX_Z)));
 }
 
 void MainWindow::on_opacity_slider_changed(int value)
 {
-  m_mainWidget->on_opacity_slider_changed(value);
+  m_main_widget->on_opacity_slider_changed(value);
   mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }

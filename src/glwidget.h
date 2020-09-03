@@ -37,6 +37,8 @@ struct SharedGLResources
   QOpenGLBuffer* slice_vertex_vbo;
 
   float         cell_opacity;
+  bool          show_slice;
+  float         slice_depth;
 
   QVector<int>*   highlighted_objects;
 };

@@ -34,14 +34,16 @@ public:
 
   void setupMainWidget(VisConfiguration vis_config);
   SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
+  void showSlice(bool showSlice);
 
   void updateInfoVisViews();
   void setNumberOfEntities(NumberOfEntities number_of_entities);
 
   double on_synapse_distance_slider_changed(int value);
-  void on_opacity_slider_changed(int value);
+  void   on_opacity_slider_changed(int value);
+  void   on_slice_position_slider_changed(int value);
+  void   set_slice_position(int value);
 
-  //bool initOpenGLFunctions();
 
   void initializeGL() override;
   void paintGL() override;

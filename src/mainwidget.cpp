@@ -44,6 +44,16 @@ void MainWidget::on_opacity_slider_changed(int value)
   }
 }
 
+void MainWidget::on_slice_position_slider_changed(int value)
+{
+  set_slice_position(value);
+}
+
+void MainWidget::set_slice_position(int value)
+{
+  m_shared_resources.slice_depth = (float)value / (100.0 / MESH_MAX_Z);
+}
+
 void MainWidget::on_widget_close_button_clicked()
 {
   qDebug() << "Close button pressed";
@@ -342,6 +352,11 @@ SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
 {
   m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
   return m_vis_methods;
+}
+
+void MainWidget::showSlice(bool showSlice)
+{
+  m_shared_resources.show_slice = showSlice;
 }
 
 void MainWidget::updateInfoVisViews()
