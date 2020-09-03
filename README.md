@@ -3,7 +3,7 @@
 ## Prerequisites
 * The application is developed and tested under `Windows 10`.
 * A recent Graphics Card (GPU). I used an `NVIDIA GeForce GTX TITAN Black` GPU. 
-* At least `XXX GB of RAM`
+* At least `10XX GB of RAM`
 * A internet connection (to use the D3 library)
 
 ## Getting Started
