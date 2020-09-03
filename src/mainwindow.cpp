@@ -328,9 +328,3 @@ void MainWindow::on_opacity_slider_changed(int value)
   m_main_widget->on_opacity_slider_changed(value);
   mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }
-
-void MainWindow::on_opacity_slider_changed(int value)
-{
-  m_mainWidget->on_opacity_slider_changed(value);
-  mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
-}
