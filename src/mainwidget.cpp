@@ -51,7 +51,6 @@ void MainWidget::on_slice_position_slider_changed(int value)
 
 void MainWidget::set_slice_position(int value)
 {
-  qDebug() << value;
   m_shared_resources.slice_depth = (float)value / (100.0 / MESH_MAX_Z);
 }
 

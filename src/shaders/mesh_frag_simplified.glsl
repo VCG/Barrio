@@ -141,7 +141,7 @@ vec4 computeColor()
   } 
   else if(frag_structure_type == SYNPS)
   {
-    obj_color = (frag_vert_pos / 5.0).xyz;//vec3(0.58, 0.0, 0.83);
+    obj_color = vec3(0.58, 0.0, 0.83);
   }
   else if(frag_structure_type == SLICE)
   {
@@ -150,7 +150,7 @@ vec4 computeColor()
   }
   else
   {
-    obj_color = (frag_vert_pos / 5.0).xyz;//vec3(0.6, 1.0, 0.6);
+    obj_color = vec3(0.6, 1.0, 0.6);
   } 
 
   vec3 result;
