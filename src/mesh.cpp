@@ -13,6 +13,9 @@ Mesh::Mesh()
   m_typeVertexList[5].reserve(750000);   //spine.v: 696,496
   m_typeVertexList[6].reserve(1300000);  //astro.v: 1,246,096
   m_typeVertexList[7].reserve(350000);   //synps.v: 300,748
+  m_typeVertexList[8].reserve(10000);
+  m_typeVertexList[9].reserve(10000);
+  m_typeVertexList[10].reserve(10000);
 }
 
 

@@ -1,5 +1,7 @@
 #include "MainWidget.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
 //namespace fs = std::filesystem;
 
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
@@ -40,6 +42,16 @@ void MainWidget::on_opacity_slider_changed(int value)
   {
     widget->updateVisParameters();
   }
+}
+
+void MainWidget::on_slice_position_slider_changed(int value)
+{
+  set_slice_position(value);
+}
+
+void MainWidget::set_slice_position(int value)
+{
+  m_shared_resources.slice_depth = (float)value / (100.0 / MESH_MAX_Z);
 }
 
 void MainWidget::on_widget_close_button_clicked()
@@ -342,6 +354,11 @@ SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
   return m_vis_methods;
 }
 
+void MainWidget::showSlice(bool showSlice)
+{
+  m_shared_resources.show_slice = showSlice;
+}
+
 void MainWidget::updateInfoVisViews()
 {
   for (auto const& [id, view] : m_infovis_views)
@@ -396,16 +413,16 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
   }
 }
 
-void MainWidget::keyPressEvent(QKeyEvent* event)
-{
- /* qDebug() << "Key pressed";
-  switch (event->key())
-  {
-  case(Qt::Key_A):
-    addInfoVisWidget(m_lastID);
-    break;
-  }*/
-}
+//void MainWidget::keyPressEvent(QKeyEvent* event)
+//{
+// /* qDebug() << "Key pressed";
+//  switch (event->key())
+//  {
+//  case(Qt::Key_A):
+//    addInfoVisWidget(m_lastID);
+//    break;
+//  }*/
+//}
 
 void MainWidget::initializeGL()
 {
@@ -415,21 +432,36 @@ void MainWidget::initializeGL()
 
   // setup shared resources
   initSharedVBOs();
+  initColormaps();
+  init3DVolumeTexture();
+
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
- 
+
   // add first widget
   //addGLWidget(0, true);
+
 }
+
+
+
+void MainWidget::resizeGL(int width, int height)
+{
+}
+
+//bool MainWidget::initOpenGLFunctions()
+//{
+//  return false;
+//}
 
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
-void MainWidget::resizeGL(int width, int height)
-{
-  // do nothing
-}
+//void MainWidget::resizeGL(int width, int height)
+//{
+//  // do nothing
+//}
 
 QList<int> MainWidget::getSelectedIDs()
 {
@@ -444,8 +476,43 @@ QList<int> MainWidget::getSelectedIDs()
 void MainWidget::initSharedVBOs()
 {
   initSharedMeshVBOs();
-  //initSharedSliceVBOs();
+}
 
+void MainWidget::initColormaps()
+{
+  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/src/colormaps/colormap_tom.png");
+
+  int width, height, nrChannels;
+  unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
+  if (data)
+  {
+    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, data, width);
+  }
+  stbi_image_free(data);
+
+  m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
+}
+
+void MainWidget::init3DVolumeTexture()
+{
+  QString image_volume_path("C:/Users/jtroidl/Desktop/exp/m3_stack.raw");
+
+  load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE0, DIM_X, DIM_Y, DIM_Z);
+  m_shared_resources.image_stack_volume = &m_image_stack_texture;
+}
+
+void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size)
+{
+  glGenTextures(1, &texture);
+
+  glActiveTexture(texture_unit);
+  glBindTexture(GL_TEXTURE_1D, texture);
+
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
@@ -453,30 +520,44 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
   unsigned int size = sizeX * sizeY * sizeZ;
   unsigned char* rawData = (unsigned char*)m_datacontainer->loadRawFile(path, size);
 
-  //load data into a 3D texture
-  glGenTextures(1, &texture);
-  glActiveTexture(texture_unit);
-  glBindTexture(GL_TEXTURE_3D, texture);
+  FILE* pFile = fopen(path.toStdString().c_str(), "rb");
 
-  // set the texture parameters
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  if (rawData) 
+  {
+    unsigned char* pVolume = new unsigned char[size];
 
-  //glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
+    qDebug() << "Size of volume: " << fread(pVolume, sizeof(GLubyte), size, pFile);
+    
+    fclose(pFile);
 
-  delete[] rawData;
+    //load data into a 3D texture
+    glGenTextures(1, &texture);
+    glActiveTexture(texture_unit);
+    glBindTexture(GL_TEXTURE_3D, texture);
+
+    // set the texture parameters
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
+
+    delete[] rawData;
+  }
+  
+  
 }
 
-void MainWidget::initSharedSliceVBOs()
+void MainWidget::initSharedSlice()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/6mice_sp_bo/m3/m3_stack.raw");
-
   float sliceVertices[] =
   {
-    // vertices                  // uv - coords
+    // vertices                                   // uv - coords
     0.0,          0.0,          0.0,              0.0, 0.0,
     0.0,          MESH_MAX_Y,   0.0,              0.0, 1.0,
     0.0,          0.0,          MESH_MAX_Z,       1.0, 0.0,
@@ -535,7 +616,7 @@ void MainWidget::initSharedMeshVBOs()
   m_mesh_vertex_vbo.allocate(mesh->getVerticesList()->data(), mesh->getVerticesList()->size() * sizeof(VertexData));
   m_mesh_vertex_vbo.release();
 
-  // create and allocate index vbo
+  // create and allocate normal vbo
   m_mesh_normal_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
   m_mesh_normal_vbo.create();
   m_mesh_normal_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
@@ -549,3 +630,5 @@ void MainWidget::initSharedMeshVBOs()
   m_shared_resources.mesh_normal_vbo = &m_mesh_normal_vbo;
   m_shared_resources.index_count = neurites_index_count;
 }
+
+

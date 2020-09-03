@@ -144,7 +144,7 @@ public:
 
   // spatial hashing
   void updateNode(Node* node);
-  void updateUniforms(struct GlobalUniforms uniforms) { m_uniforms = uniforms; }
+  void updateUniforms(struct WidgetUniforms uniforms) { m_uniforms = uniforms; }
 
 
   // GEM
@@ -167,7 +167,7 @@ protected:
 
   Graph_t                         m_gType;
 
-  struct GlobalUniforms           m_uniforms;
+  struct WidgetUniforms           m_uniforms;
 
   OpenGLManager* m_opengl_mngr;
 

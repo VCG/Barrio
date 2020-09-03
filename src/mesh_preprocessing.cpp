@@ -118,7 +118,6 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
   // compute distances for each mitochondrion vertex
   for (int idx : *mito_indices)
   {
-    // dereferencing pointer
     auto vertex = &vertices->at(idx);
     point point_query(vertex->x(), vertex->y(), vertex->z());
     const auto distance = std::sqrt(tree.squared_distance(point_query));

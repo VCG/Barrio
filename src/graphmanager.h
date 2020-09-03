@@ -28,7 +28,7 @@ public:
   void drawSkeletonsGraph();
 
   void updateUniformsLocation(GLuint program);
-  void updateUniforms(struct GlobalUniforms graph_uniforms);
+  void updateUniforms(struct WidgetUniforms graph_uniforms);
 
   void initNeuritesVertexAttribPointer();
   void initSkeletonsVertexAttribPointer();
@@ -36,7 +36,7 @@ public:
   // force directed layout
   void stopForceDirectedLayout(int graphIdx);
 
-  void update2Dflag(bool is2D, struct GlobalUniforms uniforms);
+  void update2Dflag(bool is2D, struct WidgetUniforms uniforms);
 
   struct FDR_param getFDRParams(int graph_index) { return m_graph[graph_index]->getFDRParams(); }
   void updateFDRParamts(int graph_index, struct FDR_param params) { m_graph[graph_index]->updateFDRParamts(params); }

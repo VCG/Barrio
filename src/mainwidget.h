@@ -1,20 +1,20 @@
 #pragma once
-#include <QOpenGLWidget>
-#include <QOpenGLBuffer>
-#include <QOpenGLFunctions>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <filesystem>
 
+#include "mainopengl.h"
 #include "glwidget.h"
 #include "datacontainer.h"
+#include "stb_image.h"
 
 enum NumberOfEntities
 {
   LOW, MEDIUM, HIGH
 };
 
-class MainWidget: public QOpenGLWidget, protected QOpenGLFunctions
+class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
@@ -34,22 +34,25 @@ public:
 
   void setupMainWidget(VisConfiguration vis_config);
   SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
+  void showSlice(bool showSlice);
 
   void updateInfoVisViews();
   void setNumberOfEntities(NumberOfEntities number_of_entities);
 
   double on_synapse_distance_slider_changed(int value);
-  void on_opacity_slider_changed(int value);
+  void   on_opacity_slider_changed(int value);
+  void   on_slice_position_slider_changed(int value);
+  void   set_slice_position(int value);
+
+
+  void initializeGL() override;
+  void paintGL() override;
+  void resizeGL(int width, int height) override;
+  //void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
   
 
 public slots:
   void on_widget_close_button_clicked();
-
-protected:
-  void initializeGL() override;
-  void paintGL() override;
-  void resizeGL(int width, int height) override;
-  void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
 private:
   DataContainer* m_datacontainer;
@@ -71,6 +74,9 @@ private:
   QOpenGLBuffer m_mesh_vertex_vbo;
   QOpenGLBuffer m_mesh_normal_vbo;
 
+  GLuint        m_mito_cell_distance_colormap;
+  GLuint        m_image_stack_texture;
+
   QOpenGLBuffer m_slice_vertex_vbo;
   GLuint        m_slice_texture;
 
@@ -79,9 +85,12 @@ private:
   SelectedVisMethods m_vis_methods;
 
   void initSharedVBOs();
-  void initSharedSliceVBOs();
+  void initSharedSlice();
   void initSharedMeshVBOs();
+  void initColormaps();
+  void init3DVolumeTexture();
 
+  void init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
   void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
   int m_lastID;

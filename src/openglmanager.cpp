@@ -727,7 +727,7 @@ void OpenGLManager::render2DHeatMapTexture()
     glUniform1i(tex, 0);
 
     // transfer function 1
-    glActiveTexture(GL_TEXTURE1);
+    //glActiveTexture(GL_TEXTURE1);
 
     if (m_2DHeatMap_encoding == HeatMap2D_e::ASTRO_COVERAGE)
       glBindTexture(GL_TEXTURE_1D, m_tf_2DHeatMap_tex);
@@ -1044,15 +1044,15 @@ void OpenGLManager::updateSkeletonGraphUniforms(GLuint program)
     glBindTexture(GL_TEXTURE_3D, m_glycogen_3DTex);
   }
 
-  // transfer function
-  GLint gly_tf = glGetUniformLocation(program, "gly_tf");
+  //// transfer function
+  //GLint gly_tf = glGetUniformLocation(program, "gly_tf");
 
-  if (gly_tf >= 0)
-  {
-    glUniform1i(gly_tf, 1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
-  }
+  //if (gly_tf >= 0)
+  //{
+  //  glUniform1i(gly_tf, 1);
+  //  glActiveTexture(GL_TEXTURE1);
+  //  glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
+  //}
 
   GL_Error();
 }
@@ -1105,14 +1105,14 @@ void OpenGLManager::updateSkeletonGraphTransitionUniforms(GLuint program)
   }
 
   // transfer function
-  GLint gly_tf = glGetUniformLocation(program, "gly_tf");
+  /*GLint gly_tf = glGetUniformLocation(program, "gly_tf");
 
   if (gly_tf >= 0)
   {
     glUniform1i(gly_tf, 1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
-  }
+  }*/
 
 
   GL_Error();
@@ -1811,12 +1811,12 @@ void OpenGLManager::drawSkeletonPoints(bool selection)
     // transfer function
     GLint gly_tf = glGetUniformLocation(m_SkeletonPoints.getProgram("3DPoints"), "gly_tf");
 
-    if (gly_tf >= 0)
+    /*if (gly_tf >= 0)
     {
       glUniform1i(gly_tf, 1);
       glActiveTexture(GL_TEXTURE1);
       glBindTexture(GL_TEXTURE_1D, m_tf_glycogen);
-    }
+    }*/
 
     glDrawArrays(GL_POINTS, 0, m_dataContainer->getSkeletonPointsSize());
     m_SkeletonPoints.vaoRelease();

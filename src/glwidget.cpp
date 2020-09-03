@@ -129,6 +129,23 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
+
+  int show_mcd_colormap = program->uniformLocation("show_mito_distance_to_cell");
+  if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, true);
+
+  int showSlice = program->uniformLocation("showSlice");
+  if (showSlice >= 0) program->setUniformValue(showSlice, m_shared_resources->show_slice);
+
+  int zSlice = program->uniformLocation("slice_z");
+  if (zSlice >= 0) program->setUniformValue(zSlice, m_shared_resources->slice_depth);
+
+  GL_Error();
+
+}
+
+void GLWidget::updateSliceProgram()
+{
+  
 }
 
 
@@ -159,21 +176,31 @@ void GLWidget::initializeGL()
   
   f->glClearColor(1.0, 1.0, 1.0, 1.0);
 
+  //QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
+  //load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE1, DIM_X, DIM_Y, DIM_Z);
+  
+
   m_mesh_program = new QOpenGLShaderProgram;
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/mesh_vert_simplified.glsl");
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/mesh_frag_simplified.glsl");
   m_mesh_program->link();
 
+  /*m_slice_program = new QOpenGLShaderProgram;
+  m_slice_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/slice_vert.glsl");
+  m_slice_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/slice_frag.glsl");
+  m_slice_program->link();*/
+
   //f->glEnable(GL_CULL_FACE);
   //f->glCullFace(GL_BACK);
   f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  
+  //------------------------------------------------------------------------------------------------------------------//
+  // Mesh Setup
 
   int success = m_mesh_program->bind();
-  
-  m_mesh_vao.create();
- 
-  m_mesh_vao.bind();
 
+  m_mesh_vao.create();
+  m_mesh_vao.bind();
 
   // bind vbos to vao
   m_shared_resources->mesh_vertex_vbo->bind();
@@ -230,18 +257,58 @@ void GLWidget::initializeGL()
   glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
   glEnableVertexAttribArray(0);  // Vertex position
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  
 
   m_fsQuad_vao.release();
   GL_Error();
 
   updateVisibilitySSBO();
+
+  int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
+  if (mito_colormap >= 0)
+  {
+    glUniform1i(mito_colormap, 1);
+  }
+
+  int volumePos = m_mesh_program->uniformLocation("volume");
+  if (volumePos >= 0)
+  {
+    glUniform1i(volumePos, 0);
+  }
   
   m_mesh_program->release();
+
+  //// ----------------------------------------------------------------------------------------------------//
+  //// Volume slice setup
+
+  //success = m_slice_program->bind();
+
+  //m_slice_vao.create();
+  //m_slice_vao.bind();
+
+  //// bind vbos to vao
+  //m_shared_resources->slice_vertex_vbo->bind();
+
+  //// setting up vertex attributes
+  //stride = 5 * sizeof(float);
+
+  //offset = 0;
+  //glEnableVertexAttribArray(0);
+  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+
+
+  //offset += 3 * sizeof(float);
+  //glEnableVertexAttribArray(1);
+  //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+
+  //m_slice_vao.release();
+  //m_slice_program->release();
+  
+  //----------------------------------------------------------------------------------------------------//
 
   if (m_FDL_running) {
     stopForecDirectedLayout();
   }
+  updateVisParameters();
 
   updateVisParameters();
 
@@ -264,6 +331,34 @@ void GLWidget::paintGL()
   pass2();
 
   m_mesh_program->release();
+
+  //m_slice_program->release();
+    
+  m_mesh_program->bind();
+  updateMVPAttrib(m_mesh_program);
+  updateHighlightedSSBO();
+
+  clearBuffers();
+  pass1();
+  glFlush();
+  pass2();
+
+  m_mesh_program->release();
+
+  /*m_slice_program->bind();
+
+  updateSliceProgram();
+  updateMVPAttrib(m_slice_program);
+
+  m_slice_vao.bind();
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  m_slice_vao.release();*/
+
+
+  
+
+  GL_Error();
+ 
 
   update();
 }
@@ -306,9 +401,7 @@ void GLWidget::resizeGL(int w, int h)
 
 
   initMeshShaderStorage(m_width, m_height);
-  initSelectionFrameBuffer(m_width, m_height);
-
-  //update();
+  //initSelectionFrameBuffer(m_width, m_height);
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -1004,12 +1097,35 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 void GLWidget::drawScene()
 {
+ /* int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
+  if (mito_colormap >= 0)
+  {
+    glUniform1i(mito_colormap, 1);*/
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_3D, *m_shared_resources->image_stack_volume);
+
+  glActiveTexture(GL_TEXTURE0 + 1); // activate the texture unit first before binding texture
+  glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
+  //}
+
+  /*int volumePos = m_mesh_program->uniformLocation("volume");
+  if (volumePos >= 0)
+  {
+    glUniform1i(volumePos, 0);*/
+    
+  //}
+
+  GL_Error();
+
   m_mesh_vao.bind();
- 
+
   m_shared_resources->mesh_index_vbo->bind();
   glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
 
   m_mesh_vao.release();
+
+  GL_Error();
 }
 
 void GLWidget::updateHighlightedSSBO()
@@ -1206,6 +1322,31 @@ int GLWidget::processSelection(float x, float y)
   GL_Error();
 
   return pickedID;
+}
+
+void GLWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
+{
+  unsigned int size = sizeX * sizeY * sizeZ;
+  unsigned char* rawData = (unsigned char*)m_data_container->loadRawFile(path, size);
+
+  if (rawData)
+  {
+    //load data into a 3D texture
+    glGenTextures(1, &texture);
+    glActiveTexture(texture_unit);
+    glBindTexture(GL_TEXTURE_3D, texture);
+
+    // set the texture parameters
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, rawData);
+  }
+
+  delete[] rawData;
 }
 
 

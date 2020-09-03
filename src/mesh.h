@@ -104,7 +104,7 @@ protected:
   std::vector< QVector4D >              m_normals;
 
   std::map<int, std::vector<int> >      m_vertexFaces;
-  std::vector<VertexData*>              m_typeVertexList[9];
+  std::vector<VertexData*>              m_typeVertexList[11];
 
  
 };

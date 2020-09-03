@@ -8,6 +8,7 @@ layout (early_fragment_tests) in;
 #define SPINE 5
 #define ASTRO 6
 #define SYNPS 7
+#define SLICE 10
 
 #define MAX_FRAGMENTS 25
 
@@ -19,6 +20,17 @@ flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
+in float       frag_slice_z;
+
+uniform bool          show_mito_distance_to_cell;
+uniform sampler1D	  mito_colormap;
+
+uniform sampler3D     volume;
+uniform bool          showSlice;
+
+
+uniform int           maxNodes;
+uniform float         cell_opacity;
 
 // ------------- order independent transparency variables ----------
 struct NodeType {
@@ -44,12 +56,8 @@ layout (std430, binding=6) buffer highlight_data
     int SSBO_highlighted[];
 };
 
-
-
-uniform int maxNodes;
-uniform float cell_opacity;
-subroutine void RenderPassType();
-subroutine uniform RenderPassType RenderPass;
+subroutine void       RenderPassType();
+subroutine uniform    RenderPassType RenderPass;
 
 //-------------------- DIFFUSE LIGHT PROPERTIES --------------------
 vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
@@ -69,6 +77,12 @@ int isVisible(int hvgx)
       return 1;
     }
   }
+
+  if(showSlice && hvgx == -1)
+  {
+    return 1;
+  }
+
   return 0;
 }
 
@@ -116,29 +130,44 @@ vec4 computeColor()
   }
   else if(frag_structure_type == MITO)
   {
-    obj_color = vec3(1.0, 0.0, 0.0);
-    
+    if(show_mito_distance_to_cell)
+    {
+      obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
+    }
+    else
+    {
+      obj_color = vec3(1.0, 0.0, 0.0);
+    }
   } 
   else if(frag_structure_type == SYNPS)
   {
     obj_color = vec3(0.58, 0.0, 0.83);
+  }
+  else if(frag_structure_type == SLICE)
+  {
+    float depth_normed = frag_slice_z / 5.0;
+    obj_color = vec3(texture(volume, vec3(frag_vert_pos.w,  frag_vert_pos.x, depth_normed)).x);
   }
   else
   {
     obj_color = vec3(0.6, 1.0, 0.6);
   } 
 
-  vec3 result = computeLight(lightDir1, lightColor1, obj_color);
-  result += computeLight(lightDir2, lightColor2, obj_color);
-
-  vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
-  //float alpha = abs(dot(viewDir, N));
-
-  if(frag_structure_type == MITO)
+  vec3 result;
+  if(frag_structure_type != SLICE)
   {
-    out_color = vec4(result, 1.0);
+    result = computeLight(lightDir1, lightColor1, obj_color);
+    result += computeLight(lightDir2, lightColor2, obj_color);
+
+    //vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
   }
-  else if(frag_structure_type == SYNPS)
+  else
+  {
+    result = obj_color;
+  }
+  
+
+  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE)
   {
     out_color = vec4(result, 1.0);
   }

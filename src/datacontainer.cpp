@@ -102,9 +102,10 @@ void DataContainer::loadData()
 
     
     compute_centers();
-    //compute_distance_mito_cell_boundary();
+    compute_distance_mito_cell_boundary();
     compute_closest_distance_to_structures();
     
+
     writeDataToCache(cache_path);
   }
   else
@@ -113,6 +114,7 @@ void DataContainer::loadData()
   }
 
   /* 3 */
+  
   PostloadMetaDataHVGX(input_files_dir.HVGX_metadata);
 }
 
@@ -1146,7 +1148,8 @@ bool DataContainer::importObj(QString path)
       
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
-        name += nameList[i];
+        name += nameList[i] + "_";
+      name.remove(name.length() - 1, name.length() - 1); // remove last character
       
       qDebug() << "Reading " << name;
       
@@ -1158,18 +1161,6 @@ bool DataContainer::importObj(QString path)
 
       m_objects[hvgxID] = obj;
       m_objectsByType[obj->getObjectType()].push_back(obj);
-
-      if (m_parents.find(hvgxID) != m_parents.end()) {
-        int parentID = m_parents[hvgxID];
-        obj->setParentID(parentID);
-
-        /*if (m_objects.find(parentID) != m_objects.end()) {
-          m_objects[parentID]->addChild(obj);
-        }
-        else {
-          qDebug() << obj->getName().c_str() << " has no parents in m_objects yet " << parentID;
-        }*/
-      }
     }
 
     // parse vertices
@@ -1231,6 +1222,8 @@ bool DataContainer::importObj(QString path)
   }
   inputFile.close();
 
+  addSliceVertices();
+
   m_mesh->computeNormalsPerVertex();
   processParentChildStructure();
 
@@ -1243,14 +1236,31 @@ bool DataContainer::importObj(QString path)
 
 void DataContainer::processParentChildStructure()
 {
-  for (auto const& [id, obj] : m_objects)
+  std::vector<Object*> mitos = getObjectsByType(Object_t::MITO);
+  for (auto const& mito : mitos) 
   {
-    int parent = obj->getParentID() + 1;
-    if (m_objects.find(parent) != m_objects.end()) 
+    QString name = mito->getName().c_str();
+    QList<QString> nameList = name.split("_");
+
+    if (name.contains("A")) // mito of axon
     {
-      m_objects[parent]->addChildID(obj->getHVGXID());
+      name = nameList[1].replace("A", "Axon");
     }
+    else if(name.contains("D")) // mito of dendrite
+    {
+      name = nameList[1].replace("D", "Dendrite");
+    }
+    else if(name.contains("Astro")) // mito of astrocyte
+    {
+      // todo
+    }
+
+    Object* parent = getObjectByName(name);
+
+    mito->setParentID(parent->getHVGXID());
+    parent->addChildID(mito->getHVGXID());
   }
+  
 }
 
 //----------------------------------------------------------------------------
@@ -1457,10 +1467,10 @@ void DataContainer::compute_distance_mito_cell_boundary()
 {
   std::vector<Object*> mitos = m_objectsByType[Object_t::MITO];
 
-  for (int i = 0; i < mitos.size(); ++i)
+  for (int i = 0; i < mitos.size(); i++)
   {
     Object* mito = mitos[i];
-    Object* parent = m_objects[mito->getParentID() + 1];
+    Object* parent = m_objects[mito->getParentID()];
     m_mesh_processing->compute_distance_distribution(mito, parent, m_mesh->getVerticesList());
   }
 }
@@ -1545,6 +1555,68 @@ Object* DataContainer::getObject(int hvgxID)
   if (m_objects.find(hvgxID) == m_objects.end())
     return 0;
   else return m_objects.at(hvgxID);
+}
+
+Object* DataContainer::getObjectByName(QString name)
+{
+  for (auto const& [id, obj] : m_objects)
+  {
+    if (QString(obj->getName().c_str()) == name) 
+    {
+      return obj;
+    }
+  }
+  return nullptr;
+}
+
+void DataContainer::addSliceVertices()
+{
+  Object* obj = new Object("Slice", -1);
+  obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
+
+  m_objects[-1] = obj;
+  m_objectsByType[Object_t::SLICE].push_back(obj);
+
+  int idx0 = addSliceVertex(0.0,         0.0,          0.0,  0.0);
+  int idx1 = addSliceVertex(MESH_MAX_Y,  0.0,          0.0,  1.0);
+  int idx2 = addSliceVertex(0.0,         MESH_MAX_Z,   1.0,  0.0);
+  int idx3 = addSliceVertex(MESH_MAX_Y,  MESH_MAX_Z,   1.0,  1.0);
+
+  m_mesh->addFace(idx0, idx1, idx2);
+  m_mesh->addFace(idx3, idx1, idx2);
+
+  obj->addTriangleIndex(idx0);
+  obj->addTriangleIndex(idx1); 
+  obj->addTriangleIndex(idx2);
+
+  obj->addTriangleIndex(idx3);
+  obj->addTriangleIndex(idx1);
+  obj->addTriangleIndex(idx2);
+}
+
+int DataContainer::addSliceVertex(float y, float z, float u, float v)
+{
+  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
+
+  QVector4D mesh_vertex(u, y, z, v);
+  QVector4D skeleton_vertex(0.0, 0.0, 0.0, 0.0); // just a placeholder for the moment
+
+  meshVertexList->emplace_back();
+  int vertexIdx = (int)meshVertexList->size() - 1;
+  struct VertexData* vertex = &meshVertexList->at(vertexIdx);
+
+  vertex->mesh_vertex = mesh_vertex;
+  vertex->distance_to_cell = 0.0; // first init all distances with the default value
+  vertex->hvgxID = -1;
+  vertex->structure_type = (int)Object_t::SLICE;
+
+  vertex->skeleton_vertex = skeleton_vertex; // place holder
+  vertex->index = vertexIdx;
+  //v->distance_to_astro = 0.0; //place holder
+
+  m_mesh->addVertex(vertex, Object_t::SLICE);
+
+  return vertexIdx;
 }
 
 //----------------------------------------------------------------------------
