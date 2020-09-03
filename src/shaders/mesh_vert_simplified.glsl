@@ -33,7 +33,7 @@ void main()
     mat4 mvpMatrix = pMatrix * vMatrix * mMatrix;
     if(structure_type == SLICE)
     {
-      gl_Position =  mvpMatrix * vec4(mesh_vtx.yz, slice_z, 1.0);
+      gl_Position =  mvpMatrix * vec4(mesh_vtx.y, slice_z, mesh_vtx.z, 1.0);
     }
     else
     {

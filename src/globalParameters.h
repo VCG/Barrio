@@ -4,8 +4,8 @@
 #define MESH_MAX_Y    5.0f
 #define MESH_MAX_Z    5.0f
 
-#define DIM_X       1000
-#define DIM_Y       1000
+#define DIM_X       999
+#define DIM_Y       999
 #define DIM_Z       449
 #define DIM_G		64
 

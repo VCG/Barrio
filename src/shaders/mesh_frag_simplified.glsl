@@ -141,16 +141,16 @@ vec4 computeColor()
   } 
   else if(frag_structure_type == SYNPS)
   {
-    obj_color = vec3(0.58, 0.0, 0.83);
+    obj_color = (frag_vert_pos / 5.0).xyz;//vec3(0.58, 0.0, 0.83);
   }
   else if(frag_structure_type == SLICE)
   {
     float depth_normed = frag_slice_z / 5.0;
-    obj_color = vec3(texture(volume, vec3(frag_vert_pos.x, frag_vert_pos.w, depth_normed)).x);
+    obj_color = vec3(texture(volume, vec3(frag_vert_pos.w,  frag_vert_pos.x, depth_normed)).x);
   }
   else
   {
-    obj_color = vec3(0.6, 1.0, 0.6);
+    obj_color = (frag_vert_pos / 5.0).xyz;//vec3(0.6, 1.0, 0.6);
   } 
 
   vec3 result;

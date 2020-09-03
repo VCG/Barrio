@@ -51,6 +51,7 @@ void MainWidget::on_slice_position_slider_changed(int value)
 
 void MainWidget::set_slice_position(int value)
 {
+  qDebug() << value;
   m_shared_resources.slice_depth = (float)value / (100.0 / MESH_MAX_Z);
 }
 
@@ -495,7 +496,7 @@ void MainWidget::initColormaps()
 
 void MainWidget::init3DVolumeTexture()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack_png.raw");
+  QString image_volume_path("C:/Users/jtroidl/Desktop/exp/m3_stack.raw");
 
   load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE0, DIM_X, DIM_Y, DIM_Z);
   m_shared_resources.image_stack_volume = &m_image_stack_texture;
@@ -541,6 +542,9 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, sizeX, sizeY, sizeZ, 0, GL_RED, GL_UNSIGNED_BYTE, rawData);
 
