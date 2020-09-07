@@ -16,15 +16,37 @@ Histogram::~Histogram()
 {
 }
 
+QString Histogram::createJSONString(int mito_id)
+{
+  Object* mito = m_datacontainer->getObject(mito_id);
+
+  std::vector<int>* mito_indices = mito->get_indices_list();
+  std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
+
+  QJsonArray json;
+  for (auto i : *mito_indices)
+  {
+    VertexData vertex = vertices->at(i);
+    double distance_to_cell = vertex.distance_to_cell;
+    
+    QJsonObject distance;
+    distance.insert("distance", QJsonValue::fromVariant(distance_to_cell));
+    json.push_back(distance);
+  }
+
+  QJsonDocument doc(json);
+  return doc.toJson(QJsonDocument::Compact);
+}
+
 QWebEngineView* Histogram::initVisWidget(int ID)
 {
-  //QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
-  //data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
+  QString json = createJSONString(ID);
+  data = new HistogramData(json, m_datacontainer, m_global_vis_parameters);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
   m_web_engine_view->page()->setWebChannel(channel);
-  //channel->registerObject(QStringLiteral("barchart_data"), data);
+  channel->registerObject(QStringLiteral("histogram_data"), data);
   m_web_engine_view->load(getHTMLPath(m_index_filename));
 
   return m_web_engine_view;
@@ -45,11 +67,19 @@ Histogram* Histogram::clone()
   return new Histogram(this);
 }
 
-HistogramData::HistogramData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container)
+HistogramData::HistogramData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters)
 {
+  m_json_string = json_string;
 
+  m_datacontainer = datacontainer;
+  visparameters = visparameters;
 }
 
 HistogramData::~HistogramData()
 {
+}
+
+Q_INVOKABLE QString HistogramData::getData()
+{
+  return Q_INVOKABLE m_json_string;
 }

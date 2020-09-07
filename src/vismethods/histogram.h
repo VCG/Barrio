@@ -11,24 +11,24 @@ class HistogramData : public QObject
   Q_OBJECT
 
 public:
-  HistogramData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
+  HistogramData(QString json_data, DataContainer* data_container, GlobalVisParameters* m_global_vis_parameters);
   ~HistogramData();
 
-  /*Q_INVOKABLE QString getNewickString();
-  Q_PROPERTY(QString newickString READ getNewickString);
+  Q_INVOKABLE QString getData();
+  Q_PROPERTY(QString json_string READ getData);
 
-  Q_INVOKABLE void setSelectedNode(QString name);
+  /*Q_INVOKABLE void setSelectedNode(QString name);
   Q_INVOKABLE QString getSelectedNode();
   Q_PROPERTY(QString new_selected_node READ getSelectedNode);
 
   Q_INVOKABLE void setHighlightedStructure(const QString& name);
   Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
-  Q_INVOKABLE void removeAllHighlightedStructures();
+  Q_INVOKABLE void removeAllHighlightedStructures();*/
 
-  void setNewickString(QString newick) { m_newickString = newick; };
-  void setHvgxID(int ID) { m_hvgxID = ID; };*/
+  void setJsonString(QString json) { m_json_string = json; };
+  void setHvgxID(int ID) { m_hvgx_id = ID; };
 
-  int m_hvgxID;
+  int m_hvgx_id;
   QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;
@@ -41,6 +41,8 @@ public:
   Histogram(Histogram* distanceTree);
   Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~Histogram();
+
+  QString createJSONString(int mito_id);
 
   //inherited functions
   QWebEngineView* initVisWidget(int ID);
