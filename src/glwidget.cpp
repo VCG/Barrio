@@ -301,21 +301,6 @@ void GLWidget::paintGL()
 
   m_mesh_program->release();
 
-  /*m_slice_program->bind();
-
-  updateSliceProgram();
-  updateMVPAttrib(m_slice_program);
-
-  m_slice_vao.bind();
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  m_slice_vao.release();*/
-
-
-  
-
-  GL_Error();
- 
-
   update();
 }
 
@@ -1053,26 +1038,11 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 void GLWidget::drawScene()
 {
- /* int mito_colormap = m_mesh_program->uniformLocation("mito_colormap");
-  if (mito_colormap >= 0)
-  {
-    glUniform1i(mito_colormap, 1);*/
-
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_3D, *m_shared_resources->image_stack_volume);
 
   glActiveTexture(GL_TEXTURE0 + 1); // activate the texture unit first before binding texture
   glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
-  //}
-
-  /*int volumePos = m_mesh_program->uniformLocation("volume");
-  if (volumePos >= 0)
-  {
-    glUniform1i(volumePos, 0);*/
-    
-  //}
-
-  GL_Error();
 
   m_mesh_vao.bind();
 
@@ -1080,14 +1050,10 @@ void GLWidget::drawScene()
   glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
 
   m_mesh_vao.release();
-
-  GL_Error();
 }
 
 void GLWidget::updateHighlightedSSBO()
 {
-  //makeCurrent();
-
   int bufferSize = m_shared_resources->highlighted_objects->size() * sizeof(int);
   
   glGenBuffers(1, &m_highlighted_ssbo);
