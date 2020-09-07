@@ -157,12 +157,8 @@ void GLWidget::updateVisParameters()
   int opacity = m_mesh_program->uniformLocation("cell_opacity");
   if (opacity >= 0) m_mesh_program->setUniformValue(opacity, m_shared_resources->cell_opacity);
 
-  qDebug() << m_shared_resources->cell_opacity;
-
   update();
   m_mesh_program->release();
-
-  GL_Error();
 }
 
 void GLWidget::initializeGL()
@@ -176,22 +172,11 @@ void GLWidget::initializeGL()
   
   f->glClearColor(1.0, 1.0, 1.0, 1.0);
 
-  //QString image_volume_path("C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_stack.raw");
-  //load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE1, DIM_X, DIM_Y, DIM_Z);
-  
-
   m_mesh_program = new QOpenGLShaderProgram;
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/mesh_vert_simplified.glsl");
   m_mesh_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/mesh_frag_simplified.glsl");
   m_mesh_program->link();
 
-  /*m_slice_program = new QOpenGLShaderProgram;
-  m_slice_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/slice_vert.glsl");
-  m_slice_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/slice_frag.glsl");
-  m_slice_program->link();*/
-
-  //f->glEnable(GL_CULL_FACE);
-  //f->glCullFace(GL_BACK);
   f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
   //------------------------------------------------------------------------------------------------------------------//
@@ -259,7 +244,6 @@ void GLWidget::initializeGL()
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
   m_fsQuad_vao.release();
-  GL_Error();
 
   updateVisibilitySSBO();
 
@@ -276,34 +260,6 @@ void GLWidget::initializeGL()
   }
   
   m_mesh_program->release();
-
-  //// ----------------------------------------------------------------------------------------------------//
-  //// Volume slice setup
-
-  //success = m_slice_program->bind();
-
-  //m_slice_vao.create();
-  //m_slice_vao.bind();
-
-  //// bind vbos to vao
-  //m_shared_resources->slice_vertex_vbo->bind();
-
-  //// setting up vertex attributes
-  //stride = 5 * sizeof(float);
-
-  //offset = 0;
-  //glEnableVertexAttribArray(0);
-  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
-
-
-  //offset += 3 * sizeof(float);
-  //glEnableVertexAttribArray(1);
-  //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
-
-  //m_slice_vao.release();
-  //m_slice_program->release();
-  
-  //----------------------------------------------------------------------------------------------------//
 
   if (m_FDL_running) {
     stopForecDirectedLayout();
@@ -1153,7 +1109,6 @@ void GLWidget::updateVisibilitySSBO()
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_visibility_ssbo);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, m_visible_structures.data(), GL_DYNAMIC_COPY);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, m_visibility_ssbo);
-  qDebug() << "visibility ssbo buffer size: " << bufferSize;
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
   update();

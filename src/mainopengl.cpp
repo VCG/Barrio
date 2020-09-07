@@ -5,14 +5,11 @@
 MainOpenGL::MainOpenGL()
   : flag(false)
 {
-  qDebug() << "MainOpenGL";
 }
 
 MainOpenGL::~MainOpenGL()
 {
-  qDebug() << "~MainOpenGL";
   if (flag == true) {
-    qDebug() << "Delete MainOpenGL";
     delete m_program_text;
     // our dtor should clear out the textures and remove the VAO's
     for (auto& m : m_characters)

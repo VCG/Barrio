@@ -525,8 +525,6 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
   if (rawData) 
   {
     unsigned char* pVolume = new unsigned char[size];
-
-    qDebug() << "Size of volume: " << fread(pVolume, sizeof(GLubyte), size, pFile);
     
     fclose(pFile);
 

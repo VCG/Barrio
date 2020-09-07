@@ -144,8 +144,6 @@ char* DataContainer::loadRawFile(QString path, int size)
   in.device()->reset();
   int nbytes = in.readRawData(buffer, size);
 
-  qDebug() << "loaded .raw file with " << nbytes << "bytes";
-
   return  buffer;
 }
 
@@ -254,7 +252,6 @@ void DataContainer::parseSynapsesGraph(QList<QByteArray>& wordList, std::set< st
 //
 void DataContainer::PreLoadMetaDataHVGX(QString path)
 {
-  qDebug() << "Func: loadMetaDataHVGX";
   QFile file(path);
   if (!file.open(QFile::ReadOnly | QFile::Text)) {
     qDebug() << "Could not open the file for reading";
@@ -355,7 +352,6 @@ void DataContainer::readObjects(QString path)
 // get center from here, and volume, and connectivity?
 void DataContainer::PostloadMetaDataHVGX(QString path)
 {
-  qDebug() << "Func: loadMetaDataHVGX";
   QFile file(path);
   if (!file.open(QFile::ReadOnly | QFile::Text)) {
     qDebug() << "Could not open the file for reading";

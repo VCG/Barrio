@@ -257,7 +257,6 @@ void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 
 void MainWindow::on_structure_selection_changed(int state)
 {
-  qDebug() << "seting image";
   VisConfiguration config;
   config.axons = mainwindow_ui->checkBox->isChecked();
   config.dends = mainwindow_ui->checkBox_2->isChecked();

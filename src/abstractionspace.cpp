@@ -3,7 +3,6 @@
 
 AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
 {
-  qDebug() << "Hello abstraction space!";
   m_datacontainer = datacontainer;
   
   m_global_vis_parameters.distance_threshold = 1.0;

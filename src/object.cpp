@@ -16,7 +16,6 @@
 Object::Object()
 {
   m_skeleton = new Skeleton(-1);
-  qDebug() << "new object created";
 }
 
 
