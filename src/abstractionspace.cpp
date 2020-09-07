@@ -63,11 +63,11 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
   else if (config.axons && !config.dends && config.mitos && !config.syn)
   {
     //UT 3
-    methods.low = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.low = new Histogram(&m_global_vis_parameters, m_datacontainer);
     methods.low_icon = ":/icons/histogram.png";
-    methods.medium = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.medium = new Boxplot(&m_global_vis_parameters, m_datacontainer);
     methods.medium_icon = ":/icons/boxplot.png";
-    methods.high = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.high = new Scatterplot(&m_global_vis_parameters, m_datacontainer);
     methods.high_icon = ":/icons/scatterplot.png";
 
 
@@ -99,7 +99,21 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
   }
   else if (config.axons && config.dends && config.mitos && !config.syn)
   {
-    qDebug() << "Hello world";
+    methods.low = new Histogram(&m_global_vis_parameters, m_datacontainer);
+    methods.low_icon = ":/icons/histogram.png";
+    methods.medium = new Boxplot(&m_global_vis_parameters, m_datacontainer);
+    methods.medium_icon = ":/icons/boxplot.png";
+    methods.high = new Scatterplot(&m_global_vis_parameters, m_datacontainer);
+    methods.high_icon = ":/icons/scatterplot.png";
+  }
+  else if (!config.axons && config.dends && config.mitos && !config.syn)
+  {
+    methods.low = new Histogram(&m_global_vis_parameters, m_datacontainer);
+    methods.low_icon = ":/icons/histogram.png";
+    methods.medium = new Boxplot(&m_global_vis_parameters, m_datacontainer);
+    methods.medium_icon = ":/icons/boxplot.png";
+    methods.high = new Scatterplot(&m_global_vis_parameters, m_datacontainer);
+    methods.high_icon = ":/icons/scatterplot.png";
   }
   else if (config.axons && config.dends && !config.mitos && config.syn)
   {

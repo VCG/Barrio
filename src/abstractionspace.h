@@ -7,12 +7,16 @@
 
 #include "mainopengl.h"
 #include "ssbo_structs.h"
-#include "vismethods/vismethod.h"
 #include "datacontainer.h"
 
+#include "vismethods/vismethod.h"
 #include "vismethods/distancetree.h"
 #include "vismethods/barchart.h"
 #include "vismethods/distancematrix.h"
+#include "vismethods/histogram.h"
+#include "vismethods/boxplot.h"
+#include "vismethods/scatterplot.h"
+
 
 struct AbstractionPoint {
   QVector2D point;

@@ -11,7 +11,7 @@ class HistogramData : public QObject
   Q_OBJECT
 
 public:
-  HistogramData(int ID, QString newickString, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
+  HistogramData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
   ~HistogramData();
 
   /*Q_INVOKABLE QString getNewickString();
@@ -29,8 +29,7 @@ public:
   void setHvgxID(int ID) { m_hvgxID = ID; };*/
 
   int m_hvgxID;
-  QString m_newickString;
-  QString m_selected_node;
+  QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer* m_datacontainer;
@@ -55,18 +54,10 @@ private:
   DataContainer* m_datacontainer;
 
   QString m_title;
-  //QString m_index_filename = "distancetree_index.html";
-
-  //QString createNewickString(int hvgxID, float distanceThreshold);
+  QString m_index_filename = "web/histogram_index.html";
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;
-
-  static bool sortByVal(const std::pair<int, double>& a,
-    const std::pair<int, double>& b)
-  {
-    return (a.second < b.second);
-  }
 };
 
 #endif
