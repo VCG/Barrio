@@ -21,6 +21,7 @@
         let json_string = jsobject.json_string;
 
         var my_data = JSON.parse(json_string);
+        var number_of_samples = Object.keys(my_data).length;
 
         // set the dimensions and margins of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
@@ -49,6 +50,7 @@
             // Y axis: initialization
             var y = d3.scaleLinear()
                 .range([height, 0]);
+
             var yAxis = svg.append("g")
 
             // A function that builds the graph for a specific value of bin
@@ -62,17 +64,18 @@
                     .domain(x.domain())  // then the domain of the graphic
                     .thresholds(x.ticks(nBin)); // then the numbers of bins
 
+
                 // And apply this function to data to get the bins
                 var bins = histogram(my_data);
 
                 // Y axis: update now that we know the domain
-                y.domain([0, d3.max(bins, function (d) {
-                    return d.length;
+                y.domain([0, d3.max(bins, function (d){
+                    return d.length / number_of_samples;
                 })]);   // d3.hist has to be called before the Y axis obviously
 
                 yAxis.transition()
                     .duration(1000)
-                    .call(d3.axisLeft(y));
+                    .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
 
                 // Join the rect with the bins data
                 var u = svg.selectAll("rect")
@@ -86,13 +89,13 @@
                     .duration(1000)
                     .attr("x", 1)
                     .attr("transform", function (d) {
-                        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+                        return "translate(" + x(d.x0) + "," + y(d.length / number_of_samples) + ")";
                     })
                     .attr("width", function (d) {
                         return x(d.x1) - x(d.x0) - 1;
                     })
                     .attr("height", function (d) {
-                        return height - y(d.length);
+                        return height - y(d.length / number_of_samples);
                     })
                     .style("fill", "#69b3a2")
 
