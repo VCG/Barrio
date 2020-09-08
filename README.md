@@ -32,5 +32,8 @@ Note that you do not have to restart your machine after setting the environment 
 ## Data Preprocessing
 For data preprocessing and input data specification, please refer to this [repo](https://github.com/jakobtroidl/neco_convert). 
 
+## FAQs
+Check out the FAQs for further development and more [here](https://github.com/jakobtroidl/NeuroComparer/wiki/FAQs). 
+
 
 
