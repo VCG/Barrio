@@ -88,6 +88,19 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
     methods.medium_icon = ":/icons/barchart.png";
     methods.high_icon = ":/icons/matrix.png";
   }
+  else if (config.axons && !config.dends && config.mitos && config.syn)
+  {
+    // low: distance tree
+    // medium: barchart
+    // high: distance matrix
+    methods.low = new DistanceTree(&m_global_vis_parameters, m_datacontainer);
+    methods.medium = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.high = new DistanceMatrix(&m_global_vis_parameters, m_datacontainer); // todo change to distance matrix
+
+    methods.low_icon = ":/icons/distance_tree.png";
+    methods.medium_icon = ":/icons/barchart.png";
+    methods.high_icon = ":/icons/matrix.png";
+  }
   else if (!config.axons && config.dends && !config.mitos && config.syn)
   {
     qDebug() << "Hello world";
@@ -120,7 +133,16 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
   }
   else if (config.axons && config.dends && config.mitos && config.syn)
   {
-    qDebug() << "Hello world";
+    // low: distance tree
+    // medium: barchart
+    // high: distance matrix
+    methods.low = new DistanceTree(&m_global_vis_parameters, m_datacontainer);
+    methods.medium = new BarChart(&m_global_vis_parameters, m_datacontainer);
+    methods.high = new DistanceMatrix(&m_global_vis_parameters, m_datacontainer); // todo change to distance matrix
+
+    methods.low_icon = ":/icons/distance_tree.png";
+    methods.medium_icon = ":/icons/barchart.png";
+    methods.high_icon = ":/icons/matrix.png";
   }
  
   return methods;
