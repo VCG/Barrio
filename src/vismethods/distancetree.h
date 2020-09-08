@@ -45,10 +45,12 @@ public:
   ~DistanceTree();
 
   //inherited functions
-  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   QWebEngineView* getWebEngineView();
   bool            update();
   DistanceTree*   clone();
+
+  VisType         getType();
 
 private:
 

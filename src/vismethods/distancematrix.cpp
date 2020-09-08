@@ -17,7 +17,7 @@ DistanceMatrix::~DistanceMatrix()
   // do nothing
 }
 
-QWebEngineView* DistanceMatrix::initVisWidget(int ID)
+QWebEngineView* DistanceMatrix::initVisWidget(int ID, SpecificVisParameters params)
 {
   QString json = getJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   data = new DistanceMatrixData(json, m_datacontainer, m_global_vis_parameters);
@@ -47,6 +47,13 @@ DistanceMatrix* DistanceMatrix::clone()
 {
   return new DistanceMatrix(this);
 }
+
+VisType DistanceMatrix::getType()
+{
+    return VisType::DISTANCE_MATRIX;
+}
+
+
 
 QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanceThreshold)
 {

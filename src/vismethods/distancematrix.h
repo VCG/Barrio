@@ -37,10 +37,12 @@ public:
   DistanceMatrix(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~DistanceMatrix();
 
-  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   bool            update();
   QWebEngineView* getWebEngineView();
   DistanceMatrix* clone();
+
+  VisType         getType();
 
 private:
   DistanceMatrixData* data;

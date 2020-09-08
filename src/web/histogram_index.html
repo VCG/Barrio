@@ -8,17 +8,12 @@
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
-<p>
-    <label># bins</label>
-    <input type="number" min="1" max="100" step="30" value="20" id="nBin">
-</p>
-
-
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
         var jsobject = channel.objects.histogram_data;
         let json_string = jsobject.json_string;
+        let number_of_bins = jsobject.number_of_bins;
 
         var my_data = JSON.parse(json_string);
         var number_of_samples = Object.keys(my_data).length;
@@ -36,8 +31,6 @@
             .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
-
-
 
             // X axis: scale and draw:
             var x = d3.scaleLinear()
@@ -99,22 +92,10 @@
                     })
                     .style("fill", "#69b3a2")
 
-
                 // If less bar in the new histogram, I delete the ones not in use anymore
-                u.exit()
-                    .remove()
-
+                u.exit().remove()
             }
 
-
-            // Initialize with 20 bins
-            update(20)
-
-
-            // Listen to the button -> update if user change it
-            d3.select("#nBin").on("input", function () {
-                update(+this.value);
-            });
-
+            update(number_of_bins);
     });
 </script>

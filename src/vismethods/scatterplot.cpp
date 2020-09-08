@@ -25,7 +25,7 @@ Scatterplot::~Scatterplot()
 {
 }
 
-QWebEngineView* Scatterplot::initVisWidget(int ID)
+QWebEngineView* Scatterplot::initVisWidget(int ID, SpecificVisParameters params)
 {
   //QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   //data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
@@ -53,3 +53,9 @@ Scatterplot* Scatterplot::clone()
 {
   return new Scatterplot(this);
 }
+
+VisType Scatterplot::getType()
+{
+    return VisType::SCATTERPLOT;
+}
+

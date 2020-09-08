@@ -18,7 +18,7 @@ DistanceTree::~DistanceTree()
   // destruct distance tree
 }
 
-QWebEngineView* DistanceTree::initVisWidget(int ID)
+QWebEngineView* DistanceTree::initVisWidget(int ID, SpecificVisParameters params)
 {
   QString newickString = createNewickString(ID, m_global_vis_parameters->distance_threshold);
   data = new DistanceTreeData(ID, newickString, m_global_vis_parameters, m_datacontainer);
@@ -48,6 +48,11 @@ bool DistanceTree::update()
 DistanceTree* DistanceTree::clone()
 {
   return new DistanceTree(this);
+}
+
+VisType DistanceTree::getType()
+{
+    return VisType::DISTANCE_TREE;
 }
 
 /*

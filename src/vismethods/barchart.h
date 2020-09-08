@@ -38,10 +38,13 @@ public:
   BarChart(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~BarChart();
 
-  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   bool            update();
   QWebEngineView* getWebEngineView();
   BarChart*       clone();
+
+  VisType         getType();
+
 
   QString         createJSONString(QList<int>* selected_mitos, double distance_threshold);
 

@@ -63,6 +63,8 @@ public slots:
   void on_slice_position_slider_changed(int value);
   void on_opacity_slider_changed(int value);
 
+  void on_number_of_bins_input_changed(int value);
+
 
 signals:
   void getDeletedData(int);

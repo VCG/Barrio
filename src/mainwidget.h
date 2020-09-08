@@ -37,6 +37,8 @@ public:
   void showSlice(bool showSlice);
 
   void updateInfoVisViews();
+
+  void setNumberOfBinsForHistogram(int bins);
   void setNumberOfEntities(NumberOfEntities number_of_entities);
 
   double on_synapse_distance_slider_changed(int value);

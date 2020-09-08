@@ -43,10 +43,12 @@ public:
   ~Scatterplot();
 
   //inherited functions
-  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   QWebEngineView* getWebEngineView();
   bool            update();
   Scatterplot*    clone();
+
+  VisType         getType();
 
 private:
 

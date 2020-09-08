@@ -22,3 +22,8 @@ struct GlobalVisParameters
   QList<int> selected_objects;
   QVector<int> highlighted_objects;
 };
+
+struct SpecificVisParameters
+{
+  int* number_of_bins;
+};

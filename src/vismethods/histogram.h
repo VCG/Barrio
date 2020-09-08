@@ -11,11 +11,16 @@ class HistogramData : public QObject
   Q_OBJECT
 
 public:
-  HistogramData(QString json_data, DataContainer* data_container, GlobalVisParameters* m_global_vis_parameters);
+  HistogramData(QString json_data, int* number_of_bins, DataContainer* data_container, GlobalVisParameters* m_global_vis_parameters);
   ~HistogramData();
 
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
+
+  Q_INVOKABLE int getNumberOfBins();
+  Q_PROPERTY(int number_of_bins READ getNumberOfBins);
+
+
 
   /*Q_INVOKABLE void setSelectedNode(QString name);
   Q_INVOKABLE QString getSelectedNode();
@@ -29,6 +34,7 @@ public:
   void setHvgxID(int ID) { m_hvgx_id = ID; };
 
   int m_hvgx_id;
+  int m_number_of_bins;
   QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;
@@ -39,16 +45,18 @@ class Histogram : public IVisMethod
 {
 public:
   Histogram(Histogram* distanceTree);
-  Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer);
+  Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer, int number_of_bins);
   ~Histogram();
 
   QString createJSONString(int mito_id);
 
   //inherited functions
-  QWebEngineView* initVisWidget(int ID);
+  QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   QWebEngineView* getWebEngineView();
   bool            update();
   Histogram*      clone();
+
+  VisType         getType();
 
 private:
 

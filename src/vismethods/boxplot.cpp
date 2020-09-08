@@ -16,7 +16,7 @@ Boxplot::~Boxplot()
 {
 }
 
-QWebEngineView* Boxplot::initVisWidget(int ID)
+QWebEngineView* Boxplot::initVisWidget(int ID, SpecificVisParameters params)
 {
   //QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   //data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
@@ -43,6 +43,11 @@ bool Boxplot::update()
 Boxplot* Boxplot::clone()
 {
   return new Boxplot(this);
+}
+
+VisType Boxplot::getType()
+{
+    return VisType::BOXPLOT;
 }
 
 BoxplotData::BoxplotData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container)

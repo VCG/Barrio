@@ -52,6 +52,11 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   mainwindow_ui->pushButton_3->setMinimumSize(60, 60);
   mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
 
+  mainwindow_ui->groupBox_29->hide();
+  mainwindow_ui->numberOfBins->setMinimum(5);
+  mainwindow_ui->numberOfBins->setMaximum(100);
+  mainwindow_ui->numberOfBins->setValue(20);
+
   setupSignalsNSlots();
   initializeVisualizationPresets();
  
@@ -138,6 +143,8 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(mainwindow_ui->pushButton, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
   QObject::connect(mainwindow_ui->pushButton_2, SIGNAL(released()), this, SLOT(on_medium_detail_vis_clicked()));
   QObject::connect(mainwindow_ui->pushButton_3, SIGNAL(released()), this, SLOT(on_low_detail_vis_clicked()));
+
+  QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
 
 }
 
@@ -266,8 +273,16 @@ void MainWindow::on_structure_selection_changed(int state)
 
   mainwindow_ui->horizontalSlider->setEnabled(config.sliceView);
 
-
   SelectedVisMethods visMethods = m_main_widget->setThumbnailIcons(config);
+
+  if (visMethods.low->getType() == VisType::HISTOGRAM)
+  {
+    mainwindow_ui->groupBox_29->show();
+  }
+  else {
+    mainwindow_ui->groupBox_29->hide();
+  }
+
   m_main_widget->showSlice(config.sliceView);
 
   // low detail
@@ -326,4 +341,9 @@ void MainWindow::on_opacity_slider_changed(int value)
 {
   m_main_widget->on_opacity_slider_changed(value);
   mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
+}
+
+void MainWindow::on_number_of_bins_input_changed(int value)
+{
+  m_main_widget->setNumberOfBinsForHistogram(value);
 }
