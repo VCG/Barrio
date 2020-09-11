@@ -8,6 +8,7 @@
 #include "glwidget.h"
 #include "datacontainer.h"
 #include "stb_image.h"
+#include "globalParameters.h"
 
 enum NumberOfEntities
 {
@@ -85,6 +86,8 @@ private:
   AbstractionSpace* m_abstraction_space;
 
   SelectedVisMethods m_vis_methods;
+  SpecificVisParameters m_specific_vis_parameters;
+
 
   void initSharedVBOs();
   void initSharedSlice();
@@ -99,7 +102,9 @@ private:
   int m_current_row = 0;
   int m_current_col = 0;
 
-
+  /************************************/
+  
+  /************************************/
   int m_max_cols = 3;
 
   int m_number_of_selected_structures = 0;

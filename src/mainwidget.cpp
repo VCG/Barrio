@@ -307,11 +307,7 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 
 bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod)
 {
-  SpecificVisParameters specificParams;
-
-  int bins = 20;
-  specificParams.number_of_bins = &bins;
-  QWebEngineView* widget = visMethod->initVisWidget(ID, specificParams);
+  QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
 
   groupBox->layout()->addWidget(widget);
 
@@ -383,9 +379,10 @@ void MainWidget::updateInfoVisViews()
 
 void MainWidget::setNumberOfBinsForHistogram(int bins)
 {
+  m_specific_vis_parameters.number_of_bins = bins;
   for (auto const& [id, view] : m_infovis_views)
   {
-    
+    view->setSpecificVisParameters(m_specific_vis_parameters);
     view->getWebEngineView()->reload();
   }
 }

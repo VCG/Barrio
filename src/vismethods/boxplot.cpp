@@ -50,6 +50,10 @@ VisType Boxplot::getType()
     return VisType::BOXPLOT;
 }
 
+void Boxplot::setSpecificVisParameters(SpecificVisParameters params)
+{
+}
+
 BoxplotData::BoxplotData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container)
 {
 }

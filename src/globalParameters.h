@@ -25,5 +25,5 @@ struct GlobalVisParameters
 
 struct SpecificVisParameters
 {
-  int* number_of_bins;
+  int number_of_bins = 20;
 };

@@ -52,6 +52,8 @@ public:
 
   VisType         getType();
 
+  void            setSpecificVisParameters(SpecificVisParameters params);
+
 private:
 
   DistanceTreeData* data;

@@ -59,3 +59,7 @@ VisType Scatterplot::getType()
     return VisType::SCATTERPLOT;
 }
 
+void Scatterplot::setSpecificVisParameters(SpecificVisParameters params)
+{
+}
+

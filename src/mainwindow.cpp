@@ -1,4 +1,4 @@
-﻿#include "glwidget.h"
+#include "glwidget.h"
 #include "glycogenanalysismanager.h"
 #include "glycogencluster.h"
 #include "object.h"

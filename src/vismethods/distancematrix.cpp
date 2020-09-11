@@ -53,6 +53,10 @@ VisType DistanceMatrix::getType()
     return VisType::DISTANCE_MATRIX;
 }
 
+void DistanceMatrix::setSpecificVisParameters(SpecificVisParameters params)
+{
+}
+
 
 
 QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanceThreshold)

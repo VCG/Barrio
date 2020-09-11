@@ -6,11 +6,10 @@ Histogram::Histogram(Histogram* histogram)
   m_global_vis_parameters = histogram->m_global_vis_parameters;
 }
 
-Histogram::Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer, int number_of_bins)
+Histogram::Histogram(GlobalVisParameters* visparams, DataContainer* datacontainer)
 {
   m_global_vis_parameters = visparams;
   m_datacontainer = datacontainer;
-  data->m_number_of_bins = number_of_bins;
 }
 
 Histogram::~Histogram()
@@ -42,12 +41,14 @@ QString Histogram::createJSONString(int mito_id)
 QWebEngineView* Histogram::initVisWidget(int ID, SpecificVisParameters params)
 {
   QString json = createJSONString(ID);
-  data = new HistogramData(json, params.number_of_bins, m_datacontainer, m_global_vis_parameters);
+  m_data = new HistogramData(json, m_datacontainer, m_global_vis_parameters);
+
+  setSpecificVisParameters(params);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
   m_web_engine_view->page()->setWebChannel(channel);
-  channel->registerObject(QStringLiteral("histogram_data"), data);
+  channel->registerObject(QStringLiteral("histogram_data"), m_data);
   m_web_engine_view->load(getHTMLPath(m_index_filename));
 
   return m_web_engine_view;
@@ -73,10 +74,14 @@ VisType Histogram::getType()
   return VisType::HISTOGRAM;
 }
 
-HistogramData::HistogramData(QString json_string, int* number_of_bins, DataContainer* datacontainer, GlobalVisParameters* visparameters)
+void Histogram::setSpecificVisParameters(SpecificVisParameters params)
+{
+  m_data->setNumberOfBins(params.number_of_bins);
+}
+
+HistogramData::HistogramData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters)
 {
   m_json_string = json_string;
-  m_number_of_bins = *number_of_bins;
   m_datacontainer = datacontainer;
   visparameters = visparameters;
 }

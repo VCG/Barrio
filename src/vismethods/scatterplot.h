@@ -50,6 +50,8 @@ public:
 
   VisType         getType();
 
+  void            setSpecificVisParameters(SpecificVisParameters params);
+
 private:
 
   ScatterplotData* data;

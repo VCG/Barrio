@@ -55,6 +55,10 @@ VisType DistanceTree::getType()
     return VisType::DISTANCE_TREE;
 }
 
+void DistanceTree::setSpecificVisParameters(SpecificVisParameters params)
+{
+}
+
 /*
   hvgxID must be a mitochondrion
 */

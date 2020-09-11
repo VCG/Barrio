@@ -103,6 +103,10 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
   return doc.toJson(QJsonDocument::Compact);
 }
 
+void BarChart::setSpecificVisParameters(SpecificVisParameters params)
+{
+}
+
 
 BarChartData::BarChartData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters) 
 {

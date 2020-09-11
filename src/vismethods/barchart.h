@@ -48,6 +48,8 @@ public:
 
   QString         createJSONString(QList<int>* selected_mitos, double distance_threshold);
 
+  void            setSpecificVisParameters(SpecificVisParameters params);
+
 private:
   BarChartData* data;
 
