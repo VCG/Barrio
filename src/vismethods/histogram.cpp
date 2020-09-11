@@ -30,7 +30,7 @@ QString Histogram::createJSONString(int mito_id)
     double distance_to_cell = vertex.distance_to_cell;
     
     QJsonObject distance;
-    distance.insert("distance", QJsonValue::fromVariant(distance_to_cell));
+    distance.insert("dist", QJsonValue::fromVariant(distance_to_cell));
     json.push_back(distance);
   }
 

@@ -11,22 +11,13 @@ class BoxplotData : public QObject
   Q_OBJECT
 
 public:
-  BoxplotData(int ID, GlobalVisParameters* m_global_vis_parameters, DataContainer* data_container);
+  BoxplotData(QString json_data, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
   ~BoxplotData();
 
-  /*Q_INVOKABLE QString getNewickString();
-  Q_PROPERTY(QString newickString READ getNewickString);
+  Q_INVOKABLE QString getData();
+  Q_PROPERTY(QString json_string READ getData);
 
-  Q_INVOKABLE void setSelectedNode(QString name);
-  Q_INVOKABLE QString getSelectedNode();
-  Q_PROPERTY(QString new_selected_node READ getSelectedNode);
-
-  Q_INVOKABLE void setHighlightedStructure(const QString& name);
-  Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
-  Q_INVOKABLE void removeAllHighlightedStructures();
-
-  void setNewickString(QString newick) { m_newickString = newick; };
-  void setHvgxID(int ID) { m_hvgxID = ID; };*/
+  void setJSONString(QString json) { m_json_string = json; };
 
   int m_hvgxID;
   QString m_json_string;
@@ -42,6 +33,8 @@ public:
   Boxplot(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~Boxplot();
 
+  QString createJSONString(QList<int>* selectedObjects);
+
   //inherited functions
   QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   QWebEngineView* getWebEngineView();
@@ -54,7 +47,7 @@ public:
 
 private:
 
-  BoxplotData* data;
+  BoxplotData* m_data;
   DataContainer* m_datacontainer;
 
   QString m_title;

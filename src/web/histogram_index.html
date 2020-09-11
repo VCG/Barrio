@@ -52,7 +52,7 @@
                 // set the parameters for the histogram
                 var histogram = d3.histogram()
                     .value(function (d) {
-                        return d.distance;
+                        return d.dist;
                     })   // I need to give the vector of value
                     .domain(x.domain())  // then the domain of the graphic
                     .thresholds(x.ticks(nBin)); // then the numbers of bins
