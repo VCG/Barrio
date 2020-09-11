@@ -7,6 +7,7 @@
 
 #include "glwidget.h"
 #include "colors.h"
+#include "mainwidget.h"
 
 GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent)
   : QOpenGLWidget(parent),
@@ -143,12 +144,6 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
 }
 
-void GLWidget::updateSliceProgram()
-{
-  
-}
-
-
 void GLWidget::updateVisParameters()
 {
   makeCurrent();
@@ -159,6 +154,20 @@ void GLWidget::updateVisParameters()
 
   update();
   m_mesh_program->release();
+}
+
+void GLWidget::resetCamera()
+{
+  m_rotation.setScalar(0.942247);
+  m_rotation.setX(0.228046);
+  m_rotation.setY(-0.238609);
+  m_rotation.setZ(-0.056791);
+  //reset translation
+  m_translation = QVector3D(0.0, 0.0, 0.0);
+  //reset zoom
+  m_camera_distance = 0.6f;
+  m_opengl_mngr->setZoom(m_camera_distance);
+  update();
 }
 
 void GLWidget::initializeGL()
@@ -477,6 +486,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     // angle in degrees and rotation axis
     m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
 
+    qDebug() << m_rotation;
+
     // whenever the rotation matrix is changed, reset the force directed layout and the nodes rotation matrix!
     // the 2D view is always locked from rotating
     // and the reset is alway rotatable
@@ -522,16 +533,9 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
 {
   switch (event->key()) {
   case(Qt::Key_S): // reset
-    m_rotation.setScalar(1.0f);
-    m_rotation.setX(0.0f);
-    m_rotation.setY(0.0f);
-    m_rotation.setZ(0.0f);
-    //reset translation
-    m_translation = QVector3D(0.0, 0.0, 0.0);
-    //reset zoom
-    m_camera_distance = 1.0f;
-    m_opengl_mngr->setZoom(m_camera_distance);
-    update();
+
+    
+
     break;
   case(Qt::Key_X): // stop layouting algorithm
     stopForecDirectedLayout();

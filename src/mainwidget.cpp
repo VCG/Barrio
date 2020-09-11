@@ -84,6 +84,18 @@ void MainWidget::on_widget_close_button_clicked()
   updateInfoVisViews();
 }
 
+void MainWidget::keyPressEvent(QKeyEvent* event)
+{
+  //switch (event->key()) {
+  //  case(Qt::Key_S): // reset
+  //    for (auto const& [id, widget] : m_opengl_views)
+  //    {
+  //      widget->resetCamera();
+  //    }
+  //    break;
+  //}
+}
+
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 {
   QPushButton* closeButton = new QPushButton("X", groupBox);

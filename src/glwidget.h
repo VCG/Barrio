@@ -71,6 +71,8 @@ public:
   void update_synapse_distance_threshold(double distance);
 
   void updateVisParameters();
+
+  void resetCamera();
  
 
 
@@ -167,7 +169,6 @@ protected:
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
-  void updateSliceProgram();
 
 
   void stopForecDirectedLayout();

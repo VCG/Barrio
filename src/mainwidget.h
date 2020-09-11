@@ -51,7 +51,7 @@ public:
   void initializeGL() override;
   void paintGL() override;
   void resizeGL(int width, int height) override;
-  //void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+  void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
   
 
 public slots:
