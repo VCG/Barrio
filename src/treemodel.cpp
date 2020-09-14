@@ -10,7 +10,11 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
   paramList->setColumnCount(2);
   paramList->setHeaderData(0, Qt::Horizontal, "Name");
   paramList->setHeaderData(1, Qt::Horizontal, "ID");
+
   this->setModel(paramList);
+
+  this->setColumnWidth(0, 200);
+  this->setColumnWidth(1, 100);
 
   std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
 

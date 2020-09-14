@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   initializeOpacitySlider();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
-  mainwindow_ui->verticalLayout_15->addWidget(m_treemodel);
+  mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
 
   mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
   mainwindow_ui->pushButton->setIconSize(QSize(60, 60));

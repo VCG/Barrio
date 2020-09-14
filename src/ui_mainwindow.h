@@ -55,7 +55,7 @@ public:
     QVBoxLayout *verticalLayout_23;
     QGroupBox *groupBox_16;
     QFormLayout *formLayout_6;
-    QVBoxLayout *verticalLayout_15;
+    QVBoxLayout *verticalLayout_5;
     QGroupBox *webView1;
     QGridLayout *gridLayout_23;
     QFrame *frame_65;
@@ -437,10 +437,10 @@ public:
         formLayout_6 = new QFormLayout(groupBox_16);
         formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
         formLayout_6->setSizeConstraint(QLayout::SetMaximumSize);
-        verticalLayout_15 = new QVBoxLayout();
-        verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
 
-        formLayout_6->setLayout(0, QFormLayout::LabelRole, verticalLayout_15);
+        formLayout_6->setLayout(0, QFormLayout::FieldRole, verticalLayout_5);
 
 
         verticalLayout_23->addWidget(groupBox_16);
