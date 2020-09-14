@@ -26,20 +26,20 @@ QString Boxplot::createJSONString(QList<int>* selectedObjects)
     std::vector<int>* mito_indices = mito->get_indices_list();
     std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
 
-    QJsonArray json;
+    QJsonObject mito_json;
+    QJsonArray  mito_distances;
     for (auto j : *mito_indices)
     {
       VertexData vertex = vertices->at(j);
       double distance_to_cell = vertex.distance_to_cell;
-
-      QJsonObject distance;
-      distance.insert("distance", QJsonValue::fromVariant(distance_to_cell));
-      json.push_back(distance);
+      mito_distances.push_back(QJsonValue::fromVariant(distance_to_cell));
     }
-    document.push_back(json);
+    mito_json.insert("key", mito->getName().c_str());
+    mito_json.insert("value", mito_distances);
+    document.push_back(mito_json);
   }
   QJsonDocument doc(document);
-  return doc.toJson(QJsonDocument::Compact);
+  return doc.toJson(QJsonDocument::Indented);
 }
 
 QWebEngineView* Boxplot::initVisWidget(int ID, SpecificVisParameters params)
