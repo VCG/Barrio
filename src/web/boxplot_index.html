@@ -19,6 +19,8 @@
 
         var data = JSON.parse(json_string);
 
+        //console.log(data);
+
         // set the dimensions and margins of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
             width = $("#my_dataviz").width() - margin.left - margin.right,
@@ -59,11 +61,15 @@
             .thresholds(y.ticks(20))    // Important: how many bins approx are going to be made? It is the 'resolution' of the violin plot
             .value(d => d)
 
-
+        let lengths = new Map();
         data.forEach(function (d) {
-            let bins = histogram(d.value); // And compute the binning on it.
+            let length = d.value.length;
+            let bins = histogram(d.value);
             d.value = bins;
+            lengths.set(d.key, {vertices: length});
         });
+
+        console.log(lengths.get("hallo"));
 
         // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
         var maxNum = 0
@@ -93,7 +99,8 @@
             }) // Translation on the right to be at the group position
             .append("path")
             .datum(function (d) {
-                return (d.value)
+                console.log(lengths);
+                return d.value;
             })     // So now we are working bin per bin
             .style("stroke", "none")
             .style("fill", "#69b3a2")
@@ -109,6 +116,6 @@
                 })
                 .curve(d3.curveCatmullRom)    // This makes the line smoother to give the violin appearance. Try d3.curveStep to see the difference
             )
-    })
+    });
 
 </script>
