@@ -26,4 +26,5 @@ struct GlobalVisParameters
 struct SpecificVisParameters
 {
   int number_of_bins = 20;
+  QString colors; 
 };

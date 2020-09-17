@@ -14,17 +14,30 @@
         let jsobject = channel.objects.histogram_data;
         let json_string = jsobject.json_string;
         let number_of_bins = jsobject.number_of_bins;
+        let colormap = jsobject.colormap;
 
-        var my_data = JSON.parse(json_string);
-        var number_of_samples = Object.keys(my_data).length;
+
+        let my_data = JSON.parse(json_string);
+        let colors = JSON.parse(colormap);
+        let number_of_samples = Object.keys(my_data).length;
+
+        console.log(colors);
+
+        // var j = colors.length;
+        //
+        // while (j--) {
+        //     (j + 1) % 1.5 === 0 && colors.splice(j, 1);
+        // }
+        // console.log(colors.length);
+
 
         // set the dimensions and margins of the graph
-        var margin = {top: 10, right: 30, bottom: 30, left: 40},
+        let margin = {top: 10, right: 30, bottom: 30, left: 40},
             width = 460 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
-        var svg = d3.select("#my_dataviz")
+        let svg = d3.select("#my_dataviz")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -32,23 +45,23 @@
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
-            // X axis: scale and draw:
-            var x = d3.scaleLinear()
-                .domain([0, 0.3])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-                .range([0, width]);
+        // X axis: scale and draw:
+        let x = d3.scaleLinear()
+            .domain([0, 0.3])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+            .range([0, width]);
 
-            svg.append("g")
+        svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x));
 
             // Y axis: initialization
-            var y = d3.scaleLinear()
-                .domain([0, 1])
-                .range([height, 0]);
+        let y = d3.scaleLinear()
+            .domain([0, 1])
+            .range([height, 0]);
 
-            let colorScale  = d3.scaleLinear()
-                .domain([0, 0.3])
-                .range(["orange", "white"]);
+        var colorScale  = d3.scaleLinear()
+                .domain([0, 1])
+                .range([colors[0], colors[Math.ceil(colors.length / 2)], colors[0], colors[colors.length - 1]]);
 
             var yAxis = svg.append("g")
 
@@ -103,7 +116,8 @@
                         return height - y(d.percentage);
                     })
                     .style("fill", function (d){
-                        return colorScale(d.x0);
+                        console.log(1 - d.x0 * 4.0);
+                        return colorScale(1 - d.x0 * 4.0);
                     })
 
                 // If less bar in the new histogram, I delete the ones not in use anymore

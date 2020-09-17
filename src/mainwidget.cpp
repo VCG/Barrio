@@ -402,6 +402,16 @@ void MainWidget::setNumberOfBinsForHistogram(int bins)
 void MainWidget::setColormap(QString name)
 {
   m_selected_colormap = name;
+
+  QImage* colormap = getColorMap(name);
+  m_specific_vis_parameters.colors = getColorValues(colormap);
+
+  for (auto const& [id, view] : m_infovis_views)
+  {
+    view->setSpecificVisParameters(m_specific_vis_parameters);
+    view->getWebEngineView()->reload();
+  }
+  
   initColormaps();
 }
 
@@ -519,12 +529,8 @@ void MainWidget::initColormaps()
 {
   makeCurrent();
 
-  // get path
-  QDir dir = QDir::currentPath();
-  dir.cdUp();
-  dir.cd("src");
-  dir.cd("colormaps");
-  QImage* colormap = new QImage(dir.path() + "/" + m_selected_colormap);
+  QImage* colormap = getColorMap(m_selected_colormap);
+  m_specific_vis_parameters.colors = getColorValues(colormap);
 
   init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, colormap->bits(), colormap->width());
   m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
@@ -586,6 +592,32 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
   }
   
   
+}
+
+QImage* MainWidget::getColorMap(QString name)
+{
+  // get path
+  QDir dir = QDir::currentPath();
+  dir.cdUp();
+  dir.cd("src");
+  dir.cd("colormaps");
+  return new QImage(dir.path() + "/" + name);
+
+
+}
+
+QString MainWidget::getColorValues(QImage* image)
+{
+  QJsonArray colors;
+  for (int i = 0; i < image->width(); i++)
+  {
+    QColor color(image->pixel(i, 0));
+    colors.push_back(color.name());
+  }
+  QJsonDocument doc(colors);
+
+  qDebug() << doc.toJson(QJsonDocument::Compact);
+  return doc.toJson(QJsonDocument::Compact);
 }
 
 void MainWidget::initSharedSlice()

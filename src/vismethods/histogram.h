@@ -20,6 +20,8 @@ public:
   Q_INVOKABLE int getNumberOfBins();
   Q_PROPERTY(int number_of_bins READ getNumberOfBins);
 
+  Q_INVOKABLE QString getColormap();
+  Q_PROPERTY(QString colormap READ getColormap);
 
 
   /*Q_INVOKABLE void setSelectedNode(QString name);
@@ -33,9 +35,11 @@ public:
   void setJsonString(QString json) { m_json_string = json; };
   void setHvgxID(int ID) { m_hvgx_id = ID; };
   void setNumberOfBins(int bins) { m_number_of_bins = bins; };
+  void setColors(QString colors) { m_colors = colors; };
 
   int m_hvgx_id;
   int m_number_of_bins;
+  QString m_colors;
   QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;

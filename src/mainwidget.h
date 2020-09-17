@@ -100,6 +100,9 @@ private:
   void init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* data, int size);
   void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
+  QImage* getColorMap(QString name);
+  QString getColorValues(QImage* image);
+
   int m_lastID;
   int m_current_row = 0;
   int m_current_col = 0;

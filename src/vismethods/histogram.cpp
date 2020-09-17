@@ -77,6 +77,7 @@ VisType Histogram::getType()
 void Histogram::setSpecificVisParameters(SpecificVisParameters params)
 {
   m_data->setNumberOfBins(params.number_of_bins);
+  m_data->setColors(params.colors);
 }
 
 HistogramData::HistogramData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters)
@@ -98,4 +99,9 @@ Q_INVOKABLE QString HistogramData::getData()
 Q_INVOKABLE int HistogramData::getNumberOfBins()
 {
   return Q_INVOKABLE m_number_of_bins;
+}
+
+Q_INVOKABLE QString HistogramData::getColormap()
+{
+  return Q_INVOKABLE m_colors;
 }
