@@ -11,7 +11,7 @@
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
-        var jsobject = channel.objects.histogram_data;
+        let jsobject = channel.objects.histogram_data;
         let json_string = jsobject.json_string;
         let number_of_bins = jsobject.number_of_bins;
 
@@ -36,13 +36,19 @@
             var x = d3.scaleLinear()
                 .domain([0, 0.3])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
                 .range([0, width]);
+
             svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x));
 
             // Y axis: initialization
             var y = d3.scaleLinear()
+                .domain([0, 1])
                 .range([height, 0]);
+
+            let colorScale  = d3.scaleLinear()
+                .domain([0, 0.3])
+                .range(["orange", "white"]);
 
             var yAxis = svg.append("g")
 
@@ -50,29 +56,35 @@
             function update(nBin) {
 
                 // set the parameters for the histogram
-                var histogram = d3.histogram()
+                let histogram = d3.histogram()
                     .value(function (d) {
                         return d.dist;
                     })   // I need to give the vector of value
                     .domain(x.domain())  // then the domain of the graphic
-                    .thresholds(x.ticks(nBin)); // then the numbers of bins
-
+                    .thresholds(x.ticks(nBin, "s")); // then the numbers of bins
 
                 // And apply this function to data to get the bins
-                var bins = histogram(my_data);
-
-                // Y axis: update now that we know the domain
-                y.domain([0, d3.max(bins, function (d){
-                    return d.length / number_of_samples;
-                })]);   // d3.hist has to be called before the Y axis obviously
+                let bins = histogram(my_data);
 
                 yAxis.transition()
                     .duration(1000)
                     .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
 
+                // computing cummulative data
+                for (let i = 0; i < bins.length; i++)
+                {
+                    if(i > 0)
+                    {
+                        bins[i].percentage = bins[i].length / number_of_samples + bins[i - 1].percentage;
+                    }
+                    else {
+                        bins[i].percentage = bins[i].length / number_of_samples;
+                    }
+                }
+
                 // Join the rect with the bins data
-                var u = svg.selectAll("rect")
-                    .data(bins)
+                let u = svg.selectAll("rect")
+                    .data(bins);
 
                 // Manage the existing bars and eventually the new ones:
                 u.enter()
@@ -82,15 +94,17 @@
                     .duration(1000)
                     .attr("x", 1)
                     .attr("transform", function (d) {
-                        return "translate(" + x(d.x0) + "," + y(d.length / number_of_samples) + ")";
+                        return "translate(" + x(d.x0) + "," + y(d.percentage) + ")";
                     })
                     .attr("width", function (d) {
                         return x(d.x1) - x(d.x0) - 1;
                     })
                     .attr("height", function (d) {
-                        return height - y(d.length / number_of_samples);
+                        return height - y(d.percentage);
                     })
-                    .style("fill", "#69b3a2")
+                    .style("fill", function (d){
+                        return colorScale(d.x0);
+                    })
 
                 // If less bar in the new histogram, I delete the ones not in use anymore
                 u.exit().remove()
