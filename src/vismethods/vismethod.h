@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QResource>
 #include <QFile>
+#include <QDir>
 #include <filesystem>
 
 #include <QWebChannel>
@@ -15,8 +16,6 @@
 #include <algorithm>
 
 #include "../datacontainer.h"
-
-namespace fs = std::filesystem;
 
 enum class VisType { DISTANCE_TREE = 0, BARCHART = 1, DISTANCE_MATRIX = 2, HISTOGRAM = 3, BOXPLOT = 4, SCATTERPLOT = 5 };
 
@@ -34,12 +33,12 @@ public:
 
   QUrl getHTMLPath(QString filename) 
   {
-    fs::path current_path = fs::current_path();
-    QString base_path = QString(current_path.parent_path().string().c_str());
-    base_path.replace("\\", "/");
-    QString url = base_path + QString("/src/") + filename;
+    QDir dir = QDir::currentPath();
+    qDebug() << dir.path();
+    dir.cdUp(); 
+    dir.cd("src");
 
-    return QUrl(url);
+    return QUrl(dir.path() + "/" + filename);
   }
 
 protected:

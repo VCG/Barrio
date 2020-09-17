@@ -62,6 +62,7 @@ public slots:
   void on_synapse_distance_slider_changed(int value);
   void on_slice_position_slider_changed(int value);
   void on_opacity_slider_changed(int value);
+  void on_colormap_changed(QString text);
 
   void on_number_of_bins_input_changed(int value);
 
@@ -95,8 +96,10 @@ private:
   void initializeSlicePositionSlider();
   void initializeSynapseThresholdSlider();
   void initializeOpacitySlider();
+  void initializeColormapComboBox();
 
   void initializeVisualizationPresets();
+
 
 };
 

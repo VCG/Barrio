@@ -53,8 +53,6 @@
         <file>icons/histogram.png</file>
         <file>icons/matrix.png</file>
         <file>icons/scatterplot.png</file>
-
-        <file>colormaps/colormap_tom.png</file>
         
         </qresource>
 </RCC>

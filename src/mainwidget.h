@@ -39,6 +39,7 @@ public:
   void updateInfoVisViews();
 
   void setNumberOfBinsForHistogram(int bins);
+  void setColormap(QString colormap);
   void setNumberOfEntities(NumberOfEntities number_of_entities);
 
   double on_synapse_distance_slider_changed(int value);
@@ -86,6 +87,8 @@ private:
 
   SelectedVisMethods m_vis_methods;
   SpecificVisParameters m_specific_vis_parameters;
+
+  QString m_selected_colormap = "0_colormap_tom.png";
 
 
   void initSharedVBOs();

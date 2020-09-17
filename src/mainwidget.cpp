@@ -399,6 +399,12 @@ void MainWidget::setNumberOfBinsForHistogram(int bins)
   }
 }
 
+void MainWidget::setColormap(QString name)
+{
+  m_selected_colormap = name;
+  initColormaps();
+}
+
 void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
 {
   if (new_entities_selection == NumberOfEntities::MEDIUM)
@@ -511,10 +517,16 @@ void MainWidget::initSharedVBOs()
 
 void MainWidget::initColormaps()
 {
-  QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/src/colormaps/colormap_tom.png");
-  QImage* im = new QImage(colormap_path);
+  makeCurrent();
 
-  init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, im->bits(), im->width());
+  // get path
+  QDir dir = QDir::currentPath();
+  dir.cdUp();
+  dir.cd("src");
+  dir.cd("colormaps");
+  QImage* colormap = new QImage(dir.path() + "/" + m_selected_colormap);
+
+  init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, colormap->bits(), colormap->width());
   m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
 }
 

@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   initializeSlicePositionSlider();
   initializeSynapseThresholdSlider();
   initializeOpacitySlider();
+  initializeColormapComboBox();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
@@ -59,7 +60,6 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   setupSignalsNSlots();
   initializeVisualizationPresets();
- 
 }
 
 void MainWindow::initializeSlicePositionSlider()
@@ -97,6 +97,27 @@ void MainWindow::initializeOpacitySlider()
   on_opacity_slider_changed(initial_tick_position);
 
   
+}
+
+void MainWindow::initializeColormapComboBox()
+{
+  QDir dir =  QDir::currentPath();
+  dir.cdUp();
+  dir.cd("src/colormaps");
+  
+  QDirIterator iterator(dir, QDirIterator::Subdirectories);
+  
+  while (iterator.hasNext())
+  {
+    QFile file(iterator.next());
+    QFileInfo fileInfo(file.fileName());
+    QString name = fileInfo.fileName();
+
+    if (QString::compare(name, ".", Qt::CaseInsensitive) != 0 && QString::compare(name, "..", Qt::CaseInsensitive) != 0)
+    {
+      mainwindow_ui->comboBox_2->addItem(name);
+    }
+  } 
 }
 
 void MainWindow::initializeVisualizationPresets()
@@ -145,6 +166,7 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(mainwindow_ui->pushButton_3, SIGNAL(released()), this, SLOT(on_low_detail_vis_clicked()));
 
   QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
+  QObject::connect(mainwindow_ui->comboBox_2, SIGNAL(currentTextChanged(QString)), this, SLOT(on_colormap_changed(QString)));
 
 }
 
@@ -341,6 +363,11 @@ void MainWindow::on_opacity_slider_changed(int value)
 {
   m_main_widget->on_opacity_slider_changed(value);
   mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
+}
+
+void MainWindow::on_colormap_changed(QString text)
+{
+  m_main_widget->setColormap(text);
 }
 
 void MainWindow::on_number_of_bins_input_changed(int value)
