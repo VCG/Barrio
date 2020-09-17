@@ -7,7 +7,6 @@
 #include "mainopengl.h"
 #include "glwidget.h"
 #include "datacontainer.h"
-#include "stb_image.h"
 #include "globalParameters.h"
 
 enum NumberOfEntities

@@ -1,7 +1,6 @@
 #include "openglmanager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 OpenGLManager::OpenGLManager(DataContainer* data_container)
   : m_2D(false),
@@ -86,8 +85,6 @@ void OpenGLManager::drawAll()
 // todo: if the file doesn't open or doesn't exist, then don't load the data here and in GLSL
 bool OpenGLManager::initOpenGLFunctions()
 {
-  QString colormap_path(":/colormaps/colormap_tom.png");
-
   m_glFunctionsSet = true;
   initializeOpenGLFunctions();
 

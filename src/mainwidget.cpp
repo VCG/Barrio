@@ -512,15 +512,9 @@ void MainWidget::initSharedVBOs()
 void MainWidget::initColormaps()
 {
   QString colormap_path("C:/Users/jtroidl/Desktop/NeuroComparer/src/colormaps/colormap_tom.png");
+  QImage* im = new QImage(colormap_path);
 
-  int width, height, nrChannels;
-  unsigned char* data = stbi_load(colormap_path.toStdString().c_str(), &width, &height, &nrChannels, 0);
-  if (data)
-  {
-    init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, data, width);
-  }
-  stbi_image_free(data);
-
+  init_1D_texture(m_mito_cell_distance_colormap, GL_TEXTURE1, im->bits(), im->width());
   m_shared_resources.mito_cell_distance_colormap = &m_mito_cell_distance_colormap;
 }
 
@@ -543,7 +537,7 @@ void MainWidget::init_1D_texture(GLuint& texture, GLenum texture_unit, GLvoid* d
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 }
 
 void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)

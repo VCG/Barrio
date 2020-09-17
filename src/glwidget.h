@@ -14,7 +14,6 @@
 #include "inputform.h"
 #include "globalParameters.h"
 
-#include "stb_image.h"
 
 enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
 
