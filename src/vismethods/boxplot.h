@@ -17,10 +17,15 @@ public:
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
 
+  Q_INVOKABLE QString getColormap();
+  Q_PROPERTY(QString colormap READ getColormap);
+
   void setJSONString(QString json) { m_json_string = json; };
+  void setColors(QString colors) { m_colors = colors; };
 
   int m_hvgxID;
   QString m_json_string;
+  QString m_colors;
 
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer* m_datacontainer;

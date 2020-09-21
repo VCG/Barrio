@@ -47,6 +47,8 @@ QWebEngineView* Boxplot::initVisWidget(int ID, SpecificVisParameters params)
   QString json = createJSONString(&m_global_vis_parameters->selected_objects);
   m_data = new BoxplotData(json, m_datacontainer, m_global_vis_parameters);
 
+  setSpecificVisParameters(params);
+
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
   m_web_engine_view->page()->setWebChannel(channel);
@@ -80,6 +82,7 @@ VisType Boxplot::getType()
 
 void Boxplot::setSpecificVisParameters(SpecificVisParameters params)
 {
+  m_data->setColors(params.colors);
 }
 
 BoxplotData::BoxplotData(QString json_data, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
@@ -96,4 +99,9 @@ BoxplotData::~BoxplotData()
 Q_INVOKABLE QString BoxplotData::getData()
 {
   return Q_INVOKABLE m_json_string;
+}
+
+Q_INVOKABLE QString BoxplotData::getColormap()
+{
+  return Q_INVOKABLE m_colors;
 }
