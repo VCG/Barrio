@@ -23,6 +23,7 @@
 
 #include "mesh.h"
 #include "object.h"
+#include "globalParameters.h"
 
 #pragma once
 class MeshProcessing
@@ -32,9 +33,10 @@ public:
   ~MeshProcessing();
 
   int computeCenter(Object* obj, std::vector<VertexData>* vertices);
-  int compute_distance_distribution(Object* mito, Object* cell, std::vector<VertexData>* vertices) const;
-  
-  
+  int compute_distance_distribution(Object* mito, Object* cell, std::vector<VertexData>* vertices);
   double compute_closest_distance(Object* mito, Object* synapse, std::vector<VertexData>* vertices);
+
+private:
+  bool isBorderVertex(float x, float y, float z);
 
 };

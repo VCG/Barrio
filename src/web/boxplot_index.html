@@ -132,7 +132,6 @@
                     return (xNum(d.length))
                 })
                 .y(function (d) {
-                    //console.log(d.x0);
                     return (y(d.x0))
                 })
                 .curve(d3.curveCatmullRom)    // This makes the line smoother to give the violin appearance. Try d3.curveStep to see the difference
