@@ -16,20 +16,9 @@
         let number_of_bins = jsobject.number_of_bins;
         let colormap = jsobject.colormap;
 
-
         let my_data = JSON.parse(json_string);
         let colors = JSON.parse(colormap);
         let number_of_samples = Object.keys(my_data).length;
-
-        console.log(colors);
-
-        // var j = colors.length;
-        //
-        // while (j--) {
-        //     (j + 1) % 1.5 === 0 && colors.splice(j, 1);
-        // }
-        // console.log(colors.length);
-
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 30, left: 40},
@@ -51,79 +40,75 @@
             .range([0, width]);
 
         svg.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
 
-            // Y axis: initialization
+        // Y axis: initialization
         let y = d3.scaleLinear()
             .domain([0, 1])
             .range([height, 0]);
 
-        var colorScale  = d3.scaleLinear()
-                .domain([0, 1])
-                .range([colors[0], colors[Math.ceil(colors.length / 2)], colors[0], colors[colors.length - 1]]);
+        let colorScale = d3.scaleQuantize()
+            .domain([0, 1.0])
+            .range(colors);
 
-            var yAxis = svg.append("g")
+        let yAxis = svg.append("g");
 
-            // A function that builds the graph for a specific value of bin
-            function update(nBin) {
+        // A function that builds the graph for a specific value of bin
+        function update(nBin) {
 
-                // set the parameters for the histogram
-                let histogram = d3.histogram()
-                    .value(function (d) {
-                        return d.dist;
-                    })   // I need to give the vector of value
-                    .domain(x.domain())  // then the domain of the graphic
-                    .thresholds(x.ticks(nBin, "s")); // then the numbers of bins
+            // set the parameters for the histogram
+            let histogram = d3.histogram()
+                .value(function (d) {
+                    return d.dist;
+                })   // I need to give the vector of value
+                .domain(x.domain())  // then the domain of the graphic
+                .thresholds(x.ticks(nBin, "s")); // then the numbers of bins
 
-                // And apply this function to data to get the bins
-                let bins = histogram(my_data);
+            // And apply this function to data to get the bins
+            let bins = histogram(my_data);
 
-                yAxis.transition()
-                    .duration(1000)
-                    .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
+            yAxis.transition()
+                .duration(1000)
+                .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
 
-                // computing cummulative data
-                for (let i = 0; i < bins.length; i++)
-                {
-                    if(i > 0)
-                    {
-                        bins[i].percentage = bins[i].length / number_of_samples + bins[i - 1].percentage;
-                    }
-                    else {
-                        bins[i].percentage = bins[i].length / number_of_samples;
-                    }
+            // computing cummulative data
+            for (let i = 0; i < bins.length; i++) {
+                if (i > 0) {
+                    bins[i].percentage = bins[i].length / number_of_samples + bins[i - 1].percentage;
+                } else {
+                    bins[i].percentage = bins[i].length / number_of_samples;
                 }
-
-                // Join the rect with the bins data
-                let u = svg.selectAll("rect")
-                    .data(bins);
-
-                // Manage the existing bars and eventually the new ones:
-                u.enter()
-                    .append("rect") // Add a new rect for each new elements
-                    .merge(u) // get the already existing elements as well
-                    .transition() // and apply changes to all of them
-                    .duration(1000)
-                    .attr("x", 1)
-                    .attr("transform", function (d) {
-                        return "translate(" + x(d.x0) + "," + y(d.percentage) + ")";
-                    })
-                    .attr("width", function (d) {
-                        return x(d.x1) - x(d.x0) - 1;
-                    })
-                    .attr("height", function (d) {
-                        return height - y(d.percentage);
-                    })
-                    .style("fill", function (d){
-                        console.log(1 - d.x0 * 4.0);
-                        return colorScale(1 - d.x0 * 4.0);
-                    })
-
-                // If less bar in the new histogram, I delete the ones not in use anymore
-                u.exit().remove()
             }
 
-            update(number_of_bins);
+            // Join the rect with the bins data
+            let u = svg.selectAll("rect")
+                .data(bins);
+
+            // Manage the existing bars and eventually the new ones:
+            u.enter()
+                .append("rect") // Add a new rect for each new elements
+                .merge(u) // get the already existing elements as well
+                .transition() // and apply changes to all of them
+                .duration(1000)
+                .attr("x", 1)
+                .attr("transform", function (d) {
+                    return "translate(" + x(d.x0) + "," + y(d.percentage) + ")";
+                })
+                .attr("width", function (d) {
+                    return x(d.x1) - x(d.x0) - 1;
+                })
+                .attr("height", function (d) {
+                    return height - y(d.percentage);
+                })
+                .style("fill", function (d) {
+                    return colorScale(1 - d.x0 * 4.0);
+                })
+
+            // If less bar in the new histogram, I delete the ones not in use anymore
+            u.exit().remove()
+        }
+
+        update(number_of_bins);
     });
 </script>

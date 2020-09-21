@@ -614,9 +614,8 @@ QString MainWidget::getColorValues(QImage* image)
     QColor color(image->pixel(i, 0));
     colors.push_back(color.name());
   }
-  QJsonDocument doc(colors);
 
-  qDebug() << doc.toJson(QJsonDocument::Compact);
+  QJsonDocument doc(colors);
   return doc.toJson(QJsonDocument::Compact);
 }
 
