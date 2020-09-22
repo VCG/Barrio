@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<style>
+
+    div.tooltip {
+        position: absolute;
+        text-align: match-parent;
+        width: auto;
+        height: auto;
+        padding: 3px;
+        font: 12px sans-serif;
+        background: white;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+    }
+
+</style>
+
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
@@ -33,36 +50,56 @@
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
-            // Add X axis
-            var x = d3.scaleLinear()
-                .domain([0, 0.3])
-                .range([0, width]);
-            svg.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+        // Append Div for tooltip to SVG
+        let div = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-            // Add Y axis
-            var y = d3.scaleLinear()
-                .domain([0, 1.0])
-                .range([height, 0]);
-            svg.append("g")
-                .call(d3.axisLeft(y));
+        // Add X axis
+        var x = d3.scaleLinear()
+            .domain([0, 0.3])
+            .range([0, width]);
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
 
-            // Add dots
-            svg.append('g')
-                .selectAll("dot")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("cx", function (d) {
-                    return x(d.avg);
-                })
-                .attr("cy", function (d) {
-                    return y(d.perc);
-                })
-                .attr("r", 3.0)
-                .style("fill", "#69b3a2")
+        // Add Y axis
+        var y = d3.scaleLinear()
+            .domain([0, 1.0])
+            .range([height, 0]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
 
-        });
+        // Add dots
+        svg.append('g')
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return x(d.avg);
+            })
+            .attr("cy", function (d) {
+                return y(d.perc);
+            })
+            .attr("r", 6.0)
+            .on("mouseover", function (d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text(d.name)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function (d) {
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            })
+            .style("fill", "#69b3a2")
+
+    });
 
 </script>

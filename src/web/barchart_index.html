@@ -50,46 +50,46 @@
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
-        var jsobject = channel.objects.barchart_data;
+        let jsobject = channel.objects.barchart_data;
         let json_string = jsobject.json_string;
 
-        var m = {top: 10, right: 10, bottom: 50, left: 110},
+        let m = {top: 10, right: 10, bottom: 50, left: 110},
             w = $("#chart").width() - m.left - m.right,
             h = $("#chart").height() - m.top - m.bottom;
 
-        var x = d3.scale.ordinal().rangeRoundBands([0, w]);
-        var y = d3.scale.linear().range([h, 0]);
+        let x = d3.scale.ordinal().rangeRoundBands([0, w]);
+        let y = d3.scale.linear().range([h, 0]);
 
-        var yAxis = d3.svg.axis()
+        let yAxis = d3.svg.axis()
             .scale(y)
             .orient("left");
 
-        var xAxis = d3.svg.axis()
+        let xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
             .ticks(5);
 
-            // Append Div for tooltip to SVG
+        // Append Div for tooltip to SVG
         let div = d3.select("body")
             .append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        var svg = d3.select("#chart").append("svg")
+        let svg = d3.select("#chart").append("svg")
             .attr("width", w + m.right + m.left + 100)
             .attr("height", h + m.top + m.bottom)
             .append("g")
             .attr("transform",
                 "translate(" + m.left + "," + m.top + ")");
 
-        data = JSON.parse(json_string);
+        let data = JSON.parse(json_string);
 
         data.forEach(function (d) {
             d.votes = +d.votes;
         });
 
 
-        var nested = d3.nest()
+        let nested = d3.nest()
             .key(function (d) {
                 return d.district;
             })
@@ -116,7 +116,7 @@
             .call(yAxis)
             .append("text");
 
-        var district = svg.selectAll(".district")
+        let district = svg.selectAll(".district")
             .data(nested)
             .enter()
             .append("g")
@@ -124,7 +124,7 @@
                 return "translate(" + x(d.key) + ", 0)";
             });
 
-        var bars = district.selectAll(".bar")
+        let bars = district.selectAll(".bar")
             .data(function (d) {
                 return d.values
             })
