@@ -10,7 +10,7 @@
         height: auto;
         padding: 3px;
         font: 12px sans-serif;
-        background: white;
+        background: lightgray;
         border: 0px;
         border-radius: 4px;
         pointer-events: none;
@@ -29,20 +29,20 @@
 
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
-        var jsobject = channel.objects.scatterplot_data;
+        let jsobject = channel.objects.scatterplot_data;
         let json_string = jsobject.json_string;
+        let data = JSON.parse(json_string);
 
-        var data = JSON.parse(json_string);
-
-        console.log(data);
+        let base_color = "#69b3a2";
+        let highlight_color = "#ffa500";
 
         // set the dimensions and margins of the graph
-        var margin = {top: 10, right: 30, bottom: 30, left: 60},
+        let margin = {top: 10, right: 30, bottom: 30, left: 60},
             width = 460 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
-        var svg = d3.select("#my_dataviz")
+        let svg = d3.select("#my_dataviz")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -57,7 +57,7 @@
             .style("opacity", 0);
 
         // Add X axis
-        var x = d3.scaleLinear()
+        let x = d3.scaleLinear()
             .domain([0, 0.3])
             .range([0, width]);
         svg.append("g")
@@ -65,14 +65,24 @@
             .call(d3.axisBottom(x));
 
         // Add Y axis
-        var y = d3.scaleLinear()
+        let y = d3.scaleLinear()
             .domain([0, 1.0])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
 
+        function highlightDots(dot_name) {
+            dots.style("fill", function (d) {
+                if (d.name == dot_name) {
+                    return highlight_color;
+                }
+                return base_color;
+
+            });
+        }
+
         // Add dots
-        svg.append('g')
+        let dots = svg.append('g')
             .selectAll("dot")
             .data(data)
             .enter()
@@ -83,8 +93,9 @@
             .attr("cy", function (d) {
                 return y(d.perc);
             })
-            .attr("r", 6.0)
-            .on("mouseover", function (d) {
+            .attr("r", 6.0);
+
+        dots.on("mouseover", function (d) {
                 div.transition()
                     .duration(200)
                     .style("opacity", .9);
@@ -92,13 +103,15 @@
                 div.text(d.name)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
-            })
+
+                highlightDots(d.name);
+             })
             .on("mouseout", function (d) {
                 div.transition()
-                    .duration(500)
+                    .duration(300)
                     .style("opacity", 0);
             })
-            .style("fill", "#69b3a2")
+            .style("fill", base_color)
 
     });
 
