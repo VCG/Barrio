@@ -57,7 +57,7 @@ void MainWidget::on_widget_close_button_clicked()
   qDebug() << "Close button pressed";
 
   QPushButton* button = qobject_cast<QPushButton*>(sender());
-  QWidget* widget_to_delete = button->parentWidget();
+  QWidget* widget_to_delete = button->parentWidget()->parentWidget();
   
   int id_to_delete = 0;
   for (auto& i : m_groupboxes) {
