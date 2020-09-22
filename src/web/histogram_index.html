@@ -4,6 +4,14 @@
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    .label {
+        font-family: 'Nanum Gothic', sans-serif;
+        text-anchor: middle;
+    }
+</style>
 
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
@@ -21,7 +29,7 @@
         let number_of_samples = Object.keys(my_data).length;
 
         // set the dimensions and margins of the graph
-        let margin = {top: 10, right: 30, bottom: 30, left: 40},
+        let margin = {top: 10, right: 30, bottom: 55, left: 60},
             width = 460 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
 
@@ -53,6 +61,23 @@
             .range(colors);
 
         let yAxis = svg.append("g");
+
+        // taxt label for x-axis
+        svg.append("text")
+            .attr("transform",
+                "translate(" + (width/2) + " ," +
+                (height + margin.top + 25) + ")")
+            .attr("class", "label")
+            .text("Distance to Cell Boundary");
+
+        // text label for the y axis
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1.0em")
+            .attr("class", "label")
+            .text("% of surface");
 
         // A function that builds the graph for a specific value of bin
         function update(nBin) {

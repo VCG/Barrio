@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 
     div.tooltip {
@@ -16,11 +21,14 @@
         pointer-events: none;
     }
 
+    .label{
+        font-family: 'Nanum Gothic', sans-serif;
+        text-anchor: middle;
+    }
+
 </style>
 
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
 
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
@@ -37,7 +45,7 @@
         let highlight_color = "#ffa500";
 
         // set the dimensions and margins of the graph
-        let margin = {top: 10, right: 30, bottom: 30, left: 60},
+        let margin = {top: 10, right: 30, bottom: 50, left: 60},
             width = 460 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
 
@@ -70,6 +78,23 @@
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
+
+        // taxt label for x-axis
+        svg.append("text")
+            .attr("transform",
+                "translate(" + (width/2) + " ," +
+                (height + margin.top + 25) + ")")
+            .attr("class", "label")
+            .text("Minimum Distance to Cell Boundary");
+
+        // text label for the y axis
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",0 - (height / 2))
+            .attr("dy", "1em")
+            .attr("class", "label")
+            .text("% closer than 0.1 mm surface");
 
         function highlightDots(dot_name) {
             dots.style("fill", function (d) {
