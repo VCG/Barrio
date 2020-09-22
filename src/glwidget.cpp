@@ -286,7 +286,7 @@ void GLWidget::paintGL()
 {
   startRotation();
     
-  m_mesh_program->bind();
+  /*m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
   updateHighlightedSSBO();
 
@@ -295,7 +295,7 @@ void GLWidget::paintGL()
   glFlush();
   pass2();
 
-  m_mesh_program->release();
+  m_mesh_program->release();*/
 
   //m_slice_program->release();
     
