@@ -43,23 +43,28 @@ QString Scatterplot::createJSONString(QList<int>* selectedObjects)
     std::vector<int>* mito_indices = object->get_indices_list();
     std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
 
-    double sum = 0.0;
-    double counter = 0.0;
-    double threshold = 0.1;
+    float minimum = 1000;
+    float counter = 0.0;
+    float threshold = 0.1;
+
     for (auto j : *mito_indices)
     {
       VertexData vertex = vertices->at(j);
-      sum += vertex.distance_to_cell;
+      if(vertex.distance_to_cell < minimum);
+      {
+        minimum = vertex.distance_to_cell;
+      }
 
       if (vertex.distance_to_cell <= threshold)
       {
         counter += 1.0;
       }
     }
-    double avg = sum / (double)mito_indices->size();
-    double perc = counter / (double)mito_indices->size();
+   
+    float perc = counter / (float)mito_indices->size();
 
-    object_json.insert("avg", avg);
+    object_json.insert("name", object->getName().c_str());
+    object_json.insert("avg", minimum);
     object_json.insert("perc", perc);
 
     document.push_back(object_json);
