@@ -136,7 +136,7 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
     }
     else
     {
-      vertex->distance_to_cell = std::numeric_limits<double>::max();
+      vertex->distance_to_cell = std::numeric_limits<float>::max();
     }
     
   }
