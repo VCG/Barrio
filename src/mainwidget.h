@@ -37,6 +37,7 @@ public:
   void showSlice(bool showSlice);
 
   void updateInfoVisViews();
+  void updateGroupBoxStyle();
 
   void setNumberOfBinsForHistogram(int bins);
   void setColormap(QString colormap);

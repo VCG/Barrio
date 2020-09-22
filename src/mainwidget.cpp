@@ -2,8 +2,6 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-//namespace fs = std::filesystem;
-
 MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
   : QOpenGLWidget(parent)
 {
@@ -98,9 +96,19 @@ void MainWidget::keyPressEvent(QKeyEvent* event)
 
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 {
+  QFrame* frame = new QFrame;
+  frame->setMaximumHeight(40);
+  QHBoxLayout* horizontal_layout = new QHBoxLayout();
+
   QPushButton* closeButton = new QPushButton("X", groupBox);
   closeButton->setMaximumSize(QSize(20, 20));
-  groupBox->layout()->addWidget(closeButton);
+
+  horizontal_layout->addStretch();
+  horizontal_layout->addWidget(closeButton);
+
+  frame->setLayout(horizontal_layout);
+
+  groupBox->layout()->addWidget(frame);
   connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));
 }
 
@@ -389,6 +397,24 @@ void MainWidget::updateInfoVisViews()
   }
 }
 
+void MainWidget::updateGroupBoxStyle()
+{
+  QVector<int>* groupBoxes = m_shared_resources.highlighted_group_boxes;
+  for (auto const& [hvgx, box] : m_groupboxes)
+  {
+    box->setObjectName(QString::number(hvgx));
+    if (groupBoxes->contains(hvgx))
+    {
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 2px solid orange; }");
+    }
+    else
+    {
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; }");
+    }
+    
+  }
+}
+
 void MainWidget::setNumberOfBinsForHistogram(int bins)
 {
   m_specific_vis_parameters.number_of_bins = bins;
@@ -483,6 +509,8 @@ void MainWidget::initializeGL()
   init3DVolumeTexture();
 
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
+  m_shared_resources.highlighted_group_boxes = &m_abstraction_space->m_global_vis_parameters.highlighted_group_boxes;
+
 
   // add first widget
   //addGLWidget(0, true);
@@ -503,6 +531,8 @@ void MainWidget::resizeGL(int width, int height)
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
+  updateGroupBoxStyle();
+  update();
 }
 
 //void MainWidget::resizeGL(int width, int height)
@@ -590,8 +620,6 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
 
     delete[] rawData;
   }
-  
-  
 }
 
 QImage* MainWidget::getColorMap(QString name)
@@ -602,8 +630,6 @@ QImage* MainWidget::getColorMap(QString name)
   dir.cd("src");
   dir.cd("colormaps");
   return new QImage(dir.path() + "/" + name);
-
-
 }
 
 QString MainWidget::getColorValues(QImage* image)

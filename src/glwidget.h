@@ -40,6 +40,7 @@ struct SharedGLResources
   float         slice_depth;
 
   QVector<int>*   highlighted_objects;
+  QVector<int>*   highlighted_group_boxes;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL

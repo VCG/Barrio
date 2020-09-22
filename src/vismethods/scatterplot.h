@@ -17,6 +17,9 @@ public:
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
 
+  Q_INVOKABLE void setHighlightedFrame(const QString& name);
+  Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
+
   void setJSONString(QString json) { m_json_string = json; };
 
   int m_hvgxID;
