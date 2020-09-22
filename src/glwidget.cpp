@@ -486,8 +486,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     // angle in degrees and rotation axis
     m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
 
-    qDebug() << m_rotation;
-
     // whenever the rotation matrix is changed, reset the force directed layout and the nodes rotation matrix!
     // the 2D view is always locked from rotating
     // and the reset is alway rotatable
@@ -533,9 +531,6 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
 {
   switch (event->key()) {
   case(Qt::Key_S): // reset
-
-    
-
     break;
   case(Qt::Key_X): // stop layouting algorithm
     stopForecDirectedLayout();
