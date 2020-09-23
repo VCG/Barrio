@@ -20,6 +20,9 @@ public:
   Q_INVOKABLE QString getColormap();
   Q_PROPERTY(QString colormap READ getColormap);
 
+  Q_INVOKABLE void setHighlightedFrame(const QString& name);
+  Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
+
   void setJSONString(QString json) { m_json_string = json; };
   void setColors(QString colors) { m_colors = colors; };
 
