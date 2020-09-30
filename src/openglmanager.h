@@ -96,7 +96,6 @@ public:
 
   // *********** 6)Glycogen     ***********
   bool initGlycogenPointsShaders();
-  void drawGlycogenPoints();
   void updateGlycogenPoints();
   void updateGlycogenUniforms(GLuint program);
   //***************************************

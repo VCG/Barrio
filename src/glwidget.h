@@ -9,7 +9,6 @@
 #include "graphmanager.h"
 #include "abstractionspace.h"
 #include "openglmanager.h"
-#include "glycogenanalysismanager.h"
 #include "performancerate.h"
 #include "inputform.h"
 #include "globalParameters.h"
@@ -25,9 +24,10 @@ struct ListNode {
 
 struct SharedGLResources
 {
+  QOpenGLBuffer* vertex_vbo;
   QOpenGLBuffer* mesh_index_vbo;
-  QOpenGLBuffer* mesh_vertex_vbo;
-  QOpenGLBuffer* mesh_normal_vbo;
+  QOpenGLBuffer* skeleton_index_vbo;
+
   int            index_count;
 
   GLuint*        mito_cell_distance_colormap;
@@ -52,7 +52,6 @@ public:
   ~GLWidget();
   void init(DataContainer* data_container);
 
-  GlycogenAnalysisManager* getGlycogenAnalysisManager() { return m_glycogenAnalysisManager; }
   OpenGLManager* getOpenGLManager() { return m_opengl_mngr; }
   DataContainer* getDataContainer() { return m_data_container; }
   float getZoomFactor() { return m_camera_distance; }
@@ -96,14 +95,6 @@ public slots:
 
   void getActiveGraphTab(int);
   void reset_layouting(bool);
-  void getGraphCr(double value);
-  void getGraphCa(double value);
-  void getGraphAABBdim(double value);
-  void getGraphmax_distance(double value);
-  void getGraphmax_vertex_movement(double value);
-  void getGraphslow_factor(double value);
-  void getGraphmax_force(double value);
-  void getGraphoriginalPosAttraction(double value);
 
   void lockRotation2D();
 
@@ -170,9 +161,6 @@ protected:
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
 
-
-  void stopForecDirectedLayout();
-
   void saveScreenshot();
 
   AbstractionSpace* m_2dspace;
@@ -181,8 +169,6 @@ protected:
   /* mesh */
   DataContainer* m_data_container;
   OpenGLManager* m_opengl_mngr;
-  GraphManager* m_graphManager;
-  GlycogenAnalysisManager* m_glycogenAnalysisManager;
 
   struct WidgetUniforms               m_uniforms;
 

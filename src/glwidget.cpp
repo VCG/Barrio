@@ -85,7 +85,7 @@ void GLWidget::init(DataContainer* data_container)
   m_opengl_mngr = new OpenGLManager(m_data_container);
 
   // graph manager with 4 graphs and 2D space layouted data
-  m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
+  //m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
 
 }
 
@@ -197,7 +197,7 @@ void GLWidget::initializeGL()
   m_mesh_vao.bind();
 
   // bind vbos to vao
-  m_shared_resources->mesh_vertex_vbo->bind();
+  m_shared_resources->vertex_vbo->bind();
 
   // setting up vertex attributes
   GLsizei stride = sizeof(VertexData);
@@ -222,9 +222,10 @@ void GLWidget::initializeGL()
   glEnableVertexAttribArray(3);
   glVertexAttribIPointer(3, 1, GL_INT, stride, (GLvoid*)offset);
 
-  m_shared_resources->mesh_normal_vbo->bind();
+  //m_shared_resources->mesh_normal_vbo->bind();
+  offset += sizeof(GL_INT);
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
 
   m_mesh_vao.release();
 
@@ -270,12 +271,12 @@ void GLWidget::initializeGL()
   
   m_mesh_program->release();
 
-  if (m_FDL_running) {
+  /*if (m_FDL_running) {
     stopForecDirectedLayout();
-  }
+  }*/
   updateVisParameters();
 
-  updateVisParameters();
+  //updateVisParameters();
 
   m_lockRotation2D_timer->start(500);
 }
@@ -520,7 +521,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
   case(Qt::Key_S): // reset
     break;
   case(Qt::Key_X): // stop layouting algorithm
-    stopForecDirectedLayout();
+    //stopForecDirectedLayout();
     break;
   case(Qt::Key_Shift): // enable hover
     setMouseTracking(true);
@@ -609,84 +610,11 @@ void GLWidget::getActiveGraphTab(int tab_graph)
 
 void GLWidget::reset_layouting(bool flag)
 {
-  if (m_FDL_running) {
+  /*if (m_FDL_running) {
     stopForecDirectedLayout();
-  }
+  }*/
 
   m_lockRotation2D_timer->start(10);
-}
-
-//--------------------- Graph  Parameters ---------------------
-//
-void GLWidget::getGraphCr(double value)
-{
-  qDebug() << value << " getGraphCr " << m_active_graph_tab;
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.Cr = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphCa(double value)
-{
-  qDebug() << value << " getGraphCa " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.Ca = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphAABBdim(double value)
-{
-  qDebug() << value << " getGraphAABBdim " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.AABBdim = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphmax_distance(double value)
-{
-  qDebug() << value << " getGraphmax_distance " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.max_distance = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphmax_vertex_movement(double value)
-{
-  qDebug() << value << " getGraphmax_vertex_movement " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.max_vertex_movement = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphslow_factor(double value)
-{
-  qDebug() << value << " getGraphslow_factor " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.slow_factor = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphmax_force(double value)
-{
-  qDebug() << value << " getGraphmax_force " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.max_force = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
-}
-
-void GLWidget::getGraphoriginalPosAttraction(double value)
-{
-  qDebug() << value << " getGraphoriginalPosAttraction " << m_active_graph_tab;
-
-  struct FDR_param fdr_params = m_graphManager->getFDRParams(m_active_graph_tab);
-  if (value != 0) fdr_params.originalPosAttraction = value;
-  m_graphManager->updateFDRParamts(m_active_graph_tab, fdr_params);
 }
 
 //------------------------------------------------------
@@ -699,7 +627,7 @@ void GLWidget::getFilteredID(QString value)
   QList<QString> tokens = value.split(',');
   qDebug() << tokens;
 
-  stopForecDirectedLayout();
+  //stopForecDirectedLayout();
 
   bool invisibility = false; // meaning not filtered (visible)
   m_opengl_mngr->FilterByID(tokens, invisibility);
@@ -711,18 +639,6 @@ void GLWidget::getFilteredID(QString value)
   this->getToggleCheckBox(visibilityUpdate);
 
   //update();
-}
-
-//------------------------------------------------------
-//
-void GLWidget::stopForecDirectedLayout()
-{
-  // stop force layout
-//    m_refresh_timer->stop();
-  for (int i = 0; i < max_graphs; ++i)
-    m_graphManager->stopForceDirectedLayout(i);
-
-  m_FDL_running = false;
 }
 
 //------------------------------------------------------
@@ -784,7 +700,6 @@ void GLWidget::getColorEncoding(QString encoding)
     m_opengl_mngr->updateColorEncoding(Color_e::FUNCTION);
   else if (encoding == "Glycogen Distribution")
     m_opengl_mngr->updateColorEncoding(Color_e::GLYCOGEN_MAPPING);
-  //update();
 }
 
 //------------------------------------------------------
@@ -796,7 +711,6 @@ void GLWidget::get2DtextureEncoding(QString encoding)
     m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::ASTRO_COVERAGE);
   else if (encoding == "Glycogen Distribution")
     m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::GLYCOGEN_MAPPING);
-  //update();
 }
 
 
@@ -815,10 +729,7 @@ void GLWidget::getItemChanged(QListWidgetItem* item)
     return;
   }
 
-
   getFilteredType(item->text(), flag);
-
-  //update();
 }
 
 //------------------------------------------------------
@@ -828,7 +739,7 @@ void GLWidget::getFilteredType(QString value, bool flag)
   if (m_opengl_mngr == NULL)
     return;
 
-  stopForecDirectedLayout();
+  //stopForecDirectedLayout();
 
   Object_t object_type = Object_t::UNKNOWN;
   if (value == "Axons")
@@ -877,8 +788,6 @@ void GLWidget::getFitlerButtonClicked(bool)
   //  check whatever needed to be updated in the checkbox
   std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
   this->getToggleCheckBox(visibilityUpdate);
-
-  //update();
 }
 
 //------------------------------------------------------
@@ -887,7 +796,6 @@ void GLWidget::getResetFitlerButtonClicked(bool)
 {
   m_opengl_mngr->showAll();
   checkAllListWidget_GL();
-  //update();
 }
 
 //------------------------------------------------------
@@ -907,7 +815,6 @@ void GLWidget::hideSelectedObjects()
   //  check whatever needed to be updated in the checkbox
   std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
   this->getToggleCheckBox(visibilityUpdate);
-  //update();
 }
 
 void GLWidget::highlightSelected(QModelIndex index)
@@ -1034,7 +941,6 @@ void GLWidget::drawScene()
 
   m_shared_resources->mesh_index_vbo->bind();
   glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
-
   m_mesh_vao.release();
 }
 
@@ -1120,6 +1026,7 @@ void GLWidget::pass1()
   glClear(GL_COLOR_BUFFER_BIT);
   glDepthMask(GL_FALSE);
   drawScene();
+  GL_Error();
   glFinish();
 }
 

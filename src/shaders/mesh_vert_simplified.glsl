@@ -24,8 +24,6 @@ flat out int frag_hvgx;
 
 out float frag_slice_z;
 
-
-
 vec3 eye = vec3(0.5, 0.5, 1.0);
 
 void main()
@@ -40,10 +38,9 @@ void main()
       gl_Position =  mvpMatrix * vec4(mesh_vtx.xyz, 1.0);
     }
 
-    
-
     normal_frag = normalize(normal);
     eye_frag = normalize(eye);
+    
     frag_structure_type = structure_type;
     frag_cell_distance = distance_to_cell;
     frag_vert_pos = /*rMatrix */ mesh_vtx;

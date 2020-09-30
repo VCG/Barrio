@@ -14,7 +14,12 @@
 // file manipulations
 #include <QString>
 #include <QFile>
+
 #include <QXmlStreamReader>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 #include <QDebug>
 #include <string>
 
@@ -25,8 +30,6 @@
 
 #include "object.h"
 #include "mesh.h"
-#include "glycogen.h"
-#include "octree.h"
 #include "grid3d.h"
 #include "spatialhash3d.h"
 #include "inputform.h"
@@ -53,15 +56,14 @@ public:
 
   bool isNormalsEnabled();
 
-  int importXML(QString path);
-  void parseObject(QXmlStreamReader& xml, Object* obj);
-  void parseMesh(QXmlStreamReader& xml, Object* obj);
-  void parseMeshNoVertexnoFace(QXmlStreamReader& xml, Object* obj);
   void parseSkeleton(QXmlStreamReader& xml, Object* obj);
   void parseSkeletonNodes(QXmlStreamReader& xml, Object* obj);
   void parseBranch(QXmlStreamReader& xml, Object* obj);
   void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
+
   bool importObj(QString path);
+  bool importSkeletons(QString path, QString mito_skeleton_path);
+
   void processParentChildStructure();
 
   void loadConnectivityGraph(QString path);
@@ -74,16 +76,7 @@ public:
   void dumpObjects(QString path);
   void readObjects(QString path);
 
-  //glycogen
-  int								  getGlycogenSize() { return m_glycogenMap.size(); }
-  std::map<int, Glycogen*>			  getGlycogenMap() { return m_glycogenMap; }
-  std::map<int, Glycogen*>*           getGlycogenMapPtr() { return &m_glycogenMap; }
   std::vector<VertexData*>*           getGlycogenVertexDataPtr() { return &m_glycogenList; }
-  SpacePartitioning::Octree*          getGlycogenOctree() { return &m_glycogenOctree; }
-  
-
-  //SpacePartitioning::Octree* getSpineOctree() { return &m_spineOctree; }
-  //SpacePartitioning::Octree* getBoutonOctree() { return &m_boutonOctree; }
 
   SpacePartitioning::SpatialHash3D*   getSpineHash() { return &m_spineHash; }
   SpacePartitioning::SpatialHash3D*   getBoutonHash() { return &m_boutonHash; }
@@ -171,14 +164,14 @@ protected:
   std::vector<QVector2D>                      neurites_neurite_edge;
 
   // glycogen
-  std::map<int, Glycogen*>                    m_glycogenMap;
+  //std::map<int, Glycogen*>                    m_glycogenMap;
   std::vector<VertexData*>                    m_glycogenList;
   SpacePartitioning::Grid3D					  m_glycogen3DGrid;
 
   // octrees
   //SpacePartitioning::Octree                   m_spineOctree;
   //SpacePartitioning::Octree                   m_boutonOctree;
-  SpacePartitioning::Octree                   m_glycogenOctree;
+  //SpacePartitioning::Octree                   m_glycogenOctree;
   SpacePartitioning::SpatialHash3D			  m_boutonHash;
   SpacePartitioning::SpatialHash3D			  m_spineHash;
   SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;

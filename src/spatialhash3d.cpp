@@ -1,5 +1,4 @@
 #include "mesh.h"
-#include "octree.h"
 #include "spatialhash3d.h"
 
 #define MAX_RING_SIZE 10
@@ -173,12 +172,12 @@ VertexData* SpacePartitioning::SpatialHash3D::getNeighbor(float nX, float nY, fl
         //for (auto iter = m_vectorList[idx]->begin(); iter != m_vectorList[idx]->end(); iter++)
         for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
         {
-          float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+          /*float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
           if (currentDistance < distance2)
           {
             closest = (*iter);
             distance2 = currentDistance;
-          }
+          }*/
         }
       }
     }
@@ -209,12 +208,12 @@ VertexData* SpacePartitioning::SpatialHash3D::getNeighbor(float nX, float nY, fl
 
           for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
           {
-            float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+            /*float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
             if (currentDistance < distance2)
             {
               closest = (*iter);
               distance2 = currentDistance;
-            }
+            }*/
           }
         }
       }
@@ -239,12 +238,12 @@ VertexData* SpacePartitioning::SpatialHash3D::getNeighbor(float nX, float nY, fl
 
           for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
           {
-            float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+            /*float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
             if (currentDistance < distance2)
             {
               closest = (*iter);
               distance2 = currentDistance;
-            }
+            }*/
           }
         }
       }
@@ -270,12 +269,12 @@ VertexData* SpacePartitioning::SpatialHash3D::getNeighbor(float nX, float nY, fl
 
           for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
           {
-            float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+            /*float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
             if (currentDistance < distance2)
             {
               closest = (*iter);
               distance2 = currentDistance;
-            }
+            }*/
           }
         }
       }
@@ -308,12 +307,12 @@ VertexData* SpacePartitioning::SpatialHash3D::getNeighbor2(float nX, float nY, f
   //check current cells first
   for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
   {
-    float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+    /*float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
     if (currentDistance < distance2)
     {
       closest = (*iter);
       distance2 = currentDistance;
-    }
+    }*/
   }
 
   //loop on 3d rings 
@@ -495,12 +494,12 @@ float SpacePartitioning::SpatialHash3D::findClosesVertexInCell(int x, int y, int
 
   for (auto iter = m_vectorList[idx].begin(); iter != m_vectorList[idx].end(); iter++)
   {
-    float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
-    if (currentDistance < distance2)
-    {
-      //out = (*iter);
-      distance2 = currentDistance;
-    }
+    //float currentDistance = L2Distance::compute(nX, nY, nZ, (*iter)->x(), (*iter)->y(), (*iter)->z());
+    //if (currentDistance < distance2)
+    //{
+    //  //out = (*iter);
+    //  distance2 = currentDistance;
+    //}
   }
 
   return distance2;

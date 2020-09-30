@@ -116,7 +116,8 @@ void Mesh::computeNormalsPerVertex()
     }
 
     normal.normalize();
-    m_normals.push_back(normal.toVector4D());
+    vertex.normal = normal.toVector4D();
+    m_vertices[i] = vertex;
   }
 }
 
@@ -133,9 +134,9 @@ QVector3D Mesh::computeFaceNormal(struct Face f)
   struct VertexData v2 = m_vertices[f.v[1]];
   struct VertexData v3 = m_vertices[f.v[2]];
 
-  QVector3D A = v1.mesh_vertex.toVector3D();
-  QVector3D B = v2.mesh_vertex.toVector3D();
-  QVector3D C = v3.mesh_vertex.toVector3D();
+  QVector3D A = v1.vertex.toVector3D();
+  QVector3D B = v2.vertex.toVector3D();
+  QVector3D C = v3.vertex.toVector3D();
 
   QVector3D AB = B - A;
   QVector3D AC = C - A;
@@ -184,14 +185,6 @@ bool Mesh::readNormals(QString path)
 
 
   return true;
-}
-
-
-int Mesh::addVertex(struct VertexData* vdata, Object_t type)
-{
-  int type_idx = static_cast<int>(type);
-  m_typeVertexList[type_idx].push_back(m_vertices.data() + vdata->index);
-  return vdata->index;
 }
 
 int Mesh::addVertexNormal(QVector4D vnormal)

@@ -708,18 +708,10 @@ void MainWidget::initSharedMeshVBOs()
   m_mesh_vertex_vbo.allocate(mesh->getVerticesList()->data(), mesh->getVerticesList()->size() * sizeof(VertexData));
   m_mesh_vertex_vbo.release();
 
-  // create and allocate normal vbo
-  m_mesh_normal_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-  m_mesh_normal_vbo.create();
-  m_mesh_normal_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  m_mesh_normal_vbo.bind();
-  m_mesh_normal_vbo.allocate(mesh->getNormalsList()->data(), mesh->getNormalsList()->size() * sizeof(QVector4D));
-  m_mesh_normal_vbo.release();
 
   // setup shared resource container
   m_shared_resources.mesh_index_vbo = &m_mesh_index_vbo;
-  m_shared_resources.mesh_vertex_vbo = &m_mesh_vertex_vbo;
-  m_shared_resources.mesh_normal_vbo = &m_mesh_normal_vbo;
+  m_shared_resources.vertex_vbo = &m_mesh_vertex_vbo;
   m_shared_resources.index_count = neurites_index_count;
 }
 

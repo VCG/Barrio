@@ -1921,30 +1921,6 @@ void OpenGLManager::updateGlycogenUniforms(GLuint program)
 
 // ----------------------------------------------------------------------------
 //
-void OpenGLManager::drawGlycogenPoints()
-{
-  // I need this because transitioning from mesh to skeleton is not smooth
-  m_vao_glycogen.bind();
-
-  m_GlycogenPoints.useProgram("3DPoints");
-
-  updateGlycogenUniforms(m_GlycogenPoints.getProgram("3DPoints"));
-
-  GLint splat_tex = glGetUniformLocation(m_GlycogenPoints.getProgram("3DPoints"), "splat_tex");
-
-  if (splat_tex >= 0) {
-    glUniform1i(splat_tex, 2);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_3D, m_splat_volume_3DTex);// m_astro_3DTex);
-  }
-
-  glDrawArrays(GL_POINTS, 0, m_dataContainer->getGlycogenSize());
-
-  m_vao_glycogen.release();
-}
-
-// ----------------------------------------------------------------------------
-//
 void OpenGLManager::updateGlycogenPoints()
 {
   m_vbo_glycogen.bind();

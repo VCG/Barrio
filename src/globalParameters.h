@@ -9,7 +9,7 @@
 #define DIM_Z       449
 #define DIM_G		64
 
-#define RECOMPUTE_DATA FALSE
+#define RECOMPUTE_DATA TRUE
 
 #include <QList>
 

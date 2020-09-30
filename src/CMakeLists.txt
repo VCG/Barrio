@@ -73,11 +73,6 @@ set(project_headers
     glsluniform_structs.h
     openglmanager.h
     datacontainer.h
-    glycogen.h
-    octree.h
-    glycogencluster.h
-    glycogenanalysismanager.h
-    dbscan.h
     grid3d.h
     spatialhash3d.h
     rendervertexdata.h
@@ -117,11 +112,6 @@ set(project_sources
     mesh.cpp
     openglmanager.cpp
     datacontainer.cpp
-    glycogen.cpp
-    octree.cpp
-    glycogencluster.cpp
-    glycogenanalysismanager.cpp
-    dbscan.cpp
     grid3d.cpp
     spatialhash3d.cpp
     rendervertexdata.cpp
@@ -143,9 +133,6 @@ set(project_sources
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
     shaders/coord_system_frag.glsl
-    shaders/mesh_frag.glsl
-    shaders/mesh_geom.glsl
-    shaders/mesh_vert.glsl
     shaders/selection_frag.glsl
     shaders/selection_geom.glsl
     shaders/selection_vert.glsl
