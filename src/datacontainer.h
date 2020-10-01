@@ -90,6 +90,8 @@ public:
   std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
   std::vector<QVector2D>  getNeuritesEdges();
 
+  QVector<int>*           getSkeletonIndices() { return &m_skeleton_indices; }
+
   int getIndexByName(QString name);
 
   void writeDataToCache(QString cache_path);
@@ -129,6 +131,7 @@ public:
   void buildMissingSkeletons();
 
   int getIndicesSizeByObjectType(Object_t type) { return m_indices_size_byType[type]; }
+  int getTypeByID(int hvgx); 
 
 public:
   struct input_files                          input_files_dir;
@@ -159,19 +162,16 @@ protected:
   std::map<Object_t, int >                    m_indices_size_byType;
   std::map<std::string, int>                  m_id_name_map;
 
+  QVector<int>                                m_skeleton_indices;
+
 
   // graph related data
   std::vector<QVector2D>                      neurites_neurite_edge;
 
   // glycogen
-  //std::map<int, Glycogen*>                    m_glycogenMap;
   std::vector<VertexData*>                    m_glycogenList;
   SpacePartitioning::Grid3D					  m_glycogen3DGrid;
 
-  // octrees
-  //SpacePartitioning::Octree                   m_spineOctree;
-  //SpacePartitioning::Octree                   m_boutonOctree;
-  //SpacePartitioning::Octree                   m_glycogenOctree;
   SpacePartitioning::SpatialHash3D			  m_boutonHash;
   SpacePartitioning::SpatialHash3D			  m_spineHash;
   SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;

@@ -708,11 +708,21 @@ void MainWidget::initSharedMeshVBOs()
   m_mesh_vertex_vbo.allocate(mesh->getVerticesList()->data(), mesh->getVerticesList()->size() * sizeof(VertexData));
   m_mesh_vertex_vbo.release();
 
+  int skeleton_indices_size = m_datacontainer->getSkeletonIndices()->size();
+
+  m_skeleton_index_vbo = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
+  m_skeleton_index_vbo.create();
+  m_skeleton_index_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+  m_skeleton_index_vbo.bind();
+  m_skeleton_index_vbo.allocate(m_datacontainer->getSkeletonIndices()->data(), skeleton_indices_size * sizeof(GLuint));
+  m_skeleton_index_vbo.release();
 
   // setup shared resource container
-  m_shared_resources.mesh_index_vbo = &m_mesh_index_vbo;
   m_shared_resources.vertex_vbo = &m_mesh_vertex_vbo;
-  m_shared_resources.index_count = neurites_index_count;
+  m_shared_resources.mesh_index_vbo = &m_mesh_index_vbo;
+  m_shared_resources.skeleton_index_vbo = &m_skeleton_index_vbo;
+  m_shared_resources.mesh_index_count = neurites_index_count;
+  m_shared_resources.skeleton_index_count = skeleton_indices_size;
 }
 
 

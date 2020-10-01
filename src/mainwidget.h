@@ -76,7 +76,7 @@ private:
   // shared resource variables
   QOpenGLBuffer m_mesh_index_vbo;
   QOpenGLBuffer m_mesh_vertex_vbo;
-  QOpenGLBuffer m_mesh_normal_vbo;
+  QOpenGLBuffer m_skeleton_index_vbo;
 
   GLuint        m_mito_cell_distance_colormap;
   GLuint        m_image_stack_texture;

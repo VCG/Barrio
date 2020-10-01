@@ -2,11 +2,12 @@
 
 #define SLICE 10
 
-layout (location = 0) in vec4 mesh_vtx;
-layout (location = 1) in float distance_to_cell;
-layout (location = 2) in int structure_type;
-layout (location = 3) in int hvgxID;
-layout (location = 4) in vec4 normal;
+layout (location = 0) in vec4     mesh_vtx;
+layout (location = 1) in float    distance_to_cell;
+layout (location = 2) in int      structure_type;
+layout (location = 3) in int      hvgxID;
+layout (location = 4) in vec4     normal;
+layout (location = 5) in int      is_skeleton;
 
 uniform mat4    mMatrix;
 uniform mat4    vMatrix;
@@ -15,14 +16,14 @@ uniform mat4    rMatrix;
 
 uniform float slice_z;
 
-out vec4 normal_frag;
-out vec3 eye_frag;
-flat out int frag_structure_type;
-out float frag_cell_distance;
-out vec4 frag_vert_pos;
-flat out int frag_hvgx;
-
-out float frag_slice_z;
+out vec4          normal_frag;
+out vec3          eye_frag;
+flat out int      frag_structure_type;
+out float         frag_cell_distance;
+out vec4          frag_vert_pos;
+flat out int      frag_hvgx;
+flat out int      frag_is_skeleton;
+out float         frag_slice_z;
 
 vec3 eye = vec3(0.5, 0.5, 1.0);
 
@@ -46,4 +47,5 @@ void main()
     frag_vert_pos = /*rMatrix */ mesh_vtx;
     frag_hvgx = hvgxID;
     frag_slice_z = slice_z;
+    frag_is_skeleton = is_skeleton;
 }

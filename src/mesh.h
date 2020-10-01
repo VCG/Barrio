@@ -23,6 +23,7 @@ struct VertexData {
   GLint         structure_type;
   GLint         hvgxID;
   QVector4D     normal;
+  bool          is_skeleton;
 
   float  x()  const
   {

@@ -28,7 +28,8 @@ struct SharedGLResources
   QOpenGLBuffer* mesh_index_vbo;
   QOpenGLBuffer* skeleton_index_vbo;
 
-  int            index_count;
+  int            mesh_index_count;
+  int            skeleton_index_count;
 
   GLuint*        mito_cell_distance_colormap;
   GLuint*        image_stack_volume;

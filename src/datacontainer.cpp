@@ -695,6 +695,7 @@ bool DataContainer::importObj(QString path)
       v->distance_to_cell = 0.0; // first init all distances with the default value
       v->hvgxID = hvgxID;
       v->structure_type = (int)obj->getObjectType();
+      v->is_skeleton = false;
     }
 
     // parse faces
@@ -749,30 +750,65 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, QString mito_
   file.close();
   QJsonDocument skeletons_doc = QJsonDocument::fromJson(data);
 
-  qDebug() << skeletons_doc.isObject();
   QJsonObject object = skeletons_doc.object();
 
-  qDebug() << object.size();
+  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
+
+  int index_offset = meshVertexList->size();
 
   foreach(const QString & key, object.keys()) 
   {
-    QJsonValue value = object.value(key);
+    QJsonValue skeleton = object.value(key);
     int hvgx = 1000 + key.toInt();
+
+    QJsonDocument skel_doc = QJsonDocument::fromJson(skeleton.toString().toUtf8());
     
-    QJsonArray edges = value.toObject().value("edges").toArray();
-    QJsonArray vertices = value.toObject().value("vertices").toArray();
-    QJsonArray radius = value.toObject().value("radius").toArray();
+    QJsonArray edges = skel_doc.object().value("edges").toArray();
+    QJsonArray vertices = skel_doc.object().value("vertices").toArray();
+    QJsonArray radii = skeleton.toObject().value("radius").toArray();
 
+    
 
+    qDebug() << vertices.count();
+
+    // process per vertex data
+    for (int i = 0; i < vertices.size(); i++)
+    {
+      QJsonArray v = vertices.at(i).toArray();
+
+      double x = v.at(0).toDouble() / 1000.0;
+      double y = v.at(1).toDouble() / 1000.0;
+      double z = v.at(2).toDouble() / 1000.0;
+
+      double radius = radii.at(i).toDouble();
+    
+      QVector4D mesh_vertex(x, y, z, 1.0);
+
+      meshVertexList->emplace_back();
+      int vertexIdx = (int)meshVertexList->size() - 1;
+      struct VertexData* vertex = &meshVertexList->at(vertexIdx);
+
+      vertex->vertex = mesh_vertex;
+      vertex->distance_to_cell = radius;
+      vertex->hvgxID = hvgx;
+      vertex->structure_type = getTypeByID(hvgx);
+      vertex->is_skeleton = true;
+    }
+
+    // process indices
+    for (int i = 0; i < edges.size(); i++)
+    {
+      QJsonArray e = edges.at(i).toArray();
+
+      int p1 = e.at(0).toInt() + index_offset;
+      int p2 = e.at(1).toInt() + index_offset;
+
+      m_skeleton_indices.push_back(p1);
+      m_skeleton_indices.push_back(p2);
+    }
+
+    index_offset = meshVertexList->size();
   }
-
-  /*QFile mito_file;
-  mito_file.setFileName(neurite_skeleton_path);
-  mito_file.open(QIODevice::ReadOnly | QIODevice::Text);
-  QString mito_data = mito_file.readAll();
-  mito_file.close();
-  QJsonDocument mito_skeletons = QJsonDocument::fromJson(mito_data.toUtf8());*/
-
 
   return true;
 }
@@ -929,6 +965,18 @@ void DataContainer::buildMissingSkeletons()
 
   m_missingParentSkeleton.clear();
 }
+
+int DataContainer::getTypeByID(int hvgx)
+{
+  if (m_objects.count(hvgx) > 0)
+  {
+    Object* obj = m_objects.at(hvgx);
+    return (int) obj->getObjectType();
+  }
+
+  return -1;
+}
+ 
 
 //----------------------------------------------------------------------------
 //
@@ -1151,6 +1199,7 @@ int DataContainer::addSliceVertex(float y, float z, float u, float v)
   vertex->distance_to_cell = 0.0; // first init all distances with the default value
   vertex->hvgxID = -1;
   vertex->structure_type = (int)Object_t::SLICE;
+  vertex->is_skeleton = false;
 
   return vertexIdx;
 }

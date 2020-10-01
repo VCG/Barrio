@@ -20,7 +20,8 @@ flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
-in float       frag_slice_z;
+in float        frag_slice_z;
+in flat int     frag_is_skeleton;
 
 uniform bool          show_mito_distance_to_cell;
 uniform sampler1D	  mito_colormap;
@@ -130,14 +131,22 @@ vec4 computeColor()
   }
   else if(frag_structure_type == MITO)
   {
-    if(show_mito_distance_to_cell)
+    if(frag_is_skeleton == 0)
     {
-      obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
+      if(show_mito_distance_to_cell)
+      {
+        obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
+      }
+      else
+      {
+        obj_color = vec3(1.0, 0.0, 0.0);
+      }
     }
     else
     {
-      obj_color = vec3(1.0, 0.0, 0.0);
+      obj_color = vec3(1.0, 1.0, 0.0);
     }
+    
   } 
   else if(frag_structure_type == SYNPS)
   {
@@ -169,7 +178,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE)
   {
-    out_color = vec4(result, 1.0);
+    out_color = vec4(result, 0.3);
   }
   else
   {

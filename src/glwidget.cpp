@@ -222,10 +222,15 @@ void GLWidget::initializeGL()
   glEnableVertexAttribArray(3);
   glVertexAttribIPointer(3, 1, GL_INT, stride, (GLvoid*)offset);
 
-  //m_shared_resources->mesh_normal_vbo->bind();
+  // normal
   offset += sizeof(GL_INT);
   glEnableVertexAttribArray(4);
   glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+
+  // is skeleton
+  offset += sizeof(QVector4D);
+  glEnableVertexAttribArray(5);
+  glVertexAttribIPointer(5, 1, GL_INT, stride, (GLvoid*)offset);
 
   m_mesh_vao.release();
 
@@ -940,7 +945,11 @@ void GLWidget::drawScene()
   m_mesh_vao.bind();
 
   m_shared_resources->mesh_index_vbo->bind();
-  glDrawElements(GL_TRIANGLES, m_shared_resources->index_count, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, m_shared_resources->mesh_index_count, GL_UNSIGNED_INT, 0);
+
+  m_shared_resources->skeleton_index_vbo->bind();
+  glDrawElements(GL_LINES, m_shared_resources->skeleton_index_count, GL_UNSIGNED_INT, 0);
+
   m_mesh_vao.release();
 }
 
