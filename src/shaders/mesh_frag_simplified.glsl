@@ -144,7 +144,7 @@ vec4 computeColor()
     }
     else
     {
-      obj_color = vec3(1.0, 1.0, 0.0);
+      obj_color = vec3(0.0, 1.0, 0.0);
     }
     
   } 

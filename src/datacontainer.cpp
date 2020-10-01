@@ -767,18 +767,14 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, QString mito_
     QJsonArray vertices = skel_doc.object().value("vertices").toArray();
     QJsonArray radii = skeleton.toObject().value("radius").toArray();
 
-    
-
-    qDebug() << vertices.count();
-
     // process per vertex data
     for (int i = 0; i < vertices.size(); i++)
     {
       QJsonArray v = vertices.at(i).toArray();
 
-      double x = v.at(0).toDouble() / 1000.0;
-      double y = v.at(1).toDouble() / 1000.0;
-      double z = v.at(2).toDouble() / 1000.0;
+      double y = v.at(0).toDouble() / (DIM_X + 1);
+      double x = v.at(1).toDouble() / (DIM_Y + 1);
+      double z = MESH_MAX_Z - v.at(2).toDouble() / (DIM_X + 1);
 
       double radius = radii.at(i).toDouble();
     

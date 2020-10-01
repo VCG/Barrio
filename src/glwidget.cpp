@@ -942,6 +942,9 @@ void GLWidget::drawScene()
   glActiveTexture(GL_TEXTURE0 + 1); // activate the texture unit first before binding texture
   glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
 
+  glLineWidth(5.0);
+  glEnable(GL_LINE_SMOOTH);
+
   m_mesh_vao.bind();
 
   m_shared_resources->mesh_index_vbo->bind();
