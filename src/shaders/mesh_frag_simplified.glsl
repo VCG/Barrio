@@ -157,13 +157,25 @@ vec4 computeColor()
     float depth_normed = frag_slice_z / 5.0;
     obj_color = vec3(texture(volume, vec3(frag_vert_pos.w,  frag_vert_pos.x, depth_normed)).x);
   }
+  else if(frag_structure_type == DENDS)
+  {
+    if(frag_is_skeleton == 1)
+    {
+      obj_color = vec3(1.0, 0.0, 0.0);
+    }
+    else
+    {
+      obj_color = vec3(0.6, 1.0, 0.6);
+    }
+    
+  } 
   else
   {
     obj_color = vec3(0.6, 1.0, 0.6);
-  } 
+  }
 
   vec3 result;
-  if(frag_structure_type != SLICE)
+  if(frag_structure_type != SLICE || frag_is_skeleton == 1)
   {
     result = computeLight(lightDir1, lightColor1, obj_color);
     result += computeLight(lightDir2, lightColor2, obj_color);
@@ -176,9 +188,9 @@ vec4 computeColor()
   }
   
 
-  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE)
+  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || frag_is_skeleton == 1)
   {
-    out_color = vec4(result, 0.3);
+    out_color = vec4(result, 1.0);
   }
   else
   {
