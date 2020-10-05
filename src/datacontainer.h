@@ -62,7 +62,7 @@ public:
   void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
 
   bool importObj(QString path);
-  bool importSkeletons(QString path, QString mito_skeleton_path);
+  bool importSkeletons(QString path, Object_t skeleton_type);
 
   void processParentChildStructure();
 

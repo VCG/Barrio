@@ -82,8 +82,8 @@ void DataContainer::loadData()
 {
   QString neurites_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_dends_corrected.obj";
   
-  QString neurite_skeletons_path = "C:/Users/jtroidl/Desktop/NeuroComparer/data/m3_data/m3_skeletons.json";
-  QString mitos_skeletons_path = "C:/Users/jtroidl/Desktop/neco_convert/cache/skeletons/m3_mito_d032_skeleton.json";
+  QString neurite_skeletons_path = "C:/Users/jtroidl/Desktop/NeuroComparer/data/m3_data/m3_neurite_skeletons.json";
+  QString mitos_skeletons_path = "C:/Users/jtroidl/Desktop/neco_convert/cache/skeletons/m3_mito_skeletons.json";
 
   QString astro_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_astrocyte.obj";
   QString cache_path("C:/Users/jtroidl/Desktop/resources/NeuroComparer/data/cache");
@@ -115,7 +115,9 @@ void DataContainer::loadData()
   else
   {
     loadDataFromCache(cache_path);
-    importSkeletons(neurite_skeletons_path, mitos_skeletons_path);
+
+    importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
+    importSkeletons(mitos_skeletons_path, Object_t::MITO);
   }
 
   /* 3 */
@@ -741,7 +743,7 @@ bool DataContainer::importObj(QString path)
   return true;
 }
 
-bool DataContainer::importSkeletons(QString neurite_skeleton_path, QString mito_skeleton_path)
+bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type)
 {
   QFile file;
   file.setFileName(neurite_skeleton_path);
@@ -759,7 +761,17 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, QString mito_
   foreach(const QString & key, object.keys()) 
   {
     QJsonValue skeleton = object.value(key);
-    int hvgx = 1000 + key.toInt();
+
+    int hvgx = 0;
+    if (type == Object_t::MITO)
+    {
+      hvgx = 1000 + key.toInt();
+    }
+    else
+    {
+      hvgx = key.toInt() + 1;
+    }
+    
 
     QJsonDocument skel_doc = QJsonDocument::fromJson(skeleton.toString().toUtf8());
     
@@ -772,9 +784,10 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, QString mito_
     {
       QJsonArray v = vertices.at(i).toArray();
 
-      double y = v.at(0).toDouble() / (DIM_X + 1);
+      double z = v.at(0).toDouble() / (DIM_X + 1);
       double x = v.at(1).toDouble() / (DIM_Y + 1);
-      double z = MESH_MAX_Z - v.at(2).toDouble() / (DIM_X + 1);
+      double y = v.at(2).toDouble() / (DIM_X + 1);
+
 
       double radius = radii.at(i).toDouble();
     
