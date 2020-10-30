@@ -51,7 +51,7 @@ private:
   DataContainer* m_datacontainer;
 
   QString m_title;
-  QString m_index_filename = "web/boxplot_index.html";
+  QString m_index_filename = "web/mito_scheme_index.html";
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;

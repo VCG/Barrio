@@ -17,7 +17,7 @@
 
 #include "../datacontainer.h"
 
-enum class VisType { DISTANCE_TREE = 0, BARCHART = 1, DISTANCE_MATRIX = 2, HISTOGRAM = 3, BOXPLOT = 4, SCATTERPLOT = 5 };
+enum class VisType { DISTANCE_TREE = 0, BARCHART = 1, DISTANCE_MATRIX = 2, HISTOGRAM = 3, BOXPLOT = 4, SCATTERPLOT = 5, MITO_SCHEME = 6 };
 
 class IVisMethod: public QObject
 {

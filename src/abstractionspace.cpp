@@ -120,7 +120,8 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
   }
   else if (!config.axons && config.dends && config.mitos && !config.syn)
   {
-    methods.low = new Histogram(&m_global_vis_parameters, m_datacontainer);
+    //methods.low = new Histogram(&m_global_vis_parameters, m_datacontainer);
+    methods.low = new MitoScheme(&m_global_vis_parameters, m_datacontainer);
     methods.low_icon = ":/icons/histogram.png";
     methods.medium = new Boxplot(&m_global_vis_parameters, m_datacontainer);
     methods.medium_icon = ":/icons/boxplot.png";

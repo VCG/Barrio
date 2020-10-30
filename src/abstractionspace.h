@@ -16,6 +16,7 @@
 #include "vismethods/histogram.h"
 #include "vismethods/boxplot.h"
 #include "vismethods/scatterplot.h"
+#include "vismethods/mito_scheme.h"
 
 
 struct AbstractionPoint {
