@@ -1,0 +1,28 @@
+[
+  {
+    "name": "task_name",
+    "subtasks": [
+      {
+        "name": "task_name",
+        "explanation": "explanation",
+        "low_scale_vis": 1,
+        "medium_scale_vis": 2,
+        "high_scale_vis": 3
+      },
+      {
+        "name": "task_name",
+        "explanation": "explanation",
+        "low_scale_vis": 1,
+        "medium_scale_vis": 2,
+        "high_scale_vis": 3
+      },
+      {
+        "name": "task_name",
+        "explanation": "explanation",
+        "low_scale_vis": 1,
+        "medium_scale_vis": 2,
+        "high_scale_vis": 3
+      }
+    ]
+  }
+]

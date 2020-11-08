@@ -28,6 +28,19 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
+  QString val;
+  QFile file;
+  file.setFileName("C:/Users/jtroidl/Desktop/NeuroComparer/spec.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+  val = file.readAll();
+  file.close();
+  qWarning() << val;
+  QJsonDocument spec_doc = QJsonDocument::fromJson(val.toUtf8());
+
+  QJsonArray tasks = spec_doc.array();
+
+  addTask(mainwindow_ui->groupBox_24, tasks[0].toObject());
+
   initializeSlicePositionSlider();
   initializeSynapseThresholdSlider();
   initializeOpacitySlider();
@@ -371,4 +384,33 @@ void MainWindow::on_colormap_changed(QString text)
 void MainWindow::on_number_of_bins_input_changed(int value)
 {
   m_main_widget->setNumberOfBinsForHistogram(value);
+}
+
+void MainWindow::addTask(QGroupBox* ui_element, QJsonObject task)
+{
+  QString task_name = task.value("name").toString();
+  ui_element->setTitle(task_name);
+
+  QJsonArray sub_tasks = task.value("subtasks").toArray();
+  for (auto sub_task : sub_tasks)
+  {
+    QGroupBox* gb_sub_task = new QGroupBox();
+    ui_element->layout()->addWidget(gb_sub_task);
+    addSubTask(gb_sub_task, sub_task.toObject());
+
+    int lsv = sub_task.toObject().value("low_scale_vis").toInt();
+    int msv = sub_task.toObject().value("medium_scale_vis").toInt();
+    int hsv = sub_task.toObject().value("high_scale_vis").toInt();
+
+    qDebug() << lsv;
+
+  }
+
+  // add Subtasks
+}
+
+void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
+{
+  QString name = subtask.value("name").toString();
+  ui_element->setTitle(name);
 }

@@ -76,16 +76,16 @@ public:
     QGroupBox *groupBox_5;
     QGridLayout *gridLayout_7;
     QGroupBox *groupBox_24;
-    QHBoxLayout *horizontalLayout_40;
-    QGroupBox *groupBox_26;
-    QGridLayout *gridLayout_8;
-    QPushButton *pushButton;
-    QGroupBox *groupBox_23;
-    QGridLayout *gridLayout_4;
-    QPushButton *pushButton_2;
+    QVBoxLayout *verticalLayout_15;
     QGroupBox *groupBox_22;
     QGridLayout *gridLayout_3;
     QPushButton *pushButton_3;
+    QGroupBox *groupBox_23;
+    QGridLayout *gridLayout_4;
+    QPushButton *pushButton_2;
+    QGroupBox *groupBox_26;
+    QGridLayout *gridLayout_8;
+    QPushButton *pushButton;
     QGroupBox *groupBox_7;
     QGridLayout *gridLayout_2;
     QCheckBox *checkBox_3;
@@ -516,20 +516,20 @@ public:
         gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         groupBox_24 = new QGroupBox(groupBox_5);
         groupBox_24->setObjectName(QString::fromUtf8("groupBox_24"));
-        horizontalLayout_40 = new QHBoxLayout(groupBox_24);
-        horizontalLayout_40->setObjectName(QString::fromUtf8("horizontalLayout_40"));
-        groupBox_26 = new QGroupBox(groupBox_24);
-        groupBox_26->setObjectName(QString::fromUtf8("groupBox_26"));
-        groupBox_26->setMinimumSize(QSize(0, 80));
-        gridLayout_8 = new QGridLayout(groupBox_26);
-        gridLayout_8->setObjectName(QString::fromUtf8("gridLayout_8"));
-        pushButton = new QPushButton(groupBox_26);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        verticalLayout_15 = new QVBoxLayout(groupBox_24);
+        verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
+        groupBox_22 = new QGroupBox(groupBox_24);
+        groupBox_22->setObjectName(QString::fromUtf8("groupBox_22"));
+        groupBox_22->setBaseSize(QSize(0, 80));
+        gridLayout_3 = new QGridLayout(groupBox_22);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        pushButton_3 = new QPushButton(groupBox_22);
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
 
-        gridLayout_8->addWidget(pushButton, 0, 0, 1, 1);
+        gridLayout_3->addWidget(pushButton_3, 0, 0, 1, 1);
 
 
-        horizontalLayout_40->addWidget(groupBox_26);
+        verticalLayout_15->addWidget(groupBox_22);
 
         groupBox_23 = new QGroupBox(groupBox_24);
         groupBox_23->setObjectName(QString::fromUtf8("groupBox_23"));
@@ -542,20 +542,20 @@ public:
         gridLayout_4->addWidget(pushButton_2, 0, 0, 1, 1);
 
 
-        horizontalLayout_40->addWidget(groupBox_23);
+        verticalLayout_15->addWidget(groupBox_23);
 
-        groupBox_22 = new QGroupBox(groupBox_24);
-        groupBox_22->setObjectName(QString::fromUtf8("groupBox_22"));
-        groupBox_22->setBaseSize(QSize(0, 80));
-        gridLayout_3 = new QGridLayout(groupBox_22);
-        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        pushButton_3 = new QPushButton(groupBox_22);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        groupBox_26 = new QGroupBox(groupBox_24);
+        groupBox_26->setObjectName(QString::fromUtf8("groupBox_26"));
+        groupBox_26->setMinimumSize(QSize(0, 80));
+        gridLayout_8 = new QGridLayout(groupBox_26);
+        gridLayout_8->setObjectName(QString::fromUtf8("gridLayout_8"));
+        pushButton = new QPushButton(groupBox_26);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
-        gridLayout_3->addWidget(pushButton_3, 0, 0, 1, 1);
+        gridLayout_8->addWidget(pushButton, 0, 0, 1, 1);
 
 
-        horizontalLayout_40->addWidget(groupBox_22);
+        verticalLayout_15->addWidget(groupBox_26);
 
 
         gridLayout_7->addWidget(groupBox_24, 1, 0, 1, 1);
@@ -1113,7 +1113,7 @@ public:
         toolBox_graphsParam->setObjectName(QString::fromUtf8("toolBox_graphsParam"));
         graph1 = new QWidget();
         graph1->setObjectName(QString::fromUtf8("graph1"));
-        graph1->setGeometry(QRect(0, 0, 247, 433));
+        graph1->setGeometry(QRect(0, 0, 241, 433));
         formLayout_5 = new QFormLayout(graph1);
         formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
         frame_11 = new QFrame(graph1);
@@ -1305,7 +1305,7 @@ public:
         toolBox_graphsParam->addItem(graph1, QString::fromUtf8("Neurites Connectivity"));
         graph2 = new QWidget();
         graph2->setObjectName(QString::fromUtf8("graph2"));
-        graph2->setGeometry(QRect(0, 0, 247, 433));
+        graph2->setGeometry(QRect(0, 0, 241, 433));
         formLayout_4 = new QFormLayout(graph2);
         formLayout_4->setObjectName(QString::fromUtf8("formLayout_4"));
         frame_13 = new QFrame(graph2);
@@ -1498,7 +1498,7 @@ public:
         toolBox_graphsParam->addItem(graph2, QString::fromUtf8("Astrocyte Skeleton - Neurites Nodes"));
         graph3 = new QWidget();
         graph3->setObjectName(QString::fromUtf8("graph3"));
-        graph3->setGeometry(QRect(0, 0, 247, 433));
+        graph3->setGeometry(QRect(0, 0, 241, 433));
         formLayout_31 = new QFormLayout(graph3);
         formLayout_31->setObjectName(QString::fromUtf8("formLayout_31"));
         frame_20 = new QFrame(graph3);
@@ -1691,7 +1691,7 @@ public:
         toolBox_graphsParam->addItem(graph3, QString::fromUtf8("Astrocyte Skeleton - Neurites Skeleton"));
         graph4 = new QWidget();
         graph4->setObjectName(QString::fromUtf8("graph4"));
-        graph4->setGeometry(QRect(0, 0, 296, 1338));
+        graph4->setGeometry(QRect(0, 0, 277, 1338));
         formLayout = new QFormLayout(graph4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         frame_28 = new QFrame(graph4);
@@ -2053,12 +2053,12 @@ public:
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
         groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "Visualization Presets", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
-        groupBox_26->setTitle(QCoreApplication::translate("MainWindow", "High Detail", nullptr));
-        pushButton->setText(QString());
-        groupBox_23->setTitle(QCoreApplication::translate("MainWindow", "Medium Detail", nullptr));
-        pushButton_2->setText(QString());
-        groupBox_22->setTitle(QCoreApplication::translate("MainWindow", "Low Detail", nullptr));
+        groupBox_22->setTitle(QCoreApplication::translate("MainWindow", "High Scale", nullptr));
         pushButton_3->setText(QString());
+        groupBox_23->setTitle(QCoreApplication::translate("MainWindow", "Medium Scale", nullptr));
+        pushButton_2->setText(QString());
+        groupBox_26->setTitle(QCoreApplication::translate("MainWindow", "Low Scale", nullptr));
+        pushButton->setText(QString());
         groupBox_7->setTitle(QCoreApplication::translate("MainWindow", "Structures", nullptr));
         checkBox_3->setText(QCoreApplication::translate("MainWindow", "Mitochondria", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "Axons", nullptr));

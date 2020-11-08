@@ -66,6 +66,9 @@ public slots:
 
   void on_number_of_bins_input_changed(int value);
 
+  void addTask(QGroupBox* ui_element, QJsonObject task);
+  void addSubTask(QGroupBox* ui_element, QJsonObject subtask);
+
 
 signals:
   void getDeletedData(int);
