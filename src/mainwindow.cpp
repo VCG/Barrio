@@ -141,6 +141,8 @@ void MainWindow::initializeVisualizationPresets()
   on_high_detail_vis_clicked();
 }
 
+
+
 //------------------------------------------------------
 //
 MainWindow::~MainWindow()
@@ -397,13 +399,6 @@ void MainWindow::addTask(QGroupBox* ui_element, QJsonObject task)
     QGroupBox* gb_sub_task = new QGroupBox();
     ui_element->layout()->addWidget(gb_sub_task);
     addSubTask(gb_sub_task, sub_task.toObject());
-
-    int lsv = sub_task.toObject().value("low_scale_vis").toInt();
-    int msv = sub_task.toObject().value("medium_scale_vis").toInt();
-    int hsv = sub_task.toObject().value("high_scale_vis").toInt();
-
-    qDebug() << lsv;
-
   }
 
   // add Subtasks
@@ -413,4 +408,43 @@ void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
 {
   QString name = subtask.value("name").toString();
   ui_element->setTitle(name);
+
+  int lsv = subtask.value("low_scale_vis").toInt();
+  int msv = subtask.value("medium_scale_vis").toInt();
+  int hsv = subtask.value("high_scale_vis").toInt();
+
+  ui_element->setLayout(new QHBoxLayout);
+
+  addVisualizationSelection(ui_element->layout(), "Low Scale", lsv);
+  addVisualizationSelection(ui_element->layout(), "Medium Scale", msv);
+  addVisualizationSelection(ui_element->layout(), "High Scale", hsv);
+}
+
+void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int vis_id)
+{
+  QPushButton* btn = new QPushButton();
+  btn->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  btn->setIconSize(QSize(60, 60));
+  btn->setMinimumSize(60, 60);
+  btn->setMaximumSize(60, 60);
+
+  SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
+
+  if(scale == "Low")
+  {
+    btn->setIcon(QIcon(visMethods.low_icon));
+  }
+  else if (scale == "Medium")
+  {
+    btn->setIcon(QIcon(visMethods.medium_icon));
+  }
+  else if (scale == "High")
+  {
+    btn->setIcon(QIcon(visMethods.high_icon));
+  }
+  
+  QGroupBox* ls_box = new QGroupBox(scale);
+  ls_box->setLayout(new QGridLayout);
+  ls_box->layout()->addWidget(btn);
+  layout->addWidget(ls_box);
 }

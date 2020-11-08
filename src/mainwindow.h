@@ -103,6 +103,8 @@ private:
 
   void initializeVisualizationPresets();
 
+  void addVisualizationSelection(QLayout* layout, QString scale, int vis_id);
+
 
 };
 

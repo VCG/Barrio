@@ -550,6 +550,11 @@ QList<int> MainWidget::getSelectedIDs()
   return selectedIDs;
 }
 
+SelectedVisMethods MainWidget::getSelectedVisMethods()
+{
+  return m_vis_methods;
+}
+
 void MainWidget::initSharedVBOs()
 {
   initSharedMeshVBOs();

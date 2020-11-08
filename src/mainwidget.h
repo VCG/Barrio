@@ -53,6 +53,8 @@ public:
   void paintGL() override;
   void resizeGL(int width, int height) override;
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+
+  SelectedVisMethods getSelectedVisMethods();
   
 
 public slots:
@@ -90,6 +92,8 @@ private:
   SpecificVisParameters m_specific_vis_parameters;
 
   QString m_selected_colormap = "0_colormap_tom.png";
+
+
 
 
   void initSharedVBOs();
