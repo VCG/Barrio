@@ -5,16 +5,16 @@
       {
         "name": "task_name",
         "explanation": "explanation",
-        "low_scale_vis": 1,
-        "medium_scale_vis": 2,
-        "high_scale_vis": 3
+        "low_scale_vis": 0,
+        "medium_scale_vis": 1,
+        "high_scale_vis": 2
       },
       {
         "name": "task_name",
         "explanation": "explanation",
-        "low_scale_vis": 1,
-        "medium_scale_vis": 2,
-        "high_scale_vis": 3
+        "low_scale_vis": 3,
+        "medium_scale_vis": 4,
+        "high_scale_vis": 5
       },
       {
         "name": "task_name",

@@ -8,6 +8,20 @@ AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
   m_global_vis_parameters.distance_threshold = 1.0;
   m_global_vis_parameters.opacity = 0.0;
   m_global_vis_parameters.slice_depth = 0.0;
+
+  
+  m_vis_space.insert(std::make_pair<int, Vis>(0, { "Distance Tree", ":/icons/distance_tree.png", 0, 0 }) );
+  m_vis_space.insert(std::make_pair<int, Vis>(1, { "Bar Chart", ":/icons/barchart.png", 1, 1 }));
+  m_vis_space.insert(std::make_pair<int, Vis>(2, { "Distance Matrix", ":/icons/matrix.png", 2, 2 } ));
+
+  m_vis_space.insert({ 3, { "Histogram", ":/icons/histogram.png", 3, 0 } });
+  m_vis_space.insert({ 4, { "Violin Chart", ":/icons/boxplot.png", 4, 1 } });
+  m_vis_space.insert({ 5, { "Scatter Plot", ":/icons/scatterplot.png", 5, 2 } });
+
+  m_vis_space.insert({ 6, { "Distance Tree", ":/icons/distance_tree.png", 6, 0 } });
+  m_vis_space.insert({ 7, { "Distance Tree", ":/icons/distance_tree.png", 7, 1 } });
+  m_vis_space.insert({ 8, { "Distance Tree", ":/icons/distance_tree.png", 8, 2 } });
+
 }
 
 AbstractionSpace::~AbstractionSpace()

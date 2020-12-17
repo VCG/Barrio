@@ -11,11 +11,14 @@ class MitoSchemeData : public QObject
   Q_OBJECT
 
 public:
-  MitoSchemeData(QString json_data, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
+  MitoSchemeData(int ID, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
   ~MitoSchemeData();
 
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
+
+  Q_INVOKABLE QString getID();
+  Q_PROPERTY(QString hvgx_id READ getID);
 
   void setJSONString(QString json) { m_json_string = json; };
 

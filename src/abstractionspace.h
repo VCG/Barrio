@@ -24,6 +24,14 @@ struct AbstractionPoint {
   int       ID;
 };
 
+struct Vis 
+{
+  QString name;
+  QString icon_path;
+  int id;
+  int scale;
+};
+
 struct VisConfiguration 
 {
   bool axons;
@@ -48,6 +56,9 @@ struct SelectedVisMethods
 class AbstractionSpace : public MainOpenGL
 {
 public:
+
+  std::map<int, Vis> m_vis_space;
+
   AbstractionSpace(DataContainer* datacontainer);
   ~AbstractionSpace();
 

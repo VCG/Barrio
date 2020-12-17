@@ -110,6 +110,7 @@ void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 
   groupBox->layout()->addWidget(frame);
   connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));
+
 }
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
@@ -201,6 +202,11 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 //  
 //  return true;
 //}
+
+Vis MainWidget::getVisInfo(int id)
+{
+  return m_abstraction_space->m_vis_space.at(id);
+}
 
 bool MainWidget::deleteAllInfoVisWidgets()
 {
@@ -411,7 +417,6 @@ void MainWidget::updateGroupBoxStyle()
     {
       box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; }");
     }
-    
   }
 }
 

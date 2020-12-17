@@ -22,6 +22,8 @@ public:
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
   //bool deleteInfoVisWidget(int ID);
+
+  Vis getVisInfo(int id);
   
   bool deleteAllInfoVisWidgets();
   bool deleteAllGLWidgets();

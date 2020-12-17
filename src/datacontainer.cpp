@@ -116,8 +116,10 @@ void DataContainer::loadData()
   {
     loadDataFromCache(cache_path);
 
+    QString semantic_skeleton_path = "C:/Users/jtroidl/Desktop/NeuroComparer/data/m3_data/m3_neurite_stack_skeleton_semantic.json";
     importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
     importSkeletons(mitos_skeletons_path, Object_t::MITO);
+    importSemanticSkeleton(semantic_skeleton_path);
   }
 
   /* 3 */
@@ -743,6 +745,176 @@ bool DataContainer::importObj(QString path)
   return true;
 }
 
+bool DataContainer::importSemanticSkeleton(QString path)
+{
+  QString json = QString();
+  QFile inputFile(path);
+  if (inputFile.open(QIODevice::ReadOnly))
+  {
+    QTextStream in(&inputFile);
+    while (!in.atEnd())
+    {
+      json.append(in.readLine());
+    }
+    inputFile.close();
+  }
+  m_sematic_skeleton_json = json;
+  
+  return true;
+}
+
+MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices, std::vector<struct VertexData>* vertices)
+{
+  MySkeleton skeleton;
+  skeleton.hvgx = hvgx;
+
+  QVector<bool> visited(QVector<bool>(indices->size()));
+  
+  // compute fork vertices
+  QVector<int> fork_vertices;
+  for(int i = 0; i < indices->length(); i++)
+  {
+    int idx = indices->at(i);
+    int count = indices->count(idx);
+    if ((count > 2 || count == 1) && !fork_vertices.contains(idx))
+    {
+      qDebug() << i << " --> " << count;
+      fork_vertices.push_back(idx);
+    }
+  }
+
+  int start;
+  int branch_counter = 0;
+  while (visited.count(true) < visited.size()) 
+  {
+
+    // find starting point
+    for (int i = 0; i < visited.size(); i = i + 2) 
+    {
+      MyEdge edge_candidate;
+      edge_candidate.p1 = indices->at(i);
+      edge_candidate.p2 = indices->at(i + 1);
+
+      if (!visited[i] && edgeTouchesForkVertex(edge_candidate, &fork_vertices))
+      {
+        start = i;
+        break;
+      }
+    }
+
+    MyBranch branch;
+
+    int p1 = indices->at(start);
+    
+    branch.start_index = p1;
+
+    // compute branch
+    double radius = 0.0; // in nn
+    double length = 0.0; // in nn
+
+    bool terminate = false;
+    double vertex_count = 0;
+    double min_radius = DBL_MAX;
+    double max_radius = 0;
+
+    while (!terminate)
+    {
+      // p1 and p2 form an edge
+      MyEdge edge;
+      edge.p1 = indices->at(start);
+      edge.p2 = indices->at(start + 1);
+
+      if (!branch.indices.contains(edge.p1))
+      {
+        branch.indices.push_back(edge.p1);
+      }
+      if (!branch.indices.contains(edge.p2))
+      {
+        branch.indices.push_back(edge.p2);
+      }
+
+      branch.end_index = edge.p2;
+
+      visited[start] = true;
+      visited[start + 1] = true;
+
+      VertexData v1 = vertices->at(edge.p1);
+      VertexData v2 = vertices->at(edge.p2);
+
+      if (v1.distance_to_cell < min_radius) {
+        min_radius = v1.distance_to_cell;
+      }
+      if (v2.distance_to_cell < min_radius) {
+        min_radius = v2.distance_to_cell;
+      }
+
+      if (v1.distance_to_cell > max_radius) {
+        max_radius = v1.distance_to_cell;
+      }
+      if (v2.distance_to_cell > max_radius) {
+        max_radius = v2.distance_to_cell;
+      }
+
+      radius += v1.distance_to_cell;
+      radius += v2.distance_to_cell;
+
+      QVector3D d = v2.vertex.toVector3D() + v1.vertex.toVector3D();
+      length += abs(d.length());
+
+      vertex_count += 1.0;
+
+      if (vertex_count > 1.5 && edgeTouchesForkVertex(edge, &fork_vertices)) // this part is done
+      { 
+        terminate = true;
+        break;
+      }
+      else
+      {
+        int i = 0;
+        while (i < indices->size())
+        {
+          if ((!visited.at(i) && edgeContainsIndex(edge, indices->at(i))) ||
+              (!visited.at(i + 1) && edgeContainsIndex(edge, indices->at(i + 1))))
+          {
+            start = i;
+            break;
+          }
+          i = i + 2;
+          if (i == indices->size()) // reached the end of the list
+          {
+            terminate = true;
+            break;
+          }
+        }
+      }
+    }
+
+    double avg_radius = radius / vertex_count;
+    
+    branch.avg_radius = avg_radius;
+    branch.length = length;
+    branch.vertex_count = vertex_count;
+    branch.min_radius = min_radius;
+    branch.max_radius = max_radius;
+
+    qDebug() << "min radius: " << min_radius;
+    qDebug() << "max radius: " << max_radius;
+
+    skeleton.branches[branch_counter] = branch;
+    branch_counter++;
+  }
+  
+  for(int key : skeleton.branches.keys())
+  {
+    MyBranch branch = skeleton.branches.value(key);
+    for (int i : branch.indices) {
+      VertexData* v = &vertices->at(i);
+      v->vertex.setW(key);
+    }
+  }
+  return skeleton;
+}
+
 bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type)
 {
   QFile file;
@@ -771,13 +943,12 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
     {
       hvgx = key.toInt() + 1;
     }
-    
 
     QJsonDocument skel_doc = QJsonDocument::fromJson(skeleton.toString().toUtf8());
     
     QJsonArray edges = skel_doc.object().value("edges").toArray();
     QJsonArray vertices = skel_doc.object().value("vertices").toArray();
-    QJsonArray radii = skeleton.toObject().value("radius").toArray();
+    QJsonArray radii = skel_doc.object().value("radius").toArray();
 
     // process per vertex data
     for (int i = 0; i < vertices.size(); i++)
@@ -787,7 +958,6 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
       double z = v.at(0).toDouble() / (DIM_X + 1);
       double x = v.at(1).toDouble() / (DIM_Y + 1);
       double y = v.at(2).toDouble() / (DIM_X + 1);
-
 
       double radius = radii.at(i).toDouble();
     
@@ -803,14 +973,18 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
       vertex->structure_type = getTypeByID(hvgx);
       vertex->is_skeleton = true;
     }
-
+    
     // process indices
+    QList<int> intermediate_edges;
     for (int i = 0; i < edges.size(); i++)
     {
       QJsonArray e = edges.at(i).toArray();
 
       int p1 = e.at(0).toInt() + index_offset;
       int p2 = e.at(1).toInt() + index_offset;
+
+      intermediate_edges.push_back(p1);
+      intermediate_edges.push_back(p2);
 
       m_skeleton_indices.push_back(p1);
       m_skeleton_indices.push_back(p2);
@@ -820,6 +994,46 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
   }
 
   return true;
+}
+
+bool DataContainer::edgeTouchesForkVertex(MyEdge edge, QVector<int>* fork_vertices)
+{
+  if (fork_vertices->contains(edge.p1) || fork_vertices->contains(edge.p2))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool DataContainer::edgeContainsIndex(MyEdge edge, int index)
+{
+  if (edge.p1 == index || edge.p2 == index) 
+  {
+    return true;
+  }
+  return false;
+}
+
+void DataContainer::display(const std::vector<MyBranch>* branches, int n)
+{
+  for (MyBranch b : *branches) {
+    std::cout << " " << b.avg_radius;
+  }
+  std::cout << std::endl;
+}
+
+void DataContainer::findPermutations(QMap<int, MyBranch>* b)
+{
+  std::vector<int> branches = b->keys().toVector().toStdVector();
+
+  branches.begin();
+
+  do {
+    for (int id : branches) {
+      std::cout << " " << id;
+    }
+    std::cout << std::endl;
+  } while (std::next_permutation(branches.begin(), branches.end()));
 }
 
 void DataContainer::processParentChildStructure()

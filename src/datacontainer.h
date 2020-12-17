@@ -37,14 +37,31 @@
 #include "globalParameters.h"
 #include "mesh_preprocessing.h"
 
-//#include "dbscan.h"
+struct MyEdge {
+  int p1;
+  int p2;
+};
 
-//#define MESH_MAX_X    5.0f
-//
-//#define DIM_X       999
-//#define DIM_Y       999
-//#define DIM_Z       449
-//#define DIM_G		64
+struct MyBranch {
+
+  QVector<int> indices;
+  int start_index;
+  int end_index;
+  
+  double length;
+  double avg_radius;
+  double min_radius;
+  double max_radius;
+
+  double vertex_count;
+
+  int type; // bouton/spine or cell body
+};
+
+struct MySkeleton {
+  int hvgx;
+  QMap<int, MyBranch> branches;
+};
 
 class DataContainer
 {
@@ -63,6 +80,9 @@ public:
 
   bool importObj(QString path);
   bool importSkeletons(QString path, Object_t skeleton_type);
+  bool importSemanticSkeleton(QString path);
+
+  MySkeleton processSkeletonStructure(int hvgx, QList<int>* edges, std::vector< struct VertexData >* vertices);
 
   void processParentChildStructure();
 
@@ -135,6 +155,7 @@ public:
 
 public:
   struct input_files                          input_files_dir;
+  QString                                     m_sematic_skeleton_json;
 
 protected:
   // maximum volume from displayed objects
@@ -188,6 +209,12 @@ protected:
    QString                                   objs_filename;
 
    MeshProcessing*                            m_mesh_processing;
+
+   bool edgeTouchesForkVertex(MyEdge edge, QVector<int>* fork_vertices);
+   bool edgeContainsIndex(MyEdge edge, int index);
+
+   void display(const std::vector<MyBranch>* branches, int n);
+   void findPermutations(QMap<int, MyBranch>* branches);
 };
 
 #endif // OBJECTMANAGER_H

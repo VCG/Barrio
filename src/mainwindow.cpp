@@ -28,19 +28,6 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_currentSelectedCluster = 0;
   m_clusters = 0;
 
-  QString val;
-  QFile file;
-  file.setFileName("C:/Users/jtroidl/Desktop/NeuroComparer/spec.json");
-  file.open(QIODevice::ReadOnly | QIODevice::Text);
-  val = file.readAll();
-  file.close();
-  qWarning() << val;
-  QJsonDocument spec_doc = QJsonDocument::fromJson(val.toUtf8());
-
-  QJsonArray tasks = spec_doc.array();
-
-  addTask(mainwindow_ui->groupBox_24, tasks[0].toObject());
-
   initializeSlicePositionSlider();
   initializeSynapseThresholdSlider();
   initializeOpacitySlider();
@@ -71,6 +58,19 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   setupSignalsNSlots();
   initializeVisualizationPresets();
+
+  QString val;
+  QFile file;
+  file.setFileName("C:/Users/jtroidl/Desktop/NeuroComparer/spec.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+  val = file.readAll();
+  file.close();
+
+  QJsonDocument spec_doc = QJsonDocument::fromJson(val.toUtf8());
+
+  QJsonArray tasks = spec_doc.array();
+
+  addTask(mainwindow_ui->groupBox_24, tasks[0].toObject());
 }
 
 void MainWindow::initializeSlicePositionSlider()
@@ -430,18 +430,9 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
 
   SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
 
-  if(scale == "Low")
-  {
-    btn->setIcon(QIcon(visMethods.low_icon));
-  }
-  else if (scale == "Medium")
-  {
-    btn->setIcon(QIcon(visMethods.medium_icon));
-  }
-  else if (scale == "High")
-  {
-    btn->setIcon(QIcon(visMethods.high_icon));
-  }
+  Vis vis_info = m_main_widget->getVisInfo(vis_id);
+
+  btn->setIcon(QIcon(vis_info.icon_path));
   
   QGroupBox* ls_box = new QGroupBox(scale);
   ls_box->setLayout(new QGridLayout);
