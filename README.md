@@ -7,7 +7,7 @@
 * A internet connection (to use the D3 library)
 
 ## Getting Started
-To get started you first need to **install all required dependencies**. in brackets I noted the versions that were used during development and testing.
+To get started you first need to **install all required dependencies**. In brackets I noted the versions that were used during development and testing.
 * [cmake](https://cmake.org/)
 * open source version of [QT](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) (5.14.2)
 * [CGGAL](https://www.cgal.org/download.html) (5.0.1) library, CGAL also requires [boost](https://www.boost.org/) (1.71.0)
