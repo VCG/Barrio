@@ -54,6 +54,12 @@ SelectedVisMethods AbstractionSpace::configureVisMethods(VisConfiguration config
     // medium - scatterplot
     // high - scatterplot
     qDebug() << "Hello world";
+    methods.low = new MitoScheme(&m_global_vis_parameters, m_datacontainer);
+    methods.low_icon = ":/icons/histogram.png";
+    methods.medium = new Boxplot(&m_global_vis_parameters, m_datacontainer);
+    methods.medium_icon = ":/icons/boxplot.png";
+    methods.high = new Scatterplot(&m_global_vis_parameters, m_datacontainer);
+    methods.high_icon = ":/icons/scatterplot.png";
   }
   else if (!config.axons && !config.dends && config.mitos && !config.syn)
   {
