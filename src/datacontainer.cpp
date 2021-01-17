@@ -80,13 +80,13 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString neurites_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_dends_corrected.obj";
-  
-  QString neurite_skeletons_path = "C:/Users/jtroidl/Desktop/NeuroComparer/data/m3_data/m3_neurite_skeletons.json";
-  QString mitos_skeletons_path = "C:/Users/jtroidl/Desktop/neco_convert/cache/skeletons/m3_mito_skeletons.json";
+  QString data_path("C:/Users/jtroidl/Desktop/NeuroComparer/data");
+  QString cache_subpath = QString("/cache");
 
-  QString astro_path = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_astrocyte.obj";
-  QString cache_path("C:/Users/jtroidl/Desktop/resources/NeuroComparer/data/cache");
+  QString neurites_path = data_path + "/m3_data/m3_dends_corrected.obj";
+  QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
+  QString astro_path = data_path + "/m3_data/m3_astrocyte.obj";
+  QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
 
   PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
 
@@ -110,15 +110,15 @@ void DataContainer::loadData()
     compute_closest_distance_to_structures();
     
 
-    writeDataToCache(cache_path);
+    writeDataToCache(data_path + cache_subpath);
   }
   else
   {
-    loadDataFromCache(cache_path);
+    loadDataFromCache(data_path + cache_subpath);
 
-    QString semantic_skeleton_path = "C:/Users/jtroidl/Desktop/NeuroComparer/data/m3_data/m3_neurite_stack_skeleton_semantic.json";
+    
     importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
-    importSkeletons(mitos_skeletons_path, Object_t::MITO);
+    //importSkeletons(mitos_skeletons_path, Object_t::MITO);
     importSemanticSkeleton(semantic_skeleton_path);
   }
 
