@@ -44,7 +44,7 @@ QString MitoScheme::createJSONString(QList<int>* selectedObjects)
 
 QWebEngineView* MitoScheme::initVisWidget(int ID, SpecificVisParameters params)
 {
-  int parentID = m_datacontainer->getObjectsMapPtr()->at(ID)->getParentID() + 1;
+  int parentID = m_datacontainer->getObjectsMapPtr()->at(ID)->getParentID();
   m_data = new MitoSchemeData(parentID, m_datacontainer, m_global_vis_parameters);
 
   setSpecificVisParameters(params);

@@ -51,7 +51,7 @@
 
         let semantic_skeleton = ""
         for (let i = 0; i < data.length; i++) {
-            if (data[i].id == hvgx) {
+            if (parseInt(data[i].id) + 1 == hvgx) {
                 semantic_skeleton = data[i]
             }
         }
