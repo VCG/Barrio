@@ -39,8 +39,13 @@
 </style>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
+<div id="my_dataviz" style="width: auto; height: 400px"></div>
+
 <script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
@@ -60,8 +65,11 @@
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 90, left: 40},
-            width = 460 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = $("#my_dataviz").width() - margin.left - margin.right,
+            height = $("#my_dataviz").height() - margin.top - margin.bottom;
+
+            // width = 460 - margin.left - margin.right,
+            // height = 500 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         let svg = d3.select("#my_dataviz")
@@ -112,20 +120,20 @@
                 return height - 50 * d.length / height;
             })
             .attr("class", "spine")
-        // .on("mouseover", function (d) {
-        //     div.transition()
-        //         .duration(200)
-        //         .style("opacity", .9);
-        //
-        //     div.text("Spine01 - Length: " + y(d.Value))
-        //         .style("left", (d3.event.pageX) + "px")
-        //         .style("top", (d3.event.pageY - 28) + "px");
-        // })
-        // .on("mouseout", function () {
-        //     div.transition()
-        //         .duration(100)
-        //         .style("opacity", 0);
-        // });
+            .on("mouseover", function (d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text(d.name + " - length: " + parseInt(d.length) + " nm")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
         svg.append("rect")
             .attr("x", 0.2 * width)
