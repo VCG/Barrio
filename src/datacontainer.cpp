@@ -87,8 +87,9 @@ void DataContainer::loadData()
   QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
   QString astro_path = data_path + "/m3_data/m3_astrocyte.obj";
   QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
+  QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
 
-  PreLoadMetaDataHVGX(input_files_dir.HVGX_metadata);
+  PreLoadMetaDataHVGX(hvgx_path);
 
   if (RECOMPUTE_DATA) 
   {
@@ -124,7 +125,7 @@ void DataContainer::loadData()
 
   /* 3 */
   
-  PostloadMetaDataHVGX(input_files_dir.HVGX_metadata);
+  PostloadMetaDataHVGX(hvgx_path);
 }
 
 //----------------------------------------------------------------------------

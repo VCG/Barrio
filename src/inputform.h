@@ -13,14 +13,14 @@ enum class LoadFile_t { DUMP_ASTRO, DUMP_NEURITES, LOAD_MESH_NO_VERTEX, LOAD_MES
 enum class Normals_t { DUMP_NORMAL, LOAD_NORMAL, NO_NORMALS };
 
 struct input_files {
-  QString HVGX_metadata;
-  QString proximity_astro;
-  QString proximity_astro_mito;
-  QString proximity_neu_mito;
-  QString proximity_glycogen;
-  QString xml_astro;
-  QString xml_neurites;
-  QString extra_files_path;
+  //QString HVGX_metadata;
+  //QString proximity_astro;
+  //QString proximity_astro_mito;
+  //QString proximity_neu_mito;
+  //QString proximity_glycogen;
+  //QString xml_astro;
+  //QString xml_neurites;
+  //QString extra_files_path;
 };
 
 class InputForm : public QDialog
