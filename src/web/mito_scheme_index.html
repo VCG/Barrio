@@ -33,8 +33,13 @@
     }
 
     .spine {
-        stroke-width: 3px;
+        stroke-width: 4px;
         stroke: lightgreen;
+
+    }
+
+    .spine:hover{
+        stroke: #ffa500
     }
 </style>
 
@@ -55,9 +60,16 @@
         let data = JSON.parse(json_string);
 
         let semantic_skeleton = ""
+        let max_body_length = 0
         for (let i = 0; i < data.length; i++) {
-            if (parseInt(data[i].id) + 1 == hvgx) {
+            let curr_id = parseInt(data[i].id) + 1;
+            if (curr_id == hvgx) {
                 semantic_skeleton = data[i]
+            }
+            let curr_length = parseInt(data[i].length);
+            if (curr_length > max_body_length)
+            {
+                max_body_length = curr_length;
             }
         }
 
@@ -67,9 +79,6 @@
         let margin = {top: 10, right: 30, bottom: 90, left: 40},
             width = $("#my_dataviz").width() - margin.left - margin.right,
             height = $("#my_dataviz").height() - margin.top - margin.bottom;
-
-            // width = 460 - margin.left - margin.right,
-            // height = 500 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         let svg = d3.select("#my_dataviz")
@@ -86,10 +95,11 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+        let body_width = width * semantic_skeleton.length / max_body_length
 
         // X axis
         let x = d3.scaleBand()
-            .range([0, width])
+            .range([0, body_width])
             .domain([0, 1])
             .padding(1);
 
@@ -108,16 +118,16 @@
             .enter()
             .append("line")
             .attr("x1", function (d) {
-                return width * d.start;
+                return body_width * d.start;
             })
             .attr("x2", function (d) {
-                return width * d.start + 1;
+                return body_width * d.start;
             })
             .attr("y1", function (d) {
                 return height;
             })
             .attr("y2", function (d){
-                return height - 50 * d.length / height;
+                return height - 20 * d.length / height;
             })
             .attr("class", "spine")
             .on("mouseover", function (d) {
@@ -136,9 +146,9 @@
             });
 
         svg.append("rect")
-            .attr("x", 0.2 * width)
+            .attr("x", 0.0 * width)
             .attr("y", height - margin.top)
-            .attr("width", 0.5 * width)
+            .attr("width", body_width)
             .attr("height", 10)
             .attr("class", "mito")
             .on("mouseover", function (d) {
