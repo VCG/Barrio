@@ -109,7 +109,6 @@
             .enter()
             .append("line")
             .attr("x1", function (d) {
-                console.log(d.start);
                 return x(d.start);
             })
             .attr("x2", function (d) {
@@ -119,15 +118,30 @@
                 return height;
             })
             .attr("y2", function (d){
-                if (d.length !== "Incomplete") {
-                    return height - y(d.length);
+                if (d.length !== "incomplete") {
+                    return y(d.length);
                 }
                 else {
-                    return height - y(1.0);
+                    return y(1.0);
                 }
 
             })
             .attr("class", "spine")
+            .style("stroke", function (d)
+            {
+                if(d.type == "excitatory")
+                {
+                    return "rgb(255.0, 0.0, 0.0)";
+                }
+                else if (d.type == "inhibitory")
+                {
+                    return "rgb(0.0, 0.0, 255.0)";
+                }
+                else // incomplete
+                {
+                    return "rgb(0.0, 0.0, 0.0)";
+                }
+            })
             .on("mouseover", function (d) {
                 div.transition()
                     .duration(200)
@@ -172,34 +186,48 @@
             });
 
         // Circles
-        // svg.selectAll("mycircle")
-        //     .data(data)
-        //     .enter()
-        //     .append("circle")
-        //     .attr("cx", function (d) {
-        //         return x(d.Country);
-        //     })
-        //     .attr("cy", function (d) {
-        //         return y(d.Value);
-        //     })
-        //     .attr("r", function (d) {
-        //         return d.Value / 500;
-        //     })
-        //     .attr("class", "synapse")
-        //     .on("mouseover", function (d) {
-        //         div.transition()
-        //             .duration(200)
-        //             .style("opacity", .9);
-        //
-        //         div.text("Synapse Bla Bla - SA: " + d.Value / 500)
-        //             .style("left", (d3.event.pageX) + "px")
-        //             .style("top", (d3.event.pageY - 28) + "px");
-        //     })
-        //     .on("mouseout", function () {
-        //         div.transition()
-        //             .duration(100)
-        //             .style("opacity", 0);
-        //     });
+        svg.selectAll("mycircle")
+            .data(semantic_skeleton.spines)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return x(d.start);
+            })
+            .attr("cy", function (d) {
+                if (d.length !== "incomplete") {
+                    return y(d.length);
+                }
+                else {
+                    return y(1.0);
+                }
+            })
+            .attr("r", function (d) {
+                if(d.synapse_sa == "incomplete")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 50 * d.synapse_sa;
+                }
+
+            })
+            .attr("class", "synapse")
+            .on("mouseover", function (d) {
+                let synapse_sa = d.synapse_sa;
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text("Synapse SA: " + synapse_sa.toFixed(2) + " microns")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
     });
 
