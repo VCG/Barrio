@@ -16,30 +16,31 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
   this->setColumnWidth(0, 200);
   this->setColumnWidth(1, 100);
 
-  std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
+  //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
+  std::vector<Object*> mitos = datacontainer->getObjectsByType(Object_t::MITO);
 
-  int i = 0;
-  for (auto iter = objects_map->rbegin(); iter != objects_map->rend(); iter++)
+  for (int i = 0; i < mitos.size(); i++)
   {
-    Object* object_p = (*iter).second;
+    //Object* object_p = (*iter).second;
+    Object* object = mitos.at(i);
 
-    if (object_p->getObjectType() != Object_t::MITO)
-    {
-      QString name(object_p->getName().c_str());
+    //if (object_p->getObjectType() != Object_t::MITO)
+    //{
+      QString name(object->getName().c_str());
       QStandardItem* item_name = new QStandardItem(name);
       item_name->setEditable(false);
 
-      int id = object_p->getHVGXID();
+      int id = object->getHVGXID();
       QStandardItem* item_id = new QStandardItem(QString::number(id));
       item_id->setEditable(false);
 
       paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
 
-      std::vector<int>* childrenIDs = object_p->getChildrenIDs();
+      /*std::vector<int>* childrenIDs = object->getChildrenIDs();
       int j = 0;
       for (int i=0; i < childrenIDs->size(); i++)
       {
-        Object* child = objects_map->at(childrenIDs->at(i));
+        Object* child = mitos->at(childrenIDs->at(i));
         QString child_name(child->getName().c_str());
         QStandardItem* item_child_name = new QStandardItem(child_name);
         item_child_name->setEditable(false);
@@ -51,9 +52,9 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
         item_name->appendRow(QList<QStandardItem*>() << item_child_name << child_item_id);
 
         j++;
-      }
-      i++;
-    }
+      }*/
+      //i++;
+    //}
   }
 
  
