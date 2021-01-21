@@ -83,7 +83,7 @@ void DataContainer::loadData()
   QString data_path("C:/Users/jtroidl/Desktop/NeuroComparer/data");
   QString cache_subpath = QString("/cache");
 
-  QString neurites_path = data_path + "/m3_data/m3_dends_corrected.obj";
+  QString neurites_path = data_path + "/m3_data/m3_all_corrected.obj";
   QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
   QString astro_path = data_path + "/m3_data/m3_astrocyte.obj";
   QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
@@ -91,10 +91,10 @@ void DataContainer::loadData()
 
   PreLoadMetaDataHVGX(hvgx_path);
 
-  if (RECOMPUTE_DATA) 
+  if (RECOMPUTE_DATA)
   {
     auto t1 = std::chrono::high_resolution_clock::now();
-    
+
     importObj(neurites_path);
 
     auto t2 = std::chrono::high_resolution_clock::now();
@@ -105,11 +105,11 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
-    
+
     compute_centers();
     compute_distance_mito_cell_boundary();
     compute_closest_distance_to_structures();
-    
+
 
     writeDataToCache(data_path + cache_subpath);
   }
@@ -117,14 +117,14 @@ void DataContainer::loadData()
   {
     loadDataFromCache(data_path + cache_subpath);
 
-    
+
     importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
     //importSkeletons(mitos_skeletons_path, Object_t::MITO);
     importSemanticSkeleton(semantic_skeleton_path);
   }
 
   /* 3 */
-  
+
   PostloadMetaDataHVGX(hvgx_path);
 }
 
@@ -371,7 +371,7 @@ void DataContainer::PostloadMetaDataHVGX(QString path)
   QTextStream in(&file);
   QList<QByteArray> wordList;
   int glycogenCount = 0;
-  while (!file.atEnd()) 
+  while (!file.atEnd())
   {
     QByteArray line = file.readLine();
     wordList = line.split(',');
@@ -651,26 +651,26 @@ bool DataContainer::importObj(QString path)
   int hvgxID = 0;
   Object* obj = NULL;
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
-  
+
   QTextStream in(&inputFile);
   while (!in.atEnd()) {
-    
+
     QString line = in.readLine();
     QList<QString> elements = line.split(" ");
-   
+
     // parse object names
     if (!strcmp(elements[0].toStdString().c_str(), "o"))
     {
       QList<QString> nameList = elements[1].split('_');
       hvgxID = nameList.last().toInt();
-      
+
       QString name; // name consits of everything but the last entry of namelist
       for (int i = 0; i < nameList.size() - 1; ++i)
         name += nameList[i] + "_";
       name.remove(name.length() - 1, name.length() - 1); // remove last character
-      
+
       qDebug() << "Reading " << name;
-      
+
       obj = new Object(name.toUtf8().constData(), hvgxID);
 
       obj->setVolume(2.0f);
@@ -695,7 +695,7 @@ bool DataContainer::importObj(QString path)
       meshVertexList->emplace_back();
       int vertexIdx = (int)meshVertexList->size() - 1;
       struct VertexData* v = &meshVertexList->at(vertexIdx);
-      
+
       v->vertex = mesh_vertex;
       v->distance_to_cell = 0.0; // first init all distances with the default value
       v->hvgxID = hvgxID;
@@ -705,7 +705,7 @@ bool DataContainer::importObj(QString path)
 
     // parse faces
     else if (!strcmp(elements[0].toStdString().c_str(), "f")) // read triangulated faces
-    { 
+    {
       int vertexIndex[3];
 
       vertexIndex[0] = elements[1].toInt();
@@ -721,7 +721,7 @@ bool DataContainer::importObj(QString path)
       obj->addTriangleIndex(vertexIndex[0] - 1);
       obj->addTriangleIndex(vertexIndex[2] - 1);
       obj->addTriangleIndex(vertexIndex[1] - 1);
-      
+
       // safe indices counter clockwise
       m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[2] - 1, vertexIndex[1] - 1);
       m_indices_size += 3;
@@ -760,7 +760,7 @@ bool DataContainer::importSemanticSkeleton(QString path)
     inputFile.close();
   }
   m_sematic_skeleton_json = json;
-  
+
   return true;
 }
 
@@ -770,10 +770,10 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
   skeleton.hvgx = hvgx;
 
   QVector<bool> visited(QVector<bool>(indices->size()));
-  
+
   // compute fork vertices
   QVector<int> fork_vertices;
-  for(int i = 0; i < indices->length(); i++)
+  for (int i = 0; i < indices->length(); i++)
   {
     int idx = indices->at(i);
     int count = indices->count(idx);
@@ -786,11 +786,11 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
 
   int start;
   int branch_counter = 0;
-  while (visited.count(true) < visited.size()) 
+  while (visited.count(true) < visited.size())
   {
 
     // find starting point
-    for (int i = 0; i < visited.size(); i = i + 2) 
+    for (int i = 0; i < visited.size(); i = i + 2)
     {
       MyEdge edge_candidate;
       edge_candidate.p1 = indices->at(i);
@@ -806,7 +806,7 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
     MyBranch branch;
 
     int p1 = indices->at(start);
-    
+
     branch.start_index = p1;
 
     // compute branch
@@ -865,7 +865,7 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
       vertex_count += 1.0;
 
       if (vertex_count > 1.5 && edgeTouchesForkVertex(edge, &fork_vertices)) // this part is done
-      { 
+      {
         terminate = true;
         break;
       }
@@ -875,7 +875,7 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
         while (i < indices->size())
         {
           if ((!visited.at(i) && edgeContainsIndex(edge, indices->at(i))) ||
-              (!visited.at(i + 1) && edgeContainsIndex(edge, indices->at(i + 1))))
+            (!visited.at(i + 1) && edgeContainsIndex(edge, indices->at(i + 1))))
           {
             start = i;
             break;
@@ -891,7 +891,7 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
     }
 
     double avg_radius = radius / vertex_count;
-    
+
     branch.avg_radius = avg_radius;
     branch.length = length;
     branch.vertex_count = vertex_count;
@@ -904,8 +904,8 @@ MySkeleton DataContainer::processSkeletonStructure(int hvgx, QList<int>* indices
     skeleton.branches[branch_counter] = branch;
     branch_counter++;
   }
-  
-  for(int key : skeleton.branches.keys())
+
+  for (int key : skeleton.branches.keys())
   {
     MyBranch branch = skeleton.branches.value(key);
     for (int i : branch.indices) {
@@ -931,7 +931,7 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
 
   int index_offset = meshVertexList->size();
 
-  foreach(const QString & key, object.keys()) 
+  foreach(const QString & key, object.keys())
   {
     QJsonValue skeleton = object.value(key);
 
@@ -946,7 +946,7 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
     }
 
     QJsonDocument skel_doc = QJsonDocument::fromJson(skeleton.toString().toUtf8());
-    
+
     QJsonArray edges = skel_doc.object().value("edges").toArray();
     QJsonArray vertices = skel_doc.object().value("vertices").toArray();
     QJsonArray radii = skel_doc.object().value("radius").toArray();
@@ -961,7 +961,7 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
       double y = v.at(2).toDouble() / (DIM_X + 1);
 
       double radius = radii.at(i).toDouble();
-    
+
       QVector4D mesh_vertex(x, y, z, 1.0);
 
       meshVertexList->emplace_back();
@@ -974,7 +974,7 @@ bool DataContainer::importSkeletons(QString neurite_skeleton_path, Object_t type
       vertex->structure_type = getTypeByID(hvgx);
       vertex->is_skeleton = true;
     }
-    
+
     // process indices
     QList<int> intermediate_edges;
     for (int i = 0; i < edges.size(); i++)
@@ -1008,7 +1008,7 @@ bool DataContainer::edgeTouchesForkVertex(MyEdge edge, QVector<int>* fork_vertic
 
 bool DataContainer::edgeContainsIndex(MyEdge edge, int index)
 {
-  if (edge.p1 == index || edge.p2 == index) 
+  if (edge.p1 == index || edge.p2 == index)
   {
     return true;
   }
@@ -1040,7 +1040,7 @@ void DataContainer::findPermutations(QMap<int, MyBranch>* b)
 void DataContainer::processParentChildStructure()
 {
   std::vector<Object*> mitos = getObjectsByType(Object_t::MITO);
-  for (auto const& mito : mitos) 
+  for (auto const& mito : mitos)
   {
     QString name = mito->getName().c_str();
     QList<QString> nameList = name.split("_");
@@ -1049,21 +1049,43 @@ void DataContainer::processParentChildStructure()
     {
       name = nameList[1].replace("A", "Axon");
     }
-    else if(name.contains("D")) // mito of dendrite
+    else if (name.contains("D")) // mito of dendrite
     {
       name = nameList[1].replace("D", "Dendrite");
     }
-    else if(name.contains("Astro")) // mito of astrocyte
+    else if (name.contains("Astro")) // mito of astrocyte
     {
       // todo
     }
 
     Object* parent = getObjectByName(name);
-
     mito->setParentID(parent->getHVGXID());
     parent->addChildID(mito->getHVGXID());
   }
-  
+
+  std::vector<Object*> spines = getObjectsByType(Object_t::SPINE);
+  for (auto const& spine : spines)
+  {
+    QString name = spine->getName().c_str();
+    QList<QString> nameList = name.split("_");
+    int parentID = nameList[1].toInt();
+
+    Object* parent = m_objects.at(parentID);
+    spine->setParentID(parent->getHVGXID());
+    parent->addChildID(spine->getHVGXID());
+  }
+
+  std::vector<Object*> boutons = getObjectsByType(Object_t::BOUTON);
+  for (auto const& bouton : boutons)
+  {
+    QString name = bouton->getName().c_str();
+    QList<QString> nameList = name.split("_");
+    int parentID = nameList[1].toInt();
+
+    Object* parent = m_objects.at(parentID);
+    bouton->setParentID(parent->getHVGXID());
+    parent->addChildID(bouton->getHVGXID());
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1195,12 +1217,12 @@ int DataContainer::getTypeByID(int hvgx)
   if (m_objects.count(hvgx) > 0)
   {
     Object* obj = m_objects.at(hvgx);
-    return (int) obj->getObjectType();
+    return (int)obj->getObjectType();
   }
 
   return -1;
 }
- 
+
 
 //----------------------------------------------------------------------------
 //
@@ -1257,7 +1279,7 @@ int DataContainer::getIndexByName(QString name)
   for (auto const& [id, obj] : m_objects)
   {
     QString map_name = obj->getName().c_str();
-    if (QString::compare(map_name, name) == 0) 
+    if (QString::compare(map_name, name) == 0)
     {
       return id;
     }
@@ -1301,7 +1323,7 @@ void DataContainer::compute_centers()
 void DataContainer::compute_synapse_distances(Object* mito)
 {
   std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
-  for (Object* syn: synapses)
+  for (Object* syn : synapses)
   {
     double closest_distance = m_mesh_processing->compute_closest_distance(mito, syn, m_mesh->getVerticesList());
     mito->setDistanceToStructure(syn->getHVGXID(), closest_distance);
@@ -1376,7 +1398,8 @@ Object* DataContainer::getObjectByName(QString name)
 {
   for (auto const& [id, obj] : m_objects)
   {
-    if (QString(obj->getName().c_str()) == name) 
+    QString obj_name = QString::fromUtf8(obj->getName().c_str());
+    if (name.contains(obj_name, Qt::CaseInsensitive))
     {
       return obj;
     }
@@ -1392,16 +1415,16 @@ void DataContainer::addSliceVertices()
   m_objects[-1] = obj;
   m_objectsByType[Object_t::SLICE].push_back(obj);
 
-  int idx0 = addSliceVertex(0.0,         0.0,          0.0,  0.0);
-  int idx1 = addSliceVertex(MESH_MAX_Y,  0.0,          0.0,  1.0);
-  int idx2 = addSliceVertex(0.0,         MESH_MAX_Z,   1.0,  0.0);
-  int idx3 = addSliceVertex(MESH_MAX_Y,  MESH_MAX_Z,   1.0,  1.0);
+  int idx0 = addSliceVertex(0.0, 0.0, 0.0, 0.0);
+  int idx1 = addSliceVertex(MESH_MAX_Y, 0.0, 0.0, 1.0);
+  int idx2 = addSliceVertex(0.0, MESH_MAX_Z, 1.0, 0.0);
+  int idx3 = addSliceVertex(MESH_MAX_Y, MESH_MAX_Z, 1.0, 1.0);
 
   m_mesh->addFace(idx0, idx1, idx2);
   m_mesh->addFace(idx3, idx1, idx2);
 
   obj->addTriangleIndex(idx0);
-  obj->addTriangleIndex(idx1); 
+  obj->addTriangleIndex(idx1);
   obj->addTriangleIndex(idx2);
 
   obj->addTriangleIndex(idx3);
