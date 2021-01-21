@@ -57,17 +57,17 @@
         let jsobject = channel.objects.mito_scheme_data;
         let json_string = jsobject.json_string;
         let hvgx = parseInt(jsobject.hvgx_id);
-        let data = JSON.parse(json_string);
+        let cell = JSON.parse(json_string);
 
         let semantic_skeleton = ""
-        for (let i = 0; i < data.length; i++) {
-            let curr_id = parseInt(data[i].id);
+        for (let i = 0; i < cell.length; i++) {
+            let curr_id = parseInt(cell[i].id);
             if (curr_id == hvgx) {
-                semantic_skeleton = data[i]
+                semantic_skeleton = cell[i]
             }
         }
 
-        console.log(data)
+        console.log(cell)
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 90, left: 40},
@@ -150,11 +150,14 @@
                 div.text(d.name + ": " + d.length + " microns")
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
+
+                jsobject.setHighlightedStructure(semantic_skeleton.id, d.number);
             })
-            .on("mouseout", function () {
+            .on("mouseout", function (d) {
                 div.transition()
                     .duration(100)
                     .style("opacity", 0);
+                jsobject.removeHighlightedStructure(semantic_skeleton.id, d.number);
             });
 
         svg.selectAll("myrect")

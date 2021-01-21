@@ -27,6 +27,9 @@ public:
 
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer* m_datacontainer;
+
+  Q_INVOKABLE void setHighlightedStructure(const int parentID, int spineNumber);
+  Q_INVOKABLE void removeHighlightedStructure(const int parentID, int spineNumber);
 };
 
 class MitoScheme : public IVisMethod

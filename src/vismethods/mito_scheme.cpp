@@ -21,6 +21,59 @@ Q_INVOKABLE int MitoSchemeData::getID()
   return Q_INVOKABLE m_hvgxID;
 }
 
+
+Q_INVOKABLE void MitoSchemeData::setHighlightedStructure(const int parentID, int spineNumber)
+{
+  Object* parent = m_datacontainer->getObjectsMapPtr()->at(parentID);
+  std::vector<int>* children_ids = parent->getChildrenIDs();
+  for (int i = 0; i < children_ids->size(); i++)
+  {
+    int id = children_ids->at(i);
+    Object* child = m_datacontainer->getObjectsMapPtr()->at(id);
+    QString name = QString::fromUtf8(child->getName().c_str());
+    int my_spine_number = name.split("_")[2].toInt(); // spine number is contained on the 2 position in the array
+
+    if (my_spine_number == spineNumber && !m_global_vis_parameters->highlighted_objects.contains(id))
+    {
+      m_global_vis_parameters->highlighted_objects.append(id);
+    }
+  }
+  
+}
+
+Q_INVOKABLE void MitoSchemeData::removeHighlightedStructure(const int parentID, int spineNumber)
+{
+  int hvgx_id = 0;
+
+  Object* parent = m_datacontainer->getObjectsMapPtr()->at(parentID);
+  std::vector<int>* children_ids = parent->getChildrenIDs();
+  for (int i = 0; i < children_ids->size(); i++)
+  {
+    int id = children_ids->at(i);
+    Object* child = m_datacontainer->getObjectsMapPtr()->at(id);
+    QString name = QString::fromUtf8(child->getName().c_str());
+    int my_spine_number = name.split("_")[2].toInt(); // spine number is contained on the 2 position in the array
+
+    if (my_spine_number == spineNumber)
+    {
+      hvgx_id = id;
+    }
+  }
+
+  
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_objects;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
+}
+
 MitoScheme::MitoScheme(MitoScheme* mitoScheme)
 {
   m_datacontainer = mitoScheme->m_datacontainer;

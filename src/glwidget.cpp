@@ -995,7 +995,14 @@ void GLWidget::setVisibleStructures()
     Object* object_p = (*iter).second;
     int currentID = object_p->getHVGXID();
 
-    if (m_is_overview_widget || currentID == m_selected_hvgx_id || objects_map->at(m_selected_hvgx_id)->isChild(currentID) || objects_map->at(m_selected_hvgx_id)->isParent(currentID))
+    int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
+    bool is_spine_bouton = parentID == objects_map->at(currentID)->getParentID() && (objects_map->at(currentID)->getObjectType() == Object_t::SPINE || objects_map->at(currentID)->getObjectType() == Object_t::BOUTON);
+    
+    if (m_is_overview_widget || currentID == m_selected_hvgx_id || 
+      objects_map->at(m_selected_hvgx_id)->isChild(currentID) || 
+      objects_map->at(m_selected_hvgx_id)->isParent(currentID) ||
+      is_spine_bouton
+      )
     {
       m_visible_structures.push_back(currentID);
     }

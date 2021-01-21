@@ -2031,108 +2031,108 @@ Object_t OpenGLManager::getObjectTypeByID(int hvgxID)
 //
 void OpenGLManager::recursiveFilter(int hvgxID, bool isfilterd)
 {
-  std::map<int, Object*>* objectMap = m_dataContainer->getObjectsMapPtr();
-  if (objectMap->find(hvgxID) == objectMap->end() || objectMap->at(hvgxID) == NULL) {
-    return;
-  }
+  //std::map<int, Object*>* objectMap = m_dataContainer->getObjectsMapPtr();
+  //if (objectMap->find(hvgxID) == objectMap->end() || objectMap->at(hvgxID) == NULL) {
+  //  return;
+  //}
 
-  FilterObject(hvgxID, isfilterd);
+  //FilterObject(hvgxID, isfilterd);
 
-  if (isfilterd) // hide
-    return;
+  //if (isfilterd) // hide
+  //  return;
 
-  Object* obj = objectMap->at(hvgxID);
+  //Object* obj = objectMap->at(hvgxID);
 
-  // if it has a children then get them
-  // else if has parent get them
-  if (m_display_parent) {
-    int parentID = obj->getParentID();
-    if (objectMap->find(parentID) == objectMap->end()) {
-      qDebug() << obj->getName().data() << " has no parnt";
-    }
-    else {
-      FilterObject(parentID, isfilterd);
-    }
-  }
+  //// if it has a children then get them
+  //// else if has parent get them
+  //if (m_display_parent) {
+  //  int parentID = obj->getParentID();
+  //  if (objectMap->find(parentID) == objectMap->end()) {
+  //    qDebug() << obj->getName().data() << " has no parnt";
+  //  }
+  //  else {
+  //    FilterObject(parentID, isfilterd);
+  //  }
+  //}
 
 
-  if (m_display_child) {
-    std::vector<Object*> children = obj->getChildren();
-    if (children.size() == 0) {
-      qDebug() << obj->getName().data() << " has no child";
-    }
-    else {
-      for (int i = 0; i < children.size(); ++i) {
-        qDebug() << "Showing " << children[i]->getName().data();
-        FilterObject(children[i]->getHVGXID(), isfilterd);
-      }
-    }
-  }
+  //if (m_display_child) {
+  //  std::vector<Object*> children = obj->getChildren();
+  //  if (children.size() == 0) {
+  //    qDebug() << obj->getName().data() << " has no child";
+  //  }
+  //  else {
+  //    for (int i = 0; i < children.size(); ++i) {
+  //      qDebug() << "Showing " << children[i]->getName().data();
+  //      FilterObject(children[i]->getHVGXID(), isfilterd);
+  //    }
+  //  }
+  //}
 
-  if (m_display_synapses) {
-    // get all objects that are connected to this directly or indirectly
-    std::vector<Object*> synapses_list = obj->getSynapses();
-    //if (synapses_list.size() == 0)
-    //    return;
+  //if (m_display_synapses) {
+  //  // get all objects that are connected to this directly or indirectly
+  //  std::vector<Object*> synapses_list = obj->getSynapses();
+  //  //if (synapses_list.size() == 0)
+  //  //    return;
 
-    for (int i = 0; i < synapses_list.size(); ++i) {
-      Object* synapse_obj = synapses_list[i];
-      struct synapse synapse_data = synapse_obj->getSynapseData();
-      if (synapse_data.axon != hvgxID
-        && synapse_data.axon
-        && objectMap->find(synapse_data.axon) != objectMap->end()) {
-        FilterObject(synapse_data.axon, isfilterd);
-      }
+  //  for (int i = 0; i < synapses_list.size(); ++i) {
+  //    Object* synapse_obj = synapses_list[i];
+  //    struct synapse synapse_data = synapse_obj->getSynapseData();
+  //    if (synapse_data.axon != hvgxID
+  //      && synapse_data.axon
+  //      && objectMap->find(synapse_data.axon) != objectMap->end()) {
+  //      FilterObject(synapse_data.axon, isfilterd);
+  //    }
 
-      if (synapse_data.dendrite != hvgxID
-        && synapse_data.dendrite
-        && objectMap->find(synapse_data.dendrite) != objectMap->end()) {
-        FilterObject(synapse_data.dendrite, isfilterd);
-      }
+  //    if (synapse_data.dendrite != hvgxID
+  //      && synapse_data.dendrite
+  //      && objectMap->find(synapse_data.dendrite) != objectMap->end()) {
+  //      FilterObject(synapse_data.dendrite, isfilterd);
+  //    }
 
-      if (synapse_data.spine != hvgxID
-        && synapse_data.spine
-        && objectMap->find(synapse_data.spine) != objectMap->end()) {
-        FilterObject(synapse_data.spine, isfilterd);
-      }
+  //    if (synapse_data.spine != hvgxID
+  //      && synapse_data.spine
+  //      && objectMap->find(synapse_data.spine) != objectMap->end()) {
+  //      FilterObject(synapse_data.spine, isfilterd);
+  //    }
 
-      if (synapse_data.bouton != hvgxID
-        && synapse_data.bouton
-        && objectMap->find(synapse_data.bouton) != objectMap->end()) {
-        FilterObject(synapse_data.bouton, isfilterd);
-      }
-      FilterObject(synapse_obj->getHVGXID(), isfilterd);
-    }
+  //    if (synapse_data.bouton != hvgxID
+  //      && synapse_data.bouton
+  //      && objectMap->find(synapse_data.bouton) != objectMap->end()) {
+  //      FilterObject(synapse_data.bouton, isfilterd);
+  //    }
+  //    FilterObject(synapse_obj->getHVGXID(), isfilterd);
+  //  }
 
-    if (obj->getObjectType() == Object_t::SYNAPSE)
-    {
-      struct synapse synapse_data = obj->getSynapseData();
-      if (synapse_data.axon != hvgxID
-        && synapse_data.axon
-        && objectMap->find(synapse_data.axon) != objectMap->end()) {
-        FilterObject(synapse_data.axon, isfilterd);
-      }
+  //  if (obj->getObjectType() == Object_t::SYNAPSE)
+  //  {
+  //    struct synapse synapse_data = obj->getSynapseData();
+  //    if (synapse_data.axon != hvgxID
+  //      && synapse_data.axon
+  //      && objectMap->find(synapse_data.axon) != objectMap->end()) {
+  //      FilterObject(synapse_data.axon, isfilterd);
+  //    }
 
-      if (synapse_data.dendrite != hvgxID
-        && synapse_data.dendrite
-        && objectMap->find(synapse_data.dendrite) != objectMap->end()) {
-        FilterObject(synapse_data.dendrite, isfilterd);
-      }
+  //    if (synapse_data.dendrite != hvgxID
+  //      && synapse_data.dendrite
+  //      && objectMap->find(synapse_data.dendrite) != objectMap->end()) {
+  //      FilterObject(synapse_data.dendrite, isfilterd);
+  //    }
 
-      if (synapse_data.spine != hvgxID
-        && synapse_data.spine
-        && objectMap->find(synapse_data.spine) != objectMap->end()) {
-        FilterObject(synapse_data.spine, isfilterd);
-      }
+  //    if (synapse_data.spine != hvgxID
+  //      && synapse_data.spine
+  //      && objectMap->find(synapse_data.spine) != objectMap->end()) {
+  //      FilterObject(synapse_data.spine, isfilterd);
+  //    }
 
-      if (synapse_data.bouton != hvgxID
-        && synapse_data.bouton
-        && objectMap->find(synapse_data.bouton) != objectMap->end()) {
-        FilterObject(synapse_data.bouton, isfilterd);
-      }
-      FilterObject(obj->getHVGXID(), isfilterd);
-    }
-  }
+  //    if (synapse_data.bouton != hvgxID
+  //      && synapse_data.bouton
+  //      && objectMap->find(synapse_data.bouton) != objectMap->end()) {
+  //      FilterObject(synapse_data.bouton, isfilterd);
+  //    }
+  //    FilterObject(obj->getHVGXID(), isfilterd);
+  //  }
+  //}
 
 }
 

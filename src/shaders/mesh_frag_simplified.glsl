@@ -193,7 +193,7 @@ vec4 computeColor()
 //    out_color = vec4(result, 0.0);
 //  }
 
-  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || frag_is_skeleton == 1)
+  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {
     out_color = vec4(result, 1.0);
   }

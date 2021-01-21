@@ -72,7 +72,7 @@ public:
   //Object* getParent() { return m_parent; }
   int getParentID() { return m_parentID; }
 
-  std::vector<Object*> getChildren() { return m_children; }
+  //std::vector<Object*> getChildren() { return m_children; }
   float getAstroCoverage();
   int getFunction() { return m_function; }
 
