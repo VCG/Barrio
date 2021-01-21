@@ -17,8 +17,8 @@ public:
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
 
-  Q_INVOKABLE QString getID();
-  Q_PROPERTY(QString hvgx_id READ getID);
+  Q_INVOKABLE int getID();
+  Q_PROPERTY(int hvgx_id READ getID);
 
   void setJSONString(QString json) { m_json_string = json; };
 

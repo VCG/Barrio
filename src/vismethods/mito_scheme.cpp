@@ -16,9 +16,8 @@ Q_INVOKABLE QString MitoSchemeData::getData()
   return Q_INVOKABLE m_json_string;
 }
 
-Q_INVOKABLE QString MitoSchemeData::getID()
+Q_INVOKABLE int MitoSchemeData::getID()
 {
-  qDebug() << m_hvgxID;
   return Q_INVOKABLE m_hvgxID;
 }
 
@@ -45,7 +44,8 @@ QString MitoScheme::createJSONString(QList<int>* selectedObjects)
 
 QWebEngineView* MitoScheme::initVisWidget(int ID, SpecificVisParameters params)
 {
-  m_data = new MitoSchemeData(ID, m_datacontainer, m_global_vis_parameters);
+  int parentID = m_datacontainer->getObjectsMapPtr()->at(ID)->getParentID();
+  m_data = new MitoSchemeData(parentID, m_datacontainer, m_global_vis_parameters);
 
   setSpecificVisParameters(params);
 

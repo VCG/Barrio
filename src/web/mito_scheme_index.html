@@ -18,44 +18,61 @@
         pointer-events: none;
     }
 
-    .label{
+    .label {
         font-family: 'Nanum Gothic', sans-serif;
         text-anchor: middle;
     }
 
-    .mito{
+    .mito {
         border-radius: 100px;
         fill: palevioletred;
     }
-    .synapse{
+
+    .synapse {
         fill: rebeccapurple;
     }
-    .spine{
+
+    .spine {
         stroke-width: 3px;
         stroke: lightgreen;
+
+    }
+
+    .spine:hover{
+        stroke: #ffa500
     }
 </style>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
-<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<div id="my_dataviz" style="width: auto; height: 400px"></div>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
         let jsobject = channel.objects.mito_scheme_data;
         let json_string = jsobject.json_string;
-        let id = jsobject.hvgx_id;
-
-        console.log(id);
-
+        let hvgx = parseInt(jsobject.hvgx_id);
         let data = JSON.parse(json_string);
-        //console.log(data);
-        let semantic_skeleton = data[153];
+
+        let semantic_skeleton = ""
+        for (let i = 0; i < data.length; i++) {
+            let curr_id = parseInt(data[i].id);
+            if (curr_id == hvgx) {
+                semantic_skeleton = data[i]
+            }
+        }
+
+        console.log(data)
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 90, left: 40},
-            width = 460 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = $("#my_dataviz").width() - margin.left - margin.right,
+            height = $("#my_dataviz").height() - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         let svg = d3.select("#my_dataviz")
@@ -72,108 +89,146 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        // Parse the Data
-        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum_header.csv", function (data) {
+        // X axis
+        let x = d3.scaleLinear()
+            .domain([0, semantic_skeleton.length])
+            .range([0, width]);
 
-            // X axis
-            let x = d3.scaleBand()
-                .range([0, width])
-                .domain([0, 1])
-                .padding(1);
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).tickValues([]));
 
-            svg.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x).tickValues([]));
+        // Add Y axis
+        let y = d3.scaleLinear()
+            .domain([0, 6.5])
+            .range([height, 0]);
 
-            // Add Y axis
-            let y = d3.scaleLinear()
-                .domain([0, 13000])
-                .range([height, 0]);
+        // Lines
+        svg.selectAll("myline")
+            .data(semantic_skeleton.spines)
+            .enter()
+            .append("line")
+            .attr("x1", function (d) {
+                return x(d.start);
+            })
+            .attr("x2", function (d) {
+                return x(d.start);
+            })
+            .attr("y1", function (d) {
+                return height;
+            })
+            .attr("y2", function (d){
+                if (d.length !== "incomplete") {
+                    return y(d.length);
+                }
+                else {
+                    return y(1.0);
+                }
 
-            console.log(semantic_skeleton.branches)
+            })
+            .attr("class", "spine")
+            .style("stroke", function (d)
+            {
+                if(d.type == "excitatory")
+                {
+                    return "rgb(255.0, 0.0, 0.0)";
+                }
+                else if (d.type == "inhibitory")
+                {
+                    return "rgb(0.0, 0.0, 255.0)";
+                }
+                else // incomplete
+                {
+                    return "rgb(0.0, 0.0, 0.0)";
+                }
+            })
+            .on("mouseover", function (d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
 
-            // Lines
-            svg.selectAll("myline")
-                .data(semantic_skeleton.branches)
-                .enter()
-                .append("line")
-                .attr("x1", function (d) {
-                    return width * d.start;
-                })
-                .attr("x2", function (d) {
-                    return  width * d.start + 3;
-                })
-                .attr("y1", function (d) {
-                    return height ;
-                })
-                .attr("y2", 6)
-                .attr("class", "spine")
-                // .on("mouseover", function (d) {
-                //     div.transition()
-                //         .duration(200)
-                //         .style("opacity", .9);
-                //
-                //     div.text("Spine01 - Length: " + y(d.Value))
-                //         .style("left", (d3.event.pageX) + "px")
-                //         .style("top", (d3.event.pageY - 28) + "px");
-                // })
-                // .on("mouseout", function () {
-                //     div.transition()
-                //         .duration(100)
-                //         .style("opacity", 0);
-                // });
+                div.text(d.name + ": " + d.length + " microns")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
-            svg.append("rect")
-                .attr("x", 0.2 * width)
-                .attr("y", height - margin.top)
-                .attr("width", 0.5 * width)
-                .attr("height", 10)
-                .attr("class", "mito")
-                .on("mouseover", function (d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
+        svg.selectAll("myrect")
+            .data(semantic_skeleton.mitochondria)
+            .enter()
+            .append("rect")
+            .attr("x", function (d){
+                return x(d.start);
+            })
+            .attr("y", height - margin.top)
+            .attr("width", function (d){
+                return x(d.end) - x(d.start);
+            })
+            .attr("height", 10)
+            .attr("class", "mito")
+            .on("mouseover", function (d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
 
-                    div.text("Mito047")
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 28) + "px");
-                })
-                .on("mouseout", function () {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 0);
-                });
+                div.text(d.name)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
-            // Circles
-            // svg.selectAll("mycircle")
-            //     .data(data)
-            //     .enter()
-            //     .append("circle")
-            //     .attr("cx", function (d) {
-            //         return x(d.Country);
-            //     })
-            //     .attr("cy", function (d) {
-            //         return y(d.Value);
-            //     })
-            //     .attr("r", function (d) {
-            //         return d.Value / 500;
-            //     })
-            //     .attr("class", "synapse")
-            //     .on("mouseover", function (d) {
-            //         div.transition()
-            //             .duration(200)
-            //             .style("opacity", .9);
-            //
-            //         div.text("Synapse Bla Bla - SA: " + d.Value / 500)
-            //             .style("left", (d3.event.pageX) + "px")
-            //             .style("top", (d3.event.pageY - 28) + "px");
-            //     })
-            //     .on("mouseout", function () {
-            //         div.transition()
-            //             .duration(100)
-            //             .style("opacity", 0);
-            //     });
-        })
+        // Circles
+        svg.selectAll("mycircle")
+            .data(semantic_skeleton.spines)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return x(d.start);
+            })
+            .attr("cy", function (d) {
+                if (d.length !== "incomplete") {
+                    return y(d.length);
+                }
+                else {
+                    return y(1.0);
+                }
+            })
+            .attr("r", function (d) {
+                if(d.synapse_sa == "incomplete")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 50 * d.synapse_sa;
+                }
+
+            })
+            .attr("class", "synapse")
+            .on("mouseover", function (d) {
+                let synapse_sa = d.synapse_sa;
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text("Synapse SA: " + synapse_sa.toFixed(2) + " microns")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
+
     });
 
 </script>

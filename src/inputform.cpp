@@ -58,7 +58,7 @@ void InputForm::on_pushButton_extra_files_path_clicked()
   QByteArray folder_name = s.toLatin1();
   ui->lineEdit_extra_files_path->setText(folder_name.data());
 
-  m_input_files.extra_files_path = folder_name;
+  //m_input_files.extra_files_path = folder_name;
 }
 
 void InputForm::on_pushButton_metadata_clicked()
@@ -76,7 +76,7 @@ void InputForm::on_pushButton_metadata_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_metadata->setText(file_name.data());
 
-  m_input_files.HVGX_metadata = file_name;
+  //m_input_files.HVGX_metadata = file_name;
 }
 
 void InputForm::on_pushButton_proximity_astrocyte_clicked()
@@ -94,7 +94,7 @@ void InputForm::on_pushButton_proximity_astrocyte_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_proximity_astrocyte->setText(file_name.data());
 
-  m_input_files.proximity_astro = file_name;
+  //m_input_files.proximity_astro = file_name;
 }
 
 void InputForm::on_pushButton_proximity_astro_mito_clicked()
@@ -112,7 +112,7 @@ void InputForm::on_pushButton_proximity_astro_mito_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_proximity_astro_mito->setText(file_name.data());
 
-  m_input_files.proximity_astro_mito = file_name;
+  //m_input_files.proximity_astro_mito = file_name;
 }
 
 void InputForm::on_pushButton_proximity_gly_clicked()
@@ -130,7 +130,7 @@ void InputForm::on_pushButton_proximity_gly_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_proximity_gly->setText(file_name.data());
 
-  m_input_files.proximity_glycogen = file_name;
+  //m_input_files.proximity_glycogen = file_name;
 }
 
 void InputForm::on_pushButton_proximity_neu_mito_clicked()
@@ -148,7 +148,7 @@ void InputForm::on_pushButton_proximity_neu_mito_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_proximity_neu_mito->setText(file_name.data());
 
-  m_input_files.proximity_neu_mito = file_name;
+  //m_input_files.proximity_neu_mito = file_name;
 }
 
 void InputForm::on_pushButton_xml_astrocyte_clicked()
@@ -166,7 +166,7 @@ void InputForm::on_pushButton_xml_astrocyte_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_xml_astrocyte->setText(file_name.data());
 
-  m_input_files.xml_astro = file_name;
+  //m_input_files.xml_astro = file_name;
 }
 
 void InputForm::on_pushButton_xml_neurites_clicked()
@@ -184,21 +184,21 @@ void InputForm::on_pushButton_xml_neurites_clicked()
   QByteArray file_name = s.toLatin1();
   ui->lineEdit_xml_neurites->setText(file_name.data());
 
-  m_input_files.xml_neurites = file_name;
+  //m_input_files.xml_neurites = file_name;
 }
 
 void InputForm::on_pushButton_submit_clicked()
 {
   // just for debug purpose so that i dont have to set paths manually every time
 
-  m_input_files.extra_files_path = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data";
-  m_input_files.HVGX_metadata = "C:/Users/jtroidl/Desktop/resources/Preprocessing/hvgx_files/m3_full_corr.hvgx";// "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mouse3_metadata_objname_center_astroSyn.hvgx";
-  m_input_files.xml_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_astrocyte_noVertex.xml";
-  m_input_files.xml_neurites = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_neurites_noVertexNoFace.xml";
-  m_input_files.proximity_astro = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_745_sigma3.raw";
-  m_input_files.proximity_astro_mito = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\astrocytic_mitochondria_s5.raw";
-  m_input_files.proximity_neu_mito = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\Neuronic_mitochondria_binary_s5.raw";
-  m_input_files.proximity_glycogen = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_glycogen_sig3_blured20.raw";
+  //m_input_files.extra_files_path = "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data";
+  //m_input_files.HVGX_metadata = "C:/Users/jtroidl/Desktop/resources/Preprocessing/hvgx_files/m3_full_corr.hvgx";
+  //m_input_files.xml_astro = "";//"C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_astrocyte_noVertex.xml";
+  //m_input_files.xml_neurites = ""; // "C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\m3_neurites_noVertexNoFace.xml";
+  //m_input_files.proximity_astro = ""; //"C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_745_sigma3.raw";
+  //m_input_files.proximity_astro_mito = "";//"C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\astrocytic_mitochondria_s5.raw";
+  //m_input_files.proximity_neu_mito = ""; //"C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\Neuronic_mitochondria_binary_s5.raw";
+  //m_input_files.proximity_glycogen = ""; //"C:\\Users\\jtroidl\\Desktop\\NeuroComparer\\data\\m3_data\\mask_glycogen_sig3_blured20.raw";
 
   signal_filesPath(m_input_files);
   this->accept();

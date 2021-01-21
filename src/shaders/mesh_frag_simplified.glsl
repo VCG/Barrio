@@ -161,7 +161,7 @@ vec4 computeColor()
   {
     if(frag_is_skeleton == 1)
     {
-      obj_color = vec3(frag_cell_distance / 13.0, frag_cell_distance / 13.0, frag_cell_distance / 13.0).xyz; //vec3(texture(mito_colormap, frag_cell_distance / 13.0).xyz);
+      obj_color = vec3(1.0, 0.0, 0.0); //vec3(texture(mito_colormap, frag_cell_distance / 13.0).xyz);
     }
     else
     {
@@ -188,12 +188,12 @@ vec4 computeColor()
   }
 
     //DEBUG
-  if(frag_structure_type == MITO && frag_is_skeleton == 0)
-  {
-    out_color = vec4(result, 0.0);
-  }
+//  if(frag_structure_type == MITO && frag_is_skeleton == 0)
+//  {
+//    out_color = vec4(result, 0.0);
+//  }
 
-  if(/*frag_structure_type == MITO ||*/ frag_structure_type == SYNPS || frag_structure_type == SLICE || frag_is_skeleton == 1)
+  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || frag_is_skeleton == 1)
   {
     out_color = vec4(result, 1.0);
   }
