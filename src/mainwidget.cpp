@@ -374,20 +374,20 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
 //  qDebug() << "Decided on Vis methods";
 //}
 
-SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
-{
-  m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
-
-  // reload all widgets
-  QList<int> currentlySelectedIDs = getSelectedIDs();
-  deleteAllWidgets(false);
-  for each (int ID in currentlySelectedIDs)
-  {
-     addWidgetGroup(ID, false);
-  }
-  
-  return m_vis_methods;
-}
+//SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
+//{
+//  //m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
+//
+//  //// reload all widgets
+//  //QList<int> currentlySelectedIDs = getSelectedIDs();
+//  //deleteAllWidgets(false);
+//  //for each (int ID in currentlySelectedIDs)
+//  //{
+//  //   addWidgetGroup(ID, false);
+//  //}
+//  //
+//  //return m_vis_methods;
+//}
 
 void MainWidget::showSlice(bool showSlice)
 {
@@ -446,9 +446,10 @@ void MainWidget::setColormap(QString name)
   initColormaps();
 }
 
-void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
+void MainWidget::setVisMethod(Vis vis)
 {
-  if (new_entities_selection == NumberOfEntities::MEDIUM)
+  IVisMethod* method = m_abstraction_space->decideOnVisMethod(vis);
+  if (vis.scale == NumberOfEntities::MEDIUM)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
     int medium_entities_id = -1;
@@ -459,10 +460,11 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
     m_groupboxes[medium_entities_id] = groupBox;
+
     
-    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.medium->clone());
+    addInfoVisWidget(medium_entities_id, groupBox, method->clone());
   }
-  else if(new_entities_selection == NumberOfEntities::LOW)
+  else if(vis.scale == NumberOfEntities::LOW)
   {
      m_number_of_entities = NumberOfEntities::LOW;
      QList<int> currentlySelectedIDs = getSelectedIDs();
@@ -475,7 +477,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
      }
   }
  
-  else if (new_entities_selection == NumberOfEntities::HIGH) 
+  else if (vis.scale == NumberOfEntities::HIGH) 
   {
     int high_entities_id = -2;
     m_number_of_entities = NumberOfEntities::HIGH;
@@ -487,7 +489,7 @@ void MainWidget::setNumberOfEntities(NumberOfEntities new_entities_selection)
     groupBox->setLayout(vbox);
     m_groupboxes[high_entities_id] = groupBox;
     
-    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.high->clone());
+    addInfoVisWidget(high_entities_id, groupBox, method->clone());
   }
 }
 

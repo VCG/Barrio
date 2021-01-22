@@ -15,6 +15,11 @@
 
 #include <QList>
 
+enum NumberOfEntities
+{
+  LOW, MEDIUM, HIGH
+};
+
 struct GlobalVisParameters
 {
   double distance_threshold;

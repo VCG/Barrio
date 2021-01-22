@@ -9,10 +9,7 @@
 #include "datacontainer.h"
 #include "globalParameters.h"
 
-enum NumberOfEntities
-{
-  LOW, MEDIUM, HIGH
-};
+
 
 class MainWidget: public QOpenGLWidget, MainOpenGL
 {
@@ -35,7 +32,7 @@ public:
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
-  SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
+  //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
   void showSlice(bool showSlice);
 
   void updateInfoVisViews();
@@ -43,7 +40,7 @@ public:
 
   void setNumberOfBinsForHistogram(int bins);
   void setColormap(QString colormap);
-  void setNumberOfEntities(NumberOfEntities number_of_entities);
+  void setVisMethod(Vis vis);
 
   double on_synapse_distance_slider_changed(int value);
   void   on_opacity_slider_changed(int value);
