@@ -9,6 +9,8 @@
 #define DIM_Z       449
 #define DIM_G		64
 
+#define PATH        QString("C:/Users/jtroidl/Desktop/NeuroComparer/")
+
 #define RECOMPUTE_DATA FALSE
 
 #include <QList>

@@ -80,7 +80,7 @@ DataContainer::~DataContainer()
 // m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
-  QString data_path("C:/Users/jtroidl/Desktop/NeuroComparer/data");
+  QString data_path(PATH + QString("data"));
   QString cache_subpath = QString("/cache");
 
   QString neurites_path = data_path + "/m3_data/m3_all_corrected.obj";

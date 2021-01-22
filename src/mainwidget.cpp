@@ -578,7 +578,7 @@ void MainWidget::initColormaps()
 
 void MainWidget::init3DVolumeTexture()
 {
-  QString image_volume_path("C:/Users/jtroidl/Desktop/exp/m3_stack.raw");
+  QString image_volume_path(PATH + "data/m3_data/m3_stack.raw");
 
   load3DTexturesFromRaw(image_volume_path, m_image_stack_texture, GL_TEXTURE0, DIM_X, DIM_Y, DIM_Z);
   m_shared_resources.image_stack_volume = &m_image_stack_texture;

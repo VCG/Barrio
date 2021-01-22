@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   QString val;
   QFile file;
-  file.setFileName("C:/Users/jtroidl/Desktop/NeuroComparer/spec.json");
+  file.setFileName(PATH + QString("spec.json"));
   file.open(QIODevice::ReadOnly | QIODevice::Text);
   val = file.readAll();
   file.close();
