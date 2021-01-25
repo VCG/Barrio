@@ -73,8 +73,6 @@ public:
     QGridLayout *gridLayout_6;
     QFrame *frame_52;
     QVBoxLayout *verticalLayout_21;
-    QGroupBox *groupBox_5;
-    QGridLayout *gridLayout_7;
     QGroupBox *groupBox_24;
     QVBoxLayout *verticalLayout_15;
     QGroupBox *groupBox_8;
@@ -97,8 +95,6 @@ public:
     QGroupBox *groupBox_28;
     QHBoxLayout *horizontalLayout_45;
     QComboBox *comboBox_2;
-    QGroupBox *groupBox_27;
-    QHBoxLayout *horizontalLayout_46;
     QGroupBox *groupBox_29;
     QHBoxLayout *horizontalLayout_47;
     QSpinBox *numberOfBins;
@@ -497,19 +493,12 @@ public:
         frame_52->setFrameShadow(QFrame::Raised);
         verticalLayout_21 = new QVBoxLayout(frame_52);
         verticalLayout_21->setObjectName(QString::fromUtf8("verticalLayout_21"));
-        groupBox_5 = new QGroupBox(frame_52);
-        groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        gridLayout_7 = new QGridLayout(groupBox_5);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
-        groupBox_24 = new QGroupBox(groupBox_5);
+        groupBox_24 = new QGroupBox(frame_52);
         groupBox_24->setObjectName(QString::fromUtf8("groupBox_24"));
         verticalLayout_15 = new QVBoxLayout(groupBox_24);
         verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
 
-        gridLayout_7->addWidget(groupBox_24, 0, 0, 1, 1);
-
-
-        verticalLayout_21->addWidget(groupBox_5);
+        verticalLayout_21->addWidget(groupBox_24);
 
         groupBox_8 = new QGroupBox(frame_52);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
@@ -601,14 +590,7 @@ public:
 
         verticalLayout_3->addWidget(groupBox_28);
 
-
-        verticalLayout_21->addWidget(groupBox_8);
-
-        groupBox_27 = new QGroupBox(frame_52);
-        groupBox_27->setObjectName(QString::fromUtf8("groupBox_27"));
-        horizontalLayout_46 = new QHBoxLayout(groupBox_27);
-        horizontalLayout_46->setObjectName(QString::fromUtf8("horizontalLayout_46"));
-        groupBox_29 = new QGroupBox(groupBox_27);
+        groupBox_29 = new QGroupBox(groupBox_8);
         groupBox_29->setObjectName(QString::fromUtf8("groupBox_29"));
         horizontalLayout_47 = new QHBoxLayout(groupBox_29);
         horizontalLayout_47->setObjectName(QString::fromUtf8("horizontalLayout_47"));
@@ -619,10 +601,10 @@ public:
         horizontalLayout_47->addWidget(numberOfBins);
 
 
-        horizontalLayout_46->addWidget(groupBox_29);
+        verticalLayout_3->addWidget(groupBox_29);
 
 
-        verticalLayout_21->addWidget(groupBox_27);
+        verticalLayout_21->addWidget(groupBox_8);
 
 
         gridLayout_6->addWidget(frame_52, 0, 0, 1, 1);
@@ -1982,15 +1964,13 @@ public:
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Selected", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
-        groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "Visualization Presets", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
-        groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Gloabal Visualization Parameters", nullptr));
+        groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Visualization Parameters", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice Position", nullptr));
         sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "Synapse Threshold", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
-        groupBox_27->setTitle(QCoreApplication::translate("MainWindow", "Specific Visualization Parameters", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow", "Filtering", nullptr));
         glycogenVisibilityCheckBox->setText(QCoreApplication::translate("MainWindow", "Glycogen Granules Visible", nullptr));
