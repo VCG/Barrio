@@ -81,6 +81,9 @@ public:
     QVBoxLayout *verticalLayout_3;
     QGroupBox *groupBox;
     QHBoxLayout *horizontalLayout_44;
+    QVBoxLayout *verticalLayout_16;
+    QCheckBox *sliceEnabled;
+    QHBoxLayout *horizontalLayout_40;
     QSlider *horizontalSlider;
     QLineEdit *lineEdit_5;
     QGroupBox *groupBox_6;
@@ -516,17 +519,32 @@ public:
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         horizontalLayout_44 = new QHBoxLayout(groupBox);
         horizontalLayout_44->setObjectName(QString::fromUtf8("horizontalLayout_44"));
+        verticalLayout_16 = new QVBoxLayout();
+        verticalLayout_16->setObjectName(QString::fromUtf8("verticalLayout_16"));
+        sliceEnabled = new QCheckBox(groupBox);
+        sliceEnabled->setObjectName(QString::fromUtf8("sliceEnabled"));
+
+        verticalLayout_16->addWidget(sliceEnabled);
+
+        horizontalLayout_40 = new QHBoxLayout();
+        horizontalLayout_40->setObjectName(QString::fromUtf8("horizontalLayout_40"));
         horizontalSlider = new QSlider(groupBox);
         horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
         horizontalSlider->setOrientation(Qt::Horizontal);
 
-        horizontalLayout_44->addWidget(horizontalSlider);
+        horizontalLayout_40->addWidget(horizontalSlider);
 
         lineEdit_5 = new QLineEdit(groupBox);
         lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
         lineEdit_5->setMaximumSize(QSize(30, 16777215));
 
-        horizontalLayout_44->addWidget(lineEdit_5);
+        horizontalLayout_40->addWidget(lineEdit_5);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_40);
+
+
+        horizontalLayout_44->addLayout(verticalLayout_16);
 
 
         verticalLayout_3->addWidget(groupBox);
@@ -1968,6 +1986,7 @@ public:
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Gloabal Visualization Parameters", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice Position", nullptr));
+        sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "Synapse Threshold", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));

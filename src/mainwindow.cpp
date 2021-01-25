@@ -170,11 +170,8 @@ void MainWindow::setupSignalsNSlots()
 
   QObject::connect(m_treemodel, &QTreeView::doubleClicked, m_treemodel, &TreeModel::selectItem);
 
-  //QObject::connect(mainwindow_ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  //QObject::connect(mainwindow_ui->checkBox_2, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  //QObject::connect(mainwindow_ui->checkBox_3, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  //QObject::connect(mainwindow_ui->checkBox_5, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  //QObject::connect(mainwindow_ui->checkBox_12, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+  mainwindow_ui->horizontalSlider->setEnabled(false);
+  QObject::connect(mainwindow_ui->sliceEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
 
   QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
   QObject::connect(mainwindow_ui->comboBox_2, SIGNAL(currentTextChanged(QString)), this, SLOT(on_colormap_changed(QString)));
@@ -297,35 +294,9 @@ void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 
 void MainWindow::on_structure_selection_changed(int state)
 {
-  //VisConfiguration config;
-  //config.axons = mainwindow_ui->checkBox->isChecked();
-  //config.dends = mainwindow_ui->checkBox_2->isChecked();
-  //config.mitos = mainwindow_ui->checkBox_3->isChecked();
-  //config.syn = mainwindow_ui->checkBox_5->isChecked();
-  //config.sliceView = mainwindow_ui->checkBox_12->isChecked();
-
-  //mainwindow_ui->horizontalSlider->setEnabled(config.sliceView);
-
-  //SelectedVisMethods visMethods = m_main_widget->setThumbnailIcons(config);
-
-  //if (visMethods.low->getType() == VisType::HISTOGRAM)
-  //{
-  //  mainwindow_ui->groupBox_29->show();
-  //}
-  //else {
-  //  mainwindow_ui->groupBox_29->hide();
-  //}
-
-  //m_main_widget->showSlice(config.sliceView);
-
-  //// low detail
-  //mainwindow_ui->pushButton_3->setIcon(QIcon(visMethods.high_icon));
-  // 
-  //// medium detail
-  //mainwindow_ui->pushButton_2->setIcon(QIcon(visMethods.medium_icon));
-
-  //// high detail
-  //mainwindow_ui->pushButton->setIcon(QIcon(visMethods.low_icon));
+  bool sliderEnabled = mainwindow_ui->sliceEnabled->isChecked();
+  mainwindow_ui->horizontalSlider->setEnabled(sliderEnabled);
+  m_main_widget->showSlice(sliderEnabled);
 }
 
 void MainWindow::on_high_detail_vis_clicked()

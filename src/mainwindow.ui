@@ -254,21 +254,36 @@
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_44">
                      <item>
-                      <widget class="QSlider" name="horizontalSlider">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_5">
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_16">
+                       <item>
+                        <widget class="QCheckBox" name="sliceEnabled">
+                         <property name="text">
+                          <string>enabled</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_40">
+                         <item>
+                          <widget class="QSlider" name="horizontalSlider">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="lineEdit_5">
+                           <property name="maximumSize">
+                            <size>
+                             <width>30</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>

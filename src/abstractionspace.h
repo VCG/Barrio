@@ -69,8 +69,6 @@ public:
 
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
 
-  //SelectedVisMethods configureVisMethods(VisConfiguration config);
-
   void setThresholdDistance(double distance) { m_global_vis_parameters.distance_threshold = distance; }
   double getThresholdDistance() { return m_global_vis_parameters.distance_threshold; }
 
