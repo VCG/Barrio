@@ -1,23 +1,23 @@
 [
   {
-    "name": "task_name",
+    "name": "Mitochondria Analysis",
     "subtasks": [
       {
-        "name": "here comes the task_name",
+        "name": "Relation of synapses and mitochondria",
         "explanation": "here comes the explanation",
         "low_scale_vis": 0,
         "medium_scale_vis": 1,
         "high_scale_vis": 2
       },
       {
-        "name": "here comes the task_name",
+        "name": "Relation of cells and mitochondria",
         "explanation": "here comes the explanation",
         "low_scale_vis": 3,
         "medium_scale_vis": 4,
         "high_scale_vis": 5
       },
       {
-        "name": "here comes the task_name",
+        "name": "Relation of Mitochondria cell spines",
         "explanation": "here comes the explanation",
         "low_scale_vis": 1,
         "medium_scale_vis": 2,
