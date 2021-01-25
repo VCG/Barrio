@@ -437,7 +437,7 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
   btn->setMinimumSize(60, 60);
   btn->setMaximumSize(60, 60);
 
-  SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
+  //SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
 
   Vis vis_info = m_main_widget->getVisInfo(vis_id);
   btn->setIcon(QIcon(vis_info.icon_path));

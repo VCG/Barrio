@@ -139,7 +139,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     
     addCloseButtonToWidget(groupBox);
 
-    addInfoVisWidget(ID, groupBox, m_vis_methods.low->clone());
+    addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
     
     QFrame* line = new QFrame;
     line->setFrameShape(QFrame::HLine);
@@ -448,7 +448,7 @@ void MainWidget::setColormap(QString name)
 
 void MainWidget::setVisMethod(Vis vis)
 {
-  IVisMethod* method = m_abstraction_space->decideOnVisMethod(vis);
+  m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
   if (vis.scale == NumberOfEntities::MEDIUM)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
@@ -462,7 +462,7 @@ void MainWidget::setVisMethod(Vis vis)
     m_groupboxes[medium_entities_id] = groupBox;
 
     
-    addInfoVisWidget(medium_entities_id, groupBox, method->clone());
+    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone());
   }
   else if(vis.scale == NumberOfEntities::LOW)
   {
@@ -489,7 +489,7 @@ void MainWidget::setVisMethod(Vis vis)
     groupBox->setLayout(vbox);
     m_groupboxes[high_entities_id] = groupBox;
     
-    addInfoVisWidget(high_entities_id, groupBox, method->clone());
+    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone());
   }
 }
 

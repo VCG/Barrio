@@ -46,13 +46,7 @@ struct VisConfiguration
 
 struct SelectedVisMethods
 {
-  IVisMethod* low;
-  IVisMethod* medium;
-  IVisMethod* high;
-
-  QString low_icon;
-  QString medium_icon;
-  QString high_icon;
+  IVisMethod* method;
 };
 
 class AbstractionSpace : public MainOpenGL
