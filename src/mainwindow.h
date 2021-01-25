@@ -28,8 +28,9 @@ public:
   ~MainWindow();
 
   void setupSignalsNSlots();
-
   void onAddWebWidget();
+
+  QMap<QGroupBox*, Vis> m_selection_boxes;
 
 public slots:
 
@@ -104,6 +105,8 @@ private:
   void initializeVisualizationPresets();
 
   void addVisualizationSelection(QLayout* layout, QString scale, int vis_id);
+
+  
 
 
 };

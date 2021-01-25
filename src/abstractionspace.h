@@ -24,12 +24,14 @@ struct AbstractionPoint {
   int       ID;
 };
 
+enum VisName { MyDistanceTree, MyBarChart, MyDistanceMatrix, MyHistogram, MyViolinChart, MyScatterPlot, MySkeleton, MyTODO1, MyTODO2 };
+
 struct Vis 
 {
-  QString name;
+  VisName name;
   QString icon_path;
   int id;
-  int scale;
+  NumberOfEntities scale;
 };
 
 struct VisConfiguration 
@@ -44,13 +46,7 @@ struct VisConfiguration
 
 struct SelectedVisMethods
 {
-  IVisMethod* low;
-  IVisMethod* medium;
-  IVisMethod* high;
-
-  QString low_icon;
-  QString medium_icon;
-  QString high_icon;
+  IVisMethod* method;
 };
 
 class AbstractionSpace : public MainOpenGL
@@ -62,6 +58,7 @@ public:
   AbstractionSpace(DataContainer* datacontainer);
   ~AbstractionSpace();
 
+  IVisMethod* decideOnVisMethod(Vis vis);
 
   std::vector<struct AbstractionPoint> get2DSpaceVertices() { return m_vertices; }
   std::vector<GLuint> get2DSpaceIndices() { return m_indices; }
@@ -71,8 +68,6 @@ public:
   std::vector<struct AbstractionPoint> get2DSpaceGridIlligalIndices() { return m_grid_illigal_vertices; }
 
   struct ast_neu_properties getSpaceProper() { return m_IntervalXY[m_intervalID]; }
-
-  SelectedVisMethods configureVisMethods(VisConfiguration config);
 
   void setThresholdDistance(double distance) { m_global_vis_parameters.distance_threshold = distance; }
   double getThresholdDistance() { return m_global_vis_parameters.distance_threshold; }

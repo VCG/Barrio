@@ -36,28 +36,25 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
 
-  mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  mainwindow_ui->pushButton->setIconSize(QSize(60, 60));
-  mainwindow_ui->pushButton->setMinimumSize(60, 60);
-  mainwindow_ui->pushButton->setMaximumSize(60, 60);
+  //mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  //mainwindow_ui->pushButton->setIconSize(QSize(60, 60));
+  //mainwindow_ui->pushButton->setMinimumSize(60, 60);
+  //mainwindow_ui->pushButton->setMaximumSize(60, 60);
 
-  mainwindow_ui->pushButton_2->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  mainwindow_ui->pushButton_2->setIconSize(QSize(60, 60));
-  mainwindow_ui->pushButton_2->setMinimumSize(60, 60);
-  mainwindow_ui->pushButton_2->setMaximumSize(60, 60);
+  //mainwindow_ui->pushButton_2->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  //mainwindow_ui->pushButton_2->setIconSize(QSize(60, 60));
+  //mainwindow_ui->pushButton_2->setMinimumSize(60, 60);
+  //mainwindow_ui->pushButton_2->setMaximumSize(60, 60);
 
-  mainwindow_ui->pushButton_3->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  mainwindow_ui->pushButton_3->setIconSize(QSize(60, 60));
-  mainwindow_ui->pushButton_3->setMinimumSize(60, 60);
-  mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
+  //mainwindow_ui->pushButton_3->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
+  //mainwindow_ui->pushButton_3->setIconSize(QSize(60, 60));
+  //mainwindow_ui->pushButton_3->setMinimumSize(60, 60);
+  //mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
 
   mainwindow_ui->groupBox_29->hide();
   mainwindow_ui->numberOfBins->setMinimum(5);
   mainwindow_ui->numberOfBins->setMaximum(100);
   mainwindow_ui->numberOfBins->setValue(20);
-
-  setupSignalsNSlots();
-  initializeVisualizationPresets();
 
   QString val;
   QFile file;
@@ -67,10 +64,15 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   file.close();
 
   QJsonDocument spec_doc = QJsonDocument::fromJson(val.toUtf8());
-
   QJsonArray tasks = spec_doc.array();
 
   addTask(mainwindow_ui->groupBox_24, tasks[0].toObject());
+
+
+  setupSignalsNSlots();
+  initializeVisualizationPresets();
+
+ 
 }
 
 void MainWindow::initializeSlicePositionSlider()
@@ -133,12 +135,12 @@ void MainWindow::initializeColormapComboBox()
 
 void MainWindow::initializeVisualizationPresets()
 {
-  mainwindow_ui->checkBox_2->setChecked(true);
-  mainwindow_ui->checkBox_3->setChecked(true);
-  mainwindow_ui->checkBox_5->setChecked(true);
+  //mainwindow_ui->checkBox_2->setChecked(true);
+  //mainwindow_ui->checkBox_3->setChecked(true);
+  //mainwindow_ui->checkBox_5->setChecked(true);
 
   on_structure_selection_changed(-1);
-  on_high_detail_vis_clicked();
+  //on_high_detail_vis_clicked();
 }
 
 
@@ -168,15 +170,8 @@ void MainWindow::setupSignalsNSlots()
 
   QObject::connect(m_treemodel, &QTreeView::doubleClicked, m_treemodel, &TreeModel::selectItem);
 
-  QObject::connect(mainwindow_ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  QObject::connect(mainwindow_ui->checkBox_2, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  QObject::connect(mainwindow_ui->checkBox_3, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  QObject::connect(mainwindow_ui->checkBox_5, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-  QObject::connect(mainwindow_ui->checkBox_12, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
-
-  QObject::connect(mainwindow_ui->pushButton, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
-  QObject::connect(mainwindow_ui->pushButton_2, SIGNAL(released()), this, SLOT(on_medium_detail_vis_clicked()));
-  QObject::connect(mainwindow_ui->pushButton_3, SIGNAL(released()), this, SLOT(on_low_detail_vis_clicked()));
+  mainwindow_ui->horizontalSlider->setEnabled(false);
+  QObject::connect(mainwindow_ui->sliceEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
 
   QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
   QObject::connect(mainwindow_ui->comboBox_2, SIGNAL(currentTextChanged(QString)), this, SLOT(on_colormap_changed(QString)));
@@ -299,65 +294,50 @@ void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 
 void MainWindow::on_structure_selection_changed(int state)
 {
-  VisConfiguration config;
-  config.axons = mainwindow_ui->checkBox->isChecked();
-  config.dends = mainwindow_ui->checkBox_2->isChecked();
-  config.mitos = mainwindow_ui->checkBox_3->isChecked();
-  config.syn = mainwindow_ui->checkBox_5->isChecked();
-  config.sliceView = mainwindow_ui->checkBox_12->isChecked();
-
-  mainwindow_ui->horizontalSlider->setEnabled(config.sliceView);
-
-  SelectedVisMethods visMethods = m_main_widget->setThumbnailIcons(config);
-
-  if (visMethods.low->getType() == VisType::HISTOGRAM)
-  {
-    mainwindow_ui->groupBox_29->show();
-  }
-  else {
-    mainwindow_ui->groupBox_29->hide();
-  }
-
-  m_main_widget->showSlice(config.sliceView);
-
-  // low detail
-  mainwindow_ui->pushButton_3->setIcon(QIcon(visMethods.high_icon));
-   
-  // medium detail
-  mainwindow_ui->pushButton_2->setIcon(QIcon(visMethods.medium_icon));
-
-  // high detail
-  mainwindow_ui->pushButton->setIcon(QIcon(visMethods.low_icon));
+  bool sliderEnabled = mainwindow_ui->sliceEnabled->isChecked();
+  mainwindow_ui->horizontalSlider->setEnabled(sliderEnabled);
+  m_main_widget->showSlice(sliderEnabled);
 }
 
 void MainWindow::on_high_detail_vis_clicked()
 {
-  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
-  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid gray");
+  QPushButton* button = qobject_cast<QPushButton*>(sender());
+  QGroupBox* sender = qobject_cast<QGroupBox*>(button->parent());
 
-  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid orange");
+  // reset style of other boxes
+  foreach(const auto & box, m_selection_boxes.keys())
+  {
+    box->setStyleSheet("border: 1px solid gray");
+    if (box == sender)
+    {
+      Vis vis = m_selection_boxes[box];
+      m_main_widget->setVisMethod(vis);
+    }
+  }
+ 
+  sender->setStyleSheet("border: 1px solid orange");
 
-  m_main_widget->setNumberOfEntities(NumberOfEntities::LOW);
+  
 }
 
 void MainWindow::on_medium_detail_vis_clicked()
 {
-  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
-  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
+  //mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
+  //mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
 
-  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid orange");
+  //mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid orange");
 
-  m_main_widget->setNumberOfEntities(NumberOfEntities::MEDIUM);
+  //m_main_widget->setVisMethod(vis);
 }
 
 void MainWindow::on_low_detail_vis_clicked()
 {
-  mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
+  /*mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
   mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid gray");
 
-  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");
+  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");*/
 
-  m_main_widget->setNumberOfEntities(NumberOfEntities::HIGH);
+  //m_main_widget->setVisMethod(vis);
 }
 
 void MainWindow::on_synapse_distance_slider_changed(int value)
@@ -428,14 +408,17 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
   btn->setMinimumSize(60, 60);
   btn->setMaximumSize(60, 60);
 
-  SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
+  //SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
 
   Vis vis_info = m_main_widget->getVisInfo(vis_id);
-
   btn->setIcon(QIcon(vis_info.icon_path));
   
   QGroupBox* ls_box = new QGroupBox(scale);
   ls_box->setLayout(new QGridLayout);
   ls_box->layout()->addWidget(btn);
   layout->addWidget(ls_box);
+
+  m_selection_boxes[ls_box] = vis_info;
+
+  QObject::connect(btn, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
 }

@@ -73,30 +73,15 @@ public:
     QGridLayout *gridLayout_6;
     QFrame *frame_52;
     QVBoxLayout *verticalLayout_21;
-    QGroupBox *groupBox_5;
-    QGridLayout *gridLayout_7;
     QGroupBox *groupBox_24;
     QVBoxLayout *verticalLayout_15;
-    QGroupBox *groupBox_22;
-    QGridLayout *gridLayout_3;
-    QPushButton *pushButton_3;
-    QGroupBox *groupBox_23;
-    QGridLayout *gridLayout_4;
-    QPushButton *pushButton_2;
-    QGroupBox *groupBox_26;
-    QGridLayout *gridLayout_8;
-    QPushButton *pushButton;
-    QGroupBox *groupBox_7;
-    QGridLayout *gridLayout_2;
-    QCheckBox *checkBox_3;
-    QCheckBox *checkBox;
-    QCheckBox *checkBox_2;
-    QCheckBox *checkBox_5;
-    QCheckBox *checkBox_12;
     QGroupBox *groupBox_8;
     QVBoxLayout *verticalLayout_3;
     QGroupBox *groupBox;
     QHBoxLayout *horizontalLayout_44;
+    QVBoxLayout *verticalLayout_16;
+    QCheckBox *sliceEnabled;
+    QHBoxLayout *horizontalLayout_40;
     QSlider *horizontalSlider;
     QLineEdit *lineEdit_5;
     QGroupBox *groupBox_6;
@@ -110,8 +95,6 @@ public:
     QGroupBox *groupBox_28;
     QHBoxLayout *horizontalLayout_45;
     QComboBox *comboBox_2;
-    QGroupBox *groupBox_27;
-    QHBoxLayout *horizontalLayout_46;
     QGroupBox *groupBox_29;
     QHBoxLayout *horizontalLayout_47;
     QSpinBox *numberOfBins;
@@ -510,90 +493,12 @@ public:
         frame_52->setFrameShadow(QFrame::Raised);
         verticalLayout_21 = new QVBoxLayout(frame_52);
         verticalLayout_21->setObjectName(QString::fromUtf8("verticalLayout_21"));
-        groupBox_5 = new QGroupBox(frame_52);
-        groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        gridLayout_7 = new QGridLayout(groupBox_5);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
-        groupBox_24 = new QGroupBox(groupBox_5);
+        groupBox_24 = new QGroupBox(frame_52);
         groupBox_24->setObjectName(QString::fromUtf8("groupBox_24"));
         verticalLayout_15 = new QVBoxLayout(groupBox_24);
         verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
-        groupBox_22 = new QGroupBox(groupBox_24);
-        groupBox_22->setObjectName(QString::fromUtf8("groupBox_22"));
-        groupBox_22->setBaseSize(QSize(0, 80));
-        gridLayout_3 = new QGridLayout(groupBox_22);
-        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        pushButton_3 = new QPushButton(groupBox_22);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
 
-        gridLayout_3->addWidget(pushButton_3, 0, 0, 1, 1);
-
-
-        verticalLayout_15->addWidget(groupBox_22);
-
-        groupBox_23 = new QGroupBox(groupBox_24);
-        groupBox_23->setObjectName(QString::fromUtf8("groupBox_23"));
-        groupBox_23->setBaseSize(QSize(0, 80));
-        gridLayout_4 = new QGridLayout(groupBox_23);
-        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
-        pushButton_2 = new QPushButton(groupBox_23);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-
-        gridLayout_4->addWidget(pushButton_2, 0, 0, 1, 1);
-
-
-        verticalLayout_15->addWidget(groupBox_23);
-
-        groupBox_26 = new QGroupBox(groupBox_24);
-        groupBox_26->setObjectName(QString::fromUtf8("groupBox_26"));
-        groupBox_26->setMinimumSize(QSize(0, 80));
-        gridLayout_8 = new QGridLayout(groupBox_26);
-        gridLayout_8->setObjectName(QString::fromUtf8("gridLayout_8"));
-        pushButton = new QPushButton(groupBox_26);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-
-        gridLayout_8->addWidget(pushButton, 0, 0, 1, 1);
-
-
-        verticalLayout_15->addWidget(groupBox_26);
-
-
-        gridLayout_7->addWidget(groupBox_24, 1, 0, 1, 1);
-
-        groupBox_7 = new QGroupBox(groupBox_5);
-        groupBox_7->setObjectName(QString::fromUtf8("groupBox_7"));
-        gridLayout_2 = new QGridLayout(groupBox_7);
-        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        checkBox_3 = new QCheckBox(groupBox_7);
-        checkBox_3->setObjectName(QString::fromUtf8("checkBox_3"));
-
-        gridLayout_2->addWidget(checkBox_3, 2, 0, 1, 1);
-
-        checkBox = new QCheckBox(groupBox_7);
-        checkBox->setObjectName(QString::fromUtf8("checkBox"));
-
-        gridLayout_2->addWidget(checkBox, 0, 0, 1, 1);
-
-        checkBox_2 = new QCheckBox(groupBox_7);
-        checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
-
-        gridLayout_2->addWidget(checkBox_2, 0, 1, 1, 1);
-
-        checkBox_5 = new QCheckBox(groupBox_7);
-        checkBox_5->setObjectName(QString::fromUtf8("checkBox_5"));
-
-        gridLayout_2->addWidget(checkBox_5, 2, 1, 1, 1);
-
-        checkBox_12 = new QCheckBox(groupBox_7);
-        checkBox_12->setObjectName(QString::fromUtf8("checkBox_12"));
-
-        gridLayout_2->addWidget(checkBox_12, 3, 0, 1, 1);
-
-
-        gridLayout_7->addWidget(groupBox_7, 0, 0, 1, 1);
-
-
-        verticalLayout_21->addWidget(groupBox_5);
+        verticalLayout_21->addWidget(groupBox_24);
 
         groupBox_8 = new QGroupBox(frame_52);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
@@ -603,17 +508,32 @@ public:
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         horizontalLayout_44 = new QHBoxLayout(groupBox);
         horizontalLayout_44->setObjectName(QString::fromUtf8("horizontalLayout_44"));
+        verticalLayout_16 = new QVBoxLayout();
+        verticalLayout_16->setObjectName(QString::fromUtf8("verticalLayout_16"));
+        sliceEnabled = new QCheckBox(groupBox);
+        sliceEnabled->setObjectName(QString::fromUtf8("sliceEnabled"));
+
+        verticalLayout_16->addWidget(sliceEnabled);
+
+        horizontalLayout_40 = new QHBoxLayout();
+        horizontalLayout_40->setObjectName(QString::fromUtf8("horizontalLayout_40"));
         horizontalSlider = new QSlider(groupBox);
         horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
         horizontalSlider->setOrientation(Qt::Horizontal);
 
-        horizontalLayout_44->addWidget(horizontalSlider);
+        horizontalLayout_40->addWidget(horizontalSlider);
 
         lineEdit_5 = new QLineEdit(groupBox);
         lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
         lineEdit_5->setMaximumSize(QSize(30, 16777215));
 
-        horizontalLayout_44->addWidget(lineEdit_5);
+        horizontalLayout_40->addWidget(lineEdit_5);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_40);
+
+
+        horizontalLayout_44->addLayout(verticalLayout_16);
 
 
         verticalLayout_3->addWidget(groupBox);
@@ -670,14 +590,7 @@ public:
 
         verticalLayout_3->addWidget(groupBox_28);
 
-
-        verticalLayout_21->addWidget(groupBox_8);
-
-        groupBox_27 = new QGroupBox(frame_52);
-        groupBox_27->setObjectName(QString::fromUtf8("groupBox_27"));
-        horizontalLayout_46 = new QHBoxLayout(groupBox_27);
-        horizontalLayout_46->setObjectName(QString::fromUtf8("horizontalLayout_46"));
-        groupBox_29 = new QGroupBox(groupBox_27);
+        groupBox_29 = new QGroupBox(groupBox_8);
         groupBox_29->setObjectName(QString::fromUtf8("groupBox_29"));
         horizontalLayout_47 = new QHBoxLayout(groupBox_29);
         horizontalLayout_47->setObjectName(QString::fromUtf8("horizontalLayout_47"));
@@ -688,10 +601,10 @@ public:
         horizontalLayout_47->addWidget(numberOfBins);
 
 
-        horizontalLayout_46->addWidget(groupBox_29);
+        verticalLayout_3->addWidget(groupBox_29);
 
 
-        verticalLayout_21->addWidget(groupBox_27);
+        verticalLayout_21->addWidget(groupBox_8);
 
 
         gridLayout_6->addWidget(frame_52, 0, 0, 1, 1);
@@ -2051,26 +1964,13 @@ public:
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Selected", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
-        groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "Visualization Presets", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
-        groupBox_22->setTitle(QCoreApplication::translate("MainWindow", "High Scale", nullptr));
-        pushButton_3->setText(QString());
-        groupBox_23->setTitle(QCoreApplication::translate("MainWindow", "Medium Scale", nullptr));
-        pushButton_2->setText(QString());
-        groupBox_26->setTitle(QCoreApplication::translate("MainWindow", "Low Scale", nullptr));
-        pushButton->setText(QString());
-        groupBox_7->setTitle(QCoreApplication::translate("MainWindow", "Structures", nullptr));
-        checkBox_3->setText(QCoreApplication::translate("MainWindow", "Mitochondria", nullptr));
-        checkBox->setText(QCoreApplication::translate("MainWindow", "Axons", nullptr));
-        checkBox_2->setText(QCoreApplication::translate("MainWindow", "Dendrites", nullptr));
-        checkBox_5->setText(QCoreApplication::translate("MainWindow", "Synapses", nullptr));
-        checkBox_12->setText(QCoreApplication::translate("MainWindow", "Slice View", nullptr));
-        groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Gloabal Visualization Parameters", nullptr));
+        groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Visualization Parameters", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice Position", nullptr));
+        sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "Synapse Threshold", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
-        groupBox_27->setTitle(QCoreApplication::translate("MainWindow", "Specific Visualization Parameters", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow", "Filtering", nullptr));
         glycogenVisibilityCheckBox->setText(QCoreApplication::translate("MainWindow", "Glycogen Granules Visible", nullptr));

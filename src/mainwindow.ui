@@ -225,137 +225,17 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
                <item>
-                <widget class="QGroupBox" name="groupBox_5">
+                <widget class="QGroupBox" name="groupBox_24">
                  <property name="title">
-                  <string>Visualization Presets</string>
+                  <string>Preview</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_7">
-                  <item row="1" column="0">
-                   <widget class="QGroupBox" name="groupBox_24">
-                    <property name="title">
-                     <string>Preview</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_15">
-                     <item>
-                      <widget class="QGroupBox" name="groupBox_22">
-                       <property name="baseSize">
-                        <size>
-                         <width>0</width>
-                         <height>80</height>
-                        </size>
-                       </property>
-                       <property name="title">
-                        <string>High Scale</string>
-                       </property>
-                       <layout class="QGridLayout" name="gridLayout_3">
-                        <item row="0" column="0">
-                         <widget class="QPushButton" name="pushButton_3">
-                          <property name="text">
-                           <string/>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="groupBox_23">
-                       <property name="baseSize">
-                        <size>
-                         <width>0</width>
-                         <height>80</height>
-                        </size>
-                       </property>
-                       <property name="title">
-                        <string>Medium Scale</string>
-                       </property>
-                       <layout class="QGridLayout" name="gridLayout_4">
-                        <item row="0" column="0">
-                         <widget class="QPushButton" name="pushButton_2">
-                          <property name="text">
-                           <string/>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="groupBox_26">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>80</height>
-                        </size>
-                       </property>
-                       <property name="title">
-                        <string>Low Scale</string>
-                       </property>
-                       <layout class="QGridLayout" name="gridLayout_8">
-                        <item row="0" column="0">
-                         <widget class="QPushButton" name="pushButton">
-                          <property name="text">
-                           <string/>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QGroupBox" name="groupBox_7">
-                    <property name="title">
-                     <string>Structures</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_2">
-                     <item row="2" column="0">
-                      <widget class="QCheckBox" name="checkBox_3">
-                       <property name="text">
-                        <string>Mitochondria</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QCheckBox" name="checkBox">
-                       <property name="text">
-                        <string>Axons</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QCheckBox" name="checkBox_2">
-                       <property name="text">
-                        <string>Dendrites</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QCheckBox" name="checkBox_5">
-                       <property name="text">
-                        <string>Synapses</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QCheckBox" name="checkBox_12">
-                       <property name="text">
-                        <string>Slice View</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
+                 <layout class="QVBoxLayout" name="verticalLayout_15"/>
                 </widget>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_8">
                  <property name="title">
-                  <string>Gloabal Visualization Parameters</string>
+                  <string>Visualization Parameters</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
@@ -365,21 +245,36 @@
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_44">
                      <item>
-                      <widget class="QSlider" name="horizontalSlider">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_5">
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_16">
+                       <item>
+                        <widget class="QCheckBox" name="sliceEnabled">
+                         <property name="text">
+                          <string>enabled</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_40">
+                         <item>
+                          <widget class="QSlider" name="horizontalSlider">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="lineEdit_5">
+                           <property name="maximumSize">
+                            <size>
+                             <width>30</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
@@ -458,15 +353,6 @@
                     </layout>
                    </widget>
                   </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_27">
-                 <property name="title">
-                  <string>Specific Visualization Parameters</string>
-                 </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_46">
                   <item>
                    <widget class="QGroupBox" name="groupBox_29">
                     <property name="title">
