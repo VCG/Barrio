@@ -28,9 +28,10 @@ public:
   ~MainWindow();
 
   void setupSignalsNSlots();
-  void onAddWebWidget();
 
   QMap<QGroupBox*, Vis> m_selection_boxes;
+
+  void initVisMethods();
 
 public slots:
 
@@ -56,9 +57,7 @@ public slots:
 
   void on_structure_selection_changed(int state);
 
-  void on_high_detail_vis_clicked();
-  void on_medium_detail_vis_clicked();
-  void on_low_detail_vis_clicked();
+  void on_vis_clicked();
 
   void on_synapse_distance_slider_changed(int value);
   void on_slice_position_slider_changed(int value);

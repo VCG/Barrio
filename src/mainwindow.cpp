@@ -13,16 +13,14 @@ namespace fs = std::filesystem;
 //------------------------------------------------------
 //
 MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
-  QMainWindow(parent),
-  mainwindow_ui(new Ui::MainWindow)
+  QMainWindow(parent), mainwindow_ui(new Ui::MainWindow)
 {
   mainwindow_ui->setupUi(this);
-  //getGLWidget()->init(input_form);
 
   m_data_container = new DataContainer(input_form);
 
   m_main_widget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
-  //m_mainWidget->initializeGL();
+
   mainwindow_ui->gridLayout_5->addWidget(m_main_widget, 0, 0);
  
   m_currentSelectedCluster = 0;
@@ -35,21 +33,6 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
-
-  //mainwindow_ui->pushButton->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  //mainwindow_ui->pushButton->setIconSize(QSize(60, 60));
-  //mainwindow_ui->pushButton->setMinimumSize(60, 60);
-  //mainwindow_ui->pushButton->setMaximumSize(60, 60);
-
-  //mainwindow_ui->pushButton_2->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  //mainwindow_ui->pushButton_2->setIconSize(QSize(60, 60));
-  //mainwindow_ui->pushButton_2->setMinimumSize(60, 60);
-  //mainwindow_ui->pushButton_2->setMaximumSize(60, 60);
-
-  //mainwindow_ui->pushButton_3->setStyleSheet("border: none; background-color: rgba(255, 255, 255, 100);");
-  //mainwindow_ui->pushButton_3->setIconSize(QSize(60, 60));
-  //mainwindow_ui->pushButton_3->setMinimumSize(60, 60);
-  //mainwindow_ui->pushButton_3->setMaximumSize(60, 60);
 
   mainwindow_ui->groupBox_29->hide();
   mainwindow_ui->numberOfBins->setMinimum(5);
@@ -68,11 +51,9 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   addTask(mainwindow_ui->groupBox_24, tasks[0].toObject());
 
-
+  initVisMethods();
   setupSignalsNSlots();
   initializeVisualizationPresets();
-
- 
 }
 
 void MainWindow::initializeSlicePositionSlider()
@@ -135,12 +116,7 @@ void MainWindow::initializeColormapComboBox()
 
 void MainWindow::initializeVisualizationPresets()
 {
-  //mainwindow_ui->checkBox_2->setChecked(true);
-  //mainwindow_ui->checkBox_3->setChecked(true);
-  //mainwindow_ui->checkBox_5->setChecked(true);
-
   on_structure_selection_changed(-1);
-  //on_high_detail_vis_clicked();
 }
 
 
@@ -176,10 +152,6 @@ void MainWindow::setupSignalsNSlots()
   QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
   QObject::connect(mainwindow_ui->comboBox_2, SIGNAL(currentTextChanged(QString)), this, SLOT(on_colormap_changed(QString)));
 
-}
-
-void MainWindow::onAddWebWidget()
-{
 }
 
 //------------------------------------------------------
@@ -299,7 +271,28 @@ void MainWindow::on_structure_selection_changed(int state)
   m_main_widget->showSlice(sliderEnabled);
 }
 
-void MainWindow::on_high_detail_vis_clicked()
+void MainWindow::initVisMethods()
+{
+  foreach(const auto & my_box, m_selection_boxes.keys())
+  {
+
+    // reset style of other boxes
+    foreach(const auto & box, m_selection_boxes.keys())
+    {
+      box->setStyleSheet("border: 1px solid gray");
+      if (box == my_box)
+      {
+        Vis vis = m_selection_boxes[box];
+        m_main_widget->setVisMethod(vis);
+      }
+    }
+
+    my_box->setStyleSheet("border: 1px solid orange");
+    return;
+  }
+}
+
+void MainWindow::on_vis_clicked()
 {
   QPushButton* button = qobject_cast<QPushButton*>(sender());
   QGroupBox* sender = qobject_cast<QGroupBox*>(button->parent());
@@ -318,26 +311,6 @@ void MainWindow::on_high_detail_vis_clicked()
   sender->setStyleSheet("border: 1px solid orange");
 
   
-}
-
-void MainWindow::on_medium_detail_vis_clicked()
-{
-  //mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid gray");
-  //mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
-
-  //mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid orange");
-
-  //m_main_widget->setVisMethod(vis);
-}
-
-void MainWindow::on_low_detail_vis_clicked()
-{
-  /*mainwindow_ui->groupBox_26->setStyleSheet("border: 1px solid gray");
-  mainwindow_ui->groupBox_23->setStyleSheet("border: 1px solid gray");
-
-  mainwindow_ui->groupBox_22->setStyleSheet("border: 1px solid orange");*/
-
-  //m_main_widget->setVisMethod(vis);
 }
 
 void MainWindow::on_synapse_distance_slider_changed(int value)
@@ -408,8 +381,6 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
   btn->setMinimumSize(60, 60);
   btn->setMaximumSize(60, 60);
 
-  //SelectedVisMethods visMethods = m_main_widget->getSelectedVisMethods();
-
   Vis vis_info = m_main_widget->getVisInfo(vis_id);
   btn->setIcon(QIcon(vis_info.icon_path));
   
@@ -420,5 +391,5 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
 
   m_selection_boxes[ls_box] = vis_info;
 
-  QObject::connect(btn, SIGNAL(released()), this, SLOT(on_high_detail_vis_clicked()));
+  QObject::connect(btn, SIGNAL(released()), this, SLOT(on_vis_clicked()));
 }
