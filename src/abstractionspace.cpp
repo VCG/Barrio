@@ -15,12 +15,12 @@ AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
   m_vis_space.insert(std::make_pair<int, Vis>(2, { VisName::MyDistanceMatrix, ":/icons/matrix.png", 2, NumberOfEntities::HIGH } ));
 
   m_vis_space.insert({ 3, { VisName::MyHistogram, ":/icons/histogram.png", 3, NumberOfEntities::LOW } });
-  m_vis_space.insert({ 4, { VisName::MyViolinChart, ":/icons/boxplot.png", 4, NumberOfEntities::MEDIUM } });
+  m_vis_space.insert({ 4, { VisName::MyViolinChart, ":/icons/violin.png", 4, NumberOfEntities::MEDIUM } });
   m_vis_space.insert({ 5, { VisName::MyScatterPlot, ":/icons/scatterplot.png", 5, NumberOfEntities::HIGH } });
 
-  m_vis_space.insert({ 6, { VisName::MyDistanceTree, ":/icons/distance_tree.png", 6, NumberOfEntities::LOW } });
-  m_vis_space.insert({ 7, { VisName::MyDistanceTree, ":/icons/distance_tree.png", 7, NumberOfEntities::MEDIUM } });
-  m_vis_space.insert({ 8, { VisName::MyDistanceTree, ":/icons/distance_tree.png", 8, NumberOfEntities::HIGH } });
+  m_vis_space.insert({ 6, { VisName::MySkeleton, ":/icons/skeleton.png", 6, NumberOfEntities::LOW } });
+  m_vis_space.insert({ 7, { VisName::MyDistanceTree, ":/icons/question.png", 7, NumberOfEntities::MEDIUM } });
+  m_vis_space.insert({ 8, { VisName::MyDistanceTree, ":/icons/question.png", 8, NumberOfEntities::HIGH } });
 
 }
 
@@ -45,6 +45,8 @@ IVisMethod* AbstractionSpace::decideOnVisMethod(Vis vis)
     return new Boxplot(&m_global_vis_parameters, m_datacontainer);
   case MyScatterPlot:
     return new Scatterplot(&m_global_vis_parameters, m_datacontainer);
+  case MySkeleton:
+    return new MitoScheme(&m_global_vis_parameters, m_datacontainer);
 
     //TODO finish list
   

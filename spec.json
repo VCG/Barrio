@@ -19,9 +19,9 @@
       {
         "name": "Relation of Mitochondria cell spines",
         "explanation": "here comes the explanation",
-        "low_scale_vis": 1,
-        "medium_scale_vis": 2,
-        "high_scale_vis": 3
+        "low_scale_vis": 6,
+        "medium_scale_vis": 7,
+        "high_scale_vis": 8
       }
     ]
   }

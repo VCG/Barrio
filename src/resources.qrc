@@ -17,6 +17,9 @@
         <file>icons/histogram.png</file>
         <file>icons/matrix.png</file>
         <file>icons/scatterplot.png</file>
+        <file>icons/violin.png</file>
+        <file>icons/skeleton.png</file>
+        <file>icons/question.png</file>
         
         </qresource>
 </RCC>
