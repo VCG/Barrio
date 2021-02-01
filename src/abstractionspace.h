@@ -17,6 +17,7 @@
 #include "vismethods/boxplot.h"
 #include "vismethods/scatterplot.h"
 #include "vismethods/mito_scheme.h"
+#include "vismethods/mitoboxplot.h"
 
 
 struct AbstractionPoint {
@@ -24,7 +25,7 @@ struct AbstractionPoint {
   int       ID;
 };
 
-enum VisName { MyDistanceTree, MyBarChart, MyDistanceMatrix, MyHistogram, MyViolinChart, MyScatterPlot, MySkeleton, MyTODO1, MyTODO2 };
+enum VisName { MyDistanceTree, MyBarChart, MyDistanceMatrix, MyHistogram, MyViolinChart, MyScatterPlot, MySkeleton, MyMitoBoxPlot, MyTODO2 };
 
 struct Vis 
 {

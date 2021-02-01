@@ -93,7 +93,8 @@ set(project_headers
     vismethods/distancematrix.h
     vismethods/histogram.h
     vismethods/boxplot.h
-    vismethods/mito_scheme.h)
+    vismethods/mito_scheme.h
+    vismethods/mitoboxplot.h)
 
 set(project_sources
     main.cpp
@@ -131,6 +132,7 @@ set(project_sources
     vismethods/histogram.cpp
     vismethods/boxplot.cpp
     vismethods/mito_scheme.cpp
+    vismethods/mitoboxplot.cpp
 
     shaders/coord_system_vert.glsl
     shaders/coord_system_geom.glsl
