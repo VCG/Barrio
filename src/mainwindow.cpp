@@ -154,6 +154,27 @@ void MainWindow::setupSignalsNSlots()
 
 }
 
+void MainWindow::initVisMethods()
+{
+  // set all boxes to not initialized
+  foreach(const auto & id, m_selection_boxes.keys())
+  {
+    m_selection_boxes[id]->setStyleSheet("border: 1px solid gray");
+  }
+
+  // take first low scale vis as initialization
+  foreach(const auto& id, m_visualizations.keys())
+  {
+    if (m_visualizations[id].scale == NumberOfEntities::LOW)
+    {
+      m_selection_boxes[id]->setStyleSheet("border: 1px solid orange");
+      m_main_widget->setVisMethod(m_visualizations[id]);
+      
+      break; // exit loop once initialized
+    }
+  }
+}
+
 //------------------------------------------------------
 //
 void MainWindow::on_object_clicked(QList<QStandardItem*> items)
@@ -271,39 +292,18 @@ void MainWindow::on_structure_selection_changed(int state)
   m_main_widget->showSlice(sliderEnabled);
 }
 
-void MainWindow::initVisMethods()
-{
-  foreach(const auto & my_box, m_selection_boxes.keys())
-  {
-
-    // reset style of other boxes
-    foreach(const auto & box, m_selection_boxes.keys())
-    {
-      box->setStyleSheet("border: 1px solid gray");
-      if (box == my_box)
-      {
-        Vis vis = m_selection_boxes[box];
-        m_main_widget->setVisMethod(vis);
-      }
-    }
-
-    my_box->setStyleSheet("border: 1px solid orange");
-    return;
-  }
-}
-
 void MainWindow::on_vis_clicked()
 {
   QPushButton* button = qobject_cast<QPushButton*>(sender());
   QGroupBox* sender = qobject_cast<QGroupBox*>(button->parent());
 
   // reset style of other boxes
-  foreach(const auto & box, m_selection_boxes.keys())
+  foreach(const auto & id, m_selection_boxes.keys())
   {
-    box->setStyleSheet("border: 1px solid gray");
-    if (box == sender)
+    m_selection_boxes[id]->setStyleSheet("border: 1px solid gray");
+    if (m_selection_boxes[id] == sender)
     {
-      Vis vis = m_selection_boxes[box];
+      Vis vis = m_visualizations[id];
       m_main_widget->setVisMethod(vis);
     }
   }
@@ -389,7 +389,8 @@ void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int v
   ls_box->layout()->addWidget(btn);
   layout->addWidget(ls_box);
 
-  m_selection_boxes[ls_box] = vis_info;
+  m_selection_boxes[vis_info.id] = ls_box;
+  m_visualizations[vis_info.id] = vis_info;
 
   QObject::connect(btn, SIGNAL(released()), this, SLOT(on_vis_clicked()));
 }

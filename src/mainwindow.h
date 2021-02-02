@@ -29,7 +29,9 @@ public:
 
   void setupSignalsNSlots();
 
-  QMap<QGroupBox*, Vis> m_selection_boxes;
+  QMap<int, QGroupBox*> m_selection_boxes;
+  QMap<int, Vis> m_visualizations;
+
 
   void initVisMethods();
 
