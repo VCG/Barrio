@@ -23,7 +23,8 @@ QString MitoBoxPlot::createJSONString(QList<int>* selectedObjects)
 
 QWebEngineView* MitoBoxPlot::initVisWidget(int ID, SpecificVisParameters params)
 {
-  m_data = new MitoBoxPlotData(ID, m_datacontainer, m_global_vis_parameters);
+  QString json = createJSONString(&m_global_vis_parameters->selected_objects);
+  m_data = new MitoBoxPlotData(json, m_datacontainer, m_global_vis_parameters);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
@@ -36,12 +37,14 @@ QWebEngineView* MitoBoxPlot::initVisWidget(int ID, SpecificVisParameters params)
 
 QWebEngineView* MitoBoxPlot::getWebEngineView()
 {
-    return nullptr;
+    return m_web_engine_view;
 }
 
 bool MitoBoxPlot::update()
 {
-    return false;
+  QString json = createJSONString(&m_global_vis_parameters->selected_objects);
+  m_data->setJSONString(json);
+  return true;
 }
 
 MitoBoxPlot* MitoBoxPlot::clone()
@@ -58,9 +61,13 @@ void MitoBoxPlot::setSpecificVisParameters(SpecificVisParameters params)
 {
 }
 
-MitoBoxPlotData::MitoBoxPlotData(int ID, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
+/*---------------------------------------------------------------------------*/
+
+MitoBoxPlotData::MitoBoxPlotData(QString json, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
 {
-  //TODO
+  m_json_string = json;
+  m_datacontainer = data_container;
+  m_global_vis_parameters = global_vis_parameters;
 }
 
 MitoBoxPlotData::~MitoBoxPlotData()

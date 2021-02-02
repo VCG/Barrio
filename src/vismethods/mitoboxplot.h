@@ -11,7 +11,7 @@ class MitoBoxPlotData : public QObject
   Q_OBJECT
 
 public:
-  MitoBoxPlotData(int ID, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
+  MitoBoxPlotData(QString json, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
   ~MitoBoxPlotData();
 
   Q_INVOKABLE QString getData();
