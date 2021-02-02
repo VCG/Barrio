@@ -51,7 +51,7 @@ public:
   void            setSpecificVisParameters(SpecificVisParameters params);
 
 private:
-  BarChartData* data;
+  BarChartData* m_data;
 
   DataContainer* m_datacontainer;
 
