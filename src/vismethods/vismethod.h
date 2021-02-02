@@ -34,7 +34,6 @@ public:
   QUrl getHTMLPath(QString filename) 
   {
     QDir dir = QDir::currentPath();
-    qDebug() << dir.path();
     dir.cdUp(); 
     dir.cd("src");
 
