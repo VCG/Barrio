@@ -54,6 +54,12 @@
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
+        let jsobject = channel.objects.mitoboxplot_data;
+        let json_string = jsobject.json_string;
+        let data = JSON.parse(json_string);
+
+        console.log(data);
+
         // set the dimensions and margins of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
             width = 460 - margin.left - margin.right,
@@ -138,9 +144,8 @@
                 .style("width", 40)
 
             // rectangle for the main box
-            var boxWidth = 100
-            svg
-                .selectAll("boxes")
+            var boxWidth = 15
+            svg.selectAll("boxes")
                 .data(sumstat)
                 .enter()
                 .append("rect")
@@ -158,8 +163,7 @@
                 .style("fill", "#69b3a2")
 
             // Show the median
-            svg
-                .selectAll("medianLines")
+            svg.selectAll("medianLines")
                 .data(sumstat)
                 .enter()
                 .append("line")

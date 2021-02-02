@@ -17,9 +17,6 @@ public:
   Q_INVOKABLE QString getData();
   Q_PROPERTY(QString json_string READ getData);
 
-  Q_INVOKABLE int getID();
-  Q_PROPERTY(int hvgx_id READ getID);
-
   void setJSONString(QString json) { m_json_string = json; };
 
   int m_hvgxID;
@@ -39,7 +36,7 @@ public:
   MitoBoxPlot(GlobalVisParameters* visparams, DataContainer* datacontainer);
   ~MitoBoxPlot();
 
-  QString createJSONString(QList<int>* selectedObjects);
+  QString createJSONString(DataContainer* data_container, QList<int>* selectedObjects);
 
   //inherited functions
   QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
