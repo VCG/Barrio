@@ -1,59 +1,24 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
 
-    .axis {
-        font: 10px sans-serif;
-    }
-
-    .axis path, .axis line {
-        fill: none;
-        stroke: black;
-        shape-rendering: crispEdges;
-    }
-
-    div.tooltip {
-        position: absolute;
-        text-align: match-parent;
-        width: auto;
-        height: auto;
-        padding: 3px;
-        font: 12px sans-serif;
-        background: white;
-        border: 0px;
-        border-radius: 4px;
-        pointer-events: none;
-    }
-
-    .bar {
-        fill: rgb(148,0,212);
-        border-width: medium;
-        border-color: #000;
-    }
-
-    .bar:hover{
-        fill: #ffa500 ;
-    }
-
-</style>
 <body>
 
-<div id="chart" style="width: auto; height: 400px">
+<svg id="chart"></svg>
 
-</div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+<link rel = "stylesheet" type = "text/css" href = "globalStyleParams.css" />
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
         let jsobject = channel.objects.barchart_data;
         let json_string = jsobject.json_string;
 
-        let m = {top: 10, right: 10, bottom: 50, left: 110},
+        let m = {top: 10, right: 10, bottom: 10, left: 10},
             w = $("#chart").width() - m.left - m.right,
             h = $("#chart").height() - m.top - m.bottom;
 
@@ -75,12 +40,7 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        let svg = d3.select("#chart").append("svg")
-            .attr("width", w + m.right + m.left + 100)
-            .attr("height", h + m.top + m.bottom)
-            .append("g")
-            .attr("transform",
-                "translate(" + m.left + "," + m.top + ")");
+        let svg = d3.select("#chart");
 
         let data = JSON.parse(json_string);
 

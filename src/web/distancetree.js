@@ -4,8 +4,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     let data = jsobject.newickString;
 
     let margin = {top: 20, right: 40, bottom: 10, left: 10};
-    let width = $("#tree_display").width() - margin.left - margin.right;
-    let height = $("#tree_display").height() - margin.top - margin.bottom;
+    let width = $("#chart").width() - margin.left - margin.right;
+    let height = $("#chart").height() - margin.top - margin.bottom;
 
     var tree;
 
@@ -58,7 +58,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     function drawATree(data) {
 
         tree = d3.layout.phylotree()
-            .svg(d3.select("#tree_display"))
+            .svg(d3.select("#chart"))
             .options({
                 'selectable': true,
                 'collapsible': false,
