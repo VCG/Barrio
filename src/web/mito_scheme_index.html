@@ -1,55 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
+
 <script src="https://d3js.org/d3.v4.js"></script>
-
-<style>
-    div.tooltip {
-        position: absolute;
-        text-align: match-parent;
-        width: auto;
-        height: auto;
-        padding: 3px;
-        font: 12px sans-serif;
-        background: lightgray;
-        border: 0px;
-        border-radius: 4px;
-        pointer-events: none;
-    }
-
-    .label {
-        font-family: 'Nanum Gothic', sans-serif;
-        text-anchor: middle;
-    }
-
-    .mito {
-        border-radius: 100px;
-        fill: palevioletred;
-    }
-
-    .synapse {
-        fill: rebeccapurple;
-    }
-
-    .spine {
-        stroke-width: 3px;
-        stroke: lightgreen;
-
-    }
-
-    .spine:hover{
-        stroke: #ffa500
-    }
-</style>
-
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz" style="width: auto; height: 400px"></div>
-
 <script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+<link rel = "stylesheet" type = "text/css" href = "globalStyleParams.css" />
+
+<svg id="chart"></svg>
 
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -67,21 +26,13 @@
             }
         }
 
-        console.log(cell)
-
         // set the dimensions and margins of the graph
-        let margin = {top: 10, right: 30, bottom: 90, left: 40},
-            width = $("#my_dataviz").width() - margin.left - margin.right,
-            height = $("#my_dataviz").height() - margin.top - margin.bottom;
+        let margin = {top: 10, right: 30, bottom: 10, left: 30},
+            width = $("#chart").width() - margin.left - margin.right,
+            height = $("#chart").height() - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
-        let svg = d3.select("#my_dataviz")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+        let svg = d3.select("#chart");
 
         // Append Div for tooltip to SVG
         let div = d3.select("body")

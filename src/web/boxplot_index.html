@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
+<link rel = "stylesheet" type = "text/css" href = "globalStyleParams.css" />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz" style="width: auto; height: 400px"></div>
-<style>
-    .label {
-        font-family: 'Nanum Gothic', sans-serif;
-        text-anchor: middle;
-    }
-</style>
+<svg id="chart"></svg>
 
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -30,18 +21,12 @@
         let colors = JSON.parse(json_colors);
 
         // set the dimensions and margins of the graph
-        let margin = {top: 20, right: 30, bottom: 30, left: 80},
-            width = $("#my_dataviz").width() - margin.left - margin.right,
-            height = $("#my_dataviz").height() - margin.top - margin.bottom;
+        let margin = {top: 20, right: 30, bottom: 30, left: 10},
+            width = $("#chart").width() - margin.left - margin.right,
+            height = $("#chart").height() - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
-        let svg = d3.select("#my_dataviz")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+        let svg = d3.select("#chart");
 
         let domain = [];
         data.forEach(function (obj) {

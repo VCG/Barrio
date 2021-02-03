@@ -75,3 +75,22 @@ html, body {
 #legend-svg {
     vertical-align: top;
 }
+
+.mito {
+    border-radius: 100px;
+    fill: palevioletred;
+}
+
+.synapse {
+    fill: rebeccapurple;
+}
+
+.spine {
+    stroke-width: 3px;
+    stroke: lightgreen;
+
+}
+
+.spine:hover{
+    stroke: #ffa500
+}
