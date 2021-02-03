@@ -19,8 +19,8 @@ AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
   m_vis_space.insert({ 5, { VisName::MyScatterPlot, ":/icons/scatterplot.png", 5, NumberOfEntities::HIGH } });
 
   m_vis_space.insert({ 6, { VisName::MySkeleton, ":/icons/skeleton.png", 6, NumberOfEntities::LOW } });
-  m_vis_space.insert({ 7, { VisName::MyDistanceTree, ":/icons/question.png", 7, NumberOfEntities::MEDIUM } });
-  m_vis_space.insert({ 8, { VisName::MyDistanceTree, ":/icons/question.png", 8, NumberOfEntities::HIGH } });
+  m_vis_space.insert({ 7, { VisName::MyMitoBoxPlot, ":/icons/boxplot.png", 7, NumberOfEntities::MEDIUM } });
+  m_vis_space.insert({ 8, { VisName::MyDistanceTree, ":/icons/scatterplot.png", 8, NumberOfEntities::HIGH } });
 
 }
 
@@ -47,6 +47,8 @@ IVisMethod* AbstractionSpace::decideOnVisMethod(Vis vis)
     return new Scatterplot(&m_global_vis_parameters, m_datacontainer);
   case MySkeleton:
     return new MitoScheme(&m_global_vis_parameters, m_datacontainer);
+  case MyMitoBoxPlot:
+    return new MitoBoxPlot(&m_global_vis_parameters, m_datacontainer);
 
     //TODO finish list
   

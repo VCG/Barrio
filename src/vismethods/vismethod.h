@@ -17,7 +17,7 @@
 
 #include "../datacontainer.h"
 
-enum class VisType { DISTANCE_TREE = 0, BARCHART = 1, DISTANCE_MATRIX = 2, HISTOGRAM = 3, BOXPLOT = 4, SCATTERPLOT = 5, MITO_SCHEME = 6 };
+enum class VisType { DISTANCE_TREE = 0, BARCHART = 1, DISTANCE_MATRIX = 2, HISTOGRAM = 3, BOXPLOT = 4, SCATTERPLOT = 5, MITO_SCHEME = 6, MITO_BOX_PLOT = 7 };
 
 class IVisMethod: public QObject
 {
@@ -34,7 +34,6 @@ public:
   QUrl getHTMLPath(QString filename) 
   {
     QDir dir = QDir::currentPath();
-    qDebug() << dir.path();
     dir.cdUp(); 
     dir.cd("src");
 

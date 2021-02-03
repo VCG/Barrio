@@ -21,12 +21,12 @@ BarChart::~BarChart()
 QWebEngineView* BarChart::initVisWidget(int ID, SpecificVisParameters params)
 {
   QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
-  data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
+  m_data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
   m_web_engine_view->page()->setWebChannel(channel);
-  channel->registerObject(QStringLiteral("barchart_data"), data);
+  channel->registerObject(QStringLiteral("barchart_data"), m_data);
   m_web_engine_view->load(getHTMLPath(m_index_filename));
 
   return m_web_engine_view;
@@ -35,7 +35,7 @@ QWebEngineView* BarChart::initVisWidget(int ID, SpecificVisParameters params)
 bool BarChart::update()
 {
   QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
-  data->setJsonString(json);
+  m_data->setJsonString(json);
   return true;
 }
 
