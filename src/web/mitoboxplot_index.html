@@ -120,25 +120,45 @@
                 });
         }
 
-        /*// Show the median
-        svg.selectAll("medianLines")
-            .data(sumstat)
-            .enter()
-            .append("line")
-            .attr("x1", function (d) {
-                return (x(d.key) - boxWidth / 2)
-            })
-            .attr("x2", function (d) {
-                return (x(d.key) + boxWidth / 2)
-            })
-            .attr("y1", function (d) {
-                return (y(d.value.median))
-            })
-            .attr("y2", function (d) {
-                return (y(d.value.median))
-            })
-            .attr("stroke", "black")
-            .style("width", 80)*/
+        for (let i = 0; i < data.length; i++) {
+            let cell_length = data[i].length;
+            svg.selectAll("medianLines")
+                .data(data[i].spines)
+                .enter()
+                .append("line")
+                .attr("x1", function (spine) {
+                    return (x(data[i].name) - boxWidth / 2)
+                })
+                .attr("x2", function (spine) {
+                    return (x(data[i].name) + boxWidth / 2)
+                })
+                .attr("y1", function (spine) {
+                    if(hasMitoCoverage(data[i], spine.start)) {
+                        return (y(spine.start / cell_length))
+                    }
+                })
+                .attr("y2", function (spine) {
+                    if(hasMitoCoverage(data[i], spine.start)) {
+                        return (y(spine.start / cell_length))
+                    }
+                })
+                .attr("stroke", "black")
+                .style("width", 120)
+        }
+
+        function hasMitoCoverage(cell, start) {
+            let mitos = cell.mitochondria;
+            for(let i = 0; i < mitos.length; i++)
+            {
+                if(mitos[i].start <= start && start <= mitos[i].end)
+                {
+                    return true;
+                }
+            }
+            return false
+
+
+        }
     })
 
 </script>
