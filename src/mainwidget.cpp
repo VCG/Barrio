@@ -346,7 +346,7 @@ bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMe
   QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
   groupBox->layout()->addWidget(widget);
 
-  else if(m_number_of_entities == NumberOfEntities::MEDIUM)
+  if(m_number_of_entities == NumberOfEntities::MEDIUM)
   {
     m_main_layout->addWidget(groupBox, 0, 0, 1, -1);
   }
