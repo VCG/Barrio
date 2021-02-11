@@ -10,6 +10,8 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   m_number_of_entities = NumberOfEntities::LOW;
   setFocusPolicy(Qt::StrongFocus);
 
+  m_main_layout = new QGridLayout(this);
+
   m_abstraction_space = new AbstractionSpace(datacontainer);
 }
 
@@ -136,19 +138,27 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
     m_groupboxes[ID] = groupBox;
-    
+
     addCloseButtonToWidget(groupBox);
 
     addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
-    
+
     QFrame* line = new QFrame;
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     groupBox->layout()->addWidget(line);
 
     m_seperation_elements[ID] = line;
-
     addGLWidget(ID, groupBox, isOverviewWidget);
+
+    QSize size = m_main_layout->totalSizeHint();
+    int number_of_columns = m_main_layout->columnCount();
+    for (auto const& [id, box] : m_groupboxes)
+    {
+      box->setMinimumWidth((size.width() - 25) / (number_of_columns + 1));
+    }
+    
+    m_main_layout->addWidget(groupBox, m_current_row, m_current_col);
   }
   // medium configuration
   else if(m_number_of_entities == NumberOfEntities::MEDIUM)
@@ -184,7 +194,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     m_current_col++;
   }
   else {
-    m_current_row = m_current_row + 2;
+    m_current_row = m_current_row + 1;
     m_current_col = 0;
   }
 
@@ -334,13 +344,8 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod)
 {
   QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
-
   groupBox->layout()->addWidget(widget);
 
-  if (m_number_of_entities == NumberOfEntities::LOW) 
-  {
-    m_main_layout->addWidget(groupBox, m_current_row, m_current_col);
-  }
   else if(m_number_of_entities == NumberOfEntities::MEDIUM)
   {
     m_main_layout->addWidget(groupBox, 0, 0, 1, -1);
@@ -358,10 +363,8 @@ bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMe
 bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
 {
   GLWidget* widget = new GLWidget(ID, &m_shared_resources, isOverviewWidget, this);
-  widget->init(m_datacontainer); // todo delete dependecy of input form later
+  widget->init(m_datacontainer);
   groupBox->layout()->addWidget(widget);
-
-  m_main_layout->addWidget(groupBox, m_current_row + 1, m_current_col);
 
   m_opengl_views[ID] = widget;
 
@@ -507,8 +510,6 @@ void MainWidget::setVisMethod(Vis vis)
 void MainWidget::initializeGL()
 {
   initializeOpenGLFunctions();
-
-  m_main_layout = new QGridLayout(this);
 
   // setup shared resources
   initSharedVBOs();
