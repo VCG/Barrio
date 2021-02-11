@@ -403,27 +403,6 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
   return true;
 }
 
-//void MainWidget::setupMainWidget(VisConfiguration vis_config)
-//{
-//  m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
-//  qDebug() << "Decided on Vis methods";
-//}
-
-//SelectedVisMethods MainWidget::setThumbnailIcons(VisConfiguration vis_config)
-//{
-//  //m_vis_methods = m_abstraction_space->configureVisMethods(vis_config);
-//
-//  //// reload all widgets
-//  //QList<int> currentlySelectedIDs = getSelectedIDs();
-//  //deleteAllWidgets(false);
-//  //for each (int ID in currentlySelectedIDs)
-//  //{
-//  //   addWidgetGroup(ID, false);
-//  //}
-//  //
-//  //return m_vis_methods;
-//}
-
 void MainWidget::showSlice(bool showSlice)
 {
   m_shared_resources.show_slice = showSlice;
