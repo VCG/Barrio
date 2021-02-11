@@ -28,6 +28,8 @@ public:
 
   void addCloseButtonToWidget(QGroupBox* groupBox);
 
+  void addStandardItem(int id, QList<QStandardItem*> items);
+
   bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod);
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
@@ -70,6 +72,8 @@ private:
   std::map<int, QFrame*>      m_seperation_elements;
 
   QList<int>    getSelectedIDs();
+
+  QMap<int, QList<QStandardItem*>> m_selected_standard_items;
 
   QGridLayout* m_main_layout;
 

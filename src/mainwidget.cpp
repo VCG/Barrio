@@ -110,6 +110,17 @@ void MainWidget::OnWidgetClose()
     }
   }
 
+  // reset colors in treemodel
+  if (m_selected_standard_items.count(id_to_delete))
+  {
+    QList<QStandardItem*> items = m_selected_standard_items[id_to_delete];
+    
+    items[0]->setBackground(Qt::white);
+    items[1]->setBackground(Qt::white);
+
+    m_selected_standard_items.remove(id_to_delete);
+  }
+
   QList<int> currentlySelectedIDs = getSelectedIDs();
 
   deleteAllWidgets(false);
@@ -145,6 +156,11 @@ void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
   groupBox->layout()->addWidget(frame);
   connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));
 
+}
+
+void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)
+{
+  m_selected_standard_items.insert(id, items);
 }
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)

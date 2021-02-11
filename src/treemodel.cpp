@@ -65,12 +65,24 @@ TreeModel::~TreeModel()
 
 }
 
-
-
 void TreeModel::selectItem(const QModelIndex& index)
 {
+
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
   m_mainwidget->addWidgetGroup(hvgx, false);
+
+  QList<QStandardItem*> items;
+  QStandardItem* col0 = paramList->item(index.row(), 0);
+  QStandardItem* col1 = paramList->item(index.row(), 1);
+
+  col0->setBackground(Qt::red);
+  col1->setBackground(Qt::red);
+
+  items.append(col0);
+  items.append(col1);
+
+  m_mainwidget->addStandardItem(hvgx, items);
+
 }
 
