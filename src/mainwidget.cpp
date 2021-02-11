@@ -18,12 +18,12 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
 double MainWidget::on_synapse_distance_slider_changed(int value)
 {
   double distance = ((double)value / 100.0) * sqrt(3) * MESH_MAX_X;
-  
+
   m_abstraction_space->setThresholdDistance(distance);
 
-  for (auto const& [id, widget] : m_opengl_views) 
+  for (auto const& [id, widget] : m_opengl_views)
   {
-    if (id != 0) 
+    if (id != 0)
     {
       widget->update_synapse_distance_threshold(distance);
     }
@@ -60,7 +60,7 @@ void MainWidget::on_widget_close_button_clicked()
 
   QPushButton* button = qobject_cast<QPushButton*>(sender());
   QWidget* widget_to_delete = button->parentWidget()->parentWidget();
-  
+
   int id_to_delete = 0;
   for (auto& i : m_groupboxes) {
     if (i.second == widget_to_delete) {
@@ -127,69 +127,45 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
   }
 
-  
   m_abstraction_space->addToSelectedIndices(ID);
   m_lastID = ID;
 
+  QGroupBox* groupBox = new QGroupBox(name, this);
+  QVBoxLayout* vbox = new QVBoxLayout;
+  groupBox->setLayout(vbox);
+  m_groupboxes[ID] = groupBox;
+
   // low configuration
-  if (m_number_of_entities == NumberOfEntities::LOW) 
+  if (m_number_of_entities == NumberOfEntities::LOW)
   {
-    QGroupBox* groupBox = new QGroupBox(name, this);
-    QVBoxLayout* vbox = new QVBoxLayout;
-    groupBox->setLayout(vbox);
-    m_groupboxes[ID] = groupBox;
-
     addCloseButtonToWidget(groupBox);
-
     addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
 
     QFrame* line = new QFrame;
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     groupBox->layout()->addWidget(line);
-
     m_seperation_elements[ID] = line;
-    addGLWidget(ID, groupBox, isOverviewWidget);
 
-    QSize size = m_main_layout->totalSizeHint();
-    int number_of_columns = m_main_layout->columnCount();
-    for (auto const& [id, box] : m_groupboxes)
-    {
-      box->setMinimumWidth((size.width() - 25) / (number_of_columns + 1));
-    }
-    
-    m_main_layout->addWidget(groupBox, m_current_row, m_current_col);
+    addGLWidget(ID, groupBox, isOverviewWidget);
   }
-  // medium configuration
-  else if(m_number_of_entities == NumberOfEntities::MEDIUM)
-  {
+  // medium and high configuration
+  else {
     updateInfoVisViews();
-
-    QGroupBox* groupBox = new QGroupBox(name, this);
-    QVBoxLayout* vbox = new QVBoxLayout;
-    groupBox->setLayout(vbox);
-    m_groupboxes[ID] = groupBox;
-
     addCloseButtonToWidget(groupBox);
-
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
-  // high configuration
-  else 
+
+  // add group box to layout
+  QSize size = m_main_layout->totalSizeHint();
+  int number_of_columns = m_main_layout->columnCount();
+  for (auto const& [id, box] : m_groupboxes)
   {
-    updateInfoVisViews();
-
-    QGroupBox* groupBox = new QGroupBox(name, this);
-    QVBoxLayout* vbox = new QVBoxLayout;
-    groupBox->setLayout(vbox);
-    m_groupboxes[ID] = groupBox;
-
-    addCloseButtonToWidget(groupBox);
-
-    addGLWidget(ID, groupBox, isOverviewWidget);
+    box->setMinimumWidth((size.width() - 25) / (number_of_columns + 1));
   }
+  m_main_layout->addWidget(groupBox, m_current_row, m_current_col);
 
-  if (m_current_col < m_max_cols - 1) 
+  if (m_current_col < m_max_cols - 1)
   {
     m_current_col++;
   }
@@ -199,7 +175,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   }
 
   m_number_of_selected_structures++;
-  
+
   return true;
 }
 
@@ -328,11 +304,13 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 
       it = m_groupboxes.erase(it);
     }
-    else 
+    else
     {
       ++it;
     }
   }
+
+  m_seperation_elements.clear();
 
   m_current_col = 0;
   m_current_row = 0;
@@ -345,17 +323,15 @@ bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMe
   QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
   groupBox->layout()->addWidget(widget);
 
-  if(m_number_of_entities == NumberOfEntities::MEDIUM)
+  if (m_number_of_entities == NumberOfEntities::MEDIUM || m_number_of_entities == NumberOfEntities::HIGH)
   {
     m_main_layout->addWidget(groupBox, 0, 0, 1, -1);
-  }
-  else if(m_number_of_entities == NumberOfEntities::HIGH)
-  {
-    m_main_layout->addWidget(groupBox, 0, 0, 1, -1);
+    m_current_col = 0;
+    m_current_row = 1;
   }
 
   m_infovis_views[ID] = visMethod;
-  
+
   return true;
 }
 
@@ -444,54 +420,66 @@ void MainWidget::setColormap(QString name)
     view->setSpecificVisParameters(m_specific_vis_parameters);
     view->getWebEngineView()->reload();
   }
-  
+
   initColormaps();
 }
 
 void MainWidget::setVisMethod(Vis vis)
 {
   m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
-  if (vis.scale == NumberOfEntities::MEDIUM)
+  if (vis.scale == NumberOfEntities::LOW)
+  {
+    m_number_of_entities = NumberOfEntities::LOW;
+    QList<int> currentlySelectedIDs = getSelectedIDs();
+
+    deleteAllWidgets(true);
+
+    for each (int ID in currentlySelectedIDs)
+    {
+      addWidgetGroup(ID, false);
+    }
+  }
+  else if (vis.scale == NumberOfEntities::MEDIUM)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
     int medium_entities_id = -1;
-    
-    deleteAllInfoVisWidgets();
+
+    QList<int> currentlySelectedIDs = getSelectedIDs();
+
+    deleteAllWidgets(true);
 
     QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
     m_groupboxes[medium_entities_id] = groupBox;
 
-    
     addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone());
-  }
-  else if(vis.scale == NumberOfEntities::LOW)
-  {
-     m_number_of_entities = NumberOfEntities::LOW;
-     QList<int> currentlySelectedIDs = getSelectedIDs();
 
-     deleteAllWidgets(true);
-
-     for each (int ID in currentlySelectedIDs)
-     {
-       addWidgetGroup(ID, false);
-     }
+    for each (int ID in currentlySelectedIDs)
+    {
+      addWidgetGroup(ID, false);
+    }
   }
- 
-  else if (vis.scale == NumberOfEntities::HIGH) 
+  else if (vis.scale == NumberOfEntities::HIGH)
   {
     int high_entities_id = -2;
     m_number_of_entities = NumberOfEntities::HIGH;
 
-    deleteAllInfoVisWidgets();
+    QList<int> currentlySelectedIDs = getSelectedIDs();
 
-    QGroupBox* groupBox = new QGroupBox(m_low_detail_name, this);
+    deleteAllWidgets(true);
+
+    QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
     m_groupboxes[high_entities_id] = groupBox;
-    
+
     addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone());
+
+    for each (int ID in currentlySelectedIDs)
+    {
+      addWidgetGroup(ID, false);
+    }
   }
 }
 
@@ -597,10 +585,10 @@ void MainWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum tex
 
   FILE* pFile = fopen(path.toStdString().c_str(), "rb");
 
-  if (rawData) 
+  if (rawData)
   {
     unsigned char* pVolume = new unsigned char[size];
-    
+
     fclose(pFile);
 
     //load data into a 3D texture
@@ -726,5 +714,3 @@ void MainWidget::initSharedMeshVBOs()
   m_shared_resources.mesh_index_count = neurites_index_count;
   m_shared_resources.skeleton_index_count = skeleton_indices_size;
 }
-
-
