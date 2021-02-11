@@ -175,6 +175,12 @@ void GLWidget::resetCamera()
   update();
 }
 
+void GLWidget::zoom(double delta)
+{
+  m_camera_distance *= delta;
+  update();
+}
+
 void GLWidget::initializeGL()
 {
   qDebug() << "initializeGL";

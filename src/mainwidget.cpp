@@ -96,6 +96,27 @@ void MainWidget::keyPressEvent(QKeyEvent* event)
   //}
 }
 
+void MainWidget::wheelEvent(QWheelEvent* event)
+{
+  if (event->modifiers().testFlag(Qt::ControlModifier))
+  {
+    int delta = event->delta();
+
+    if (event->orientation() == Qt::Vertical) 
+    {
+      for (auto const& [id, widget] : m_opengl_views)
+      {
+        if (delta < 0) {
+          widget->zoom(1.1);
+        }
+        else {
+          widget->zoom(0.9);
+        }
+      }
+    }
+  }
+}
+
 void MainWidget::OnWidgetClose()
 {
   QObject* widget = sender();

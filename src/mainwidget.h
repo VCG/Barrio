@@ -57,7 +57,8 @@ public:
 
   SelectedVisMethods getSelectedVisMethods();
   
-
+protected:
+  void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
 public slots:
   void on_widget_close_button_clicked();
   void OnWidgetClose();

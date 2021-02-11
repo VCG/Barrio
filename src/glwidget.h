@@ -73,6 +73,7 @@ public:
   void updateVisParameters();
 
   void resetCamera();
+  void zoom(double delta);
  
 
 
