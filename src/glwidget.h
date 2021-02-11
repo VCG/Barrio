@@ -138,6 +138,8 @@ public slots:
   void startRotation();
   void prepareResize();
 
+  void ShowContextMenu(const QPoint&);
+
 signals:
   void setAbstractionData(AbstractionSpace* space_instance);
   void setHoveredID(int);
@@ -243,6 +245,8 @@ protected:
   bool                                m_is_overview_widget;
 
   double                              m_distance_threshold;
+
+  QWidget*                            m_parent;
 
   //GLuint                              m_mito_cell_distance_colormap;
 

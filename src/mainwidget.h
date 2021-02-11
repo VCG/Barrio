@@ -58,6 +58,7 @@ public:
 
 public slots:
   void on_widget_close_button_clicked();
+  void OnWidgetClose();
 
 private:
   DataContainer* m_datacontainer;

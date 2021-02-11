@@ -96,6 +96,38 @@ void MainWidget::keyPressEvent(QKeyEvent* event)
   //}
 }
 
+void MainWidget::OnWidgetClose()
+{
+  QObject* widget = sender();
+
+  QObject* widget_to_delete = widget->parent()->parent();
+
+  int id_to_delete = 0;
+  for (auto& i : m_groupboxes) {
+    if (i.second == widget_to_delete) {
+      id_to_delete = i.first;
+      break; // to stop searching
+    }
+  }
+
+  QList<int> currentlySelectedIDs = getSelectedIDs();
+
+  deleteAllWidgets(false);
+
+  for each (int ID in currentlySelectedIDs)
+  {
+    if (ID != id_to_delete)
+    {
+      addWidgetGroup(ID, false);
+    }
+  }
+
+  updateInfoVisViews();
+
+  qDebug() << "close widget";
+}
+
+
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 {
   QFrame* frame = new QFrame;
@@ -138,7 +170,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // low configuration
   if (m_number_of_entities == NumberOfEntities::LOW)
   {
-    addCloseButtonToWidget(groupBox);
+    //addCloseButtonToWidget(groupBox);
     addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
 
     QFrame* line = new QFrame;
@@ -152,7 +184,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // medium and high configuration
   else {
     updateInfoVisViews();
-    addCloseButtonToWidget(groupBox);
+    //addCloseButtonToWidget(groupBox);
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
 
@@ -286,7 +318,7 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 
       groupBox->hide();
       m_main_layout->removeWidget(groupBox);
-      delete groupBox;
+      //delete groupBox;
 
       // delete respective element in gl map
       if (m_opengl_views.find(ID) != m_opengl_views.end())
@@ -312,8 +344,17 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 
   m_seperation_elements.clear();
 
-  m_current_col = 0;
-  m_current_row = 0;
+  if (deleteGeneralInfoVisWidgets)
+  {
+    m_current_col = 0;
+    m_current_row = 0;
+  }
+  else
+  {
+    m_current_col = 0;
+    m_current_row = 1;
+  }
+
 
   return true;
 }

@@ -42,6 +42,11 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 
   connect(this, SIGNAL(aboutToResize()), this, SLOT(prepareResize()));
 
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
+
+  m_parent = parent;
+
   m_active_graph_tab = 0;
   //setFocusPolicy(Qt::StrongFocus);
   m_hide_toggle = false;
@@ -1037,6 +1042,18 @@ void GLWidget::prepareResize()
     glDeleteTextures(1, &headPtrTex);
     glDeleteBuffers(1, &clear_oit_buffers);
   }
+}
+
+void GLWidget::ShowContextMenu(const QPoint &pos)
+{
+  QMenu contextMenu(tr("Context menu"), this);
+  QAction action1("Remove Widget", this);
+  
+  connect(&action1, SIGNAL(triggered()), m_parent, SLOT(OnWidgetClose()));
+  contextMenu.addAction(&action1);
+
+  contextMenu.exec(mapToGlobal(pos));
+
 }
 
 void GLWidget::pass1()
