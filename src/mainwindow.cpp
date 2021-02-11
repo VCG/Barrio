@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   m_main_widget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
 
-  mainwindow_ui->gridLayout_5->addWidget(m_main_widget, 0, 0);
+  mainwindow_ui->verticalLayout_17->addWidget(m_main_widget);
  
   m_currentSelectedCluster = 0;
   m_clusters = 0;

@@ -25,7 +25,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_26">
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_5"/>
+     <layout class="QVBoxLayout" name="verticalLayout_17"/>
     </item>
    </layout>
   </widget>

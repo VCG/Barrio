@@ -45,7 +45,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGridLayout *gridLayout_26;
-    QGridLayout *gridLayout_5;
+    QVBoxLayout *verticalLayout_17;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QDockWidget *dockWidget;
@@ -376,10 +376,10 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_26 = new QGridLayout(centralwidget);
         gridLayout_26->setObjectName(QString::fromUtf8("gridLayout_26"));
-        gridLayout_5 = new QGridLayout();
-        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
+        verticalLayout_17 = new QVBoxLayout();
+        verticalLayout_17->setObjectName(QString::fromUtf8("verticalLayout_17"));
 
-        gridLayout_26->addLayout(gridLayout_5, 0, 0, 1, 1);
+        gridLayout_26->addLayout(verticalLayout_17, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
