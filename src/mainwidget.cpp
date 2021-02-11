@@ -530,22 +530,12 @@ void MainWidget::resizeGL(int width, int height)
 {
 }
 
-//bool MainWidget::initOpenGLFunctions()
-//{
-//  return false;
-//}
-
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
   updateGroupBoxStyle();
   update();
 }
-
-//void MainWidget::resizeGL(int width, int height)
-//{
-//  // do nothing
-//}
 
 QList<int> MainWidget::getSelectedIDs()
 {
