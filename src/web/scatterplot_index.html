@@ -66,8 +66,9 @@
 
         // Add X axis
         let x = d3.scaleLinear()
-            .domain([0, 0.3])
+            .domain([0, 0.03])
             .range([0, width]);
+
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
@@ -122,7 +123,8 @@
             .attr("cy", function (d) {
                 return y(d.perc);
             })
-            .attr("r", 6.0);
+            .attr("r", 6.0)
+            .style("stroke", "blue");
 
         dots.on("mouseover", function (d) {
                 div.transition()
