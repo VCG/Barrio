@@ -156,7 +156,7 @@ void GLWidget::updateVisParameters()
 {
   makeCurrent();
   m_mesh_program->bind();
-  
+
   int opacity = m_mesh_program->uniformLocation("cell_opacity");
   if (opacity >= 0) m_mesh_program->setUniformValue(opacity, m_shared_resources->cell_opacity);
 
@@ -190,9 +190,9 @@ void GLWidget::initializeGL()
   m_performaceMeasure.startTimer();
 
   initializeOpenGLFunctions();
-  
+
   QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
-  
+
   f->glClearColor(1.0, 1.0, 1.0, 1.0);
 
   m_mesh_program = new QOpenGLShaderProgram;
@@ -201,7 +201,7 @@ void GLWidget::initializeGL()
   m_mesh_program->link();
 
   f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  
+
   //------------------------------------------------------------------------------------------------------------------//
   // Mesh Setup
 
@@ -287,7 +287,7 @@ void GLWidget::initializeGL()
   {
     glUniform1i(volumePos, 0);
   }
-  
+
   m_mesh_program->release();
 
   /*if (m_FDL_running) {
@@ -305,7 +305,7 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
   startRotation();
-    
+
   m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
   updateHighlightedSSBO();
@@ -327,7 +327,7 @@ void GLWidget::resizeGL(int w, int h)
 
   m_width = w * retinaScale;
   m_height = h * retinaScale;
-  
+
 
   qDebug() << "Resize Widget: " << m_width << ", " << m_height;
 
@@ -340,7 +340,7 @@ void GLWidget::resizeGL(int w, int h)
 
   // set up view
   // view matrix: transform a model's vertices from world space to view space, represents the camera
-  if (m_is_overview_widget) 
+  if (m_is_overview_widget)
   {
     m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
   }
@@ -349,10 +349,10 @@ void GLWidget::resizeGL(int w, int h)
     Object* selectedObject = m_data_container->getObjectsMapPtr()->at(m_selected_hvgx_id);
     m_center = selectedObject->getCenter().toVector3D();
   }
- 
+
   m_cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
   m_eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
-  
+
   m_vMatrix.setToIdentity();
   m_vMatrix.lookAt(m_eye, m_center, m_cameraUpDirection);
 
@@ -393,7 +393,7 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
   //m_opengl_mngr->renderSelection(&m_uniforms);
 
   //int hvgxID = pickObject(event);
-  
+
 
   /*if (hvgxID == 0)    goto quit;
   m_opengl_mngr->highlightObject(hvgxID);
@@ -474,13 +474,13 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
     setMouseTracking(false);
 
   }
-  else if (event->buttons() == Qt::LeftButton /*m_xaxis < 60 || m_yaxis < 60*/) 
+  else if (event->buttons() == Qt::LeftButton /*m_xaxis < 60 || m_yaxis < 60*/)
   {
     setMouseTracking(false);
-    
+
     // Mouse release position - mouse press position
     QVector2D diff = QVector2D(deltaX, deltaY);
-    
+
     // Rotation axis is perpendicular to the mouse position difference
     QVector3D n = QVector3D(diff.y(), diff.x(), 0).normalized();
 
@@ -489,7 +489,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
     // Calculate new rotation axis as weighted sum
     m_rotationAxis = (m_rotationAxis + n).normalized();
-    
+
     // angle in degrees and rotation axis
     m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
 
@@ -574,7 +574,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
     }
     break;
   }
-  
+
 }
 
 void GLWidget::saveScreenshot()
@@ -619,7 +619,7 @@ void GLWidget::getSliderY(int value)
 
 void GLWidget::getIntervalID(int ID)
 {
- 
+
 }
 
 void GLWidget::getActiveGraphTab(int tab_graph)
@@ -973,17 +973,17 @@ void GLWidget::drawScene()
 void GLWidget::updateHighlightedSSBO()
 {
   int bufferSize = m_shared_resources->highlighted_objects->size() * sizeof(int);
-  
+
   glGenBuffers(1, &m_highlighted_ssbo);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_highlighted_ssbo);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, m_shared_resources->highlighted_objects->data(), GL_DYNAMIC_COPY);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, m_highlighted_ssbo);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-  
+
 }
 
 void GLWidget::updateVisibilitySSBO()
-{ 
+{
   makeCurrent();
   setVisibleStructures();
 
@@ -1003,49 +1003,37 @@ void GLWidget::setVisibleStructures()
   std::map<int, Object*>* objects_map = m_data_container->getObjectsMapPtr();
   m_visible_structures.clear();
 
-  //iterate over all objects and add indices to the VBO
-  for (auto iter = objects_map->rbegin(); iter != objects_map->rend(); iter++)
+  int currentID = m_selected_hvgx_id;
+  int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
+
+  m_visible_structures.push_back(parentID);
+
+  Object* parent = objects_map->at(parentID);
+
+  std::vector<Object*>* synapses = parent->getSynapses();
+  for (int i = 0; i < synapses->size(); i++)
   {
-    Object* object_p = (*iter).second;
-    int currentID = object_p->getHVGXID();
-
-    int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
-    Object* parent = objects_map->at(parentID);
-
-    bool is_sibling = parentID == objects_map->at(currentID)->getParentID();
-    
-    if (m_is_overview_widget || currentID == m_selected_hvgx_id || 
-      objects_map->at(m_selected_hvgx_id)->isChild(currentID) || 
-      objects_map->at(m_selected_hvgx_id)->isParent(currentID) ||
-      is_sibling
-      )
-    {
-      m_visible_structures.push_back(currentID);
-    }
+    m_visible_structures.push_back(synapses->at(i)->getHVGXID());
   }
 
-  if (!m_is_overview_widget) {
-    std::map<int, double>* distance_map = objects_map->at(m_selected_hvgx_id)->get_distance_map_ptr();
-    for (auto const& [hvgx_id, distance] : *distance_map)
-    {
-      if (distance < m_distance_threshold) {
-        m_visible_structures.push_back(hvgx_id);
-      }
-    }
+  std::vector<int>* siblings = parent->getChildrenIDs();
+  for (size_t i = 0; i < siblings->size(); i++)
+  {
+    m_visible_structures.push_back(siblings->at(i));
   }
 }
 
 void GLWidget::update_synapse_distance_threshold(double distance)
 {
   m_distance_threshold = distance;
-  updateVisibilitySSBO();
+  //updateVisibilitySSBO();
 }
 
 
 void GLWidget::prepareResize()
 {
   makeCurrent();
-  
+
   // make sure memory is deallocated before fbo is resized
   if (m_init)
   {
@@ -1055,11 +1043,11 @@ void GLWidget::prepareResize()
   }
 }
 
-void GLWidget::ShowContextMenu(const QPoint &pos)
+void GLWidget::ShowContextMenu(const QPoint& pos)
 {
   QMenu contextMenu(tr("Context menu"), this);
   QAction action1("Remove Widget", this);
-  
+
   connect(&action1, SIGNAL(triggered()), m_parent, SLOT(OnWidgetClose()));
   contextMenu.addAction(&action1);
 
@@ -1140,7 +1128,7 @@ void GLWidget::initMeshShaderStorage(int width, int height)
   glGenBuffers(1, &clear_oit_buffers);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clear_oit_buffers);
   glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf->size() * sizeof(GLuint), headPtrClearBuf->data(), GL_STATIC_COPY);
-  
+
   m_init = true;
 }
 
