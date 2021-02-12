@@ -24,6 +24,7 @@ in float        frag_slice_z;
 in flat int     frag_is_skeleton;
 
 uniform bool          show_mito_distance_to_cell;
+uniform int           main_mito;
 uniform sampler1D	  mito_colormap;
 
 uniform sampler3D     volume;
@@ -193,7 +194,11 @@ vec4 computeColor()
 //    out_color = vec4(result, 0.0);
 //  }
 
-  if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
+  if(frag_structure_type == MITO && frag_hvgx != main_mito)
+  {
+    out_color = vec4(result, 0.2);
+  }
+  else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {
     out_color = vec4(result, 1.0);
   }

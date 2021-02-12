@@ -139,6 +139,9 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   int show_mcd_colormap = program->uniformLocation("show_mito_distance_to_cell");
   if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, true);
 
+  int main_mito = program->uniformLocation("main_mito");
+  if (show_mcd_colormap >= 0) program->setUniformValue(main_mito, m_selected_hvgx_id);
+
   int showSlice = program->uniformLocation("showSlice");
   if (showSlice >= 0) program->setUniformValue(showSlice, m_shared_resources->show_slice);
 
@@ -1007,12 +1010,14 @@ void GLWidget::setVisibleStructures()
     int currentID = object_p->getHVGXID();
 
     int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
-    bool is_spine_bouton = parentID == objects_map->at(currentID)->getParentID() && (objects_map->at(currentID)->getObjectType() == Object_t::SPINE || objects_map->at(currentID)->getObjectType() == Object_t::BOUTON);
+    Object* parent = objects_map->at(parentID);
+
+    bool is_sibling = parentID == objects_map->at(currentID)->getParentID();
     
     if (m_is_overview_widget || currentID == m_selected_hvgx_id || 
       objects_map->at(m_selected_hvgx_id)->isChild(currentID) || 
       objects_map->at(m_selected_hvgx_id)->isParent(currentID) ||
-      is_spine_bouton
+      is_sibling
       )
     {
       m_visible_structures.push_back(currentID);
