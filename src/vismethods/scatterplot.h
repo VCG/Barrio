@@ -20,6 +20,9 @@ public:
   Q_INVOKABLE QString getXUnit();
   Q_INVOKABLE QString getYUnit();
 
+  Q_INVOKABLE void selectStructure(const QString& name);
+  Q_INVOKABLE void removeStructure(const QString& name);
+
   Q_PROPERTY(QString json_string READ getData);
   Q_PROPERTY(QString x_axis_name READ getXAxis());
   Q_PROPERTY(QString y_axis_name READ getYAxis());

@@ -70,7 +70,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("class", "d3-tip")
         .offset([-10, 0])
         .html(function (d) {
-            return min + ": " + d[min].toFixed(4) + " " + xUnit + " <br>" + perc + ": " + d[perc].toFixed(4) + " " + yUnit;
+            return d[name] + " <br>" + min + ": " + d[min].toFixed(4) + " " + xUnit +
+                " <br>" + perc + ": " + d[perc].toFixed(4) + " " + yUnit;
         });
 
     var zoomBeh = d3.behavior.zoom()
@@ -144,7 +145,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .style("fill", function (d) {
             if(d.name.includes("Mito_A"))
             {
-                console.log(axon);
                 return colorScale(axon);
             }
             else if(d.name.includes("Mito_D"))
@@ -153,9 +153,11 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             }
 
         })
+        .on("click", function (d) {
+            clicked(d)
+        })
         .on("mouseover", tip.show)
-        .on("mouseout", tip.hide)
-        .on("click", clicked());
+        .on("mouseout", tip.hide);
 
     var legend = svg.selectAll(".legend")
         .data(colorScale.domain())
@@ -177,23 +179,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             return d;
         });
 
-    function clicked() {
-        console.log("clicked");
-        // xCat = "Carbs";
-        // xMax = d3.max(data, function (d) {
-        //     return d[xCat];
-        // });
-        // xMin = d3.min(data, function (d) {
-        //     return d[xCat];
-        // });
-        //
-        // zoomBeh.x(x.domain([xMin, xMax])).y(y.domain([yMin, yMax]));
-        //
-        // var svg = d3.select("#scatter").transition();
-        //
-        // svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(xCat);
-        //
-        // objects.selectAll(".dot").transition().duration(1000).attr("transform", transform);
+    function clicked(d) {
+        jsobject.selectStructure(d.name);
     }
 
     function zoom() {

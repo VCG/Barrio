@@ -36,6 +36,18 @@ Q_INVOKABLE QString ScatterplotData::getYUnit()
   return Q_INVOKABLE QString("microns");
 }
 
+Q_INVOKABLE void ScatterplotData::selectStructure(const QString& name)
+{
+  qDebug() << name;
+  return Q_INVOKABLE void();
+}
+
+Q_INVOKABLE void ScatterplotData::removeStructure(const QString& name)
+{
+  qDebug() << name; 
+  return Q_INVOKABLE void();
+}
+
 Q_INVOKABLE void ScatterplotData::setHighlightedFrame(const QString& name)
 {
   int hvgx = m_datacontainer->getIndexByName(name);
