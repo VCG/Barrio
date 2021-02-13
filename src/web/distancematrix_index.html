@@ -13,18 +13,31 @@
         font-size: 12px;
     }
 
-    .label{
+    div.tooltip {
+        position: absolute;
+        text-align: match-parent;
+        width: auto;
+        height: auto;
+        padding: 3px;
+        font: 12px sans-serif;
+        background: white;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+    }
+
+    .label {
         font-family: sans-serif;
         font-size: 12px;
         font-weight: normal;
     }
 
-    .selected{
+    .selected {
         stroke: orange;
         stroke-width: 3;
     }
 
-    .not_selected{
+    .not_selected {
         stroke: none;
         stroke-width: 1;
     }
@@ -35,17 +48,17 @@
 </style>
 <body>
 
-<div id="matrix" style="width: 100%; height: 120vh">
+<div id="matrix" style="width: calc(100vw  - 0px); height: 500px">
 
 </div>
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+<script crossorigin="anonymous"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
 <script type='text/javascript'>
 
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -55,7 +68,7 @@
 
         let my_data = JSON.parse(json_string);
 
-        let margin = {top: 20, right: 10, bottom: 10, left: 60};
+        let margin = {top: 20, right: 50, bottom: 10, left: 41};
         let w = $("#matrix").width() - margin.left - margin.right;
         let h = $("#matrix").height() - margin.top - margin.bottom;
 
@@ -75,21 +88,25 @@
             });
 
         let rect_height = 30;
-        let rect_margin = 3;
+        let rect_margin = 4;
 
         let number_of_cols = my_data[0].synapses.length;
         let number_of_rows = my_data.length;
 
         let min_value = 0;
+        let max_value = 4;
 
         let min_color = '#800080';
         let max_color = '#ffffff';
         let undef_color = '#b7b7b7';
 
-        let max_value = 6;
+        // Append Div for tooltip to SVG
+        let div = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-
-        var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
+        var corXscale = d3.scale.ordinal().rangeRoundBands([margin.left,  w - margin.right + rect_margin]),
             corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
             corColScale = d3.scale.linear().domain([min_value, max_value]).range([min_color, max_color]);
 
@@ -122,69 +139,60 @@
             .attr('width', w / number_of_cols - rect_margin)
             .attr('height', rect_height)
             .style('fill', function (d) {
-                if(d.value <= max_value)
-                {
+                if (d.value <= max_value) {
                     return corColScale(d.value);
-                }
-                else {
+                } else {
                     return undef_color;
                 }
 
             });
 
         let counter = 0;
-        my_data.forEach(function (d){
+        my_data.forEach(function (d) {
             matrix.append('text')
                 .attr({
                     'class': 'label'
                 })
                 .text(d.name)
                 .attr('dominant-baseline', 'hanging')
-                .attr('transform', 'translate(' + (-margin.left) + ',' + corYscale(counter)  + ')');
+                .attr('transform', 'translate(' + (-margin.left) + ',' + corYscale(counter) + ')');
 
             counter++;
         });
-        console.log(counter);
 
+        cells.on('mouseenter', function (d) {
+            let selected = my_data[d.row].synapses[d.col];
+            let text = selected.name;
 
+            if (d.value < max_value) {
+                text += ' - ' + (d3.format('.2f')(d.value));
+            }
 
-        cells.on('mouseover', function (d) {
+            d3.select(this)
+                .select('rect')
+                .attr({
+                    'class': 'selected'
+                });
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
 
-            let selected_structure = my_data[d.row].synapses[d.col];
+            div.text(text)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
 
-                d3.select(this)
-                    .select('rect')
-                    .attr({
-                        'class': 'selected'
-                    });
+            jsobject.setHighlightedStructure(selected.name);
 
-                var xPos = parseFloat(d3.select(this).select('rect').attr('x'));
-                var yPos = 0.0; //parseFloat(d3.select(this).select('rect').attr('y'));
-
-
-                matrix.append('text')
-                    .attr({
-                        'class': 'tooltip',
-                        'font-family': 'sans-serif',
-                        'font-size': '12px',
-                        'font-weight': 'normal',
-                        'x': xPos + 30,
-                        'y': yPos - 15,
-                        'text-anchor': 'middle',
-                    })
-                    .text(selected_structure.name + ' - ' + (d3.format('.2f')(d.value)));
-
-
-                jsobject.setHighlightedStructure(selected_structure.name);
-
-            })
-            .on('mouseout', function (d) {
+        })
+            .on('mouseleave', function (d) {
                 d3.select(this)
                     .select('rect')
                     .attr({
                         'class': 'not_selected'
                     });
-                d3.select('.tooltip').remove();
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
 
                 let selected_structure = my_data[d.row].synapses[d.col];
                 jsobject.removeHighlightedStructure(selected_structure.name);
@@ -198,11 +206,11 @@
 
         function drawLegend() {
             let legend = svg.append('g')
-            .attr({
-                'transform': 'translate(' + margin.left + ',' + margin.top + ')',
-                'width': w,
-                'height': h
-            })
+                .attr({
+                    'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+                    'width': w,
+                    'height': h
+                })
             const data = [{"color": min_color, "value": min_value}, {"color": max_color, "value": max_value}];
             let extent = d3.extent(data, d => d.value);
 
@@ -224,7 +232,7 @@
                 .domain(extent);
 
             let xAxis = d3.svg.axis().scale(xScale)
-                .tickValues([0, 1, 2, 3, 4, 5, 6]);
+                .tickValues([0, 1, 2, 3, 4]);
 
             legend.append("rect")
                 .attr("width", innerWidth)
