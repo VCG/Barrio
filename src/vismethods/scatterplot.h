@@ -15,7 +15,12 @@ public:
   ~ScatterplotData();
 
   Q_INVOKABLE QString getData();
+  Q_INVOKABLE QString getXAxis();
+  Q_INVOKABLE QString getYAxis();
+
   Q_PROPERTY(QString json_string READ getData);
+  Q_PROPERTY(QString x_axis_name READ getXAxis());
+  Q_PROPERTY(QString y_axis_name READ getYAxis());
 
   Q_INVOKABLE void setHighlightedFrame(const QString& name);
   Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
@@ -54,7 +59,7 @@ private:
   DataContainer* m_datacontainer;
 
   QString m_title;
-  QString m_index_filename = "web/scatterplot_index.html";
+  QString m_index_filename = "web/scatter.html";
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;

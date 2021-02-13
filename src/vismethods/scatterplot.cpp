@@ -16,6 +16,16 @@ Q_INVOKABLE QString ScatterplotData::getData()
   return Q_INVOKABLE m_json_string;
 }
 
+Q_INVOKABLE QString ScatterplotData::getXAxis()
+{
+  return Q_INVOKABLE QString("Minimum distance to cell");
+}
+
+Q_INVOKABLE QString ScatterplotData::getYAxis()
+{
+  return Q_INVOKABLE QString("Percentage close than bla");
+}
+
 Q_INVOKABLE void ScatterplotData::setHighlightedFrame(const QString& name)
 {
   int hvgx = m_datacontainer->getIndexByName(name);
@@ -62,18 +72,19 @@ Scatterplot::~Scatterplot()
 
 QString Scatterplot::createJSONString(QList<int>* selectedObjects)
 {
+  std::vector<Object*> mitochondria = m_datacontainer->getObjectsByType(Object_t::MITO);
+
   QJsonArray document;
-  for (auto i : *selectedObjects)
+  for (auto mito : mitochondria)
   {
     QJsonObject object_json;
 
-    Object* object = m_datacontainer->getObjectsMapPtr()->at(i);
-    std::vector<int>* mito_indices = object->get_indices_list();
+    std::vector<int>* mito_indices = mito->get_indices_list();
     std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
 
     float minimum = 1000.0;
     float counter = 0.0;
-    float threshold = 0.1;
+    float threshold = 0.05;
     float meshSize = 0.0;
 
     for (auto j : *mito_indices)
@@ -98,8 +109,8 @@ QString Scatterplot::createJSONString(QList<int>* selectedObjects)
 
     float perc = counter / meshSize;
 
-    object_json.insert("name", object->getName().c_str());
-    object_json.insert("avg", minimum);
+    object_json.insert("name", mito->getName().c_str());
+    object_json.insert("min", minimum);
     object_json.insert("perc", perc);
 
     document.push_back(object_json);
