@@ -30,6 +30,7 @@ public:
   virtual IVisMethod*     clone() = 0;
   virtual VisType         getType() = 0;
   virtual void            setSpecificVisParameters(SpecificVisParameters params) = 0;
+  virtual bool            update_needed() = 0;
 
   QUrl getHTMLPath(QString filename) 
   {

@@ -60,6 +60,7 @@ public:
   QWebEngineView* getWebEngineView();
   bool            update();
   Histogram*      clone();
+  bool            update_needed();
 
   VisType         getType();
 

@@ -69,6 +69,11 @@ Histogram* Histogram::clone()
   return new Histogram(this);
 }
 
+bool Histogram::update_needed()
+{
+    return false;
+}
+
 VisType Histogram::getType()
 {
   return VisType::HISTOGRAM;

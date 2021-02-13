@@ -46,6 +46,7 @@ public:
   QWebEngineView* getWebEngineView();
   bool            update();
   MitoScheme*     clone();
+  bool            update_needed();
 
   VisType         getType();
 

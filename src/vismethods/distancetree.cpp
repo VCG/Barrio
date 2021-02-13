@@ -50,6 +50,11 @@ DistanceTree* DistanceTree::clone()
   return new DistanceTree(this);
 }
 
+bool DistanceTree::update_needed()
+{
+  return true;
+}
+
 VisType DistanceTree::getType()
 {
     return VisType::DISTANCE_TREE;

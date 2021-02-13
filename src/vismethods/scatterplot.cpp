@@ -174,6 +174,11 @@ Scatterplot* Scatterplot::clone()
   return new Scatterplot(this);
 }
 
+bool Scatterplot::update_needed()
+{
+  return false;
+}
+
 VisType Scatterplot::getType()
 {
     return VisType::SCATTERPLOT;

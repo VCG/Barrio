@@ -49,6 +49,11 @@ BarChart* BarChart::clone()
   return new BarChart(this);
 }
 
+bool BarChart::update_needed()
+{
+    return true;
+}
+
 VisType BarChart::getType()
 {
   return VisType::BARCHART;

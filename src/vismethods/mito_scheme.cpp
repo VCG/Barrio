@@ -126,6 +126,11 @@ MitoScheme* MitoScheme::clone()
   return new MitoScheme(this);
 }
 
+bool MitoScheme::update_needed()
+{
+    return false;
+}
+
 VisType MitoScheme::getType()
 {
   return VisType::MITO_SCHEME;

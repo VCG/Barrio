@@ -41,6 +41,7 @@ public:
   bool            update();
   QWebEngineView* getWebEngineView();
   DistanceMatrix* clone();
+  bool            update_needed();
 
   VisType         getType();
 

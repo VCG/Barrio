@@ -80,6 +80,11 @@ MitoBoxPlot* MitoBoxPlot::clone()
     return new MitoBoxPlot(this);
 }
 
+bool MitoBoxPlot::update_needed()
+{
+    return true;
+}
+
 VisType MitoBoxPlot::getType()
 {
     return VisType::MITO_BOX_PLOT;

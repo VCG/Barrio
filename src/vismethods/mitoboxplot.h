@@ -42,7 +42,9 @@ public:
   QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
   QWebEngineView* getWebEngineView();
   bool            update();
-  MitoBoxPlot* clone();
+  MitoBoxPlot*    clone();
+  bool            update_needed();
+
 
   VisType         getType();
 

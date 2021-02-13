@@ -48,6 +48,7 @@ public:
   QWebEngineView* getWebEngineView();
   bool            update();
   Boxplot*        clone();
+  bool            update_needed();
 
   VisType         getType();
 

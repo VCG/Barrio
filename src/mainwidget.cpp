@@ -434,8 +434,11 @@ void MainWidget::updateInfoVisViews()
 {
   for (auto const& [id, view] : m_infovis_views)
   {
-    view->update();
-    view->getWebEngineView()->reload();
+    if (view->update_needed())
+    {
+      view->update();
+      view->getWebEngineView()->reload();
+    }
   }
 }
 

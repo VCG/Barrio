@@ -55,6 +55,7 @@ public:
   QWebEngineView* getWebEngineView();
   bool            update();
   Scatterplot*    clone();
+  bool            update_needed();
 
   VisType         getType();
 

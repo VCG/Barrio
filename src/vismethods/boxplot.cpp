@@ -75,6 +75,11 @@ Boxplot* Boxplot::clone()
   return new Boxplot(this);
 }
 
+bool Boxplot::update_needed()
+{
+    return true;
+}
+
 VisType Boxplot::getType()
 {
     return VisType::BOXPLOT;

@@ -48,6 +48,11 @@ DistanceMatrix* DistanceMatrix::clone()
   return new DistanceMatrix(this);
 }
 
+bool DistanceMatrix::update_needed()
+{
+    return true;
+}
+
 VisType DistanceMatrix::getType()
 {
     return VisType::DISTANCE_MATRIX;

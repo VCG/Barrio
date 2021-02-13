@@ -42,6 +42,7 @@ public:
   bool            update();
   QWebEngineView* getWebEngineView();
   BarChart*       clone();
+  bool            update_needed();
 
   VisType         getType();
 

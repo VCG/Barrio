@@ -49,6 +49,7 @@ public:
   QWebEngineView* getWebEngineView();
   bool            update();
   DistanceTree*   clone();
+  bool            update_needed();
 
   VisType         getType();
 
