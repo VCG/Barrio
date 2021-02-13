@@ -81,10 +81,13 @@
         let number_of_rows = my_data.length;
 
         let min_value = 0;
+
         let min_color = '#800080';
+        let max_color = '#ffffff';
+        let undef_color = '#b7b7b7';
 
         let max_value = 6;
-        let max_color = '#ffffff';
+
 
         var corXscale = d3.scale.ordinal().rangeRoundBands([0, w]),
             corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
@@ -119,7 +122,14 @@
             .attr('width', w / number_of_cols - rect_margin)
             .attr('height', rect_height)
             .style('fill', function (d) {
-                return corColScale(d.value);
+                if(d.value <= max_value)
+                {
+                    return corColScale(d.value);
+                }
+                else {
+                    return undef_color;
+                }
+
             });
 
         let counter = 0;
