@@ -71,38 +71,52 @@ QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThresho
   if (root_object->getObjectType() == Object_t::MITO)
   {
     QString root_name = QString(root_object->getName().c_str());
+    Object* parent = object_map->at(root_object->getParentID());
 
     std::vector<std::pair<int, double>> mito_distance_vec = *root_object->get_distance_vector_ptr();
-    
-    std::sort(mito_distance_vec.begin(), mito_distance_vec.end(), sortByVal); // sort by value ascending
 
-    for (auto const& [syn_id, syn_distance] : mito_distance_vec)
+    std::map<int, double>* mito_distance_map = root_object->get_distance_map_ptr();
+    std::vector<std::pair<int, double>> synapes_distances;
+
+    for (auto& syn : *parent->getSynapses())
     {
-      std::vector<std::pair<int, double>> syn_distance_map = *m_datacontainer->getObjectsMapPtr()->at(syn_id)->get_distance_vector_ptr();
+      double distance_to_root = mito_distance_map->at(syn->getHVGXID());
+      synapes_distances.push_back(std::make_pair(syn->getHVGXID(), distance_to_root));
+    }
+
+    std::sort(synapes_distances.begin(), synapes_distances.end(), sortByVal); // sort by value ascending
+
+    for (auto const& [syn_id, syn_distance] : synapes_distances)
+    {
+
+      //std::vector<std::pair<int, double>> syn_distance_map = *m_datacontainer->getObjectsMapPtr()->at(syn_id)->get_distance_vector_ptr();
       
-      std::sort(syn_distance_map.begin(), syn_distance_map.end(), sortByVal); // sort by value ascending
+      //std::sort(syn_distance_map.begin(), syn_distance_map.end(), sortByVal); // sort by value ascending
 
-      bool distance_ok = syn_distance <= distanceThreshold;
-      bool type_ok = object_map->at(syn_id)->getObjectType() == Object_t::SYNAPSE;
+      //bool distance_ok = syn_distance <= distanceThreshold;
+      //bool type_ok = object_map->at(syn_id)->getObjectType() == Object_t::SYNAPSE;
 
-      if (distance_ok && type_ok)
-      {
+      //if (distance_ok && type_ok)
+      //{
         QString syn_sub_newick = "";
         QString name = "";
 
-        for (auto const& [mito_id, mito_dist] : syn_distance_map)
-        {
-          distance_ok = mito_dist < distanceThreshold;
-          type_ok = object_map->at(mito_id)->getObjectType() == Object_t::MITO;
+        //for (auto const& [mito_id, mito_dist] : syn_distance_map)
+        //{
+        //  int mito_parent_id = object_map->at(mito_id)->getParentID();
+        //  Object* parent = object_map->at(mito_parent_id);
 
-          if (distance_ok && type_ok && mito_id != root_hvgx_id)
-          {
-            QString mito_sub_newick = "";
-            name = object_map->at(mito_id)->getName().c_str();
-            mito_sub_newick = name + ":" + QString::number(mito_dist);
-            syn_sub_newick += mito_sub_newick + ",";
-          }
-        }
+        //  bool type_ok = parent->getObjectType() == Object_t::AXON || parent->getObjectType() == Object_t::DENDRITE;
+        //  bool relationship_ok = parent->hasSynapse(syn_id);
+
+        //  if (relationship_ok && mito_id != root_hvgx_id)
+        //  {
+        //    QString mito_sub_newick = "";
+        //    name = object_map->at(mito_id)->getName().c_str();
+        //    mito_sub_newick = name + ":" + QString::number(mito_dist);
+        //    syn_sub_newick += mito_sub_newick + ",";
+        //  }
+        //}
 
         syn_sub_newick = syn_sub_newick.left(syn_sub_newick.lastIndexOf(","));
         name = object_map->at(syn_id)->getName().c_str();
@@ -114,7 +128,7 @@ QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThresho
         syn_sub_newick += name + ":" + QString::number(syn_distance);
 
         newickString += syn_sub_newick + ",";
-      }
+      //}
     }
     newickString = newickString.left(newickString.lastIndexOf(","));
     newickString = "(" + newickString + ")" + root_name;
