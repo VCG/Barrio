@@ -154,7 +154,7 @@
             .attr("height", function (d) {
                 return h - y(d.votes);
             })
-            .on("mouseover", function(d){
+            .on("mouseenter", function(d){
                 div.transition()
                     .duration(200)
                     .style("opacity", .9);
@@ -166,7 +166,7 @@
                 jsobject.setHighlightedStructure(d.candidate);
                 highlightBars(d.candidate);
             })
-            .on("mouseout", function(d){
+            .on("mouseleave", function(d){
                 div.transition()
                         .duration(500)
                         .style("opacity", 0);
