@@ -65,26 +65,35 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
   std::map<int, Object*>* objects = m_datacontainer->getObjectsMapPtr();
   std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
 
+  // search all distances to respective synapses to mito
   QList<int> selected_synapses;
   for each (int mito_id in *selected_mitos)
   {
     Object* mito = objects->at(mito_id);
+
+    int cell_id = mito->getParentID();
+    Object* cell = objects->at(cell_id);
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
 
-    for each(Object* syn in synapses)
+    for(auto& syn: *cell->getSynapses())
     {
       double distance_to_mito = distance_map->at(syn->getHVGXID());
-      if (distance_to_mito < distanceThreshold && !selected_synapses.contains(syn->getHVGXID()))
+      if (!selected_synapses.contains(syn->getHVGXID()))
       {
         selected_synapses.append(syn->getHVGXID());
       }
     }
   }
 
+  // build json document
   for each (int mito_id in *selected_mitos)
   {
-    QJsonObject mito_object;
     Object* mito = objects->at(mito_id);
+
+    int cell_id = mito->getParentID();
+    Object* cell = objects->at(cell_id);
+
+    QJsonObject mito_object;
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
     mito_object.insert("name", QJsonValue::fromVariant(mito->getName().c_str()));
     
@@ -96,7 +105,16 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
 
       QJsonObject syn_object;
       syn_object.insert("name", QJsonValue::fromVariant(syn->getName().c_str()));
-      syn_object.insert("distance", QJsonValue::fromVariant(distance_to_mito));
+
+      if (cell->hasSynapse(syn_id))
+      {
+        syn_object.insert("distance", QJsonValue::fromVariant(distance_to_mito));
+      }
+      else
+      {
+        syn_object.insert("distance", QJsonValue::fromVariant(10.0));
+      }
+      
       syn_array.push_back(syn_object);
 
     }

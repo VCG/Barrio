@@ -123,6 +123,8 @@ public:
 
   int getSynapseSize();
 
+  bool hasSynapse(int synapse_id);
+
   bool isChild(int hvgxID);
   bool isParent(int hvgxID);
 
