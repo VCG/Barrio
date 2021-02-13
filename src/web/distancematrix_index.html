@@ -87,11 +87,12 @@
                 'height': h
             });
 
-        let rect_height = 30;
-        let rect_margin = 4;
-
         let number_of_cols = my_data[0].synapses.length;
         let number_of_rows = my_data.length;
+
+        let rect_height = 30;
+        let rect_margin = 4;
+        let rect_width = (w - margin.right) / number_of_cols - rect_margin;
 
         let min_value = 0;
         let max_value = 4;
@@ -106,7 +107,7 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        var corXscale = d3.scale.ordinal().rangeRoundBands([margin.left,  w - margin.right + rect_margin]),
+        var corXscale = d3.scale.ordinal().rangeRoundBands([margin.left,  w - margin.right]),
             corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
             corColScale = d3.scale.linear().domain([min_value, max_value]).range([min_color, max_color]);
 
@@ -136,7 +137,7 @@
             .attr('y', function (d) {
                 return corYscale(d.row);
             })
-            .attr('width', w / number_of_cols - rect_margin)
+            .attr('width', rect_width)
             .attr('height', rect_height)
             .style('fill', function (d) {
                 if (d.value <= max_value) {
