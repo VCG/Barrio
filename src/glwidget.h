@@ -42,6 +42,7 @@ struct SharedGLResources
 
   QVector<int>*   highlighted_objects;
   QVector<int>*   highlighted_group_boxes;
+  QVector<int>*   widget_queue;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL

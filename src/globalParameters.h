@@ -29,6 +29,7 @@ struct GlobalVisParameters
   QList<int> selected_objects;
   QVector<int> highlighted_objects;
   QVector<int> highlighted_group_boxes;
+  QVector<int> my_add_queue;
 };
 
 struct SpecificVisParameters

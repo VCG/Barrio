@@ -571,6 +571,7 @@ void MainWidget::initializeGL()
 
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
   m_shared_resources.highlighted_group_boxes = &m_abstraction_space->m_global_vis_parameters.highlighted_group_boxes;
+  m_shared_resources.widget_queue = &m_abstraction_space->m_global_vis_parameters.my_add_queue;
 
 
   // add first widget
@@ -587,8 +588,24 @@ void MainWidget::resizeGL(int width, int height)
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
+  
   updateGroupBoxStyle();
+  updateWidgets();
+
   update();
+}
+
+void MainWidget::updateWidgets()
+{
+  if (m_shared_resources.widget_queue->size() > 0)
+  {
+    for (int i = 0; i < m_shared_resources.widget_queue->size(); i++)
+    {
+      int id = m_shared_resources.widget_queue->at(i);
+      addWidgetGroup(id, false);
+    }
+    m_shared_resources.widget_queue->clear();
+  }
 }
 
 QList<int> MainWidget::getSelectedIDs()

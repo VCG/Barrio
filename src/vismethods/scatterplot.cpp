@@ -38,7 +38,8 @@ Q_INVOKABLE QString ScatterplotData::getYUnit()
 
 Q_INVOKABLE void ScatterplotData::selectStructure(const QString& name)
 {
-  qDebug() << name;
+  int hvgx = m_datacontainer->getIndexByName(name);
+  m_global_vis_parameters->my_add_queue.append(hvgx);
   return Q_INVOKABLE void();
 }
 
