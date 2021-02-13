@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   m_clusters = 0;
 
   initializeSlicePositionSlider();
-  initializeSynapseThresholdSlider();
+  //initializeSynapseThresholdSlider();
   initializeOpacitySlider();
   initializeColormapComboBox();
  
@@ -68,16 +68,16 @@ void MainWindow::initializeSlicePositionSlider()
   m_main_widget->set_slice_position(initial_tick_position);
 }
 
-void MainWindow::initializeSynapseThresholdSlider()
-{
-  QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
-  int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
-  synapse_threshold_slider->setValue(initial_tick_position);
-  double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
-  mainwindow_ui->lineEdit->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
-
-  connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
-}
+//void MainWindow::initializeSynapseThresholdSlider()
+//{
+//  QSlider* synapse_threshold_slider = mainwindow_ui->horizontalSlider_3;
+//  int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
+//  synapse_threshold_slider->setValue(initial_tick_position);
+//  double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+//  mainwindow_ui->lineEdit->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
+//
+//  connect(synapse_threshold_slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
+//}
 
 void MainWindow::initializeOpacitySlider()
 {
@@ -313,11 +313,11 @@ void MainWindow::on_vis_clicked()
   
 }
 
-void MainWindow::on_synapse_distance_slider_changed(int value)
-{
-  double slider_value = m_main_widget->on_synapse_distance_slider_changed(value);
-  mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
-}
+//void MainWindow::on_synapse_distance_slider_changed(int value)
+//{
+//  double slider_value = m_main_widget->on_synapse_distance_slider_changed(value);
+//  mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
+//}
 
 void MainWindow::on_slice_position_slider_changed(int value)
 {

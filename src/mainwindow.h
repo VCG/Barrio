@@ -61,7 +61,7 @@ public slots:
 
   void on_vis_clicked();
 
-  void on_synapse_distance_slider_changed(int value);
+  //void on_synapse_distance_slider_changed(int value);
   void on_slice_position_slider_changed(int value);
   void on_opacity_slider_changed(int value);
   void on_colormap_changed(QString text);
@@ -99,7 +99,7 @@ private:
   DataContainer* m_data_container;
 
   void initializeSlicePositionSlider();
-  void initializeSynapseThresholdSlider();
+  //void initializeSynapseThresholdSlider();
   void initializeOpacitySlider();
   void initializeColormapComboBox();
 

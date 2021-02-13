@@ -84,10 +84,6 @@ public:
     QHBoxLayout *horizontalLayout_40;
     QSlider *horizontalSlider;
     QLineEdit *lineEdit_5;
-    QGroupBox *groupBox_6;
-    QHBoxLayout *horizontalLayout_41;
-    QSlider *horizontalSlider_3;
-    QLineEdit *lineEdit;
     QGroupBox *groupBox_25;
     QHBoxLayout *horizontalLayout_42;
     QSlider *horizontalSlider_4;
@@ -537,25 +533,6 @@ public:
 
 
         verticalLayout_3->addWidget(groupBox);
-
-        groupBox_6 = new QGroupBox(groupBox_8);
-        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
-        horizontalLayout_41 = new QHBoxLayout(groupBox_6);
-        horizontalLayout_41->setObjectName(QString::fromUtf8("horizontalLayout_41"));
-        horizontalSlider_3 = new QSlider(groupBox_6);
-        horizontalSlider_3->setObjectName(QString::fromUtf8("horizontalSlider_3"));
-        horizontalSlider_3->setOrientation(Qt::Horizontal);
-
-        horizontalLayout_41->addWidget(horizontalSlider_3);
-
-        lineEdit = new QLineEdit(groupBox_6);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
-        lineEdit->setMaximumSize(QSize(30, 16777215));
-
-        horizontalLayout_41->addWidget(lineEdit);
-
-
-        verticalLayout_3->addWidget(groupBox_6);
 
         groupBox_25 = new QGroupBox(groupBox_8);
         groupBox_25->setObjectName(QString::fromUtf8("groupBox_25"));
@@ -1968,7 +1945,6 @@ public:
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Visualization Parameters", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice Position", nullptr));
         sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
-        groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "Synapse Threshold", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));
