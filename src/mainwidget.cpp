@@ -221,16 +221,17 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // medium and high configuration
   else {
     updateInfoVisViews();
-    //addCloseButtonToWidget(groupBox);
+   
+
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
 
   // add group box to layout
-  QSize size = m_main_layout->totalSizeHint();
+  int width = this->width();
   int number_of_columns = m_main_layout->columnCount();
   for (auto const& [id, box] : m_groupboxes)
   {
-    box->setMinimumWidth((size.width() - 25) / (number_of_columns + 1));
+    box->setMinimumWidth((width - 25) / (number_of_columns + 1));
   }
   m_main_layout->addWidget(groupBox, m_current_row, m_current_col);
 
@@ -508,6 +509,10 @@ void MainWidget::setVisMethod(Vis vis)
     QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
+
+    int height = this->height();
+    groupBox->setMaximumHeight(height / 2);
+
     m_groupboxes[medium_entities_id] = groupBox;
 
     addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone());
@@ -529,6 +534,10 @@ void MainWidget::setVisMethod(Vis vis)
     QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
+
+    int height = this->height();
+    groupBox->setMaximumHeight(height / 2);
+
     m_groupboxes[high_entities_id] = groupBox;
 
     addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone());
