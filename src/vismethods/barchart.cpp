@@ -41,7 +41,7 @@ bool BarChart::update()
 
 QWebEngineView* BarChart::getWebEngineView()
 {
-    return m_web_engine_view;
+  return m_web_engine_view;
 }
 
 BarChart* BarChart::clone()
@@ -51,7 +51,7 @@ BarChart* BarChart::clone()
 
 VisType BarChart::getType()
 {
-    return VisType::BARCHART;
+  return VisType::BARCHART;
 }
 
 
@@ -61,22 +61,24 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
   std::map<int, Object*>* objects = m_datacontainer->getObjectsMapPtr();
   std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
 
-  for each  (int id in *selected_mitos)
+  for each (int id in *selected_mitos)
   {
     Object* mito = objects->at(id);
+    int cell_id = mito->getParentID();
+    Object* cell = objects->at(cell_id);
+
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
     std::map<QString, float> selected_syns;
 
     int group_synapse_counter = 0;
-    for each (Object* syn in synapses)
+    for each (Object * syn in *cell->getSynapses())
     {
       QString syn_name = syn->getName().c_str();
       double distance_to_mito = distance_map->at(syn->getHVGXID());
-      if (distance_to_mito < distance_threshold)
-      {
-        selected_syns[syn_name] = distance_to_mito;
-        group_synapse_counter++;
-      }
+
+      selected_syns[syn_name] = distance_to_mito;
+      group_synapse_counter++;
+
     }
 
     // sort map
@@ -108,7 +110,7 @@ void BarChart::setSpecificVisParameters(SpecificVisParameters params)
 }
 
 
-BarChartData::BarChartData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters) 
+BarChartData::BarChartData(QString json_string, DataContainer* datacontainer, GlobalVisParameters* visparameters)
 {
   m_json_string = json_string;
 
@@ -116,7 +118,7 @@ BarChartData::BarChartData(QString json_string, DataContainer* datacontainer, Gl
   m_global_vis_parameters = visparameters;
 }
 
-BarChartData::~BarChartData() 
+BarChartData::~BarChartData()
 {
   //do nothing for now
 }
