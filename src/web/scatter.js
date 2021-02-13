@@ -6,13 +6,14 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     let xLabel = jsobject.x_axis_name;
     let yLabel = jsobject.y_axis_name;
 
+    let xUnit = jsobject.x_unit;
+    let yUnit = jsobject.y_unit;
+
     let data = JSON.parse(json_string);
 
-
-
-    var margin = {top: 50, right: 300, bottom: 50, left: 50},
-        outerWidth = 1050,
-        outerHeight = 500,
+    var margin = {top: 50, right: 200, bottom: 50, left: 200},
+        outerWidth = 1000,
+        outerHeight = 440,
         width = outerWidth - margin.left - margin.right,
         height = outerHeight - margin.top - margin.bottom;
 
@@ -69,7 +70,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("class", "d3-tip")
         .offset([-10, 0])
         .html(function (d) {
-            return min + ": " + d[min].toFixed(4) + "<br>" + perc + ": " + d[perc].toFixed(4);
+            return min + ": " + d[min].toFixed(4) + " " + xUnit + " <br>" + perc + ": " + d[perc].toFixed(4) + " " + yUnit;
         });
 
     var zoomBeh = d3.behavior.zoom()
@@ -101,7 +102,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("x", width)
         .attr("y", margin.bottom - 10)
         .style("text-anchor", "end")
-        .text(xLabel);
+        .text(xLabel + " in " + xUnit);
 
     svg.append("g")
         .classed("y axis", true)
@@ -109,7 +110,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .append("text")
         .classed("label", true)
         .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left)
+        .attr("y", -margin.left + 150)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text(yLabel);

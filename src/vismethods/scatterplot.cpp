@@ -26,6 +26,16 @@ Q_INVOKABLE QString ScatterplotData::getYAxis()
   return Q_INVOKABLE QString("Percentage close than bla");
 }
 
+Q_INVOKABLE QString ScatterplotData::getXUnit()
+{
+  return Q_INVOKABLE QString("microns");
+}
+
+Q_INVOKABLE QString ScatterplotData::getYUnit()
+{
+  return Q_INVOKABLE QString("microns");
+}
+
 Q_INVOKABLE void ScatterplotData::setHighlightedFrame(const QString& name)
 {
   int hvgx = m_datacontainer->getIndexByName(name);

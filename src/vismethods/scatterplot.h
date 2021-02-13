@@ -17,10 +17,14 @@ public:
   Q_INVOKABLE QString getData();
   Q_INVOKABLE QString getXAxis();
   Q_INVOKABLE QString getYAxis();
+  Q_INVOKABLE QString getXUnit();
+  Q_INVOKABLE QString getYUnit();
 
   Q_PROPERTY(QString json_string READ getData);
   Q_PROPERTY(QString x_axis_name READ getXAxis());
   Q_PROPERTY(QString y_axis_name READ getYAxis());
+  Q_PROPERTY(QString x_unit READ getXUnit());
+  Q_PROPERTY(QString y_unit READ getYUnit());
 
   Q_INVOKABLE void setHighlightedFrame(const QString& name);
   Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
