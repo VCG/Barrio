@@ -25,13 +25,15 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     var dendrite = "Dendrite";
     var axon = "Axon";
+    var selected = "Selected";
 
     var dend_color = '#5833ff';
-    var axon_color = '#ff5733';
+    var axon_color = '#ec3f18';
+    var selected_color = "#ffa500";
 
     var colorScale = d3.scale.ordinal()
-        .domain([dendrite, axon])
-        .range([dend_color, axon_color]);
+        .domain([dendrite, axon, selected])
+        .range([dend_color, axon_color, selected_color]);
 
     var min = "min",
         perc = "perc",
@@ -180,6 +182,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         });
 
     function clicked(d) {
+        highlightDots(d.name);
         jsobject.selectStructure(d.name);
     }
 
@@ -193,6 +196,17 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     function transform(d) {
         return "translate(" + x(d[min]) + "," + y(d[perc]) + ")";
+    }
+    function highlightDots(dot_name) {
+        objects.selectAll("circle")
+            .style("fill", function (d) {
+                if(d.name == dot_name) {
+                    return colorScale(selected);
+                }
+                else{
+                    return colorScale(dot_name);
+                }
+        });
     }
 
 });
