@@ -190,7 +190,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     function clicked(d) {
         selected_structures.push(d.name);
-        console.log(selected_structures);
         highlightDots();
         jsobject.selectStructure(d.name);
     }
