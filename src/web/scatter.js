@@ -2,6 +2,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     let jsobject = channel.objects.scatterplot_data;
     let json_string = jsobject.json_string;
+    let selected_structures_string = jsobject.selected_structures;
 
     let xLabel = jsobject.x_axis_name;
     let yLabel = jsobject.y_axis_name;
@@ -10,6 +11,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     let yUnit = jsobject.y_unit;
 
     let data = JSON.parse(json_string);
+    let selected_structures = JSON.parse(selected_structures_string);
 
     var margin = {top: 50, right: 200, bottom: 50, left: 200},
         outerWidth = 1000,
@@ -30,13 +32,20 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var dend_identifier = "Mito_D";
     var axon_identifier = "Mito_A";
 
-    var dend_color = '#5833ff';
-    var axon_color = '#ec3f18';
-    var selected_color = "#ffa500";
+    var dend_color = '#8c77ff';
+    var axon_color = '#ff8267';
+    var selected_color = "#358500";
+
+    var selected_opacity = 1.0;
+    var unselected_opacity = 0.3;
 
     var colorScale = d3.scale.ordinal()
         .domain([dendrite, axon, selected])
         .range([dend_color, axon_color, selected_color]);
+
+    var opacityScale = d3.scale.ordinal()
+        .domain([dendrite, axon, selected])
+        .range([unselected_opacity, unselected_opacity, selected_opacity]);
 
     var min = "min",
         perc = "perc",
@@ -148,12 +157,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("r", 5)
         .attr("transform", transform)
         .style("fill", function (d) {
-            if (d.name.includes(axon_identifier)) {
-                return colorScale(axon);
-            } else if (d.name.includes(dend_identifier)) {
-                return colorScale(dendrite);
-            }
-
+            return colorScale(decide_type(d.name));
+        })
+        .style("fill-opacity", function (d){
+            return opacityScale(decide_type(d.name));
         })
         .on("click", function (d) {
             clicked(d)
@@ -182,7 +189,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         });
 
     function clicked(d) {
-        highlightDots(d.name);
+        selected_structures.push(d.name);
+        console.log(selected_structures);
+        highlightDots();
         jsobject.selectStructure(d.name);
     }
 
@@ -198,17 +207,22 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         return "translate(" + x(d[min]) + "," + y(d[perc]) + ")";
     }
 
-    function highlightDots(dot_name) {
+    function highlightDots() {
         objects.selectAll("circle")
             .style("fill", function (d) {
-                if (d.name == dot_name) {
-                    return colorScale(selected);
-                } else if (d.name.includes(dend_identifier)) {
-                    return colorScale(dendrite);
-                } else if (d.name.includes(axon_identifier)) {
-                    return colorScale(axon);
-                }
+                return colorScale(decide_type(d.name));
             });
+    }
+
+    function decide_type(name)
+    {
+        if (selected_structures.includes(name)) {
+            return selected;
+        } else if (name.includes(dend_identifier)) {
+            return dendrite;
+        } else if (name.includes(axon_identifier)) {
+            return axon;
+        }
     }
 
 });

@@ -18,7 +18,10 @@ rect {
 }
 
 .dot {
-    fill-opacity: .5;
+    fill-opacity: .3;
+}
+.selected-dot{
+    fill-opacity: 1.0;
 }
 
 .d3-tip {

@@ -1,8 +1,9 @@
 #include "scatterplot.h"
 
-ScatterplotData::ScatterplotData(QString json, GlobalVisParameters* global_vis_parameters, DataContainer* data_container)
+ScatterplotData::ScatterplotData(QString json, QString selected_objects_json, GlobalVisParameters* global_vis_parameters, DataContainer* data_container)
 {
   m_json_string = json;
+  m_selected_structures_json = selected_objects_json;
   m_global_vis_parameters = global_vis_parameters;
   m_datacontainer = data_container;
 }
@@ -34,6 +35,11 @@ Q_INVOKABLE QString ScatterplotData::getXUnit()
 Q_INVOKABLE QString ScatterplotData::getYUnit()
 {
   return Q_INVOKABLE QString("microns");
+}
+
+Q_INVOKABLE QString ScatterplotData::getSelectedStructures()
+{
+  return Q_INVOKABLE m_selected_structures_json;
 }
 
 Q_INVOKABLE void ScatterplotData::selectStructure(const QString& name)
@@ -93,7 +99,7 @@ Scatterplot::~Scatterplot()
 {
 }
 
-QString Scatterplot::createJSONString(QList<int>* selectedObjects)
+QString Scatterplot::createJSONString()
 {
   std::vector<Object*> mitochondria = m_datacontainer->getObjectsByType(Object_t::MITO);
 
@@ -143,10 +149,23 @@ QString Scatterplot::createJSONString(QList<int>* selectedObjects)
   return doc.toJson(QJsonDocument::Indented);
 }
 
+QString Scatterplot::createSelectedObjectsJSON(QList<int>* selectedObjects)
+{
+  QJsonArray document;
+  for (const auto& id : *selectedObjects)
+  {
+    QString name = m_datacontainer->getObject(id)->getName().c_str();
+    document.push_back(name);
+  }
+  QJsonDocument doc(document);
+  return doc.toJson(QJsonDocument::Indented);
+}
+
 QWebEngineView* Scatterplot::initVisWidget(int ID, SpecificVisParameters params)
 {
-  QString json = createJSONString(&m_global_vis_parameters->selected_objects);
-  m_data = new ScatterplotData(json, m_global_vis_parameters, m_datacontainer);
+  QString json = createJSONString();
+  QString selected_objects_json = createSelectedObjectsJSON(&m_global_vis_parameters->selected_objects);
+  m_data = new ScatterplotData(json, selected_objects_json, m_global_vis_parameters, m_datacontainer);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());
@@ -164,8 +183,12 @@ QWebEngineView* Scatterplot::getWebEngineView()
 
 bool Scatterplot::update()
 {
-  QString json = createJSONString(&m_global_vis_parameters->selected_objects);
+  QString json = createJSONString();
   m_data->setJSONString(json);
+
+  QString selected_structures_json = createSelectedObjectsJSON(&m_global_vis_parameters->selected_objects);
+  m_data->setSelectedStructures(selected_structures_json);
+
   return true;
 }
 
@@ -176,7 +199,7 @@ Scatterplot* Scatterplot::clone()
 
 bool Scatterplot::update_needed()
 {
-  return false;
+  return true;
 }
 
 VisType Scatterplot::getType()
