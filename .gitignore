@@ -2,7 +2,6 @@
 # Created by https://www.gitignore.io/api/c++,visualstudio
 # Edit at https://www.gitignore.io/?templates=c++,visualstudio
 
-data/*
 scripts/*
 builds/*
 ### C++ ###
@@ -391,3 +390,13 @@ MigrationBackup/
 *.autosave
 
 src/web/.idea/
+
+data/cache/
+
+data/cache - Copy/
+
+data/cache - Copy (2)/
+
+*.ini
+
+*.raw
