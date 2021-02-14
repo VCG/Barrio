@@ -27,6 +27,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var axon = "Axon";
     var selected = "Selected";
 
+    var dend_identifier = "Mito_D";
+    var axon_identifier = "Mito_A";
+
     var dend_color = '#5833ff';
     var axon_color = '#ec3f18';
     var selected_color = "#ffa500";
@@ -145,12 +148,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("r", 5)
         .attr("transform", transform)
         .style("fill", function (d) {
-            if(d.name.includes("Mito_A"))
-            {
+            if (d.name.includes(axon_identifier)) {
                 return colorScale(axon);
-            }
-            else if(d.name.includes("Mito_D"))
-            {
+            } else if (d.name.includes(dend_identifier)) {
                 return colorScale(dendrite);
             }
 
@@ -197,16 +197,18 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     function transform(d) {
         return "translate(" + x(d[min]) + "," + y(d[perc]) + ")";
     }
+
     function highlightDots(dot_name) {
         objects.selectAll("circle")
             .style("fill", function (d) {
-                if(d.name == dot_name) {
+                if (d.name == dot_name) {
                     return colorScale(selected);
+                } else if (d.name.includes(dend_identifier)) {
+                    return colorScale(dendrite);
+                } else if (d.name.includes(axon_identifier)) {
+                    return colorScale(axon);
                 }
-                else{
-                    return colorScale(dot_name);
-                }
-        });
+            });
     }
 
 });
