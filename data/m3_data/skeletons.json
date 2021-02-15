@@ -652,7 +652,7 @@
     ]
   },
   {
-    "id": 161,
+    "id": 152,
     "name": "Dendrite038",
     "length": 2.09,
     "spines": [
@@ -678,6 +678,91 @@
         "name": "Mito_D038_01",
         "start": 0.0,
         "end": 2.09,
+        "volume": "incomplete"
+      }
+    ]
+  },
+  {
+    "id": 151,
+    "name": "Dendrite039",
+    "length": 5.339,
+    "spines": [
+      {
+        "name": "spine01_solid",
+        "number": 1,
+        "start": 1.266,
+        "length": 1.7496610570,
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      },
+      {
+        "name": "spine02_solid",
+        "number": 2,
+        "start": 0.234,
+        "length": 0.9189114532,
+        "spine_sa": 1.67522722007743,
+        "volume": 0.177448579185785
+      },
+      {
+        "name": "spine03_solid",
+        "number": 3,
+        "start": 1.478,
+        "length": 1.1931227171,
+        "spine_sa": 0.897866136445372,
+        "volume": 0.068571338514351
+      },
+      {
+        "name": "spine04_solid",
+        "number": 4,
+        "start": 1.703,
+        "length": 0.6059548400,
+        "spine_sa": 0.403916035211295,
+        "volume": 0.0228959304947755
+      },
+      {
+        "name": "spine05_solid",
+        "number": 5,
+        "start": 2.574,
+        "length": 1.7788732482,
+        "spine_sa": 0.483858336883713,
+        "volume": 0.029562741731555
+      },
+      {
+        "name": "spine06_solid",
+        "number": 6,
+        "start": 2.574,
+        "length": 0.6230115663,
+        "spine_sa": 0.273027884759358,
+        "volume": 0.0111032457146849
+      },
+      {
+        "name": "spine07_solid",
+        "number": 7,
+        "start": 4.554,
+        "length": 1.5997672365,
+        "spine_sa": 0.739732136085876,
+        "volume": 0.0419715397504449
+      },
+      {
+        "name": "spine08_solid",
+        "number": 8,
+        "start": 3.36,
+        "length": 0.9348158958,
+        "spine_sa": 0.704180125674611,
+        "volume": 0.0490333034844912
+      }
+    ],
+    "mitochondria": [
+      {
+        "name": "Mito_D039_01",
+        "start": 0.0,
+        "end": 4.1,
+        "volume": "incomplete"
+      },
+      {
+        "name": "Mito_D039_02",
+        "start": 1.19,
+        "end": 4.27,
         "volume": "incomplete"
       }
     ]
