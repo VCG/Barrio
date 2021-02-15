@@ -555,5 +555,131 @@
         "volume": "incomplete"
       }
     ]
+  },
+  {
+    "id": 153,
+    "name": "Dendrite037",
+    "length": 6.51,
+    "spines": [
+      {
+        "name": "spine01_solid",
+        "number": 1,
+        "start": 0.0,
+        "length": 1.6437605807,
+        "spine_sa": 1.99530301722552,
+        "volume": 0.168655834759616
+      },
+      {
+        "name": "spine02_solid",
+        "number": 2,
+        "start": 0.49,
+        "length": "incomplete",
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      },
+      {
+        "name": "spine03_solid",
+        "number": 3,
+        "start": 2.23,
+        "length": 0.8056227951,
+        "spine_sa": 2.60941733444815,
+        "volume": 0.26580743413276
+      },
+      {
+        "name": "spine04_solid",
+        "number": 4,
+        "start": 3.006,
+        "length": 1.2260798433,
+        "spine_sa": 0.872602498315245,
+        "volume": 0.0648723789394141
+      },
+      {
+        "name": "spine05_solid",
+        "number": 5,
+        "start": 3.006,
+        "length": 2.2040111729,
+        "spine_sa": 1.00650548592602,
+        "volume": 0.068481993653767
+      },
+      {
+        "name": "spine06_solid",
+        "number": 6,
+        "start": 4.47,
+        "length": 2.7078320425,
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      },
+      {
+        "name": "spine07_solid",
+        "number": 7,
+        "start": 3.634,
+        "length": 1.4148413918,
+        "spine_sa": 1.07636858501973,
+        "volume": 0.0668851623778298
+      },
+      {
+        "name": "spine08_solid",
+        "number": 8,
+        "start": 5.74,
+        "length": 1.6668437143,
+        "spine_sa": 0.552001462048792,
+        "volume": 0.0301994483896954
+      },
+      {
+        "name": "spine09_solid",
+        "number": 9,
+        "start": 5.96,
+        "length": "incomplete",
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      },
+      {
+        "name": "spine10_solid",
+        "number": 10,
+        "start": 3.006,
+        "length": 1.2562209570,
+        "spine_sa": 0.674670729466697,
+        "volume": 0.0387752045886706
+      }
+    ],
+    "mitochondria": [
+      {
+        "name": "Mito_D037_01",
+        "start": 0.0,
+        "end": 6.51,
+        "volume": "incomplete"
+      }
+    ]
+  },
+  {
+    "id": 161,
+    "name": "Dendrite038",
+    "length": 2.09,
+    "spines": [
+      {
+        "name": "spine01_solid",
+        "number": 1,
+        "start": 0.63,
+        "length": "incomplete",
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      },
+      {
+        "name": "spine02_solid",
+        "number": 2,
+        "start": 1.68,
+        "length": "incomplete",
+        "spine_sa": "incomplete",
+        "volume": "incomplete"
+      }
+    ],
+    "mitochondria": [
+      {
+        "name": "Mito_D038_01",
+        "start": 0.0,
+        "end": 2.09,
+        "volume": "incomplete"
+      }
+    ]
   }
 ]
