@@ -957,15 +957,15 @@ void GLWidget::drawScene()
   glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
 
 
-  glLineWidth(2.0f);
+  //glLineWidth(2.0f);
 
   m_mesh_vao.bind();
 
   m_shared_resources->mesh_index_vbo->bind();
   glDrawElements(GL_TRIANGLES, m_shared_resources->mesh_index_count, GL_UNSIGNED_INT, 0);
 
-  m_shared_resources->skeleton_index_vbo->bind();
-  glDrawElements(GL_LINES, m_shared_resources->skeleton_index_count, GL_UNSIGNED_INT, 0);
+  //m_shared_resources->skeleton_index_vbo->bind();
+  //glDrawElements(GL_LINES, m_shared_resources->skeleton_index_count, GL_UNSIGNED_INT, 0);
 
   m_mesh_vao.release();
 }
