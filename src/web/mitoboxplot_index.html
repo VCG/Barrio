@@ -26,14 +26,19 @@
     .mito {
         border-radius: 5px;
         fill: palevioletred;
+        stroke: black;
     }
-    .cell{
+
+    .cell {
         fill: #baecc7;
         border-radius: 5px;
-    }
-    .spine{
         stroke: black;
-        stroke-width: 3px;
+    }
+
+    .spine {
+        opacity: 1.0;
+        stroke: black;
+        stroke-width: 2px;
     }
 </style>
 
@@ -93,7 +98,7 @@
             .range([height, 0]);
         svg.append("g").call(d3.axisLeft(y))
 
-        let cell_width = 30
+        let cell_width = 50
         svg.selectAll("cells")
             .data(data)
             .enter()
@@ -115,48 +120,52 @@
         let boxWidth = 15;
         for (let i = 0; i < data.length; i++) {
             let cell_name = data[i].name;
-            svg.selectAll("boxes")
-                .data(data[i].mitochondria)
-                .enter()
-                .append("rect")
-                .attr("x", function (d) {
-                    return (x(cell_name) - boxWidth / 2)
-                })
-                .attr("y", function (d) {
+            for (let j = 0; j < data[i].mitochondria.length; j++)
+            {
+                let mito = data[i].mitochondria[j];
 
-                    return y(d.end)
-                })
-                .attr("height", function (d) {
-                    return y(d.start) - y(d.end);
-                })
-                .attr("width", boxWidth)
-                .attr("class", "mito")
-                .on("mouseover", function (d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
+                let delta = (Math.pow(-1, j + 1) / 2.0) * (boxWidth / 2);
 
-                    div.text(d.name)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 28) + "px");
-                })
-                .on("mouseout", function () {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 0);
-                });
+                svg.append("rect")
+                    .attr("x", x(cell_name) - delta)
+                    .attr("y", y(mito.end))
+                    .attr("height", y(mito.start) - y(mito.end))
+                    .attr("width", boxWidth)
+                    .attr("class", "mito")
+                    .on("mouseover", function () {
+
+                        div.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+
+                        div.text(mito.name)
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+
+                        //jsobject.setHighlightedFrame(d.name);
+                    })
+                    .on("mouseout", function () {
+                        div.transition()
+                            .duration(100)
+                            .style("opacity", 0);
+
+                        //jsobject.removeHighlightedFrame(d.name);
+                    });
+            }
+
         }
 
         for (let i = 0; i < data.length; i++) {
+
             svg.selectAll("medianLines")
                 .data(data[i].spines)
                 .enter()
                 .append("line")
                 .attr("x1", function (spine) {
-                    return (x(data[i].name) - boxWidth / 2)
+                    return (x(data[i].name) - cell_width / 2)
                 })
                 .attr("x2", function (spine) {
-                    return (x(data[i].name) + boxWidth / 2)
+                    return (x(data[i].name) + cell_width / 2)
                 })
                 .attr("y1", function (spine) {
                     return y(spine.start)
@@ -165,16 +174,13 @@
                 .attr("y2", function (spine) {
                     return y(spine.start)
                 })
-                .attr("class", "spine")
-                .style("width", x(boxWidth))
+                .attr("class", "spine");
         }
 
         function hasMitoCoverage(cell, start) {
             let mitos = cell.mitochondria;
-            for(let i = 0; i < mitos.length; i++)
-            {
-                if(mitos[i].start <= start && start <= mitos[i].end)
-                {
+            for (let i = 0; i < mitos.length; i++) {
+                if (mitos[i].start <= start && start <= mitos[i].end) {
                     return true;
                 }
             }
