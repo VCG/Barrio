@@ -44,7 +44,7 @@
 </style>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz" style="width: auto; height: 400px"></div>
+<div id="my_dataviz" style="width: 100%; height: 400px"></div>
 
 <script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
 <script crossorigin="anonymous"
@@ -67,6 +67,11 @@
                 semantic_skeleton = cell[i]
             }
         }
+        var spine_color = '#63a225'
+        var incomplete_color = '#000000'
+
+        var main_opacity = 1.0;
+        var other_opacity = 0.3;
 
         // console.log(cell)
         // console.log(cell_hvgx)
@@ -135,17 +140,12 @@
             .attr("class", "spine")
             .style("stroke", function (d)
             {
-                if(d.type == "excitatory")
+                if(d.length === "incomplete")
                 {
-                    return "rgb(255.0, 0.0, 0.0)";
+                    return incomplete_color;
                 }
-                else if (d.type == "inhibitory")
-                {
-                    return "rgb(0.0, 0.0, 255.0)";
-                }
-                else // incomplete
-                {
-                    return "rgb(0.0, 0.0, 0.0)";
+                else {
+                    return spine_color;
                 }
             })
             .on("mouseover", function (d) {
@@ -153,7 +153,7 @@
                     .duration(200)
                     .style("opacity", .9);
 
-                div.text(d.name + ": " + d.length + " microns")
+                div.text(d.name + ": " + d.length.toFixed(3) + " microns")
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
 
@@ -189,11 +189,11 @@
             .attr("height", 10)
             .attr("class", "mito")
             .style("fill-opacity", function (d) {
-                if(d.name == mito_name){
-                    return 1.0
+                if(d.name === mito_name){
+                    return main_opacity;
                 }
                 else {
-                    return 0.3
+                    return other_opacity;
                 }
             })
             .on("mouseover", function (d) {
@@ -212,48 +212,47 @@
             });
 
         // Circles
-        // svg.selectAll("mycircle")
-        //     .data(semantic_skeleton.spines)
-        //     .enter()
-        //     .append("circle")
-        //     .attr("cx", function (d) {
-        //         return x(d.start);
-        //     })
-        //     .attr("cy", function (d) {
-        //         if (d.length !== "incomplete") {
-        //             return y(d.length);
-        //         }
-        //         else {
-        //             return y(1.0);
-        //         }
-        //     })
-        //     .attr("r", function (d) {
-        //         if(d.synapse_sa == "incomplete")
-        //         {
-        //             return 0;
-        //         }
-        //         else
-        //         {
-        //             return 50 * d.synapse_sa;
-        //         }
-        //
-        //     })
-        //     .attr("class", "synapse")
-        //     .on("mouseover", function (d) {
-        //         let synapse_sa = d.synapse_sa;
-        //         div.transition()
-        //             .duration(200)
-        //             .style("opacity", .9);
-        //
-        //         div.text("Synapse SA: " + synapse_sa.toFixed(2) + " microns")
-        //             .style("left", (d3.event.pageX) + "px")
-        //             .style("top", (d3.event.pageY - 28) + "px");
-        //     })
-        //     .on("mouseout", function () {
-        //         div.transition()
-        //             .duration(100)
-        //             .style("opacity", 0);
-        //     });
+        svg.selectAll("mycircle")
+            .data(semantic_skeleton.spines)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return x(d.start);
+            })
+            .attr("cy", function (d) {
+                if (d.length !== "incomplete") {
+                    return y(d.length);
+                }
+                else {
+                    return y(1.0);
+                }
+            })
+            .attr("r", function (d) {
+                if(d.spine_sa !== "incomplete" && d.volume !== "incomplete")
+                {
+                    return 0.8 * d.spine_sa / d.volume;
+                }
+                else
+                {
+                    return 0
+                }
+            })
+            .attr("class", "synapse")
+            .on("mouseover", function (d) {
+                let ratio = d.spine_sa / d.volume;
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+
+                div.text("Spine SA to volume ratio: " + ratio.toFixed(2))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
     });
 

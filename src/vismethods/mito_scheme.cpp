@@ -136,7 +136,7 @@ MitoScheme* MitoScheme::clone()
 
 bool MitoScheme::update_needed()
 {
-    return false;
+    return true;
 }
 
 VisType MitoScheme::getType()
