@@ -11,7 +11,7 @@ class MitoSchemeData : public QObject
   Q_OBJECT
 
 public:
-  MitoSchemeData(int ID, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
+  MitoSchemeData(int ID, QString mito_name, DataContainer* data_container, GlobalVisParameters* global_vis_parameters);
   ~MitoSchemeData();
 
   Q_INVOKABLE QString getData();
@@ -20,9 +20,13 @@ public:
   Q_INVOKABLE int getID();
   Q_PROPERTY(int hvgx_id READ getID);
 
+  Q_INVOKABLE QString getMitoName();
+  Q_PROPERTY(QString mito_name READ getMitoName);
+
   void setJSONString(QString json) { m_json_string = json; };
 
   int m_hvgxID;
+  QString m_mito_name;
   QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;

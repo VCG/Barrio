@@ -1,10 +1,11 @@
 #include "mito_scheme.h"
 
 
-MitoSchemeData::MitoSchemeData(int ID, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
+MitoSchemeData::MitoSchemeData(int parent_id, QString mito_name, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
 {
   m_json_string = data_container->m_sematic_skeleton_json;
-  m_hvgxID = ID;
+  m_hvgxID = parent_id;
+  m_mito_name = mito_name;
   m_datacontainer = data_container;
   m_global_vis_parameters = global_vis_parameters;
 }
@@ -19,6 +20,12 @@ Q_INVOKABLE QString MitoSchemeData::getData()
 Q_INVOKABLE int MitoSchemeData::getID()
 {
   return Q_INVOKABLE m_hvgxID;
+}
+
+Q_INVOKABLE QString MitoSchemeData::getMitoName()
+{
+  qDebug() << m_mito_name;
+  return Q_INVOKABLE m_mito_name;
 }
 
 
@@ -98,7 +105,8 @@ QString MitoScheme::createJSONString(QList<int>* selectedObjects)
 QWebEngineView* MitoScheme::initVisWidget(int ID, SpecificVisParameters params)
 {
   int parentID = m_datacontainer->getObjectsMapPtr()->at(ID)->getParentID();
-  m_data = new MitoSchemeData(parentID, m_datacontainer, m_global_vis_parameters);
+  QString mito_name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+  m_data = new MitoSchemeData(parentID, mito_name, m_datacontainer, m_global_vis_parameters);
 
   setSpecificVisParameters(params);
 

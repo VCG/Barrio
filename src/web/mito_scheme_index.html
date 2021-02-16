@@ -56,18 +56,22 @@
 
         let jsobject = channel.objects.mito_scheme_data;
         let json_string = jsobject.json_string;
-        let hvgx = parseInt(jsobject.hvgx_id);
+        let cell_hvgx = parseInt(jsobject.hvgx_id);
+        let mito_name = jsobject.mito_name;
         let cell = JSON.parse(json_string);
 
         let semantic_skeleton = ""
         for (let i = 0; i < cell.length; i++) {
             let curr_id = parseInt(cell[i].id);
-            if (curr_id == hvgx) {
+            if (curr_id == cell_hvgx) {
                 semantic_skeleton = cell[i]
             }
         }
 
-        console.log(cell)
+        // console.log(cell)
+        // console.log(cell_hvgx)
+        // console.log(mito_name)
+        // console.log(semantic_skeleton)
 
         // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 90, left: 40},
@@ -89,10 +93,12 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+
         // X axis
         let x = d3.scaleLinear()
             .domain([0, semantic_skeleton.length])
-            .range([0, width]);
+            .range([0, 50 * semantic_skeleton.length]);
+
 
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -167,12 +173,29 @@
             .attr("x", function (d){
                 return x(d.start);
             })
-            .attr("y", height - margin.top)
+            .attr("y", function (d) {
+                if(d.name == mito_name)
+                {
+                    return height - margin.top
+                }
+                else {
+                    return height + 10 - margin.top
+                }
+
+            })
             .attr("width", function (d){
                 return x(d.end) - x(d.start);
             })
             .attr("height", 10)
             .attr("class", "mito")
+            .style("fill-opacity", function (d) {
+                if(d.name == mito_name){
+                    return 1.0
+                }
+                else {
+                    return 0.3
+                }
+            })
             .on("mouseover", function (d) {
                 div.transition()
                     .duration(200)
@@ -189,48 +212,48 @@
             });
 
         // Circles
-        svg.selectAll("mycircle")
-            .data(semantic_skeleton.spines)
-            .enter()
-            .append("circle")
-            .attr("cx", function (d) {
-                return x(d.start);
-            })
-            .attr("cy", function (d) {
-                if (d.length !== "incomplete") {
-                    return y(d.length);
-                }
-                else {
-                    return y(1.0);
-                }
-            })
-            .attr("r", function (d) {
-                if(d.synapse_sa == "incomplete")
-                {
-                    return 0;
-                }
-                else
-                {
-                    return 50 * d.synapse_sa;
-                }
-
-            })
-            .attr("class", "synapse")
-            .on("mouseover", function (d) {
-                let synapse_sa = d.synapse_sa;
-                div.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-
-                div.text("Synapse SA: " + synapse_sa.toFixed(2) + " microns")
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
-            })
-            .on("mouseout", function () {
-                div.transition()
-                    .duration(100)
-                    .style("opacity", 0);
-            });
+        // svg.selectAll("mycircle")
+        //     .data(semantic_skeleton.spines)
+        //     .enter()
+        //     .append("circle")
+        //     .attr("cx", function (d) {
+        //         return x(d.start);
+        //     })
+        //     .attr("cy", function (d) {
+        //         if (d.length !== "incomplete") {
+        //             return y(d.length);
+        //         }
+        //         else {
+        //             return y(1.0);
+        //         }
+        //     })
+        //     .attr("r", function (d) {
+        //         if(d.synapse_sa == "incomplete")
+        //         {
+        //             return 0;
+        //         }
+        //         else
+        //         {
+        //             return 50 * d.synapse_sa;
+        //         }
+        //
+        //     })
+        //     .attr("class", "synapse")
+        //     .on("mouseover", function (d) {
+        //         let synapse_sa = d.synapse_sa;
+        //         div.transition()
+        //             .duration(200)
+        //             .style("opacity", .9);
+        //
+        //         div.text("Synapse SA: " + synapse_sa.toFixed(2) + " microns")
+        //             .style("left", (d3.event.pageX) + "px")
+        //             .style("top", (d3.event.pageY - 28) + "px");
+        //     })
+        //     .on("mouseout", function () {
+        //         div.transition()
+        //             .duration(100)
+        //             .style("opacity", 0);
+        //     });
 
     });
 
