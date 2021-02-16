@@ -16,13 +16,21 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
   this->setColumnWidth(0, 200);
   this->setColumnWidth(1, 100);
 
-  //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
   std::vector<Object*> mitos = datacontainer->getObjectsByType(Object_t::MITO);
+  QStringList names = QStringList();
 
   for (int i = 0; i < mitos.size(); i++)
   {
+    names.append(mitos[i]->getName().c_str());
+  }
+
+  names.sort();
+
+  //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
+  for (int i = 0; i < names.size(); i++)
+  {
     //Object* object_p = (*iter).second;
-    Object* object = mitos.at(i);
+    Object* object = datacontainer->getObjectByName(names[i]);
 
     //if (object_p->getObjectType() != Object_t::MITO)
     //{
