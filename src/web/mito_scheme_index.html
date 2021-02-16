@@ -107,7 +107,7 @@
 
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).tickValues([]));
+            .call(d3.axisBottom(x).tickValues([0, semantic_skeleton.length]));
 
         // Add Y axis
         let y = d3.scaleLinear()
