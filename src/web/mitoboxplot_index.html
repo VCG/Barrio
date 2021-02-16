@@ -24,8 +24,16 @@
     }
 
     .mito {
-        border-radius: 100px;
+        border-radius: 5px;
         fill: palevioletred;
+    }
+    .cell{
+        fill: #baecc7;
+        border-radius: 5px;
+    }
+    .spine{
+        stroke: black;
+        stroke-width: 3px;
     }
 </style>
 
@@ -81,13 +89,31 @@
 
         // Show the Y scale
         let y = d3.scaleLinear()
-            .domain([0, 1])
+            .domain([0, 6])
             .range([height, 0]);
         svg.append("g").call(d3.axisLeft(y))
 
+        let cell_width = 30
+        svg.selectAll("cells")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", function (d) {
+                return (x(d.name) - cell_width / 2)
+            })
+            .attr("y", function (d) {
+
+                return y(d.length)
+            })
+            .attr("height", function (d) {
+                return height - y(d.length);
+            })
+            .attr("width", cell_width)
+            .attr("class", "cell");
+
+
         let boxWidth = 15;
         for (let i = 0; i < data.length; i++) {
-            let cell_length = data[i].length;
             let cell_name = data[i].name;
             svg.selectAll("boxes")
                 .data(data[i].mitochondria)
@@ -97,10 +123,11 @@
                     return (x(cell_name) - boxWidth / 2)
                 })
                 .attr("y", function (d) {
-                    return (y(d.end / cell_length))
+
+                    return y(d.end)
                 })
                 .attr("height", function (d) {
-                    return (y(d.start / cell_length))
+                    return y(d.start) - y(d.end);
                 })
                 .attr("width", boxWidth)
                 .attr("class", "mito")
@@ -121,7 +148,6 @@
         }
 
         for (let i = 0; i < data.length; i++) {
-            let cell_length = data[i].length;
             svg.selectAll("medianLines")
                 .data(data[i].spines)
                 .enter()
@@ -133,17 +159,14 @@
                     return (x(data[i].name) + boxWidth / 2)
                 })
                 .attr("y1", function (spine) {
-                    if(hasMitoCoverage(data[i], spine.start)) {
-                        return (y(spine.start / cell_length))
-                    }
+                    return y(spine.start)
+
                 })
                 .attr("y2", function (spine) {
-                    if(hasMitoCoverage(data[i], spine.start)) {
-                        return (y(spine.start / cell_length))
-                    }
+                    return y(spine.start)
                 })
-                .attr("stroke", "black")
-                .style("width", 120)
+                .attr("class", "spine")
+                .style("width", x(boxWidth))
         }
 
         function hasMitoCoverage(cell, start) {
@@ -156,8 +179,6 @@
                 }
             }
             return false
-
-
         }
     })
 
