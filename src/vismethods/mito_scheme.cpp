@@ -37,10 +37,10 @@ Q_INVOKABLE void MitoSchemeData::setHighlightedStructure(const int parentID, int
   {
     int id = children_ids->at(i);
     Object* child = m_datacontainer->getObjectsMapPtr()->at(id);
-    QString name = QString::fromUtf8(child->getName().c_str());
+    QString name = child->getName().c_str();
     int my_spine_number = name.split("_")[2].toInt(); // spine number is contained on the 2 position in the array
 
-    if (my_spine_number == spineNumber && !m_global_vis_parameters->highlighted_objects.contains(id))
+    if (child->getObjectType() == Object_t::SPINE && my_spine_number == spineNumber && !m_global_vis_parameters->highlighted_objects.contains(id))
     {
       m_global_vis_parameters->highlighted_objects.append(id);
     }
