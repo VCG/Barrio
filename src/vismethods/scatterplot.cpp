@@ -19,12 +19,12 @@ Q_INVOKABLE QString ScatterplotData::getData()
 
 Q_INVOKABLE QString ScatterplotData::getXAxis()
 {
-  return Q_INVOKABLE QString("Minimum distance to cell");
+  return Q_INVOKABLE m_x_axis_label;
 }
 
 Q_INVOKABLE QString ScatterplotData::getYAxis()
 {
-  return Q_INVOKABLE QString("Percentage close than bla");
+  return Q_INVOKABLE m_y_axis_label;
 }
 
 Q_INVOKABLE QString ScatterplotData::getXUnit()
@@ -103,46 +103,160 @@ QString Scatterplot::createJSONString()
 {
   std::vector<Object*> mitochondria = m_datacontainer->getObjectsByType(Object_t::MITO);
 
-  QJsonArray document;
-  for (auto mito : mitochondria)
+  QJsonObject x_axis = m_settings.value("x-axis").toObject();
+  QString x_attribute = x_axis.value("attribute").toString();
+
+  QJsonObject y_axis = m_settings.value("y-axis").toObject();
+  QString y_attribute = y_axis.value("attribute").toString();
+
+  QJsonDocument skeleton_doc = QJsonDocument::fromJson(m_datacontainer->m_sematic_skeleton_json.toUtf8());
+  QJsonArray cell_array = skeleton_doc.array();
+
+  QMap<QString, float> x_values;
+  QMap<QString, float> y_values;
+
+  QString mito_spine_coverage = "mito-spine-coverage";
+  QString mito_volume = "mito-volume";
+  QString min_distance_to_cell = "min-distance-to-cell";
+  QString surf_percentage = "surf-percentage";
+
+  if (x_attribute == mito_spine_coverage || y_attribute == mito_spine_coverage)
   {
-    QJsonObject object_json;
-
-    std::vector<int>* mito_indices = mito->get_indices_list();
-    std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
-
-    float minimum = 1000.0;
-    float counter = 0.0;
-    float threshold = 0.05;
-    float meshSize = 0.0;
-
-    for (auto j : *mito_indices)
+    for (auto c : cell_array) 
     {
-      VertexData vertex = vertices->at(j);
-      float distance = (float)vertex.distance_to_cell;
+      QJsonObject cell = c.toObject();
+      QJsonArray spines = cell.value("spines").toArray();
+      QJsonArray mitos = cell.value("mitochondria").toArray();
 
-      if (distance > 100) continue; // filter boarder values
+      for (auto m : mitos) {
+        QJsonObject mito = m.toObject();
+        QString name = mito.value("name").toString();
+        float spine_coverage = getMitoSpineCoverage(mito, spines);
 
-      if (distance < minimum)
-      {
-        minimum = distance;
+        if (x_attribute == mito_spine_coverage) {
+          x_values.insert(name, spine_coverage);
+        }
+        else if (y_attribute == mito_spine_coverage) {
+          y_values.insert(name, spine_coverage);
+        }
       }
+    }
+  } 
+  
+  if (x_attribute == mito_volume || y_attribute == mito_volume)
+  {
+    for (auto c : cell_array)
+    {
+      QJsonObject cell = c.toObject();
+      QJsonArray mitos = cell.value("mitochondria").toArray();
 
-      if (distance < threshold)
+      for (auto m : mitos) {
+        QJsonObject mito = m.toObject();
+        QString name = mito.value("name").toString();
+        float volume = mito.value("volume").toVariant().toFloat();
+
+        if (x_attribute == mito_volume) {
+          x_values.insert(name, volume);
+        }
+        else if (y_attribute == mito_volume) {
+          y_values.insert(name, volume);
+        }
+      }
+    }
+  }
+
+  if (x_attribute == min_distance_to_cell || y_attribute == min_distance_to_cell)
+  {
+    for (auto mito : mitochondria)
+    {
+      QJsonObject object_json;
+
+      QString name = mito->getName().c_str();
+      std::vector<int>* mito_indices = mito->get_indices_list();
+      std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
+
+      float minimum = 100.0;
+      int counter = 0;
+
+      for (auto j : *mito_indices)
       {
+        VertexData vertex = vertices->at(j);
+        float distance = (float)vertex.distance_to_cell;
+
+        if (distance > 100) continue; // filter boarder values
+
+        if (distance < minimum)
+        {
+          minimum = distance;
+        }
         counter++;
       }
 
-      meshSize++;
+      if (counter > 0 && x_attribute == min_distance_to_cell) {
+        x_values.insert(name, minimum);
+      }
+      else if (counter > 0 && y_attribute == min_distance_to_cell) {
+        y_values.insert(name, minimum);
+      }
     }
+  }
 
-    float perc = counter / meshSize;
 
-    object_json.insert("name", mito->getName().c_str());
-    object_json.insert("min", minimum);
-    object_json.insert("perc", perc);
+  if (x_attribute == surf_percentage || y_attribute == surf_percentage)
+  {
+    for (auto mito : mitochondria)
+    {
+      QJsonObject object_json;
 
-    document.push_back(object_json);
+      QString name = mito->getName().c_str();
+      std::vector<int>* mito_indices = mito->get_indices_list();
+      std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
+
+      float minimum = 1000.0;
+      float counter = 0.0;
+      float threshold = 0.05;
+      float meshSize = 0.0;
+
+      for (auto j : *mito_indices)
+      {
+        VertexData vertex = vertices->at(j);
+        float distance = (float)vertex.distance_to_cell;
+
+        if (distance > 100) continue; // filter boarder values
+
+        if (distance < threshold)
+        {
+          counter++;
+        }
+
+        meshSize++;
+      }
+
+      float perc = counter / meshSize;
+
+      if (x_attribute == surf_percentage) {
+        x_values.insert(name, perc);
+      }
+      else if (y_attribute == surf_percentage) {
+        y_values.insert(name, perc);
+      }
+    }
+  }
+
+  QJsonArray document;
+  for (auto mito : mitochondria)
+  {
+    QString name = mito->getName().c_str();
+    QJsonObject object_json;
+
+    if (x_values.contains(name) && y_values.contains(name))
+    {
+      object_json.insert("name", name);
+      object_json.insert("x", x_values.value(name));
+      object_json.insert("y", y_values.value(name));
+
+      document.push_back(object_json);
+    }    
   }
 
   QJsonDocument doc(document);
@@ -161,11 +275,40 @@ QString Scatterplot::createSelectedObjectsJSON(QList<int>* selectedObjects)
   return doc.toJson(QJsonDocument::Indented);
 }
 
+float Scatterplot::getMitoSpineCoverage(QJsonObject mito, QJsonArray spines)
+{
+  float mito_start = mito.value("start").toVariant().toFloat();
+  float mito_end = mito.value("end").toVariant().toFloat();
+  float coverage_counter = 0.0;
+
+  for (auto s : spines) {
+    QJsonObject spine = s.toObject();
+    float spine_start = spine.value("start").toVariant().toFloat();
+
+    if (mito_start <= spine_start && spine_start <= mito_end)
+    {
+      coverage_counter += 1.0;
+    }
+  }
+  return coverage_counter;
+}
+
 QWebEngineView* Scatterplot::initVisWidget(int ID, SpecificVisParameters params)
 {
+  m_settings = params.settings; 
+  
   QString json = createJSONString();
   QString selected_objects_json = createSelectedObjectsJSON(&m_global_vis_parameters->selected_objects);
+  
   m_data = new ScatterplotData(json, selected_objects_json, m_global_vis_parameters, m_datacontainer);
+
+  QJsonObject x_axis = m_settings.value("x-axis").toObject();
+  QString x_label = x_axis.value("label").toString();
+  m_data->setXLabel(x_label);
+
+  QJsonObject y_axis = m_settings.value("y-axis").toObject();
+  QString y_label = y_axis.value("label").toString();
+  m_data->setYLabel(y_label);
 
   m_web_engine_view = new QWebEngineView();
   QWebChannel* channel = new QWebChannel(m_web_engine_view->page());

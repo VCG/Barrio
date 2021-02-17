@@ -47,27 +47,27 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .domain([dendrite, axon, selected])
         .range([unselected_opacity, unselected_opacity, selected_opacity]);
 
-    var min = "min",
-        perc = "perc",
+    var xAttrName = "x",
+        yAttrName = "y",
         name = "name";
 
 
     var xMax = d3.max(data, function (d) {
-            return d[min];
+            return d[xAttrName];
         }) * 1.05,
         xMin = d3.min(data, function (d) {
-            return d[min];
+            return d[xAttrName];
         }),
         xMin = xMin > 0 ? 0 : xMin,
         yMax = d3.max(data, function (d) {
-            return d[perc];
+            return d[yAttrName];
         }) * 1.05,
         yMin = d3.min(data, function (d) {
-            return d[perc];
+            return d[yAttrName];
         }),
         yMin = yMin > 0 ? 0 : yMin;
 
-    x.domain([0.0, 0.3]);
+    x.domain([xMin, xMax]);
     y.domain([yMin, yMax]);
 
     var xAxis = d3.svg.axis()
@@ -84,8 +84,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("class", "d3-tip")
         .offset([-10, 0])
         .html(function (d) {
-            return d[name] + " <br>" + min + ": " + d[min].toFixed(4) + " " + xUnit +
-                " <br>" + perc + ": " + d[perc].toFixed(4) + " " + yUnit;
+            return d[name] + " <br>" + xAttrName + ": " + d[xAttrName].toFixed(4) + " " + xUnit +
+                " <br>" + yAttrName + ": " + d[yAttrName].toFixed(4) + " " + yUnit;
         });
 
     var zoomBeh = d3.behavior.zoom()
@@ -203,7 +203,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     }
 
     function transform(d) {
-        return "translate(" + x(d[min]) + "," + y(d[perc]) + ")";
+        return "translate(" + x(d[xAttrName]) + "," + y(d[yAttrName]) + ")";
     }
 
     function highlightDots() {

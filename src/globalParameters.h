@@ -14,6 +14,7 @@
 #define RECOMPUTE_DATA FALSE
 
 #include <QList>
+#include <QJsonObject>
 
 enum NumberOfEntities
 {
@@ -36,4 +37,5 @@ struct SpecificVisParameters
 {
   int number_of_bins = 20;
   QString colors; 
+  QJsonObject settings;
 };

@@ -31,6 +31,7 @@ public:
 
   QMap<int, QGroupBox*> m_selection_boxes;
   QMap<int, Vis> m_visualizations;
+  QMap<int, QJsonObject> m_vis_settings;
 
 
   void initVisMethods();

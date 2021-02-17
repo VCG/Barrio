@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   m_data_container = new DataContainer(input_form);
 
-  m_main_widget = new MainWidget(m_data_container, input_form, mainwindow_ui->centralwidget);
+  m_main_widget = new MainWidget(m_data_container, input_form, &m_vis_settings, mainwindow_ui->centralwidget);
 
   mainwindow_ui->verticalLayout_17->addWidget(m_main_widget);
  
@@ -304,13 +304,12 @@ void MainWindow::on_vis_clicked()
     if (m_selection_boxes[id] == sender)
     {
       Vis vis = m_visualizations[id];
+      QJsonObject settings = m_vis_settings[id];
       m_main_widget->setVisMethod(vis);
     }
   }
  
   sender->setStyleSheet("border: 1px solid orange");
-
-  
 }
 
 //void MainWindow::on_synapse_distance_slider_changed(int value)
@@ -362,9 +361,21 @@ void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
   QString name = subtask.value("name").toString();
   ui_element->setTitle(name);
 
-  int lsv = subtask.value("low_scale_vis").toInt();
-  int msv = subtask.value("medium_scale_vis").toInt();
-  int hsv = subtask.value("high_scale_vis").toInt();
+  QJsonObject lsv_settings = subtask.value("low_scale_vis").toObject();
+  QJsonObject msv_settings = subtask.value("medium_scale_vis").toObject();
+  QJsonObject hsv_settings = subtask.value("high_scale_vis").toObject();
+
+  qDebug() << QJsonDocument(lsv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
+  qDebug() << QJsonDocument(msv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
+  qDebug() << QJsonDocument(hsv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
+
+  int lsv = lsv_settings["id"].toInt();
+  int msv = msv_settings["id"].toInt();
+  int hsv = hsv_settings["id"].toInt();
+
+  m_vis_settings.insert(lsv, lsv_settings);
+  m_vis_settings.insert(msv, msv_settings);
+  m_vis_settings.insert(hsv, hsv_settings);
 
   ui_element->setLayout(new QHBoxLayout);
 
