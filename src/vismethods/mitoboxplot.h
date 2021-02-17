@@ -25,6 +25,9 @@ public:
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer* m_datacontainer;
 
+  Q_INVOKABLE void setHighlightedFrame(const QString& name);
+  Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
+
   Q_INVOKABLE void setHighlightedStructure(const int parentID, int spineNumber);
   Q_INVOKABLE void removeHighlightedStructure(const int parentID, int spineNumber);
 };
