@@ -15,7 +15,7 @@ class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
-  MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
+  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* parent = 0);
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
   //bool deleteInfoVisWidget(int ID);
@@ -30,7 +30,7 @@ public:
 
   void addStandardItem(int id, QList<QStandardItem*> items);
 
-  bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod);
+  bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings);
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
   void setupMainWidget(VisConfiguration vis_config);
@@ -73,9 +73,11 @@ private:
   std::map<int, IVisMethod*>  m_infovis_views;
   std::map<int, QFrame*>      m_seperation_elements;
 
+
   QList<int>    getSelectedIDs();
 
   QMap<int, QList<QStandardItem*>> m_selected_standard_items;
+  QMap<int, QJsonObject>* m_vis_settings;
 
   QGridLayout* m_main_layout;
 

@@ -5,23 +5,140 @@
       {
         "name": "Relation of synapses and mitochondria",
         "explanation": "here comes the explanation",
-        "low_scale_vis": 0,
-        "medium_scale_vis": 1,
-        "high_scale_vis": 2
+        "low_scale_vis": {
+          "id": 0,
+          "name": "distance-tree",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "medium_scale_vis": {
+          "id": 1,
+          "name": "bar-chart",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "high_scale_vis": {
+          "id": 2,
+          "name": "scatter-plot",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        }
       },
       {
         "name": "Relation of cells and mitochondria",
         "explanation": "here comes the explanation",
-        "low_scale_vis": 3,
-        "medium_scale_vis": 4,
-        "high_scale_vis": 5
+        "low_scale_vis": {
+          "id": 3,
+          "name": "histogram",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "medium_scale_vis": {
+          "id": 4,
+          "name": "box-plot",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "high_scale_vis": {
+          "id": 5,
+          "name": "scatter-plot",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        }
       },
       {
         "name": "Relation of mitochondria and cell spines",
         "explanation": "here comes the explanation",
-        "low_scale_vis": 6,
-        "medium_scale_vis": 7,
-        "high_scale_vis": 8
+        "low_scale_vis": {
+          "id": 6,
+          "name": "mito-scheme",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "medium_scale_vis": {
+          "id": 7,
+          "name": "mito-box-plot",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "min-distance-to-cell"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "blabla"
+          },
+          "params": "fixed"
+        },
+        "high_scale_vis": {
+          "id": 8,
+          "name": "scatter-plot",
+          "header": "blabla",
+          "x-axis": {
+            "label": "blabla",
+            "attribute": "mito-spine-coverage"
+          },
+          "y-axis": {
+            "label": "blabla",
+            "attribute": "mito-volume"
+          },
+          "params": "fixed"
+        }
       }
     ]
   }

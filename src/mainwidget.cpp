@@ -2,7 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* parent)
   : QOpenGLWidget(parent)
 {
   m_datacontainer = datacontainer;
@@ -13,6 +13,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   m_main_layout = new QGridLayout(this);
 
   m_abstraction_space = new AbstractionSpace(datacontainer);
+  m_vis_settings = vis_settings;
 }
 
 double MainWidget::on_synapse_distance_slider_changed(int value)
@@ -199,6 +200,8 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   m_abstraction_space->addToSelectedIndices(ID);
   m_lastID = ID;
 
+  QJsonObject settings = m_vis_settings->value((int)m_vis_methods.method->getType());
+
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
   groupBox->setLayout(vbox);
@@ -208,7 +211,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   if (m_number_of_entities == NumberOfEntities::LOW)
   {
     //addCloseButtonToWidget(groupBox);
-    addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone(), settings);
 
     QFrame* line = new QFrame;
     line->setFrameShape(QFrame::HLine);
@@ -221,8 +224,6 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // medium and high configuration
   else {
     updateInfoVisViews();
-   
-
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
 
@@ -397,8 +398,10 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
   return true;
 }
 
-bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod)
+bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings)
 {
+  m_specific_vis_parameters.settings = settings;
+
   QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
   groupBox->layout()->addWidget(widget);
 
@@ -488,6 +491,8 @@ void MainWidget::setColormap(QString name)
 void MainWidget::setVisMethod(Vis vis)
 {
   m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
+  QJsonObject settings = m_vis_settings->value(vis.id);
+
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
@@ -518,7 +523,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     m_groupboxes[medium_entities_id] = groupBox;
 
-    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
     for each (int ID in currentlySelectedIDs)
     {
@@ -543,7 +548,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     m_groupboxes[high_entities_id] = groupBox;
 
-    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
     for each (int ID in currentlySelectedIDs)
     {

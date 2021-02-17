@@ -163,6 +163,8 @@ QString Scatterplot::createSelectedObjectsJSON(QList<int>* selectedObjects)
 
 QWebEngineView* Scatterplot::initVisWidget(int ID, SpecificVisParameters params)
 {
+  QJsonObject settings = params.settings;
+  qDebug() << settings; 
   QString json = createJSONString();
   QString selected_objects_json = createSelectedObjectsJSON(&m_global_vis_parameters->selected_objects);
   m_data = new ScatterplotData(json, selected_objects_json, m_global_vis_parameters, m_datacontainer);
