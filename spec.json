@@ -84,12 +84,12 @@
           "name": "scatter-plot",
           "header": "blabla",
           "x-axis": {
-            "label": "blabla",
+            "label": "Minimal Distance to Cell Boundary",
             "attribute": "min-distance-to-cell"
           },
           "y-axis": {
-            "label": "blabla",
-            "attribute": "blabla"
+            "label": "Percentage of surface closer than X to cell",
+            "attribute": "surf-percentage"
           },
           "params": "fixed"
         }
@@ -128,13 +128,13 @@
         "high_scale_vis": {
           "id": 8,
           "name": "scatter-plot",
-          "header": "blabla",
+          "header": "this is a scatterplot",
           "x-axis": {
-            "label": "blabla",
+            "label": "number of spines covered by mitochondrion",
             "attribute": "mito-spine-coverage"
           },
           "y-axis": {
-            "label": "blabla",
+            "label": "mitochondria volume",
             "attribute": "mito-volume"
           },
           "params": "fixed"
