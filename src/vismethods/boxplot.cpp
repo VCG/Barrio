@@ -32,7 +32,10 @@ QString Boxplot::createJSONString(QList<int>* selectedObjects)
     {
       VertexData vertex = vertices->at(j);
       double distance_to_cell = vertex.distance_to_cell;
-      mito_distances.push_back(QJsonValue::fromVariant(distance_to_cell));
+      if (distance_to_cell < 1000.0) {
+        mito_distances.push_back(QJsonValue::fromVariant(distance_to_cell));
+      }
+     
     }
     mito_json.insert("key", mito->getName().c_str());
     mito_json.insert("value", mito_distances);
