@@ -67,7 +67,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }),
         yMin = yMin > 0 ? 0 : yMin;
 
-    x.domain([0.0, 0.3]);
+    x.domain([xMin, xMax]);
     y.domain([yMin, yMax]);
 
     var xAxis = d3.svg.axis()

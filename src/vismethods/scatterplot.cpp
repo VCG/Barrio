@@ -175,10 +175,8 @@ QString Scatterplot::createJSONString()
       std::vector<int>* mito_indices = mito->get_indices_list();
       std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
 
-      float minimum = 1000.0;
-      float counter = 0.0;
-      float threshold = 0.05;
-      float meshSize = 0.0;
+      float minimum = 100.0;
+      int counter = 0;
 
       for (auto j : *mito_indices)
       {
@@ -191,12 +189,13 @@ QString Scatterplot::createJSONString()
         {
           minimum = distance;
         }
+        counter++;
       }
 
-      if (x_attribute == min_distance_to_cell) {
+      if (counter > 0 && x_attribute == min_distance_to_cell) {
         x_values.insert(name, minimum);
       }
-      else if (y_attribute == min_distance_to_cell) {
+      else if (counter > 0 && y_attribute == min_distance_to_cell) {
         y_values.insert(name, minimum);
       }
     }
