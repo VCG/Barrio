@@ -2,7 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* vis_params_widget, QWidget* parent)
   : QOpenGLWidget(parent)
 {
   m_datacontainer = datacontainer;
@@ -14,6 +14,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap
 
   m_abstraction_space = new AbstractionSpace(datacontainer);
   m_vis_settings = vis_settings;
+  m_vis_params_widget = vis_params_widget;
 }
 
 double MainWidget::on_synapse_distance_slider_changed(int value)
@@ -158,6 +159,12 @@ void MainWidget::OnWidgetClose()
   updateInfoVisViews();
 
   qDebug() << "close widget";
+}
+
+void MainWidget::histogram_slider_changed(int bins)
+{
+  qDebug() << bins;
+  setNumberOfBinsForHistogram(bins);
 }
 
 
@@ -493,6 +500,8 @@ void MainWidget::setVisMethod(Vis vis)
   m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
   QJsonObject settings = m_vis_settings->value(vis.id);
 
+  setupVisParams(vis, settings);
+  
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
@@ -554,6 +563,40 @@ void MainWidget::setVisMethod(Vis vis)
     {
       addWidgetGroup(ID, false);
     }
+  }
+}
+
+void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
+{
+
+  clearWidget(m_vis_params_widget);
+
+  QString spec_params_value = settings.value("params").toString();
+  QString fixed = "fixed";
+  QString adjustable = "adjustable";
+
+  if (vis_method.name == VisName::MyHistogram) 
+  {
+    if (spec_params_value == adjustable)
+    {
+      QSlider* slider = new QSlider(Qt::Horizontal);
+      m_vis_params_widget->layout()->addWidget(slider);
+
+      QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(histogram_slider_changed(int)));
+    }
+  }
+  
+
+  qDebug() << "slider added";
+}
+
+void MainWidget::clearWidget(QWidget* widget)
+{
+  QLayoutItem* item;
+  while ((item = widget->layout()->takeAt(0)) != NULL)
+  {
+    delete item->widget();
+    delete item;
   }
 }
 

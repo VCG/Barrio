@@ -15,7 +15,7 @@ class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
-  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* parent = 0);
+  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* vis_params_widget, QWidget* parent = 0);
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
   //bool deleteInfoVisWidget(int ID);
@@ -44,6 +44,10 @@ public:
   void setColormap(QString colormap);
   void setVisMethod(Vis vis);
 
+  void setupVisParams(Vis vis_method, QJsonObject settings);
+
+  void clearWidget(QWidget* widget_to_clear);
+
   double on_synapse_distance_slider_changed(int value);
   void   on_opacity_slider_changed(int value);
   void   on_slice_position_slider_changed(int value);
@@ -64,6 +68,9 @@ public slots:
   void on_widget_close_button_clicked();
   void OnWidgetClose();
 
+  // params slots
+  void histogram_slider_changed(int bins);
+
 private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
@@ -79,7 +86,8 @@ private:
   QMap<int, QList<QStandardItem*>> m_selected_standard_items;
   QMap<int, QJsonObject>* m_vis_settings;
 
-  QGridLayout* m_main_layout;
+  QGridLayout*  m_main_layout;
+  QWidget*      m_vis_params_widget;
 
   SharedGLResources m_shared_resources;
 

@@ -235,7 +235,7 @@
                <item>
                 <widget class="QGroupBox" name="groupBox_8">
                  <property name="title">
-                  <string>Visualization Parameters</string>
+                  <string>Parameters</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
@@ -342,6 +342,18 @@
                      </item>
                     </layout>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_5">
+                 <property name="title">
+                  <string>Visualization Parameters</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_19">
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_18"/>
                   </item>
                  </layout>
                 </widget>

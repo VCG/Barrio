@@ -63,7 +63,7 @@
             "label": "blabla",
             "attribute": "blabla"
           },
-          "params": "fixed"
+          "params": "adjustable"
         },
         "medium_scale_vis": {
           "id": 4,
