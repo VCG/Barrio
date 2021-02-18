@@ -365,10 +365,6 @@ void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
   QJsonObject msv_settings = subtask.value("medium_scale_vis").toObject();
   QJsonObject hsv_settings = subtask.value("high_scale_vis").toObject();
 
-  qDebug() << QJsonDocument(lsv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
-  qDebug() << QJsonDocument(msv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
-  qDebug() << QJsonDocument(hsv_settings).toJson(QJsonDocument::Compact).toStdString().c_str();
-
   int lsv = lsv_settings["id"].toInt();
   int msv = msv_settings["id"].toInt();
   int hsv = hsv_settings["id"].toInt();
