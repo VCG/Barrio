@@ -2,7 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* vis_params_widget, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent)
   : QOpenGLWidget(parent)
 {
   m_datacontainer = datacontainer;
@@ -11,10 +11,12 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap
   setFocusPolicy(Qt::StrongFocus);
 
   m_main_layout = new QGridLayout(this);
+  m_shared_resources.all_selected_mitos = &m_all_selected_mitos;
 
   m_abstraction_space = new AbstractionSpace(datacontainer);
   m_vis_settings = vis_settings;
-  m_vis_params_widget = vis_params_widget;
+  m_vis_params_widget = relatedWidgets.vis_params;
+  m_overview = relatedWidgets.overview;
 }
 
 void MainWidget::on_synapse_distance_slider_changed(int value)
@@ -58,32 +60,32 @@ void MainWidget::set_slice_position(int value)
 
 void MainWidget::on_widget_close_button_clicked()
 {
-  qDebug() << "Close button pressed";
+  //qDebug() << "Close button pressed";
 
-  QPushButton* button = qobject_cast<QPushButton*>(sender());
-  QWidget* widget_to_delete = button->parentWidget()->parentWidget();
+  //QPushButton* button = qobject_cast<QPushButton*>(sender());
+  //QWidget* widget_to_delete = button->parentWidget()->parentWidget();
 
-  int id_to_delete = 0;
-  for (auto& i : m_groupboxes) {
-    if (i.second == widget_to_delete) {
-      id_to_delete = i.first;
-      break; // to stop searching
-    }
-  }
+  //int id_to_delete = 0;
+  //for (auto& i : m_groupboxes) {
+  //  if (i.second == widget_to_delete) {
+  //    id_to_delete = i.first;
+  //    break; // to stop searching
+  //  }
+  //}
 
-  QList<int> currentlySelectedIDs = getSelectedIDs();
+  //QList<int> currentlySelectedIDs = getSelectedIDs();
 
-  deleteAllWidgets(false);
+  //deleteAllWidgets(false);
 
-  for each (int ID in currentlySelectedIDs)
-  {
-    if (ID != id_to_delete)
-    {
-      addWidgetGroup(ID, false);
-    }
-  }
+  //for each (int ID in currentlySelectedIDs)
+  //{
+  //  if (ID != id_to_delete)
+  //  {
+  //    addWidgetGroup(ID, false);
+  //  }
+  //}
 
-  updateInfoVisViews();
+  //updateInfoVisViews();
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
@@ -146,6 +148,8 @@ void MainWidget::OnWidgetClose()
 
   QList<int> currentlySelectedIDs = getSelectedIDs();
 
+  m_all_selected_mitos.removeOne(id_to_delete);
+
   deleteAllWidgets(false);
 
   for each (int ID in currentlySelectedIDs)
@@ -170,7 +174,7 @@ void MainWidget::histogram_slider_changed(int bins)
 
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 {
-  QFrame* frame = new QFrame;
+  /*QFrame* frame = new QFrame;
   frame->setMaximumHeight(40);
   QHBoxLayout* horizontal_layout = new QHBoxLayout();
 
@@ -183,7 +187,7 @@ void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
   frame->setLayout(horizontal_layout);
 
   groupBox->layout()->addWidget(frame);
-  connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));
+  connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));*/
 
 }
 
@@ -194,16 +198,14 @@ void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 {
-  QString name;
-  if (isOverviewWidget)
+  if (ID < 0) // avoid readding the overview widget
   {
-    name = "Overview";
-  }
-  else
-  {
-    name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+    return false;
   }
 
+  
+  QString name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+  
   m_abstraction_space->addToSelectedIndices(ID);
   m_lastID = ID;
 
@@ -254,7 +256,21 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 
   m_number_of_selected_structures++;
 
+  updateOverviewWidget();
+
   return true;
+}
+
+void MainWidget::updateOverviewWidget()
+{
+  // update visibility of overview
+  for (auto const& [id, widget] : m_opengl_views)
+  {
+    if (id <= 0) // overview widget
+    {
+      widget->update_visibility();
+    }
+  }
 }
 
 //bool MainWidget::deleteInfoVisWidget(int ID)
@@ -431,6 +447,11 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
   groupBox->layout()->addWidget(widget);
 
   m_opengl_views[ID] = widget;
+
+  if (!m_all_selected_mitos.contains(ID))
+  {
+    m_all_selected_mitos.append(ID);
+  }
 
   return true;
 }
@@ -661,9 +682,11 @@ void MainWidget::initializeGL()
   m_shared_resources.widget_queue = &m_abstraction_space->m_global_vis_parameters.my_add_queue;
 
 
-  // add first widget
-  //addGLWidget(0, true);
-
+  // add overview widget
+  GLWidget* overview = new GLWidget(-3, &m_shared_resources, true, m_overview);
+  overview->init(m_datacontainer);
+  m_opengl_views[-3] = overview;
+  m_overview->layout()->addWidget(overview);
 }
 
 

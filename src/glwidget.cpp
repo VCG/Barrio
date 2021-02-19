@@ -20,6 +20,7 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
   m_camera_distance = 1.0;
 
   m_distance_threshold = resources->distance_threshold;
+  m_all_selected_mitos = resources->all_selected_mitos;
 
   m_rotation = QQuaternion();
   //reset rotation
@@ -985,7 +986,14 @@ void GLWidget::updateHighlightedSSBO()
 void GLWidget::updateVisibilitySSBO()
 {
   makeCurrent();
-  setVisibleStructures();
+  if (!m_is_overview_widget)
+  {
+    setVisibleStructuresSingelObject();
+  }
+  else {
+    setVisibleStructuresOverView();
+  }
+ 
 
   int bufferSize = m_visible_structures.size() * sizeof(int);
 
@@ -998,19 +1006,33 @@ void GLWidget::updateVisibilitySSBO()
   update();
 }
 
-void GLWidget::setVisibleStructures()
+void GLWidget::setVisibleStructuresSingelObject()
 {
-  std::map<int, Object*>* objects_map = m_data_container->getObjectsMapPtr();
   m_visible_structures.clear();
+  setVisibleStructures(m_selected_hvgx_id);
+}
 
-  int currentID = m_selected_hvgx_id;
-  int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
+void GLWidget::setVisibleStructuresOverView()
+{
+  m_visible_structures.clear();
+  for (auto id : *m_all_selected_mitos)
+  {
+    setVisibleStructures(id);
+  }
+}
+
+void GLWidget::setVisibleStructures(int id)
+{
+  std::map<int, Object*> objects_map = m_data_container->getObjectsMap();
+  
+  Object* object = objects_map.at(id);
+  int parentID = object->getParentID();
 
   m_visible_structures.push_back(parentID);
 
-  Object* parent = objects_map->at(parentID);
+  Object* parent = objects_map.at(parentID);
 
-  if (m_shared_resources->show_related_synapses) 
+  if (m_shared_resources->show_related_synapses)
   {
     std::vector<Object*>* synapses = parent->getSynapses();
     for (int i = 0; i < synapses->size(); i++)
@@ -1021,19 +1043,18 @@ void GLWidget::setVisibleStructures()
   else
   {
     std::vector<Object*> synapses = m_data_container->getObjectsByType(Object_t::SYNAPSE);
-    
-    for (auto syn : synapses) 
+
+    for (auto syn : synapses)
     {
-      std::map<int, double>* distance_map = objects_map->at(currentID)->get_distance_map_ptr();
+      std::map<int, double>* distance_map = objects_map.at(id)->get_distance_map_ptr();
       double distance = distance_map->at(syn->getHVGXID());
       if (distance < m_distance_threshold)
       {
         m_visible_structures.push_back(syn->getHVGXID());
       }
-      
+
     }
   }
-  
 
   std::vector<int>* siblings = parent->getChildrenIDs();
   for (size_t i = 0; i < siblings->size(); i++)
@@ -1045,6 +1066,11 @@ void GLWidget::setVisibleStructures()
 void GLWidget::update_synapse_distance_threshold(double distance)
 {
   m_distance_threshold = distance;
+  updateVisibilitySSBO();
+}
+
+void GLWidget::update_visibility()
+{
   updateVisibilitySSBO();
 }
 

@@ -19,7 +19,11 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
 
   m_data_container = new DataContainer(input_form);
 
-  m_main_widget = new MainWidget(m_data_container, input_form, &m_vis_settings, mainwindow_ui->groupBox_5, mainwindow_ui->centralwidget);
+  RelatedWidgets related_widgets;
+  related_widgets.overview = mainwindow_ui->groupBox_3;
+  related_widgets.vis_params = mainwindow_ui->groupBox_5;
+
+  m_main_widget = new MainWidget(m_data_container, input_form, &m_vis_settings, related_widgets, mainwindow_ui->centralwidget);
 
   mainwindow_ui->verticalLayout_17->addWidget(m_main_widget);
  

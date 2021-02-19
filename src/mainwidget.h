@@ -9,13 +9,16 @@
 #include "datacontainer.h"
 #include "globalParameters.h"
 
-
+struct RelatedWidgets {
+  QWidget* vis_params;
+  QGroupBox* overview;
+};
 
 class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
-  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, QWidget* vis_params_widget, QWidget* parent = 0);
+  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent = 0);
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
   //bool deleteInfoVisWidget(int ID);
@@ -33,7 +36,7 @@ public:
   bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings);
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
-  void setupMainWidget(VisConfiguration vis_config);
+ // void setupMainWidget(VisConfiguration vis_config);
   //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
   void showSlice(bool showSlice);
 
@@ -81,6 +84,8 @@ private:
   std::map<int, IVisMethod*>  m_infovis_views;
   std::map<int, QFrame*>      m_seperation_elements;
 
+  QVector<int>                m_all_selected_mitos;
+
 
   QList<int>    getSelectedIDs();
 
@@ -88,6 +93,8 @@ private:
   QMap<int, QJsonObject>* m_vis_settings;
 
   QGridLayout*  m_main_layout;
+  QGroupBox*    m_overview;
+
   QWidget*      m_vis_params_widget;
 
   SharedGLResources m_shared_resources;

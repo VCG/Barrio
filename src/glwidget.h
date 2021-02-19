@@ -46,7 +46,11 @@ struct SharedGLResources
   QVector<int>*   highlighted_objects;
   QVector<int>*   highlighted_group_boxes;
   QVector<int>*   widget_queue;
+
+  QVector<int>*   all_selected_mitos;
 };
+
+
 
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
@@ -70,9 +74,13 @@ public:
   void updateHighlightedSSBO();
   void updateVisibilitySSBO();
   
-  void setVisibleStructures();
+  void setVisibleStructuresSingelObject();
+  void setVisibleStructuresOverView();
+
+  void setVisibleStructures(int id);
 
   void update_synapse_distance_threshold(double distance);
+  void update_visibility();
 
   void updateVisParameters();
 
@@ -248,6 +256,7 @@ protected:
   int                                 m_width, m_height;
   bool                                m_init;
   bool                                m_is_overview_widget;
+  QVector<int>*                       m_all_selected_mitos;
 
   double                              m_distance_threshold;
 
