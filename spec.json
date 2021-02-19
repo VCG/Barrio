@@ -31,7 +31,7 @@
             "label": "blabla",
             "attribute": "blabla"
           },
-          "params": "related-synapses"
+          "params": "surrounding-synapses"
         },
         "high_scale_vis": {
           "id": 2,

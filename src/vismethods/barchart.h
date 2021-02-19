@@ -53,6 +53,7 @@ public:
 
 private:
   BarChartData* m_data;
+  QJsonObject m_settings;
 
   DataContainer* m_datacontainer;
 

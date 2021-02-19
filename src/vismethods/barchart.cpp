@@ -20,6 +20,8 @@ BarChart::~BarChart()
 
 QWebEngineView* BarChart::initVisWidget(int ID, SpecificVisParameters params)
 {
+  m_settings = params.settings;
+
   QString json = createJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   m_data = new BarChartData(json, m_datacontainer, m_global_vis_parameters);
 
@@ -62,6 +64,10 @@ VisType BarChart::getType()
 
 QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_threshold)
 {
+  QString related_synapses = "related-synapses";
+  QString surrounding_synapses = "surrounding-synapses";
+  QString synapse_param = m_settings.value("params").toString();
+
   QJsonArray json;
   std::map<int, Object*>* objects = m_datacontainer->getObjectsMapPtr();
   std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
@@ -76,15 +82,33 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
     std::map<QString, float> selected_syns;
 
     int group_synapse_counter = 0;
-    for each (Object * syn in *cell->getSynapses())
+    if (synapse_param == related_synapses) 
     {
-      QString syn_name = syn->getName().c_str();
-      double distance_to_mito = distance_map->at(syn->getHVGXID());
+      for each (Object * syn in *cell->getSynapses())
+      {
+        QString syn_name = syn->getName().c_str();
+        double distance_to_mito = distance_map->at(syn->getHVGXID());
 
-      selected_syns[syn_name] = distance_to_mito;
-      group_synapse_counter++;
+        selected_syns[syn_name] = distance_to_mito;
+        group_synapse_counter++;
 
+      }
     }
+    else if (synapse_param == surrounding_synapses)
+    {
+      for each (Object * syn in synapses)
+      {
+        QString syn_name = syn->getName().c_str();
+        double distance_to_mito = distance_map->at(syn->getHVGXID());
+
+        if (distance_to_mito < distance_threshold) 
+        {
+          selected_syns[syn_name] = distance_to_mito;
+          group_synapse_counter++;
+        }
+      }
+    }
+    
 
     // sort map
     std::vector<std::pair<QString, float>> vec;

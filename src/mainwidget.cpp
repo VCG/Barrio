@@ -608,7 +608,7 @@ void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
     {
       m_shared_resources.show_related_synapses = false;
 
-      QGroupBox* synapse_distance_box = new QGroupBox("Synapse Distance");
+      QGroupBox* synapse_distance_box = new QGroupBox("Synapse Distance Threshold");
       synapse_distance_box->setLayout(new QVBoxLayout);
       QSlider* slider = new QSlider(Qt::Horizontal);
 
