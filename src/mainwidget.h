@@ -21,6 +21,7 @@ public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent = 0);
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
+  void updateOverviewWidget();
   //bool deleteInfoVisWidget(int ID);
 
   Vis getVisInfo(int id);
