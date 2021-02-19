@@ -48,7 +48,7 @@ public:
 
   void clearWidget(QWidget* widget_to_clear);
 
-  double on_synapse_distance_slider_changed(int value);
+  
   void   on_opacity_slider_changed(int value);
   void   on_slice_position_slider_changed(int value);
   void   set_slice_position(int value);
@@ -70,6 +70,7 @@ public slots:
 
   // params slots
   void histogram_slider_changed(int bins);
+  void on_synapse_distance_slider_changed(int value);
 
 private:
   DataContainer* m_datacontainer;

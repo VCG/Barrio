@@ -17,11 +17,13 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap
   m_vis_params_widget = vis_params_widget;
 }
 
-double MainWidget::on_synapse_distance_slider_changed(int value)
+void MainWidget::on_synapse_distance_slider_changed(int value)
 {
   double distance = ((double)value / 100.0) * sqrt(3) * MESH_MAX_X;
-
+  m_shared_resources.distance_threshold = distance;
   m_abstraction_space->setThresholdDistance(distance);
+
+  QToolTip::showText(QCursor::pos(), QString("%1").arg(distance), nullptr);
 
   for (auto const& [id, widget] : m_opengl_views)
   {
@@ -32,8 +34,6 @@ double MainWidget::on_synapse_distance_slider_changed(int value)
   }
 
   updateInfoVisViews();
-
-  return distance;
 }
 
 void MainWidget::on_opacity_slider_changed(int value)
@@ -104,7 +104,7 @@ void MainWidget::wheelEvent(QWheelEvent* event)
   {
     int delta = event->delta();
 
-    if (event->orientation() == Qt::Vertical) 
+    if (event->orientation() == Qt::Vertical)
     {
       for (auto const& [id, widget] : m_opengl_views)
       {
@@ -137,7 +137,7 @@ void MainWidget::OnWidgetClose()
   if (m_selected_standard_items.count(id_to_delete))
   {
     QList<QStandardItem*> items = m_selected_standard_items[id_to_delete];
-    
+
     items[0]->setBackground(Qt::white);
     items[1]->setBackground(Qt::white);
 
@@ -501,7 +501,7 @@ void MainWidget::setVisMethod(Vis vis)
   QJsonObject settings = m_vis_settings->value(vis.id);
 
   setupVisParams(vis, settings);
-  
+
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
@@ -568,26 +568,64 @@ void MainWidget::setVisMethod(Vis vis)
 
 void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
 {
-
   clearWidget(m_vis_params_widget);
 
   QString spec_params_value = settings.value("params").toString();
-  QString fixed = "fixed";
-  QString adjustable = "adjustable";
 
-  if (vis_method.name == VisName::MyHistogram) 
+  if (vis_method.name == VisName::MyHistogram)
   {
+    QString fixed = "fixed";
+    QString adjustable = "adjustable";
+
     if (spec_params_value == adjustable)
     {
+      QGroupBox* number_of_bins_box = new QGroupBox("Number of Histogram Bins");
+      number_of_bins_box->setLayout(new QVBoxLayout);
+
       QSlider* slider = new QSlider(Qt::Horizontal);
-      m_vis_params_widget->layout()->addWidget(slider);
+
+      slider->setValue(m_specific_vis_parameters.number_of_bins);
+      number_of_bins_box->layout()->addWidget(slider);
+
+      m_vis_params_widget->layout()->addWidget(number_of_bins_box);
 
       QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(histogram_slider_changed(int)));
     }
   }
-  
 
-  qDebug() << "slider added";
+  if (vis_method.name == VisName::MyBarChart)
+  {
+    QString related_synapses = "related-synapses";
+    QString surrounding_synapses = "surrounding-synapses";
+
+    if (spec_params_value == related_synapses)
+    {
+      m_shared_resources.show_related_synapses = true;
+      // do not add slider
+
+    }
+    else if (spec_params_value == surrounding_synapses)
+    {
+      m_shared_resources.show_related_synapses = false;
+
+      QGroupBox* synapse_distance_box = new QGroupBox("Synapse Distance");
+      synapse_distance_box->setLayout(new QVBoxLayout);
+      QSlider* slider = new QSlider(Qt::Horizontal);
+
+      synapse_distance_box->layout()->addWidget(slider);
+
+      int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
+      slider->setValue(initial_tick_position);
+      double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+
+      m_shared_resources.distance_threshold = distance_value;
+
+      m_vis_params_widget->layout()->addWidget(synapse_distance_box);
+
+      QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
+    }
+  }
+
 }
 
 void MainWidget::clearWidget(QWidget* widget)
@@ -639,7 +677,7 @@ void MainWidget::resizeGL(int width, int height)
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
-  
+
   updateGroupBoxStyle();
   updateWidgets();
 

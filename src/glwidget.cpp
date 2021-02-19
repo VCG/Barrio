@@ -19,7 +19,7 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 {
   m_camera_distance = 1.0;
 
-  m_distance_threshold = 1.0;
+  m_distance_threshold = resources->distance_threshold;
 
   m_rotation = QQuaternion();
   //reset rotation
@@ -1010,11 +1010,30 @@ void GLWidget::setVisibleStructures()
 
   Object* parent = objects_map->at(parentID);
 
-  std::vector<Object*>* synapses = parent->getSynapses();
-  for (int i = 0; i < synapses->size(); i++)
+  if (m_shared_resources->show_related_synapses) 
   {
-    m_visible_structures.push_back(synapses->at(i)->getHVGXID());
+    std::vector<Object*>* synapses = parent->getSynapses();
+    for (int i = 0; i < synapses->size(); i++)
+    {
+      m_visible_structures.push_back(synapses->at(i)->getHVGXID());
+    }
   }
+  else
+  {
+    std::vector<Object*> synapses = m_data_container->getObjectsByType(Object_t::SYNAPSE);
+    
+    for (auto syn : synapses) 
+    {
+      std::map<int, double>* distance_map = objects_map->at(currentID)->get_distance_map_ptr();
+      double distance = distance_map->at(syn->getHVGXID());
+      if (distance < m_distance_threshold)
+      {
+        m_visible_structures.push_back(syn->getHVGXID());
+      }
+      
+    }
+  }
+  
 
   std::vector<int>* siblings = parent->getChildrenIDs();
   for (size_t i = 0; i < siblings->size(); i++)
@@ -1026,7 +1045,7 @@ void GLWidget::setVisibleStructures()
 void GLWidget::update_synapse_distance_threshold(double distance)
 {
   m_distance_threshold = distance;
-  //updateVisibilitySSBO();
+  updateVisibilitySSBO();
 }
 
 

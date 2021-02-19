@@ -40,6 +40,9 @@ struct SharedGLResources
   bool          show_slice;
   float         slice_depth;
 
+  bool          show_related_synapses;
+  double        distance_threshold; 
+
   QVector<int>*   highlighted_objects;
   QVector<int>*   highlighted_group_boxes;
   QVector<int>*   widget_queue;

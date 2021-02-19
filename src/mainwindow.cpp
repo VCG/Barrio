@@ -312,12 +312,6 @@ void MainWindow::on_vis_clicked()
   sender->setStyleSheet("border: 1px solid orange");
 }
 
-//void MainWindow::on_synapse_distance_slider_changed(int value)
-//{
-//  double slider_value = m_main_widget->on_synapse_distance_slider_changed(value);
-//  mainwindow_ui->lineEdit->setText(QString::number(std::round(slider_value * 100.0) / 100.0));
-//}
-
 void MainWindow::on_slice_position_slider_changed(int value)
 {
   m_main_widget->on_slice_position_slider_changed(value);
