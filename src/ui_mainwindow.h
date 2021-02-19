@@ -1926,7 +1926,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Abstractocyte", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Neuro Comparer", nullptr));
         dockWidget->setWindowTitle(QString());
         groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
