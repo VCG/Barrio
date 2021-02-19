@@ -163,7 +163,7 @@ void MainWidget::OnWidgetClose()
 
 void MainWidget::histogram_slider_changed(int bins)
 {
-  qDebug() << bins;
+  QToolTip::showText(QCursor::pos(), QString("%1").arg(bins), nullptr);
   setNumberOfBinsForHistogram(bins);
 }
 
