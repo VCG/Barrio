@@ -20,6 +20,8 @@ DistanceTree::~DistanceTree()
 
 QWebEngineView* DistanceTree::initVisWidget(int ID, SpecificVisParameters params)
 {
+  m_settings = params.settings;
+
   QString newickString = createNewickString(ID, m_global_vis_parameters->distance_threshold);
   data = new DistanceTreeData(ID, newickString, m_global_vis_parameters, m_datacontainer);
 

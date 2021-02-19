@@ -57,8 +57,9 @@ public:
 
 private:
 
-  DistanceTreeData* data;
-  DataContainer* m_datacontainer;
+  DistanceTreeData*   data;
+  DataContainer*      m_datacontainer;
+  QJsonObject         m_settings;
 
   QString m_title;
   QString m_index_filename = "web/distancetree_index.html";
