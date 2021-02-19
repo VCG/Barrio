@@ -19,6 +19,8 @@ DistanceMatrix::~DistanceMatrix()
 
 QWebEngineView* DistanceMatrix::initVisWidget(int ID, SpecificVisParameters params)
 {
+  m_settings = params.settings;
+
   QString json = getJSONString(&m_global_vis_parameters->selected_objects, m_global_vis_parameters->distance_threshold);
   data = new DistanceMatrixData(json, m_datacontainer, m_global_vis_parameters);
 
@@ -66,6 +68,10 @@ void DistanceMatrix::setSpecificVisParameters(SpecificVisParameters params)
 
 QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanceThreshold)
 {
+  QString related_synapses = "related-synapses";
+  QString surrounding_synapses = "surrounding-synapses";
+  QString synapse_param = m_settings.value("params").toString();
+
   QJsonArray json;
   std::map<int, Object*>* objects = m_datacontainer->getObjectsMapPtr();
   std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
@@ -80,12 +86,26 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
     Object* cell = objects->at(cell_id);
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
 
-    for(auto& syn: *cell->getSynapses())
+    if (synapse_param == related_synapses) 
     {
-      double distance_to_mito = distance_map->at(syn->getHVGXID());
-      if (!selected_synapses.contains(syn->getHVGXID()))
+      for (auto& syn : *cell->getSynapses())
       {
-        selected_synapses.append(syn->getHVGXID());
+        double distance_to_mito = distance_map->at(syn->getHVGXID());
+        if (!selected_synapses.contains(syn->getHVGXID()))
+        {
+          selected_synapses.append(syn->getHVGXID());
+        }
+      }
+    }
+    else if(synapse_param == surrounding_synapses)
+    {
+      for (auto& syn : synapses)
+      {
+        double distance_to_mito = distance_map->at(syn->getHVGXID());
+        if (distance_to_mito < distanceThreshold && !selected_synapses.contains(syn->getHVGXID()))
+        {
+          selected_synapses.append(syn->getHVGXID());
+        }
       }
     }
   }
@@ -111,14 +131,22 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
       QJsonObject syn_object;
       syn_object.insert("name", QJsonValue::fromVariant(syn->getName().c_str()));
 
-      if (cell->hasSynapse(syn_id))
+      if (synapse_param == related_synapses) 
+      {
+        if (cell->hasSynapse(syn_id))
+        {
+          syn_object.insert("distance", QJsonValue::fromVariant(distance_to_mito));
+        }
+        else
+        {
+          syn_object.insert("distance", QJsonValue::fromVariant(100.0));
+        }
+      }
+      else if(synapse_param == surrounding_synapses) 
       {
         syn_object.insert("distance", QJsonValue::fromVariant(distance_to_mito));
       }
-      else
-      {
-        syn_object.insert("distance", QJsonValue::fromVariant(10.0));
-      }
+      
       
       syn_array.push_back(syn_object);
 

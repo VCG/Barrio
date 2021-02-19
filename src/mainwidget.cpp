@@ -593,7 +593,7 @@ void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
     }
   }
 
-  if (vis_method.name == VisName::MyBarChart)
+  if (vis_method.name == VisName::MyBarChart || vis_method.name == VisName::MyDistanceMatrix)
   {
     QString related_synapses = "related-synapses";
     QString surrounding_synapses = "surrounding-synapses";
@@ -601,8 +601,6 @@ void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
     if (spec_params_value == related_synapses)
     {
       m_shared_resources.show_related_synapses = true;
-      // do not add slider
-
     }
     else if (spec_params_value == surrounding_synapses)
     {
