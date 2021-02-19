@@ -17,7 +17,7 @@
             "label": "blabla",
             "attribute": "blabla"
           },
-          "params": "fixed"
+          "params": "related-synapses"
         },
         "medium_scale_vis": {
           "id": 1,

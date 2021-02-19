@@ -637,6 +637,45 @@ void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
     qDebug() << "points count: " << nodes;
 }
 
+int DataContainer::getObjectThatHasSynapse(int syn_id, int not_this_object)
+{
+  std::vector<Object*> dends = getObjectsByType(Object_t::DENDRITE);
+  for (auto dendrite : dends) 
+  {
+    int dend_hvgx = dendrite->getHVGXID();
+    if (dend_hvgx != not_this_object && dendrite->hasSynapse(syn_id))
+    {
+      return dend_hvgx;
+    }
+  }
+
+  std::vector<Object*> axons = getObjectsByType(Object_t::AXON);
+  for (auto axon : axons)
+  {
+    int axon_hvgx = axon->getHVGXID();
+    if (axon_hvgx != not_this_object && axon->hasSynapse(syn_id))
+    {
+      return axon_hvgx;
+    }
+  }
+  return -1;
+}
+
+QList<int> DataContainer::getMitosOfCell(int cell_id)
+{
+  QList<int> mitos;
+  Object* cell = getObjectsMap().at(cell_id);
+  std::vector<int>* children = cell->getChildrenIDs();
+
+  for (int i : *children) {
+    bool isMito = getObjectsMap().at(i)->getObjectType() == Object_t::MITO;
+    if (isMito) {
+      mitos.append(i);
+    }
+  }
+  return mitos;
+}
+
 bool DataContainer::importObj(QString path)
 {
   int vertexCounter = 0;

@@ -78,6 +78,9 @@ public:
   void parseBranch(QXmlStreamReader& xml, Object* obj);
   void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
 
+  int getObjectThatHasSynapse(int syn_id, int not_this_object);
+  QList<int> getMitosOfCell(int cell_id);
+
   bool importObj(QString path);
   bool importSkeletons(QString path, Object_t skeleton_type);
   bool importSemanticSkeleton(QString path);

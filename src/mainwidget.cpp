@@ -614,7 +614,9 @@ void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
     }
   }
 
-  if (vis_method.name == VisName::MyBarChart || vis_method.name == VisName::MyDistanceMatrix)
+  if (vis_method.name == VisName::MyDistanceTree ||
+      vis_method.name == VisName::MyBarChart || 
+      vis_method.name == VisName::MyDistanceMatrix)
   {
     QString related_synapses = "related-synapses";
     QString surrounding_synapses = "surrounding-synapses";
