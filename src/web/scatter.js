@@ -182,6 +182,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("fill", colorScale);
 
     legend.append("text")
+        .classed("label", true)
         .attr("x", width + 26)
         .attr("dy", ".35em")
         .text(function (d) {
