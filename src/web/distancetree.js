@@ -33,6 +33,27 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             circle.style("fill", "#ff0000");
         }
 
+        dom_element.on('mouseenter', function() {
+            console.log("node-mouseover");
+            console.log(node_object.name);
+
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+
+            div.text(node_object.name)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        });
+
+        dom_element.on('mouseleave', function() {
+            console.log("node-mouseleave");
+
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
         if ("bootstrap" in node_object && node_object.bootstrap) {
             var label = dom_element.selectAll(".bootstrap");
             if (label.empty()) {
@@ -64,26 +85,28 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'collapsible': false,
                 'left-right-spacing': 'fit-to-size',
                 'top-bottom-spacing': 'fixed-step',
-                'zoom': true,
-                'align-tips': true
+                'zoom': false,
+                'align-tips': true,
+                'show-scale': false,
+                'brush': true
             })
             .size([height, width])
             //.style_edges(edgeStyler)
             .style_nodes(nodeStyler)
-            .node_circle_size(4); // do not draw clickable circles for internal nodes
+            .node_circle_size(8); // do not draw clickable circles for internal nodes
 
         /* the next call creates the tree object, and tree nodes */
         tree(d3.layout.newick_parser(data));
 
 
         // parse bootstrap support from internal node names
-        _.each(tree.get_nodes(), function (node) {
-            if (node.children) {
-                node.bootstrap = node.name;
-            }
-        });
+        // _.each(tree.get_nodes(), function (node) {
+        //     if (node.children) {
+        //         node.bootstrap = node.name;
+        //     }
+        // });
 
-        tree.spacing_x(30);
+        tree.spacing_x(40);
 
         if ($("#layout").prop("checked")) {
             tree.radial(true);
@@ -91,6 +114,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         tree.placenodes().layout();
 
         tree.selection_callback(selection => {
+            console.log(selection);
             jsobject.removeAllHighlightedStructures();
             var names = selection.map(d => d.name);
             names.forEach(function (name) {
@@ -104,6 +128,12 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
             tree.radial($(this).prop("checked")).placenodes().update();
         });
     }
+
+    // Append Div for tooltip to SVG
+    let div = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
     drawATree(data);
 });

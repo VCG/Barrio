@@ -232,9 +232,9 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   }
   // medium and high configuration
   else {
-    updateInfoVisViews();
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
+  updateInfoVisViews();
 
   // add group box to layout
   int width = this->width();
