@@ -572,7 +572,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     deleteAllWidgets(true);
 
-    QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
+    QGroupBox* groupBox = new QGroupBox(m_high_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
 
