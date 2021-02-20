@@ -90,6 +90,16 @@ void GLWidget::init(DataContainer* data_container)
   // objects manager with all objects data
   m_opengl_mngr = new OpenGLManager(m_data_container);
 
+  Object* object = m_data_container->getObject(m_selected_hvgx_id);
+  if (object != nullptr)
+  {
+    m_parent_id = object->getParentID();
+  }
+  else
+  {
+    m_parent_id = 0;
+  }
+
   // graph manager with 4 graphs and 2D space layouted data
   //m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
 
@@ -148,6 +158,12 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int zSlice = program->uniformLocation("slice_z");
   if (zSlice >= 0) program->setUniformValue(zSlice, m_shared_resources->slice_depth);
+
+  int is_overview = program->uniformLocation("is_overview");
+  if (is_overview >= 0) program->setUniformValue(is_overview, m_is_overview_widget);
+
+  int curr_hovered = program->uniformLocation("currently_hovered_id");
+  if (curr_hovered >= 0) program->setUniformValue(curr_hovered, *m_shared_resources->currently_hovered_widget);
 
   GL_Error();
 
@@ -382,6 +398,16 @@ int GLWidget::pickObject(QMouseEvent* event)
   QString oname = QString::fromUtf8(name.c_str());
   setHoveredName(oname);
   return hvgxID;
+}
+
+void GLWidget::enterEvent(QEvent* event)
+{
+  m_shared_resources->currently_hovered_widget = &m_parent_id;
+}
+void GLWidget::leaveEvent(QEvent* event)
+{
+  int zero = 0;
+  m_shared_resources->currently_hovered_widget = &zero;
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)

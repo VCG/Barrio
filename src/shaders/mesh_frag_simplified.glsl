@@ -22,6 +22,8 @@ in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
 in float        frag_slice_z;
 in flat int     frag_is_skeleton;
+in flat int     frag_is_overview;
+in flat int     frag_currently_hovered_id;
 
 uniform bool          show_mito_distance_to_cell;
 uniform int           main_mito;
@@ -97,6 +99,12 @@ int isVisible(int hvgx)
 
 int isHighlighted(int hvgx)
 {
+  // highlight in overview widget
+  if(frag_is_overview == 1 && hvgx == frag_currently_hovered_id)
+  {
+    return 1;
+  }
+
   for(int i = 0; i < SSBO_highlighted.length(); i++)
   {
     if(hvgx == SSBO_highlighted[i])

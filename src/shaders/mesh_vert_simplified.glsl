@@ -15,6 +15,8 @@ uniform mat4    pMatrix;
 uniform mat4    rMatrix;
 
 uniform float slice_z;
+uniform int   is_overview;
+uniform int   currently_hovered_id;
 
 out vec4          normal_frag;
 out vec3          eye_frag;
@@ -24,6 +26,11 @@ out vec4          frag_vert_pos;
 flat out int      frag_hvgx;
 flat out int      frag_is_skeleton;
 out float         frag_slice_z;
+
+flat out int         frag_is_overview;
+flat out int         frag_currently_hovered_id;
+
+
 
 vec3 eye = vec3(0.5, 0.5, 1.0);
 
@@ -48,4 +55,7 @@ void main()
     frag_hvgx = hvgxID;
     frag_slice_z = slice_z;
     frag_is_skeleton = is_skeleton;
+
+    frag_currently_hovered_id = currently_hovered_id;
+    frag_is_overview = is_overview;
 }

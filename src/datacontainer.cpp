@@ -1428,9 +1428,14 @@ std::string DataContainer::getObjectName(int hvgxID)
 //
 Object* DataContainer::getObject(int hvgxID)
 {
-  if (m_objects.find(hvgxID) == m_objects.end())
-    return 0;
-  else return m_objects.at(hvgxID);
+  if (hvgxID > 0 && m_objects.count(1) == 1)
+  {
+    return m_objects.at(hvgxID);
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 Object* DataContainer::getObjectByName(QString name)

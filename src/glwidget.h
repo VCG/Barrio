@@ -34,6 +34,8 @@ struct SharedGLResources
   GLuint*        mito_cell_distance_colormap;
   GLuint*        image_stack_volume;
 
+  int*           currently_hovered_widget;
+
   QOpenGLBuffer* slice_vertex_vbo;
 
   float         cell_opacity;
@@ -174,6 +176,9 @@ protected:
   void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
   void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+  void enterEvent(QEvent* event) Q_DECL_OVERRIDE;
+  void leaveEvent(QEvent* event) Q_DECL_OVERRIDE;
+
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
 
@@ -230,6 +235,7 @@ protected:
   SharedGLResources*                   m_shared_resources;
 
   int                                 m_selected_hvgx_id;
+  int                                 m_parent_id;
 
   QOpenGLShaderProgram*                m_mesh_program;
   QOpenGLVertexArrayObject             m_mesh_vao;
