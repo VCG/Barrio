@@ -484,11 +484,11 @@ void MainWidget::updateGroupBoxStyle()
     box->setObjectName(QString::number(hvgx));
     if (groupBoxes->contains(hvgx))
     {
-      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 2px solid orange; }");
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 2px solid orange; margin-top: 1ex;} QGroupBox::title{ subcontrol-origin: margin; subcontrol-position: top left; padding: 0 3px;}");
     }
     else
     {
-      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; }");
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; margin-top: 1ex;} QGroupBox::title{ subcontrol-origin: margin; subcontrol-position: top left; padding: 0 3px;}");
     }
   }
 }
