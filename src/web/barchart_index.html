@@ -3,7 +3,8 @@
 <style>
 
     .axis {
-        font: 10px sans-serif;
+        font-size: 15px;
+        font-family: 'Roboto', sans-serif;
     }
 
     .axis path, .axis line {
@@ -18,7 +19,8 @@
         width: auto;
         height: auto;
         padding: 3px;
-        font: 12px sans-serif;
+        font-size: 12px;
+        font-family: 'Roboto', sans-serif;
         background: white;
         border: 0px;
         border-radius: 4px;
@@ -38,7 +40,7 @@
 </style>
 <body>
 
-<div id="chart" style="width: auto; height: 400px">
+<div id="chart" style="width: 100%; height: 400px">
 
 </div>
 
@@ -53,7 +55,7 @@
         let jsobject = channel.objects.barchart_data;
         let json_string = jsobject.json_string;
 
-        let m = {top: 10, right: 10, bottom: 50, left: 110},
+        let m = {top: 10, right: 10, bottom: 50, left: 60},
             w = $("#chart").width() - m.left - m.right,
             h = $("#chart").height() - m.top - m.bottom;
 
@@ -110,6 +112,17 @@
             .call(xAxis)
             .selectAll("text")
             .style("text-anchor", "middle");
+
+        svg.append("g")
+            .classed("y axis", true)
+            .call(yAxis)
+            .append("text")
+            .classed("label", true)
+            .attr("transform", "rotate(-90)")
+            .attr("y", -m.left + 10)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("distance to synapse in microns");
 
         svg.append("g")
             .attr("class", "y axis")
