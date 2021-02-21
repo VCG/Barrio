@@ -21,14 +21,14 @@
         padding: 3px;
         font-size: 14px;
         font-family: 'Roboto', sans-serif;
-        background: white;
+        background: lightgray;
         border: 0px;
         border-radius: 4px;
         pointer-events: none;
     }
 
     .label {
-        ont-size: 12px;
+        ont-size: 11px;
         font-family: 'Roboto', sans-serif;
     }
 
@@ -48,7 +48,7 @@
 </style>
 <body>
 
-<div id="matrix" style="width: calc(100vw  - 0px); height: 500px">
+<div id="matrix" style="width: 100%; height: 500px">
 
 </div>
 
@@ -69,14 +69,14 @@
         let my_data = JSON.parse(json_string);
         console.log(my_data)
 
-        let margin = {top: 20, right: 50, bottom: 10, left: 41};
+        let margin = {top: 20, right: 20, bottom: 10, left: 60};
         let w = $("#matrix").width() - margin.left - margin.right;
         let h = $("#matrix").height() - margin.top - margin.bottom;
 
         let svg = d3.select("#matrix")
             .append('svg')
             .attr({
-                'width': w,
+                'width': w + margin.left,
                 'height': h
             });
 
@@ -93,7 +93,7 @@
 
         let rect_height = 30;
         let rect_margin = 4;
-        let rect_width = (w - margin.right) / number_of_cols - rect_margin;
+        let rect_width = (w - margin.right - margin.left) / number_of_cols - rect_margin;
 
         let min_value = 0;
 
@@ -107,8 +107,6 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-
-
         let corr = [];
         let max_distance = 0.0;
         for (let i = 0; i < my_data.length; ++i) {
@@ -121,7 +119,7 @@
             }
         }
 
-        var corXscale = d3.scale.ordinal().rangeRoundBands([margin.left,  w - margin.right]),
+        let corXscale = d3.scale.ordinal().rangeRoundBands([margin.left, w - margin.right]),
             corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
             corColScale = d3.scale.linear().domain([min_value, max_distance]).range([min_color, max_color]);
 
@@ -186,8 +184,8 @@
                 .style("opacity", .9);
 
             div.text(text)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+                .style("left", (d3.event.pageX - 75) + "px")
+                .style("top", (d3.event.pageY - 50) + "px");
 
             jsobject.setHighlightedStructure(selected.name);
 
@@ -233,7 +231,7 @@
             let padding = 9;
             let width = 320;
             let innerWidth = width - (padding * 2);
-            let barHeight = 8;
+            let barHeight = 5;
 
             let xScale = d3.scale.linear()
                 .range([0, innerWidth])
@@ -248,6 +246,7 @@
                 .style("fill", "url(#myGradient)");
 
             legend.append("g")
+                .attr("class", "label")
                 .call(xAxis)
                 .select(".domain").remove();
         }
