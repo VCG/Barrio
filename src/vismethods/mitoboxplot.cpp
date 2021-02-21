@@ -114,7 +114,9 @@ Q_INVOKABLE QString MitoBoxPlotData::getData()
 
 Q_INVOKABLE void MitoBoxPlotData::setHighlightedFrame(const QString& name)
 {
+  
   int hvgx = m_datacontainer->getIndexByName(name);
+  qDebug() << hvgx;
   if (!m_global_vis_parameters->highlighted_group_boxes.contains(hvgx))
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
@@ -141,10 +143,50 @@ Q_INVOKABLE void MitoBoxPlotData::removeHighlightedFrame(const QString& name_to_
 
 Q_INVOKABLE void MitoBoxPlotData::setHighlightedStructure(const int parentID, int spineNumber)
 {
-  return Q_INVOKABLE void();
+  Object* parent = m_datacontainer->getObjectsMapPtr()->at(parentID);
+  std::vector<int>* children_ids = parent->getChildrenIDs();
+  for (int i = 0; i < children_ids->size(); i++)
+  {
+    int id = children_ids->at(i);
+    Object* child = m_datacontainer->getObjectsMapPtr()->at(id);
+    QString name = child->getName().c_str();
+    int my_spine_number = name.split("_")[2].toInt(); // spine number is contained on the 2 position in the array
+
+    if (child->getObjectType() == Object_t::SPINE && my_spine_number == spineNumber && !m_global_vis_parameters->highlighted_objects.contains(id))
+    {
+      m_global_vis_parameters->highlighted_objects.append(id);
+    }
+  }
 }
 
 Q_INVOKABLE void MitoBoxPlotData::removeHighlightedStructure(const int parentID, int spineNumber)
 {
-  return Q_INVOKABLE void();
+  int hvgx_id = 0;
+
+  Object* parent = m_datacontainer->getObjectsMapPtr()->at(parentID);
+  std::vector<int>* children_ids = parent->getChildrenIDs();
+  for (int i = 0; i < children_ids->size(); i++)
+  {
+    int id = children_ids->at(i);
+    Object* child = m_datacontainer->getObjectsMapPtr()->at(id);
+    QString name = QString::fromUtf8(child->getName().c_str());
+    int my_spine_number = name.split("_")[2].toInt(); // spine number is contained on the 2 position in the array
+
+    if (my_spine_number == spineNumber)
+    {
+      hvgx_id = id;
+    }
+  }
+
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_objects;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
 }

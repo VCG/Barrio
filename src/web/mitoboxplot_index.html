@@ -127,6 +127,12 @@
             })
             .attr("width", cell_width)
             .attr("class", "cell");
+            // .on("mouseenter", function () {
+            //     jsobject.setHighlightedFrame(mito.name);
+            // })
+            // .on("mouseleave", function () {
+            //     jsobject.removeHighlightedFrame(mito.name);
+            // });
 
 
         let boxWidth = 15;
@@ -144,7 +150,7 @@
                     .attr("height", y(mito.start) - y(mito.end))
                     .attr("width", boxWidth)
                     .attr("class", "mito")
-                    .on("mouseover", function () {
+                    .on("mouseenter", function () {
 
                         div.transition()
                             .duration(200)
@@ -154,14 +160,14 @@
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 28) + "px");
 
-                        jsobject.setHighlightedFrame(d.name);
+                        jsobject.setHighlightedFrame(mito.name);
                     })
-                    .on("mouseout", function () {
+                    .on("mouseleave", function () {
                         div.transition()
                             .duration(100)
                             .style("opacity", 0);
 
-                        jsobject.removeHighlightedFrame(d.name);
+                        jsobject.removeHighlightedFrame(mito.name);
                     });
             }
 
@@ -186,17 +192,14 @@
                 .attr("y2", function (spine) {
                     return y(spine.start)
                 })
-                .attr("class", "spine");
-        }
-
-        function hasMitoCoverage(cell, start) {
-            let mitos = cell.mitochondria;
-            for (let i = 0; i < mitos.length; i++) {
-                if (mitos[i].start <= start && start <= mitos[i].end) {
-                    return true;
-                }
-            }
-            return false
+                .attr("class", "spine")
+                .on("mouseenter", function (spine) {
+                    console.log(spine);
+                    jsobject.setHighlightedStructure(data[i].id, spine.number);
+                })
+                .on("mouseleave", function (spine) {
+                    jsobject.removeHighlightedStructure(data[i].id, spine.number);
+                });
         }
     })
 
