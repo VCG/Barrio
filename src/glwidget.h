@@ -34,16 +34,25 @@ struct SharedGLResources
   GLuint*        mito_cell_distance_colormap;
   GLuint*        image_stack_volume;
 
+  int*           currently_hovered_widget;
+
   QOpenGLBuffer* slice_vertex_vbo;
 
   float         cell_opacity;
   bool          show_slice;
   float         slice_depth;
 
+  bool          show_related_synapses;
+  double        distance_threshold; 
+
   QVector<int>*   highlighted_objects;
   QVector<int>*   highlighted_group_boxes;
   QVector<int>*   widget_queue;
+
+  QVector<int>*   all_selected_mitos;
 };
+
+
 
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
@@ -67,9 +76,13 @@ public:
   void updateHighlightedSSBO();
   void updateVisibilitySSBO();
   
-  void setVisibleStructures();
+  void setVisibleStructuresSingelObject();
+  void setVisibleStructuresOverView();
+
+  void setVisibleStructures(int id);
 
   void update_synapse_distance_threshold(double distance);
+  void update_visibility();
 
   void updateVisParameters();
 
@@ -163,6 +176,9 @@ protected:
   void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
   void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+  void enterEvent(QEvent* event) Q_DECL_OVERRIDE;
+  void leaveEvent(QEvent* event) Q_DECL_OVERRIDE;
+
 
   void updateMVPAttrib(QOpenGLShaderProgram* program);
 
@@ -219,6 +235,7 @@ protected:
   SharedGLResources*                   m_shared_resources;
 
   int                                 m_selected_hvgx_id;
+  int                                 m_parent_id;
 
   QOpenGLShaderProgram*                m_mesh_program;
   QOpenGLVertexArrayObject             m_mesh_vao;
@@ -245,6 +262,7 @@ protected:
   int                                 m_width, m_height;
   bool                                m_init;
   bool                                m_is_overview_widget;
+  QVector<int>*                       m_all_selected_mitos;
 
   double                              m_distance_threshold;
 

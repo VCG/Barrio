@@ -25,7 +25,7 @@ struct AbstractionPoint {
   int       ID;
 };
 
-enum VisName { MyDistanceTree, MyBarChart, MyDistanceMatrix, MyHistogram, MyViolinChart, MyScatterPlot, MySkeleton, MyMitoBoxPlot, MyTODO2 };
+enum VisName { MyDistanceTree, MyBarChart, MyDistanceMatrix, MyHistogram, MyViolinChart, MyScatterPlot, MySkeleton, MyMitoBoxPlot, MyMitoScatterPlot };
 
 struct Vis 
 {

@@ -24,6 +24,11 @@ rect {
     fill-opacity: 1.0;
 }
 
+.label{
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+}
+
 .d3-tip {
     line-height: 1;
     font-weight: bold;

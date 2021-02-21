@@ -2,7 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent)
   : QOpenGLWidget(parent)
 {
   m_datacontainer = datacontainer;
@@ -11,15 +11,24 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QWid
   setFocusPolicy(Qt::StrongFocus);
 
   m_main_layout = new QGridLayout(this);
+  m_shared_resources.all_selected_mitos = &m_all_selected_mitos;
+
+  int zero = 0;
+  m_shared_resources.currently_hovered_widget = &zero;
 
   m_abstraction_space = new AbstractionSpace(datacontainer);
+  m_vis_settings = vis_settings;
+  m_vis_params_widget = relatedWidgets.vis_params;
+  m_overview = relatedWidgets.overview;
 }
 
-double MainWidget::on_synapse_distance_slider_changed(int value)
+void MainWidget::on_synapse_distance_slider_changed(int value)
 {
   double distance = ((double)value / 100.0) * sqrt(3) * MESH_MAX_X;
-
+  m_shared_resources.distance_threshold = distance;
   m_abstraction_space->setThresholdDistance(distance);
+
+  QToolTip::showText(QCursor::pos(), QString("%1").arg(distance), nullptr);
 
   for (auto const& [id, widget] : m_opengl_views)
   {
@@ -30,8 +39,6 @@ double MainWidget::on_synapse_distance_slider_changed(int value)
   }
 
   updateInfoVisViews();
-
-  return distance;
 }
 
 void MainWidget::on_opacity_slider_changed(int value)
@@ -56,32 +63,32 @@ void MainWidget::set_slice_position(int value)
 
 void MainWidget::on_widget_close_button_clicked()
 {
-  qDebug() << "Close button pressed";
+  //qDebug() << "Close button pressed";
 
-  QPushButton* button = qobject_cast<QPushButton*>(sender());
-  QWidget* widget_to_delete = button->parentWidget()->parentWidget();
+  //QPushButton* button = qobject_cast<QPushButton*>(sender());
+  //QWidget* widget_to_delete = button->parentWidget()->parentWidget();
 
-  int id_to_delete = 0;
-  for (auto& i : m_groupboxes) {
-    if (i.second == widget_to_delete) {
-      id_to_delete = i.first;
-      break; // to stop searching
-    }
-  }
+  //int id_to_delete = 0;
+  //for (auto& i : m_groupboxes) {
+  //  if (i.second == widget_to_delete) {
+  //    id_to_delete = i.first;
+  //    break; // to stop searching
+  //  }
+  //}
 
-  QList<int> currentlySelectedIDs = getSelectedIDs();
+  //QList<int> currentlySelectedIDs = getSelectedIDs();
 
-  deleteAllWidgets(false);
+  //deleteAllWidgets(false);
 
-  for each (int ID in currentlySelectedIDs)
-  {
-    if (ID != id_to_delete)
-    {
-      addWidgetGroup(ID, false);
-    }
-  }
+  //for each (int ID in currentlySelectedIDs)
+  //{
+  //  if (ID != id_to_delete)
+  //  {
+  //    addWidgetGroup(ID, false);
+  //  }
+  //}
 
-  updateInfoVisViews();
+  //updateInfoVisViews();
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
@@ -102,7 +109,7 @@ void MainWidget::wheelEvent(QWheelEvent* event)
   {
     int delta = event->delta();
 
-    if (event->orientation() == Qt::Vertical) 
+    if (event->orientation() == Qt::Vertical)
     {
       for (auto const& [id, widget] : m_opengl_views)
       {
@@ -135,7 +142,7 @@ void MainWidget::OnWidgetClose()
   if (m_selected_standard_items.count(id_to_delete))
   {
     QList<QStandardItem*> items = m_selected_standard_items[id_to_delete];
-    
+
     items[0]->setBackground(Qt::white);
     items[1]->setBackground(Qt::white);
 
@@ -143,6 +150,8 @@ void MainWidget::OnWidgetClose()
   }
 
   QList<int> currentlySelectedIDs = getSelectedIDs();
+
+  m_all_selected_mitos.removeOne(id_to_delete);
 
   deleteAllWidgets(false);
 
@@ -159,10 +168,16 @@ void MainWidget::OnWidgetClose()
   qDebug() << "close widget";
 }
 
+void MainWidget::histogram_slider_changed(int bins)
+{
+  QToolTip::showText(QCursor::pos(), QString("%1").arg(bins), nullptr);
+  setNumberOfBinsForHistogram(bins);
+}
+
 
 void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
 {
-  QFrame* frame = new QFrame;
+  /*QFrame* frame = new QFrame;
   frame->setMaximumHeight(40);
   QHBoxLayout* horizontal_layout = new QHBoxLayout();
 
@@ -175,7 +190,7 @@ void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
   frame->setLayout(horizontal_layout);
 
   groupBox->layout()->addWidget(frame);
-  connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));
+  connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));*/
 
 }
 
@@ -186,18 +201,18 @@ void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 {
-  QString name;
-  if (isOverviewWidget)
+  if (ID < 0) // avoid readding the overview widget
   {
-    name = "Overview";
-  }
-  else
-  {
-    name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+    return false;
   }
 
+  
+  QString name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
+  
   m_abstraction_space->addToSelectedIndices(ID);
   m_lastID = ID;
+
+  QJsonObject settings = m_vis_settings->value((int)m_vis_methods.method->getType());
 
   QGroupBox* groupBox = new QGroupBox(name, this);
   QVBoxLayout* vbox = new QVBoxLayout;
@@ -208,7 +223,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   if (m_number_of_entities == NumberOfEntities::LOW)
   {
     //addCloseButtonToWidget(groupBox);
-    addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone(), settings);
 
     QFrame* line = new QFrame;
     line->setFrameShape(QFrame::HLine);
@@ -220,11 +235,9 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   }
   // medium and high configuration
   else {
-    updateInfoVisViews();
-   
-
     addGLWidget(ID, groupBox, isOverviewWidget);
   }
+  updateInfoVisViews();
 
   // add group box to layout
   int width = this->width();
@@ -246,7 +259,21 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 
   m_number_of_selected_structures++;
 
+  updateOverviewWidget();
+
   return true;
+}
+
+void MainWidget::updateOverviewWidget()
+{
+  // update visibility of overview
+  for (auto const& [id, widget] : m_opengl_views)
+  {
+    if (id <= 0) // overview widget
+    {
+      widget->update_visibility();
+    }
+  }
 }
 
 //bool MainWidget::deleteInfoVisWidget(int ID)
@@ -397,8 +424,10 @@ bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
   return true;
 }
 
-bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod)
+bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings)
 {
+  m_specific_vis_parameters.settings = settings;
+
   QWebEngineView* widget = visMethod->initVisWidget(ID, m_specific_vis_parameters);
   groupBox->layout()->addWidget(widget);
 
@@ -421,6 +450,11 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
   groupBox->layout()->addWidget(widget);
 
   m_opengl_views[ID] = widget;
+
+  if (!m_all_selected_mitos.contains(ID))
+  {
+    m_all_selected_mitos.append(ID);
+  }
 
   return true;
 }
@@ -450,11 +484,11 @@ void MainWidget::updateGroupBoxStyle()
     box->setObjectName(QString::number(hvgx));
     if (groupBoxes->contains(hvgx))
     {
-      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 2px solid orange; }");
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 2px solid orange; margin-top: 1ex;} QGroupBox::title{ subcontrol-origin: margin; subcontrol-position: top left; padding: 0 3px;}");
     }
     else
     {
-      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; }");
+      box->setStyleSheet("QGroupBox#" + QString::number(hvgx) + "{ border: 1px solid lightgray; margin-top: 1ex;} QGroupBox::title{ subcontrol-origin: margin; subcontrol-position: top left; padding: 0 3px;}");
     }
   }
 }
@@ -488,6 +522,10 @@ void MainWidget::setColormap(QString name)
 void MainWidget::setVisMethod(Vis vis)
 {
   m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
+  QJsonObject settings = m_vis_settings->value(vis.id);
+
+  setupVisParams(vis, settings);
+
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
@@ -518,7 +556,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     m_groupboxes[medium_entities_id] = groupBox;
 
-    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
     for each (int ID in currentlySelectedIDs)
     {
@@ -534,7 +572,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     deleteAllWidgets(true);
 
-    QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
+    QGroupBox* groupBox = new QGroupBox(m_high_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
     groupBox->setLayout(vbox);
 
@@ -543,12 +581,84 @@ void MainWidget::setVisMethod(Vis vis)
 
     m_groupboxes[high_entities_id] = groupBox;
 
-    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone());
+    addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
     for each (int ID in currentlySelectedIDs)
     {
       addWidgetGroup(ID, false);
     }
+  }
+}
+
+void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
+{
+  clearWidget(m_vis_params_widget);
+
+  QString spec_params_value = settings.value("params").toString();
+
+  if (vis_method.name == VisName::MyHistogram)
+  {
+    QString fixed = "fixed";
+    QString adjustable = "adjustable";
+
+    if (spec_params_value == adjustable)
+    {
+      QGroupBox* number_of_bins_box = new QGroupBox("Number of Histogram Bins");
+      number_of_bins_box->setLayout(new QVBoxLayout);
+
+      QSlider* slider = new QSlider(Qt::Horizontal);
+
+      slider->setValue(m_specific_vis_parameters.number_of_bins);
+      number_of_bins_box->layout()->addWidget(slider);
+
+      m_vis_params_widget->layout()->addWidget(number_of_bins_box);
+
+      QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(histogram_slider_changed(int)));
+    }
+  }
+
+  if (vis_method.name == VisName::MyDistanceTree ||
+      vis_method.name == VisName::MyBarChart || 
+      vis_method.name == VisName::MyDistanceMatrix)
+  {
+    QString related_synapses = "related-synapses";
+    QString surrounding_synapses = "surrounding-synapses";
+
+    if (spec_params_value == related_synapses)
+    {
+      m_shared_resources.show_related_synapses = true;
+    }
+    else if (spec_params_value == surrounding_synapses)
+    {
+      m_shared_resources.show_related_synapses = false;
+
+      QGroupBox* synapse_distance_box = new QGroupBox("Synapse Distance Threshold");
+      synapse_distance_box->setLayout(new QVBoxLayout);
+      QSlider* slider = new QSlider(Qt::Horizontal);
+
+      synapse_distance_box->layout()->addWidget(slider);
+
+      int initial_tick_position = 100.0 / (sqrt(3.0) * MESH_MAX_X);
+      slider->setValue(initial_tick_position);
+      double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+
+      m_shared_resources.distance_threshold = distance_value;
+
+      m_vis_params_widget->layout()->addWidget(synapse_distance_box);
+
+      QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_synapse_distance_slider_changed(int)));
+    }
+  }
+
+}
+
+void MainWidget::clearWidget(QWidget* widget)
+{
+  QLayoutItem* item;
+  while ((item = widget->layout()->takeAt(0)) != NULL)
+  {
+    delete item->widget();
+    delete item;
   }
 }
 
@@ -577,9 +687,11 @@ void MainWidget::initializeGL()
   m_shared_resources.widget_queue = &m_abstraction_space->m_global_vis_parameters.my_add_queue;
 
 
-  // add first widget
-  //addGLWidget(0, true);
-
+  // add overview widget
+  GLWidget* overview = new GLWidget(-3, &m_shared_resources, true, m_overview);
+  overview->init(m_datacontainer);
+  m_opengl_views[-3] = overview;
+  m_overview->layout()->addWidget(overview);
 }
 
 
@@ -591,7 +703,7 @@ void MainWidget::resizeGL(int width, int height)
 void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
-  
+
   updateGroupBoxStyle();
   updateWidgets();
 

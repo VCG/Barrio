@@ -71,7 +71,7 @@ Histogram* Histogram::clone()
 
 bool Histogram::update_needed()
 {
-    return false;
+    return true;
 }
 
 VisType Histogram::getType()

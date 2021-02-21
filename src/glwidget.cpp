@@ -19,7 +19,8 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 {
   m_camera_distance = 1.0;
 
-  m_distance_threshold = 1.0;
+  m_distance_threshold = resources->distance_threshold;
+  m_all_selected_mitos = resources->all_selected_mitos;
 
   m_rotation = QQuaternion();
   //reset rotation
@@ -89,6 +90,16 @@ void GLWidget::init(DataContainer* data_container)
   // objects manager with all objects data
   m_opengl_mngr = new OpenGLManager(m_data_container);
 
+  Object* object = m_data_container->getObject(m_selected_hvgx_id);
+  if (object != nullptr)
+  {
+    m_parent_id = object->getParentID();
+  }
+  else
+  {
+    m_parent_id = 0;
+  }
+
   // graph manager with 4 graphs and 2D space layouted data
   //m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
 
@@ -147,6 +158,12 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 
   int zSlice = program->uniformLocation("slice_z");
   if (zSlice >= 0) program->setUniformValue(zSlice, m_shared_resources->slice_depth);
+
+  int is_overview = program->uniformLocation("is_overview");
+  if (is_overview >= 0) program->setUniformValue(is_overview, m_is_overview_widget);
+
+  int curr_hovered = program->uniformLocation("currently_hovered_id");
+  if (curr_hovered >= 0) program->setUniformValue(curr_hovered, *m_shared_resources->currently_hovered_widget);
 
   GL_Error();
 
@@ -381,6 +398,16 @@ int GLWidget::pickObject(QMouseEvent* event)
   QString oname = QString::fromUtf8(name.c_str());
   setHoveredName(oname);
   return hvgxID;
+}
+
+void GLWidget::enterEvent(QEvent* event)
+{
+  m_shared_resources->currently_hovered_widget = &m_parent_id;
+}
+void GLWidget::leaveEvent(QEvent* event)
+{
+  int zero = 0;
+  m_shared_resources->currently_hovered_widget = &zero;
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
@@ -985,7 +1012,14 @@ void GLWidget::updateHighlightedSSBO()
 void GLWidget::updateVisibilitySSBO()
 {
   makeCurrent();
-  setVisibleStructures();
+  if (!m_is_overview_widget)
+  {
+    setVisibleStructuresSingelObject();
+  }
+  else {
+    setVisibleStructuresOverView();
+  }
+ 
 
   int bufferSize = m_visible_structures.size() * sizeof(int);
 
@@ -998,22 +1032,54 @@ void GLWidget::updateVisibilitySSBO()
   update();
 }
 
-void GLWidget::setVisibleStructures()
+void GLWidget::setVisibleStructuresSingelObject()
 {
-  std::map<int, Object*>* objects_map = m_data_container->getObjectsMapPtr();
   m_visible_structures.clear();
+  setVisibleStructures(m_selected_hvgx_id);
+}
 
-  int currentID = m_selected_hvgx_id;
-  int parentID = objects_map->at(m_selected_hvgx_id)->getParentID();
+void GLWidget::setVisibleStructuresOverView()
+{
+  m_visible_structures.clear();
+  for (auto id : *m_all_selected_mitos)
+  {
+    setVisibleStructures(id);
+  }
+}
+
+void GLWidget::setVisibleStructures(int id)
+{
+  std::map<int, Object*> objects_map = m_data_container->getObjectsMap();
+  
+  Object* object = objects_map.at(id);
+  int parentID = object->getParentID();
 
   m_visible_structures.push_back(parentID);
 
-  Object* parent = objects_map->at(parentID);
+  Object* parent = objects_map.at(parentID);
 
-  std::vector<Object*>* synapses = parent->getSynapses();
-  for (int i = 0; i < synapses->size(); i++)
+  if (m_shared_resources->show_related_synapses)
   {
-    m_visible_structures.push_back(synapses->at(i)->getHVGXID());
+    std::vector<Object*>* synapses = parent->getSynapses();
+    for (int i = 0; i < synapses->size(); i++)
+    {
+      m_visible_structures.push_back(synapses->at(i)->getHVGXID());
+    }
+  }
+  else
+  {
+    std::vector<Object*> synapses = m_data_container->getObjectsByType(Object_t::SYNAPSE);
+
+    for (auto syn : synapses)
+    {
+      std::map<int, double>* distance_map = objects_map.at(id)->get_distance_map_ptr();
+      double distance = distance_map->at(syn->getHVGXID());
+      if (distance < m_distance_threshold)
+      {
+        m_visible_structures.push_back(syn->getHVGXID());
+      }
+
+    }
   }
 
   std::vector<int>* siblings = parent->getChildrenIDs();
@@ -1026,7 +1092,12 @@ void GLWidget::setVisibleStructures()
 void GLWidget::update_synapse_distance_threshold(double distance)
 {
   m_distance_threshold = distance;
-  //updateVisibilitySSBO();
+  updateVisibilitySSBO();
+}
+
+void GLWidget::update_visibility()
+{
+  updateVisibilitySSBO();
 }
 
 

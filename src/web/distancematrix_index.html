@@ -9,8 +9,8 @@
     }
 
     .axis text {
-        font-family: sans-serif;
         font-size: 12px;
+        font-family: 'Roboto', sans-serif;
     }
 
     div.tooltip {
@@ -19,17 +19,17 @@
         width: auto;
         height: auto;
         padding: 3px;
-        font: 12px sans-serif;
-        background: white;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        background: lightgray;
         border: 0px;
         border-radius: 4px;
         pointer-events: none;
     }
 
     .label {
-        font-family: sans-serif;
-        font-size: 12px;
-        font-weight: normal;
+        ont-size: 11px;
+        font-family: 'Roboto', sans-serif;
     }
 
     .selected {
@@ -48,7 +48,7 @@
 </style>
 <body>
 
-<div id="matrix" style="width: calc(100vw  - 0px); height: 500px">
+<div id="matrix" style="width: 100%; height: 500px">
 
 </div>
 
@@ -67,15 +67,16 @@
         let json_string = jsobject.json_string;
 
         let my_data = JSON.parse(json_string);
+        console.log(my_data)
 
-        let margin = {top: 20, right: 50, bottom: 10, left: 41};
+        let margin = {top: 20, right: 20, bottom: 10, left: 60};
         let w = $("#matrix").width() - margin.left - margin.right;
         let h = $("#matrix").height() - margin.top - margin.bottom;
 
         let svg = d3.select("#matrix")
             .append('svg')
             .attr({
-                'width': w,
+                'width': w + margin.left,
                 'height': h
             });
 
@@ -92,10 +93,9 @@
 
         let rect_height = 30;
         let rect_margin = 4;
-        let rect_width = (w - margin.right) / number_of_cols - rect_margin;
+        let rect_width = (w - margin.right - margin.left) / number_of_cols - rect_margin;
 
         let min_value = 0;
-        let max_value = 4;
 
         let min_color = '#800080';
         let max_color = '#ffffff';
@@ -107,19 +107,24 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        var corXscale = d3.scale.ordinal().rangeRoundBands([margin.left,  w - margin.right]),
+        let corr = [];
+        let max_distance = 0.0;
+        for (let i = 0; i < my_data.length; ++i) {
+            for (let j = 0; j < my_data[i].synapses.length; ++j) {
+                let distance = my_data[i].synapses[j].distance;
+                corr.push({row: i, col: j, value: distance});
+                if(max_distance < distance && distance < 99.0){
+                    max_distance = distance;
+                }
+            }
+        }
+
+        let corXscale = d3.scale.ordinal().rangeRoundBands([margin.left, w - margin.right]),
             corYscale = d3.scale.ordinal().rangeRoundBands([(rect_height + rect_margin) * number_of_rows, 0]),
-            corColScale = d3.scale.linear().domain([min_value, max_value]).range([min_color, max_color]);
+            corColScale = d3.scale.linear().domain([min_value, max_distance]).range([min_color, max_color]);
 
         corXscale.domain(d3.range(number_of_cols));
         corYscale.domain(d3.range(number_of_rows));
-
-        let corr = [];
-        for (let i = 0; i < my_data.length; ++i) {
-            for (let j = 0; j < my_data[i].synapses.length; ++j) {
-                corr.push({row: i, col: j, value: my_data[i].synapses[j].distance});
-            }
-        }
 
         let cells = matrix.attr('id', 'cells')
             .selectAll('empty')
@@ -140,7 +145,7 @@
             .attr('width', rect_width)
             .attr('height', rect_height)
             .style('fill', function (d) {
-                if (d.value <= max_value) {
+                if (d.value <= max_distance) {
                     return corColScale(d.value);
                 } else {
                     return undef_color;
@@ -165,7 +170,7 @@
             let selected = my_data[d.row].synapses[d.col];
             let text = selected.name;
 
-            if (d.value < max_value) {
+            if (d.value < max_distance) {
                 text += ' - ' + (d3.format('.2f')(d.value));
             }
 
@@ -179,8 +184,8 @@
                 .style("opacity", .9);
 
             div.text(text)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+                .style("left", (d3.event.pageX - 75) + "px")
+                .style("top", (d3.event.pageY - 50) + "px");
 
             jsobject.setHighlightedStructure(selected.name);
 
@@ -212,7 +217,7 @@
                     'width': w,
                     'height': h
                 })
-            const data = [{"color": min_color, "value": min_value}, {"color": max_color, "value": max_value}];
+            const data = [{"color": min_color, "value": min_value}, {"color": max_color, "value": max_distance}];
             let extent = d3.extent(data, d => d.value);
 
             let defs = svg.append("defs");
@@ -226,14 +231,14 @@
             let padding = 9;
             let width = 320;
             let innerWidth = width - (padding * 2);
-            let barHeight = 8;
+            let barHeight = 5;
 
             let xScale = d3.scale.linear()
                 .range([0, innerWidth])
                 .domain(extent);
 
             let xAxis = d3.svg.axis().scale(xScale)
-                .tickValues([0, 1, 2, 3, 4]);
+                .tickValues([0, max_distance]);
 
             legend.append("rect")
                 .attr("width", innerWidth)
@@ -241,6 +246,7 @@
                 .style("fill", "url(#myGradient)");
 
             legend.append("g")
+                .attr("class", "label")
                 .call(xAxis)
                 .select(".domain").remove();
         }

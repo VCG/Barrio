@@ -8,13 +8,12 @@
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
-
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz" style="width: auto; height: 400px"></div>
+<div id="my_dataviz" style="width: 100%; height: 400px"></div>
 <style>
     .label {
-        font-family: 'Nanum Gothic', sans-serif;
+        font-size: 15px;
+        font-family: 'Roboto', sans-serif;
         text-anchor: middle;
     }
 </style>
@@ -99,7 +98,7 @@
             .attr("x", 0 - (height / 2))
             .attr("dy", "1.5em")
             .attr("class", "label")
-            .text("distance to surface");
+            .text("distance to surface in microns");
 
         svg.append("linearGradient")
             .attr("id", "area-gradient")

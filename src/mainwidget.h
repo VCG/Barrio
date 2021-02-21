@@ -9,15 +9,19 @@
 #include "datacontainer.h"
 #include "globalParameters.h"
 
-
+struct RelatedWidgets {
+  QWidget* vis_params;
+  QGroupBox* overview;
+};
 
 class MainWidget: public QOpenGLWidget, MainOpenGL
 {
   Q_OBJECT;
 public:
-  MainWidget(DataContainer* datacontainer, InputForm* input_form, QWidget* parent = 0);
+  MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent = 0);
   
   bool addWidgetGroup(int ID, bool isOverviewWidget);
+  void updateOverviewWidget();
   //bool deleteInfoVisWidget(int ID);
 
   Vis getVisInfo(int id);
@@ -30,10 +34,10 @@ public:
 
   void addStandardItem(int id, QList<QStandardItem*> items);
 
-  bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod);
+  bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings);
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
-  void setupMainWidget(VisConfiguration vis_config);
+ // void setupMainWidget(VisConfiguration vis_config);
   //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
   void showSlice(bool showSlice);
 
@@ -44,7 +48,11 @@ public:
   void setColormap(QString colormap);
   void setVisMethod(Vis vis);
 
-  double on_synapse_distance_slider_changed(int value);
+  void setupVisParams(Vis vis_method, QJsonObject settings);
+
+  void clearWidget(QWidget* widget_to_clear);
+
+  
   void   on_opacity_slider_changed(int value);
   void   on_slice_position_slider_changed(int value);
   void   set_slice_position(int value);
@@ -64,6 +72,10 @@ public slots:
   void on_widget_close_button_clicked();
   void OnWidgetClose();
 
+  // params slots
+  void histogram_slider_changed(int bins);
+  void on_synapse_distance_slider_changed(int value);
+
 private:
   DataContainer* m_datacontainer;
   InputForm* m_input_form; // bad
@@ -73,11 +85,18 @@ private:
   std::map<int, IVisMethod*>  m_infovis_views;
   std::map<int, QFrame*>      m_seperation_elements;
 
+  QVector<int>                m_all_selected_mitos;
+
+
   QList<int>    getSelectedIDs();
 
   QMap<int, QList<QStandardItem*>> m_selected_standard_items;
+  QMap<int, QJsonObject>* m_vis_settings;
 
-  QGridLayout* m_main_layout;
+  QGridLayout*  m_main_layout;
+  QGroupBox*    m_overview;
+
+  QWidget*      m_vis_params_widget;
 
   SharedGLResources m_shared_resources;
 
@@ -126,9 +145,9 @@ private:
   int m_number_of_selected_structures = 0;
   NumberOfEntities m_number_of_entities;
 
-  QString m_low_detail_name = "Low Detail";
-  QString m_medium_detail_name = "Medium Detail";
-  QString m_high_detail_name = "High Detail";
+  QString m_low_detail_name = "Low Scale";
+  QString m_medium_detail_name = "Medium Scale";
+  QString m_high_detail_name = "High Scale";
 
   
 

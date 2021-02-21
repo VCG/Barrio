@@ -37,9 +37,16 @@ public:
   void setJSONString(QString json) { m_json_string = json; };
   void setSelectedStructures(QString structures) { m_selected_structures_json = structures; };
 
+  void setXLabel(QString label) { m_x_axis_label = label; };
+  void setYLabel(QString label) { m_y_axis_label = label; };
+
   int m_hvgxID;
+
   QString m_json_string;
   QString m_selected_structures_json; 
+
+  QString m_x_axis_label;
+  QString m_y_axis_label; 
 
   GlobalVisParameters* m_global_vis_parameters;
   DataContainer* m_datacontainer;
@@ -54,6 +61,7 @@ public:
 
   QString createJSONString();
   QString createSelectedObjectsJSON(QList<int>* selectedObjects);
+  float getMitoSpineCoverage(QJsonObject mito, QJsonArray spines);
 
   //inherited functions
   QWebEngineView* initVisWidget(int ID, SpecificVisParameters params);
@@ -73,6 +81,8 @@ private:
 
   QString m_title;
   QString m_index_filename = "web/scatter.html";
+
+  QJsonObject m_settings;
 
   GlobalVisParameters* m_global_vis_parameters;
   QWebEngineView* m_web_engine_view;

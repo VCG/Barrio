@@ -22,6 +22,8 @@ in vec4         frag_vert_pos;
 in flat int     frag_hvgx;
 in float        frag_slice_z;
 in flat int     frag_is_skeleton;
+in flat int     frag_is_overview;
+in flat int     frag_currently_hovered_id;
 
 uniform bool          show_mito_distance_to_cell;
 uniform int           main_mito;
@@ -67,8 +69,15 @@ vec3 lightColor2 = vec3(0.7, 0.7, 0.7);
 
 vec3 lightDir1 = vec3(-2.5f, -2.5f, -0.9f);
 vec3 lightDir2 = vec3(2.5f, 2.5f, 1.0f);
+
 float k_a = 0.3;
+float k_d = 0.8;
 float k_s = 0.5;
+
+vec3 selected_color =  vec3(1.0, 0.65, 0.0); // orange
+vec3 mito_standard = vec3(1.0, 0.0, 0.0); // red
+vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
+vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
 
 int isVisible(int hvgx)
 {
@@ -90,6 +99,12 @@ int isVisible(int hvgx)
 
 int isHighlighted(int hvgx)
 {
+  // highlight in overview widget
+  if(frag_is_overview == 1 && hvgx == frag_currently_hovered_id)
+  {
+    return 1;
+  }
+
   for(int i = 0; i < SSBO_highlighted.length(); i++)
   {
     if(hvgx == SSBO_highlighted[i])
@@ -110,15 +125,15 @@ vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
 
   // diffuse component
   float diff = max(dot(N, L), 0.0);
-  vec3 diffuse = diff * light_color;
+  vec3 diffuse = k_d * diff * light_color;
   
   // specular component
   vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
   vec3 reflectDir = reflect(-L, N);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
   vec3 specular = k_s * spec * light_color;  
 
-    return (ambient + diffuse + specular) * obj_color;
+  return (ambient + diffuse + specular) * obj_color;
 }
 
 vec4 computeColor()
@@ -128,7 +143,7 @@ vec4 computeColor()
   
   if(isHighlighted(frag_hvgx) == 1)
   {
-  	obj_color = vec3(1.0, 0.65, 0.0); //orange
+  	obj_color = selected_color;
   }
   else if(frag_structure_type == MITO)
   {
@@ -140,18 +155,18 @@ vec4 computeColor()
       }
       else
       {
-        obj_color = vec3(1.0, 0.0, 0.0);
+        obj_color = mito_standard;
       }
     }
     else
     {
-      //obj_color = vec3(0.0, 1.0, 0.0);
+      obj_color = mito_standard;
     }
     
   } 
   else if(frag_structure_type == SYNPS)
   {
-    obj_color = vec3(0.58, 0.0, 0.83);
+    obj_color = synapse_color;
   }
   else if(frag_structure_type == SLICE)
   {
@@ -162,17 +177,17 @@ vec4 computeColor()
   {
     if(frag_is_skeleton == 1)
     {
-      obj_color = vec3(1.0, 0.0, 0.0); //vec3(texture(mito_colormap, frag_cell_distance / 13.0).xyz);
+      obj_color = mito_standard;
     }
     else
     {
-      obj_color = vec3(0.6, 1.0, 0.6);
+      obj_color = neurite_color;
     }
     
   } 
   else
   {
-    obj_color = vec3(0.6, 1.0, 0.6);
+    obj_color = neurite_color;
   }
 
   vec3 result;
@@ -187,12 +202,6 @@ vec4 computeColor()
   {
     result = obj_color;
   }
-
-    //DEBUG
-//  if(frag_structure_type == MITO && frag_is_skeleton == 0)
-//  {
-//    out_color = vec4(result, 0.0);
-//  }
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {

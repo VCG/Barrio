@@ -19,8 +19,8 @@
     }
 
     .label {
-        font-family: 'Nanum Gothic', sans-serif;
-        text-anchor: middle;
+        font-size: 15px;
+        font-family: 'Roboto', sans-serif;
     }
 
     .mito {
@@ -43,7 +43,7 @@
 </style>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz" style="width: auto; height: 400px"></div>
+<div id="my_dataviz" style="width: 100%; height: 400px"></div>
 
 <script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
 <script crossorigin="anonymous"
@@ -57,10 +57,9 @@
         let json_string = jsobject.json_string;
         let data = JSON.parse(json_string);
 
-        // set the dimensions and margins of the graph
         let margin = {top: 10, right: 30, bottom: 30, left: 40},
-            width = 460 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
+            width = $("#my_dataviz").width() - margin.left - margin.right,
+            height = $("#my_dataviz").height() - margin.top - margin.bottom;
 
         // Append Div for tooltip to SVG
         let div = d3.select("body")
@@ -88,15 +87,28 @@
             .domain(cell_names)
             .paddingInner(1)
             .paddingOuter(.5);
+
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x))
 
         // Show the Y scale
         let y = d3.scaleLinear()
-            .domain([0, 6])
+            .domain([0, 7])
             .range([height, 0]);
+
         svg.append("g").call(d3.axisLeft(y))
+
+        svg.append("g")
+            .classed("y axis", true)
+            .call(y)
+            .append("text")
+            .classed("label", true)
+            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left - 1)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("cell length in microns");
 
         let cell_width = 50
         svg.selectAll("cells")
@@ -142,14 +154,14 @@
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 28) + "px");
 
-                        //jsobject.setHighlightedFrame(d.name);
+                        jsobject.setHighlightedFrame(d.name);
                     })
                     .on("mouseout", function () {
                         div.transition()
                             .duration(100)
                             .style("opacity", 0);
 
-                        //jsobject.removeHighlightedFrame(d.name);
+                        jsobject.removeHighlightedFrame(d.name);
                     });
             }
 

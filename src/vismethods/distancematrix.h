@@ -49,6 +49,7 @@ public:
 
 private:
   DistanceMatrixData* data;
+  QJsonObject m_settings; 
 
   DataContainer* m_datacontainer;
   QString m_title;

@@ -31,7 +31,7 @@ public:
 
   QMap<int, QGroupBox*> m_selection_boxes;
   QMap<int, Vis> m_visualizations;
-
+  QMap<int, QJsonObject> m_vis_settings;
 
   void initVisMethods();
 
@@ -61,7 +61,6 @@ public slots:
 
   void on_vis_clicked();
 
-  //void on_synapse_distance_slider_changed(int value);
   void on_slice_position_slider_changed(int value);
   void on_opacity_slider_changed(int value);
   void on_colormap_changed(QString text);
@@ -99,17 +98,12 @@ private:
   DataContainer* m_data_container;
 
   void initializeSlicePositionSlider();
-  //void initializeSynapseThresholdSlider();
   void initializeOpacitySlider();
   void initializeColormapComboBox();
 
   void initializeVisualizationPresets();
 
   void addVisualizationSelection(QLayout* layout, QString scale, int vis_id);
-
-  
-
-
 };
 
 #endif // MAINWINDOW_H
