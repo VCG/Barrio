@@ -73,7 +73,7 @@
                 "translate(" + 0 + " ," +
                 (height + margin.top + 30) + ")")
             .attr("class", "label")
-            .text("Distance to cell boundary");
+            .text("Distance to cell boundary in microns");
 
         // text label for the y axis
         svg.append("text")
@@ -82,7 +82,7 @@
             .attr("x", 0 - (height / 2))
             .attr("dy", "1.0em")
             .attr("class", "label")
-            .text("% of surface");
+            .text("% of mito surface");
 
         // A function that builds the graph for a specific value of bin
         function update(nBin) {
