@@ -394,7 +394,7 @@
       {
         "name": "spine03_solid",
         "number": 3,
-        "start": 1.533,
+        "start": 1.62,
         "length": "incomplete",
         "spine_sa": "incomplete",
         "volume": "incomplete"
@@ -487,7 +487,7 @@
       {
         "name": "spine05_solid",
         "number": 5,
-        "start": 2.58,
+        "start": 2.7,
         "length": 0.8004719765,
         "spine_sa": "incomplete",
         "volume": "incomplete"
@@ -503,7 +503,7 @@
       {
         "name": "spine07_solid",
         "number": 7,
-        "start": 2.551,
+        "start": 2.5,
         "length": "incomplete",
         "spine_sa": "incomplete",
         "volume": "incomplete"
@@ -519,7 +519,7 @@
       {
         "name": "spine09_solid",
         "number": 9,
-        "start": 4.164,
+        "start": 4.1,
         "length": 1.8657855916,
         "spine_sa": 1.52651220139796,
         "volume": 0.142047102436462
@@ -527,7 +527,7 @@
       {
         "name": "spine10_solid",
         "number": 10,
-        "start": 4.164,
+        "start": 4.2,
         "length": "incomplete",
         "spine_sa": "incomplete",
         "volume": "incomplete"
@@ -535,7 +535,7 @@
       {
         "name": "spine11_solid",
         "number": 11,
-        "start": 4.125,
+        "start": 4.3,
         "length": 1.4990900482,
         "spine_sa": 0.703396370765403,
         "volume": 0.04132924286316
@@ -588,7 +588,7 @@
       {
         "name": "spine04_solid",
         "number": 4,
-        "start": 3.006,
+        "start": 3.1,
         "length": 1.2260798433,
         "spine_sa": 0.872602498315245,
         "volume": 0.0648723789394141
@@ -596,7 +596,7 @@
       {
         "name": "spine05_solid",
         "number": 5,
-        "start": 3.006,
+        "start": 3.2,
         "length": 2.2040111729,
         "spine_sa": 1.00650548592602,
         "volume": 0.068481993653767
@@ -636,7 +636,7 @@
       {
         "name": "spine10_solid",
         "number": 10,
-        "start": 3.006,
+        "start": 3.000,
         "length": 1.2562209570,
         "spine_sa": 0.674670729466697,
         "volume": 0.0387752045886706
@@ -807,7 +807,7 @@
       {
         "name": "spine05_solid",
         "number": 5,
-        "start": 4.40,
+        "start": 4.25,
         "length": 1.4088154546,
         "spine_sa": 0.966047522437293,
         "volume": 0.0639416593858741
@@ -823,7 +823,7 @@
       {
         "name": "spine07_solid",
         "number": 7,
-        "start": 4.554,
+        "start": 2.8,
         "length": 1.7361488646,
         "spine_sa": 1.37604236118932,
         "volume": 0.122073252538428
@@ -915,7 +915,7 @@
       {
         "name": "spine01_solid",
         "number": 1,
-        "start": 0.97,
+        "start": 1.1,
         "length": "incomplete",
         "spine_sa": "incomplete",
         "volume": "incomplete"
