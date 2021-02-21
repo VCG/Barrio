@@ -88,7 +88,7 @@
             "attribute": "min-distance-to-cell"
           },
           "y-axis": {
-            "label": "Percentage of surface closer than X to cell",
+            "label": "% of surface closer than 0.05 microns to cell",
             "attribute": "surf-percentage"
           },
           "params": "fixed"
