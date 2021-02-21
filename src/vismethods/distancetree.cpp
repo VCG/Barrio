@@ -130,7 +130,7 @@ QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThresho
         }
       }
       newickString = newickString.left(newickString.lastIndexOf(","));
-      newickString = "(" + newickString + ")" + root_name;
+      newickString = "(" + newickString + ")" + root_name + ":1.0";
     }
 
   }
@@ -186,7 +186,7 @@ QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThresho
       newickString += syn_sub_newick + ",";
     }
     newickString = newickString.left(newickString.lastIndexOf(","));
-    newickString = "(" + newickString + ")" + root_name;
+    newickString = "(" + newickString + ")" + root_name + ":1.0";;
   }
 
   return newickString;

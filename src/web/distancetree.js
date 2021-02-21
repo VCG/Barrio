@@ -9,22 +9,27 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     var tree;
 
-    // default scheme to color by date
-    var coloring_scheme = d3.scale.category10();
-
-    // this will be used to map bootstrap support values to edge thickness
-    var bootstrap_scale = d3.scale.linear().domain([0, 0.5, 0.7, 0.9, 0.95, 1]).range([1, 2, 3, 4, 5, 6]).interpolate(d3.interpolateRound);
-
     function edgeStyler(dom_element, edge_object) {
-        // if ("bootstrap" in edge_object.target) {
-        //     dom_element.style("stroke-width", bootstrap_scale(edge_object.target.bootstrap) + "pt");
-        // }
-        //dom_element.style("stroke", "cluster" in edge_object.target ? coloring_scheme(edge_object.target.cluster) : null);
-        //dom_element.style("stroke", edge_object.selected ? "#ff9900" : "#8a8986");
+        dom_element.on('mouseenter', function() {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+
+            div.text(edge_object.target.name + ": " + edge_object.target.attribute)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        });
+
+        dom_element.on('mouseleave', function() {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
 
     }
 
     function nodeStyler(dom_element, node_object) {
+
         var circle = dom_element.selectAll("circle");
         if (node_object.name.includes("Syn")) {
             circle.style("fill", "rgb(148,0,212)");
@@ -34,9 +39,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }
 
         dom_element.on('mouseenter', function() {
-            console.log("node-mouseover");
-            console.log(node_object.name);
-
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
@@ -47,8 +49,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         });
 
         dom_element.on('mouseleave', function() {
-            console.log("node-mouseleave");
-
             div.transition()
                 .duration(500)
                 .style("opacity", 0);
@@ -86,25 +86,19 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 'left-right-spacing': 'fit-to-size',
                 'top-bottom-spacing': 'fixed-step',
                 'zoom': false,
-                'align-tips': true,
-                'show-scale': false,
+                'align-tips': false,
+                'show-scale': true,
                 'brush': true
             })
             .size([height, width])
-            //.style_edges(edgeStyler)
+            .style_edges(edgeStyler)
             .style_nodes(nodeStyler)
-            .node_circle_size(8); // do not draw clickable circles for internal nodes
-
+            .node_circle_size(8) // do not draw clickable circles for internal nodes
+            .branch_name(function() {
+                return ""; // no leaf names
+            });
         /* the next call creates the tree object, and tree nodes */
         tree(d3.layout.newick_parser(data));
-
-
-        // parse bootstrap support from internal node names
-        // _.each(tree.get_nodes(), function (node) {
-        //     if (node.children) {
-        //         node.bootstrap = node.name;
-        //     }
-        // });
 
         tree.spacing_x(40);
 
