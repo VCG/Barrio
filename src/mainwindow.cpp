@@ -301,8 +301,6 @@ void MainWindow::on_structure_selection_changed(int state)
   bool three_d_enabled = mainwindow_ui->three_d_enabled->isChecked();
   mainwindow_ui->horizontalSlider_4->setEnabled(three_d_enabled);
   m_main_widget->show3DRenderings(three_d_enabled);
-
-  qDebug() << "3D toggled";
 }
 
 void MainWindow::on_vis_clicked()
