@@ -158,6 +158,33 @@ Q_INVOKABLE QString BarChartData::getData()
   return Q_INVOKABLE m_json_string;
 }
 
+Q_INVOKABLE void BarChartData::setHighlightedFrame(const QString& name)
+{
+  int hvgx = m_datacontainer->getIndexByName(name);
+  if (!m_global_vis_parameters->highlighted_group_boxes.contains(hvgx))
+  {
+    m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
+  }
+  return Q_INVOKABLE void();
+}
+
+Q_INVOKABLE void BarChartData::removeHighlightedFrame(const QString& name_to_remove)
+{
+  int hvgx_id = m_datacontainer->getIndexByName(name_to_remove);
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_group_boxes;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
+  return Q_INVOKABLE void();
+}
+
 Q_INVOKABLE void BarChartData::setHighlightedStructure(const QString& name)
 {
   int hvgx_id = m_datacontainer->getIndexByName(name);

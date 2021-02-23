@@ -29,8 +29,7 @@
 
     .bar {
         fill: rgb(148,0,212);
-        border-width: medium;
-        border-color: #000;
+        stroke: #ffffff;
     }
 
     .bar:hover{
@@ -86,14 +85,6 @@
             .attr("transform",
                 "translate(" + m.left + "," + m.top + ")");
 
-        let line = svg.append("line")
-            .attr("x1", 0)
-            .attr("x2", w)
-            .attr("y1", 0)
-            .attr("y2", 0)
-            .style("stroke", "black")
-            .style("opacity", 0.0);
-
         let data = JSON.parse(json_string);
 
         data.forEach(function (d) {
@@ -144,7 +135,15 @@
             .enter()
             .append("g")
             .attr("transform", function (d) {
+                console.log("add district");
                 return "translate(" + x(d.key) + ", 0)";
+            })
+            .on("mouseenter", function (d) {
+                //console.log("hallo");
+                jsobject.setHighlightedFrame(d.key);
+            })
+            .on("mouseleave", function (d) {
+                jsobject.removeHighlightedFrame(d.key);
             });
 
         let bars = district.selectAll(".bar")
@@ -173,11 +172,23 @@
             .attr("x", function (d, i) {
                 return (x.rangeBand() / 2)  - (10 * d.group_size / 2) + i * 10;
             })
-            .attr("width", 9)
+            .attr("width", 10)
             .attr("height", function (d) {
                 return h - y(d.votes);
-            })
-            .on("mouseenter", function(d){
+            });
+
+        let line = svg.append("line")
+            .attr("x1", 0)
+            .attr("x2", w)
+            .attr("y1", 0)
+            .attr("y2", 0)
+            .style("position", "absolute")
+            .style("stroke", "black")
+            .style("opacity", 0.0);
+
+        bars.on("mouseenter", function(d){
+
+            //console.log(d);
                 div.transition()
                     .duration(200)
                     .style("opacity", .9);
@@ -190,6 +201,7 @@
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
 
+
                 jsobject.setHighlightedStructure(d.candidate);
                 highlightBars(d.candidate);
             })
@@ -199,6 +211,7 @@
                         .style("opacity", 0);
 
                 line.style("opacity", 0.0);
+
                 jsobject.removeHighlightedStructure(d.candidate);
             });
 
