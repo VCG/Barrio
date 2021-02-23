@@ -77,12 +77,22 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+
+
         let svg = d3.select("#chart").append("svg")
             .attr("width", w + m.right + m.left + 100)
             .attr("height", h + m.top + m.bottom)
             .append("g")
             .attr("transform",
                 "translate(" + m.left + "," + m.top + ")");
+
+        let line = svg.append("line")
+            .attr("x1", 0)
+            .attr("x2", w)
+            .attr("y1", 0)
+            .attr("y2", 0)
+            .style("stroke", "black")
+            .style("opacity", 0.0);
 
         let data = JSON.parse(json_string);
 
@@ -172,6 +182,10 @@
                     .duration(200)
                     .style("opacity", .9);
 
+                line.attr("x1", 0).attr("x2", w).attr("y1", y(d.votes))
+                .attr("y2", y(d.votes))
+                .style("opacity", .9);
+
                 div.text(d.candidate)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
@@ -183,6 +197,8 @@
                 div.transition()
                         .duration(500)
                         .style("opacity", 0);
+
+                line.style("opacity", 0.0);
                 jsobject.removeHighlightedStructure(d.candidate);
             });
 
