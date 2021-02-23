@@ -84,8 +84,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("class", "d3-tip")
         .offset([-10, 0])
         .html(function (d) {
-            return d[name] + " <br>" + xAttrName + ": " + d[xAttrName].toFixed(4) + " " + xUnit +
-                " <br>" + yAttrName + ": " + d[yAttrName].toFixed(4) + " " + yUnit;
+            return d[name] + " <br>" + xAttrName + ": " + d[xAttrName].toFixed(4) +
+                " <br>" + yAttrName + ": " + d[yAttrName].toFixed(4);
         });
 
     var zoomBeh = d3.behavior.zoom()
@@ -117,7 +117,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .attr("x", width)
         .attr("y", margin.bottom - 10)
         .style("text-anchor", "end")
-        .text(xLabel + " in " + xUnit);
+        .text(xLabel);
 
     svg.append("g")
         .classed("y axis", true)
