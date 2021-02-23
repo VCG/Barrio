@@ -79,11 +79,12 @@ public:
     QCheckBox *sliceEnabled;
     QHBoxLayout *horizontalLayout_40;
     QSlider *horizontalSlider;
-    QLineEdit *lineEdit_5;
+    QGroupBox *groupBox_6;
+    QVBoxLayout *verticalLayout_26;
+    QCheckBox *three_d_enabled;
     QGroupBox *groupBox_25;
     QHBoxLayout *horizontalLayout_42;
     QSlider *horizontalSlider_4;
-    QLineEdit *lineEdit_4;
     QGroupBox *groupBox_28;
     QHBoxLayout *horizontalLayout_45;
     QComboBox *comboBox_2;
@@ -499,12 +500,6 @@ public:
 
         horizontalLayout_40->addWidget(horizontalSlider);
 
-        lineEdit_5 = new QLineEdit(groupBox);
-        lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
-        lineEdit_5->setMaximumSize(QSize(30, 16777215));
-
-        horizontalLayout_40->addWidget(lineEdit_5);
-
 
         verticalLayout_16->addLayout(horizontalLayout_40);
 
@@ -514,7 +509,16 @@ public:
 
         verticalLayout_3->addWidget(groupBox);
 
-        groupBox_25 = new QGroupBox(groupBox_8);
+        groupBox_6 = new QGroupBox(groupBox_8);
+        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        verticalLayout_26 = new QVBoxLayout(groupBox_6);
+        verticalLayout_26->setObjectName(QString::fromUtf8("verticalLayout_26"));
+        three_d_enabled = new QCheckBox(groupBox_6);
+        three_d_enabled->setObjectName(QString::fromUtf8("three_d_enabled"));
+
+        verticalLayout_26->addWidget(three_d_enabled);
+
+        groupBox_25 = new QGroupBox(groupBox_6);
         groupBox_25->setObjectName(QString::fromUtf8("groupBox_25"));
         horizontalLayout_42 = new QHBoxLayout(groupBox_25);
         horizontalLayout_42->setObjectName(QString::fromUtf8("horizontalLayout_42"));
@@ -524,15 +528,11 @@ public:
 
         horizontalLayout_42->addWidget(horizontalSlider_4);
 
-        lineEdit_4 = new QLineEdit(groupBox_25);
-        lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
-        lineEdit_4->setMinimumSize(QSize(0, 0));
-        lineEdit_4->setMaximumSize(QSize(30, 16777215));
 
-        horizontalLayout_42->addWidget(lineEdit_4);
+        verticalLayout_26->addWidget(groupBox_25);
 
 
-        verticalLayout_3->addWidget(groupBox_25);
+        verticalLayout_3->addWidget(groupBox_6);
 
         groupBox_28 = new QGroupBox(groupBox_8);
         groupBox_28->setObjectName(QString::fromUtf8("groupBox_28"));
@@ -1932,8 +1932,10 @@ public:
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Parameters", nullptr));
-        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice Position", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice View", nullptr));
         sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
+        groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "3D views", nullptr));
+        three_d_enabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));

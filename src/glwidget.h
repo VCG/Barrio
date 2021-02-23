@@ -38,6 +38,7 @@ struct SharedGLResources
 
   QOpenGLBuffer* slice_vertex_vbo;
 
+  bool          show_3d_renderings;
   float         cell_opacity;
   bool          show_slice;
   float         slice_depth;

@@ -31,6 +31,7 @@ uniform sampler1D	  mito_colormap;
 
 uniform sampler3D     volume;
 uniform bool          showSlice;
+uniform bool          show3D;
 
 
 uniform int           maxNodes;
@@ -81,11 +82,14 @@ vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
 
 int isVisible(int hvgx)
 {
-  for(int i = 0; i < SSBO_visibility.length(); i++)
+  if(show3D)
   {
-    if(hvgx == SSBO_visibility[i])
+    for(int i = 0; i < SSBO_visibility.length(); i++)
     {
-      return 1;
+      if(hvgx == SSBO_visibility[i])
+      {
+        return 1;
+      }
     }
   }
 

@@ -464,6 +464,11 @@ void MainWidget::showSlice(bool showSlice)
   m_shared_resources.show_slice = showSlice;
 }
 
+void MainWidget::show3DRenderings(bool show3DRenderings)
+{
+  m_shared_resources.show_3d_renderings = show3DRenderings;
+}
+
 void MainWidget::updateInfoVisViews()
 {
   for (auto const& [id, view] : m_infovis_views)
@@ -685,6 +690,7 @@ void MainWidget::initializeGL()
   m_shared_resources.highlighted_objects = &m_abstraction_space->m_global_vis_parameters.highlighted_objects;
   m_shared_resources.highlighted_group_boxes = &m_abstraction_space->m_global_vis_parameters.highlighted_group_boxes;
   m_shared_resources.widget_queue = &m_abstraction_space->m_global_vis_parameters.my_add_queue;
+  m_shared_resources.show_3d_renderings = true; 
 
 
   // add overview widget

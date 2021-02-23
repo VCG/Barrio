@@ -156,6 +156,9 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   int showSlice = program->uniformLocation("showSlice");
   if (showSlice >= 0) program->setUniformValue(showSlice, m_shared_resources->show_slice);
 
+  int show3D = program->uniformLocation("show3D");
+  if (show3D >= 0) program->setUniformValue(show3D, m_shared_resources->show_3d_renderings);
+
   int zSlice = program->uniformLocation("slice_z");
   if (zSlice >= 0) program->setUniformValue(zSlice, m_shared_resources->slice_depth);
 

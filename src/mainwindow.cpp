@@ -65,8 +65,8 @@ void MainWindow::initializeSlicePositionSlider()
   QSlider* slice_position_slider = mainwindow_ui->horizontalSlider;
   int initial_tick_position = 100.0 / (MESH_MAX_Z / 2.0);
   slice_position_slider->setValue(initial_tick_position);
-  double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
-  mainwindow_ui->lineEdit_5->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
+  //double distance_value = ((double)initial_tick_position / 100.0) * sqrt(3) * MESH_MAX_X;
+  //mainwindow_ui->lineEdit_5->setText(QString::number(std::round(distance_value * 100.0) / 100.0));
 
   connect(slice_position_slider, SIGNAL(valueChanged(int)), this, SLOT(on_slice_position_slider_changed(int)));
   m_main_widget->set_slice_position(initial_tick_position);
@@ -152,6 +152,9 @@ void MainWindow::setupSignalsNSlots()
 
   mainwindow_ui->horizontalSlider->setEnabled(false);
   QObject::connect(mainwindow_ui->sliceEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
+
+  mainwindow_ui->three_d_enabled->setChecked(true);
+  QObject::connect(mainwindow_ui->three_d_enabled, SIGNAL(stateChanged(int)), this, SLOT(on_structure_selection_changed(int)));
 
   QObject::connect(mainwindow_ui->numberOfBins, SIGNAL(valueChanged(int)), this, SLOT(on_number_of_bins_input_changed(int)));
   QObject::connect(mainwindow_ui->comboBox_2, SIGNAL(currentTextChanged(QString)), this, SLOT(on_colormap_changed(QString)));
@@ -294,6 +297,12 @@ void MainWindow::on_structure_selection_changed(int state)
   bool sliderEnabled = mainwindow_ui->sliceEnabled->isChecked();
   mainwindow_ui->horizontalSlider->setEnabled(sliderEnabled);
   m_main_widget->showSlice(sliderEnabled);
+
+  bool three_d_enabled = mainwindow_ui->three_d_enabled->isChecked();
+  mainwindow_ui->horizontalSlider_4->setEnabled(three_d_enabled);
+  m_main_widget->show3DRenderings(three_d_enabled);
+
+  qDebug() << "3D toggled";
 }
 
 void MainWindow::on_vis_clicked()
@@ -319,13 +328,13 @@ void MainWindow::on_vis_clicked()
 void MainWindow::on_slice_position_slider_changed(int value)
 {
   m_main_widget->on_slice_position_slider_changed(value);
-  mainwindow_ui->lineEdit_5->setText(QString::number(std::round(value) / (100.0 / MESH_MAX_Z)));
+  //mainwindow_ui->lineEdit_5->setText(QString::number(std::round(value) / (100.0 / MESH_MAX_Z)));
 }
 
 void MainWindow::on_opacity_slider_changed(int value)
 {
   m_main_widget->on_opacity_slider_changed(value);
-  mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
+  //mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }
 
 void MainWindow::on_colormap_changed(QString text)

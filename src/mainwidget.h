@@ -40,6 +40,7 @@ public:
  // void setupMainWidget(VisConfiguration vis_config);
   //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
   void showSlice(bool showSlice);
+  void show3DRenderings(bool show3DRenderings);
 
   void updateInfoVisViews();
   void updateGroupBoxStyle();
