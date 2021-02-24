@@ -200,6 +200,18 @@ QString Scatterplot::createJSONString()
 
   if (x_attribute == surf_percentage || y_attribute == surf_percentage)
   {
+    float threshold = 1.0;
+    if (x_attribute == surf_percentage)
+    {
+      QJsonObject xaxis = m_settings.value("x-axis").toObject();
+      threshold = xaxis.value("threshold").toVariant().toFloat();
+    }
+    else if(y_attribute == surf_percentage)
+    {
+      QJsonObject yaxis = m_settings.value("y-axis").toObject();
+      threshold = yaxis.value("threshold").toVariant().toFloat();
+    }
+
     for (auto mito : mitochondria)
     {
       QJsonObject object_json;
@@ -210,7 +222,7 @@ QString Scatterplot::createJSONString()
 
       float minimum = 1000.0;
       float counter = 0.0;
-      float threshold = 0.05;
+      //float threshold = 0.05;
       float meshSize = 0.0;
 
       for (auto j : *mito_indices)
