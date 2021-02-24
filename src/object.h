@@ -65,7 +65,7 @@ public:
   QVector4D getColor();
   QVector4D getCenter();
   QVector4D getAstPoint() { return m_ast_point; }
-  int getVolume() { return m_volume; }
+  float getVolume() { return m_volume; }
   int getHVGXID() { return m_ID; }
   struct ssbo_mesh getSSBOData();
 
@@ -81,7 +81,7 @@ public:
   void setColor(QVector4D color) { m_color = color; }
   void setCenter(QVector4D center);
   void setAstPoint(QVector4D ast_point);
-  void setVolume(int volume) { m_volume = volume; }
+  void setVolume(float volume) { m_volume = volume; }
 
   void setDistanceToStructure(int structure_hvgx, double distance) { m_distance_map[structure_hvgx] = distance; };
 
@@ -139,7 +139,7 @@ private:
   int                                     m_nodeIdx;
 
   Object_t                                m_object_t;     /* object type */
-  int                                     m_volume;       // volume of this object
+  float                                   m_volume;       // volume of this object
   int                                     m_function;     // -1:not applicable, 0:ex, 1:in, 3:unknown
 
   //Object*                                 m_parent;       // NULL if none

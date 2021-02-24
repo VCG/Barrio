@@ -145,22 +145,18 @@ QString Scatterplot::createJSONString()
   
   if (x_attribute == mito_volume || y_attribute == mito_volume)
   {
-    for (auto c : cell_array)
+    for (auto mito : mitochondria)
     {
-      QJsonObject cell = c.toObject();
-      QJsonArray mitos = cell.value("mitochondria").toArray();
+      QString name = mito->getName().c_str();
+      float volume = mito->getVolume();
 
-      for (auto m : mitos) {
-        QJsonObject mito = m.toObject();
-        QString name = mito.value("name").toString();
-        float volume = mito.value("volume").toVariant().toFloat();
+      qDebug() << volume;
 
-        if (x_attribute == mito_volume) {
-          x_values.insert(name, volume);
-        }
-        else if (y_attribute == mito_volume) {
-          y_values.insert(name, volume);
-        }
+      if (x_attribute == mito_volume) {
+        x_values.insert(name, volume);
+      }
+      else if (y_attribute == mito_volume) {
+        y_values.insert(name, volume);
       }
     }
   }
