@@ -37,6 +37,13 @@
         stroke-width: 3;
     }
 
+    .rect{
+        opacity: 0;
+        fill: none;
+        stroke: orange;
+        stroke-width: 3px;
+    }
+
     .not_selected {
         stroke: none;
         stroke-width: 1;
@@ -107,6 +114,8 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+
+
         let corr = [];
         let max_distance = 0.0;
         for (let i = 0; i < my_data.length; ++i) {
@@ -134,6 +143,14 @@
                 'class': 'cell'
             })
             .style('pointer-events', 'all');
+
+        let box = svg.append("rect")
+            .attr("class", "rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", (rect_height + rect_margin) * number_of_rows)
+            .attr("width", rect_width);
+
 
         let circles = cells.append('rect')
             .attr('x', function (d) {
@@ -168,17 +185,19 @@
 
         cells.on('mouseenter', function (d) {
             let selected = my_data[d.row].synapses[d.col];
+            let mito_name = my_data[d.row].name;
             let text = selected.name;
 
             if (d.value < max_distance) {
                 text += ' - ' + (d3.format('.2f')(d.value));
             }
 
-            d3.select(this)
-                .select('rect')
-                .attr({
-                    'class': 'selected'
-                });
+            console.log(my_data[d.row])
+
+            box.attr("x", margin.left + corXscale(d.col))
+                .attr("y", margin.top + 50)
+                .style("opacity", 1.0);
+
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
@@ -188,9 +207,12 @@
                 .style("top", (d3.event.pageY - 50) + "px");
 
             jsobject.setHighlightedStructure(selected.name);
+            jsobject.setHighlightedFrame(mito_name);
 
         })
             .on('mouseleave', function (d) {
+                let mito_name = my_data[d.row].name;
+                box.style("opacity", 0.0);
                 d3.select(this)
                     .select('rect')
                     .attr({
@@ -202,6 +224,7 @@
 
                 let selected_structure = my_data[d.row].synapses[d.col];
                 jsobject.removeHighlightedStructure(selected_structure.name);
+                jsobject.removeHighlightedFrame(mito_name);
             })
             .on('click', function (d) {
 

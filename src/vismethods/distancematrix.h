@@ -23,6 +23,9 @@ public:
   Q_INVOKABLE void setHighlightedStructure(const QString& name);
   Q_INVOKABLE void removeHighlightedStructure(const QString& name_to_remove);
 
+  Q_INVOKABLE void setHighlightedFrame(const QString& name);
+  Q_INVOKABLE void removeHighlightedFrame(const QString& name_to_remove);
+
   QString m_json_string;
 
   GlobalVisParameters* m_global_vis_parameters;

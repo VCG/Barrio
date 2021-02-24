@@ -200,3 +200,33 @@ Q_INVOKABLE void DistanceMatrixData::removeHighlightedStructure(const QString& n
     }
   }
 }
+
+Q_INVOKABLE void DistanceMatrixData::setHighlightedFrame(const QString& name)
+{
+
+  int hvgx = m_datacontainer->getIndexByName(name);
+  if (!m_global_vis_parameters->highlighted_group_boxes.contains(hvgx))
+  {
+    m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
+  }
+  return Q_INVOKABLE void();
+}
+
+Q_INVOKABLE void DistanceMatrixData::removeHighlightedFrame(const QString& name_to_remove)
+{
+
+  int hvgx_id = m_datacontainer->getIndexByName(name_to_remove);
+  QVector<int>* highlighted = &m_global_vis_parameters->highlighted_group_boxes;
+  if (highlighted->contains(hvgx_id))
+  {
+    QMutableVectorIterator<int> it(*highlighted);
+    while (it.hasNext())
+    {
+      if (it.next() == hvgx_id) {
+        it.remove();
+      }
+    }
+  }
+
+  return Q_INVOKABLE void();
+}
