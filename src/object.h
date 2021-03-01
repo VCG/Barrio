@@ -66,6 +66,10 @@ public:
   QVector4D getCenter();
   QVector4D getAstPoint() { return m_ast_point; }
   float getVolume() { return m_volume; }
+
+  float getSurfaceArea() { return m_surface_area; }
+
+
   int getHVGXID() { return m_ID; }
   struct ssbo_mesh getSSBOData();
 
@@ -82,6 +86,7 @@ public:
   void setCenter(QVector4D center);
   void setAstPoint(QVector4D ast_point);
   void setVolume(float volume) { m_volume = volume; }
+  void setSurfaceArea(float sa) { m_surface_area = sa; }
 
   void setDistanceToStructure(int structure_hvgx, double distance) { m_distance_map[structure_hvgx] = distance; };
 
@@ -140,6 +145,7 @@ private:
 
   Object_t                                m_object_t;     /* object type */
   float                                   m_volume;       // volume of this object
+  float                                   m_surface_area;
   int                                     m_function;     // -1:not applicable, 0:ex, 1:in, 3:unknown
 
   //Object*                                 m_parent;       // NULL if none
@@ -180,7 +186,7 @@ private:
   void serialize(Archive& ar)
   {
     ar(m_name, m_ID, m_nodeIdx,
-      m_object_t, m_volume, m_function,
+      m_object_t, m_volume, m_surface_area, m_function,
       m_parentID, m_children_ids,
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,

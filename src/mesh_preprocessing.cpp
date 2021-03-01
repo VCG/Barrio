@@ -33,6 +33,7 @@ int MeshProcessing::computeCenter(Object* obj, std::vector<VertexData>* vertices
   std::vector<int>* indices = obj->get_indices_list();
 
   float volume = 0.0;
+  float surface_area = 0.0;
 
   // extract vertex data
   for (auto i = 0; i < indices->size(); i = i + 3)
@@ -66,14 +67,19 @@ int MeshProcessing::computeCenter(Object* obj, std::vector<VertexData>* vertices
     float v123 = p0.x() * p1.y() * p2.z();
 
     volume += (1.0f / 6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
+
+    QVector3D a = QVector3D(p0.x(), p0.y(), p0.z());
+    QVector3D b = QVector3D(p1.x(), p1.y(), p1.z());
+    QVector3D c = QVector3D(p2.x(), p2.y(), p2.z());
+
+    surface_area += computeSurfaceArea(a, b, c);
   }
 
   point c = CGAL::centroid(my_structure.triangles.begin(), my_structure.triangles.end(), CGAL::Dimension_tag<2>());
   QVector4D center(c.x(), c.y(), c.z(), 1.0);
   obj->setCenter(center);
   obj->setVolume(abs(volume));
-
-  qDebug() << obj->getVolume();
+  obj->setSurfaceArea(surface_area);
 
   return EXIT_SUCCESS;
 }
@@ -215,6 +221,16 @@ double MeshProcessing::compute_closest_distance(Object* from, Object* to, std::v
   }
 
   return min_distance;
+}
+
+float MeshProcessing::computeSurfaceArea(QVector3D a, QVector3D b, QVector3D c)
+{
+  QVector3D ca = a - c;
+  QVector3D cb = b - c;
+
+  QVector3D crossProd = QVector3D::crossProduct(ca, cb);
+  
+  return 0.5 * crossProd.length();
 }
 
 bool MeshProcessing::isBorderVertex(float x, float y, float z)

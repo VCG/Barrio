@@ -36,6 +36,8 @@ public:
   int compute_distance_distribution(Object* mito, Object* cell, std::vector<VertexData>* vertices);
   double compute_closest_distance(Object* mito, Object* synapse, std::vector<VertexData>* vertices);
 
+  float computeSurfaceArea(QVector3D a, QVector3D b, QVector3D c);
+
 private:
   bool isBorderVertex(float x, float y, float z);
 
