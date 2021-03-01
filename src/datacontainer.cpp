@@ -89,13 +89,16 @@ void DataContainer::loadData()
   QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
   QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
 
+  QString mouse2 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m2/m2_test.obj";
+
   PreLoadMetaDataHVGX(hvgx_path);
 
   if (RECOMPUTE_DATA)
   {
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    importObj(neurites_path);
+    //importObj(neurites_path);
+    importObjTest(mouse2);
 
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> ms = t2 - t1;
@@ -785,6 +788,132 @@ bool DataContainer::importObj(QString path)
   return true;
 }
 
+bool DataContainer::importObjTest(QString path)
+{
+  int vertexCounter = 0;
+  int normalCounter = 0;
+
+  QFile inputFile(path);
+  if (!inputFile.open(QIODevice::ReadOnly))
+  {
+    qDebug() << "Cant open " << path;
+  }
+
+  int hvgxID = 0;
+  Object* obj = NULL;
+  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
+
+  QTextStream in(&inputFile);
+  while (!in.atEnd()) {
+
+    QString line = in.readLine();
+    QList<QString> elements = line.split(" ");
+
+    // parse object names
+    if (!strcmp(elements[0].toStdString().c_str(), "o"))
+    {
+      QString name = getName(elements[1]);
+
+      qDebug() << "Reading " << name;
+
+      hvgxID++;
+
+      obj = new Object(name.toUtf8().constData(), hvgxID);
+
+
+      m_objects[hvgxID] = obj;
+      m_objectsByType[obj->getObjectType()].push_back(obj);
+    }
+
+    // parse vertices
+    else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
+
+      float x = abs(elements[1].toFloat());
+      float y = abs(elements[2].toFloat());
+      float z = abs(elements[3].toFloat());
+
+      vertexCounter++;
+
+      QVector4D mesh_vertex(x, y, z, float(hvgxID));
+
+      meshVertexList->emplace_back();
+      int vertexIdx = (int)meshVertexList->size() - 1;
+      struct VertexData* v = &meshVertexList->at(vertexIdx);
+
+      v->vertex = mesh_vertex;
+      v->distance_to_cell = 0.0; // first init all distances with the default value
+      v->hvgxID = hvgxID;
+      v->structure_type = (int)obj->getObjectType();
+      v->is_skeleton = false;
+    }
+
+    // parse faces
+    else if (!strcmp(elements[0].toStdString().c_str(), "f")) // read triangulated faces
+    {
+      int vertexIndex[3];
+
+      vertexIndex[0] = elements[1].toInt();
+      vertexIndex[1] = elements[2].toInt();
+      vertexIndex[2] = elements[3].toInt();
+
+      if (!m_mesh->isValidFaces(vertexIndex[0], vertexIndex[1], vertexIndex[2])) {
+        qDebug() << "Error in obj file! - invalid faces";
+        return false;
+      }
+
+      // safe indices counter clockwise
+      obj->addTriangleIndex(vertexIndex[0] - 1);
+      obj->addTriangleIndex(vertexIndex[2] - 1);
+      obj->addTriangleIndex(vertexIndex[1] - 1);
+
+      // safe indices counter clockwise
+      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[2] - 1, vertexIndex[1] - 1);
+      m_indices_size += 3;
+
+      if (m_indices_size_byType.find(obj->getObjectType()) == m_indices_size_byType.end()) {
+        m_indices_size_byType[obj->getObjectType()] = 0;
+      }
+      m_indices_size_byType[obj->getObjectType()] += 3;
+    }
+  }
+  inputFile.close();
+
+  addSliceVertices();
+
+  m_mesh->computeNormalsPerVertex();
+  processParentChildStructure();
+
+  qDebug() << "Done reading .obj file";
+  qDebug() << vertexCounter << " vertices";
+  qDebug() << normalCounter << " normals";
+
+  return true;
+
+}
+
+QString DataContainer::getName(QString name)
+{
+  QList<QString> list = name.split('_');
+
+  if (list[0].contains("dendrite", Qt::CaseInsensitive)) 
+  {
+    return list[0];
+  }
+  else if (list[0].contains("axon", Qt::CaseInsensitive))
+  {
+    return list[0];
+  }
+  else if(list[0].contains("mito", Qt::CaseInsensitive))
+  {
+    return list[0] + "_" + list[1] + "_" + list[2];
+  }
+  else if(list[0].contains("syn", Qt::CaseInsensitive))
+  {
+    return list[0] + "_" + list[1] + "_" + list[2];
+  }
+  return QString();
+}
+
 bool DataContainer::importSemanticSkeleton(QString path)
 {
   QString json = QString();
@@ -1086,11 +1215,11 @@ void DataContainer::processParentChildStructure()
 
     if (name.contains("A")) // mito of axon
     {
-      name = nameList[1].replace("A", "Axon");
+      name = nameList[1].replace("A", "axon");
     }
     else if (name.contains("D")) // mito of dendrite
     {
-      name = nameList[1].replace("D", "Dendrite");
+      name = nameList[1].replace("D", "dendrite");
     }
     else if (name.contains("Astro")) // mito of astrocyte
     {
@@ -1101,6 +1230,43 @@ void DataContainer::processParentChildStructure()
     mito->setParentID(parent->getHVGXID());
     parent->addChildID(mito->getHVGXID());
   }
+
+  std::vector<Object*> synapses = getObjectsByType(Object_t::SYNAPSE);
+  for (auto const& syn : synapses)
+  {
+    QString name = syn->getName().c_str();
+    QList<QString> list = name.split("_");
+
+    QString identifier = list[1];
+
+    QStringRef dendriteRef(&identifier, 0, 4);
+    QString dendrite = dendriteRef.toString();
+
+    dendrite.replace("d", "dendrite");
+    qDebug() << dendrite;
+
+    QStringRef axonRef(&identifier, 7, 4);
+    QString axon = axonRef.toString();
+
+    axon.replace("a", "axon");
+
+    Object* axon_obj = getObjectByName(axon);
+    Object* dendrite_obj = getObjectByName(dendrite);
+
+    if (axon_obj != NULL)
+    {
+      axon_obj->addSynapse(syn);
+    }
+
+    if (dendrite_obj != NULL)
+    {
+      dendrite_obj->addSynapse(syn);
+    }
+
+    qDebug() << axon;
+
+  }
+
 
   std::vector<Object*> spines = getObjectsByType(Object_t::SPINE);
   for (auto const& spine : spines)

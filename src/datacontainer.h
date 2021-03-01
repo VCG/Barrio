@@ -82,6 +82,11 @@ public:
   QList<int> getMitosOfCell(int cell_id);
 
   bool importObj(QString path);
+
+  bool importObjTest(QString path);
+
+  QString getName(QString name);
+
   bool importSkeletons(QString path, Object_t skeleton_type);
   bool importSemanticSkeleton(QString path);
 
