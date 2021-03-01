@@ -24,6 +24,9 @@
         let jsobject = channel.objects.boxplot_data;
         let json_string = jsobject.json_string;
         let json_colors = jsobject.colormap;
+        let my_normalized = jsobject.normalized;
+
+        console.log(my_normalized);
 
         let data = JSON.parse(json_string);
 
@@ -71,18 +74,43 @@
             .thresholds(y.ticks(20))    // Important: how many bins approx are going to be made? It is the 'resolution' of the violin plot
             .value(d => d);
 
-        let lengths = new Map();
+        let my_lengths = new Map();
         data.forEach(function (d) {
             let length = d.value.length;
             let bins = histogram(d.value);
             d.value = bins;
-            lengths.set(d.key, length);
+            my_lengths.set(d.key, length);
         });
+
+        // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
+        let maxNum = 0;
+        let allBins;
+        let longest;
+        let lengths = new Map();
+        for (let i in data) {
+            allBins = data[i].value
+            lengths = allBins.map(function (a) {
+                return a.length;
+            })
+            longest = d3.max(lengths)
+            if (longest > maxNum) {
+                maxNum = longest
+            }
+        }
         
         // The maximum width of a violin must be x.bandwidth = the width dedicated to a group
-        let xNum = d3.scaleLinear()
-            .range([0, x.bandwidth()])
-            .domain([-0.4, 0.4]);
+        let xNum;
+        if(my_normalized)
+        {
+            xNum = d3.scaleLinear()
+                .range([0, x.bandwidth()])
+                .domain([-0.4, 0.4]);
+        }
+        else {
+            xNum = d3.scaleLinear()
+                .range([0, x.bandwidth()])
+                .domain([-maxNum, maxNum]);
+        }
 
         // parse color values in the format we need
         let color_data = [];
@@ -121,7 +149,7 @@
             for (let j = 0; j < data[i].value.length; j++)
             {
                 let verts = data[i].value[j];
-                data[i].value[j].normalized = verts.length / lengths.get(name);
+                data[i].value[j].normalized = verts.length / my_lengths.get(name);
             }
         }
 
@@ -150,10 +178,21 @@
             .style("fill", "url(#area-gradient)")
             .attr("d", d3.area()
                 .x0(function (d) {
-                    return (xNum(-d.normalized))
+                    if(my_normalized){
+                        return xNum(-d.normalized)
+                    }
+                    else{
+                        return xNum(-d.length)
+                    }
+
                 })
                 .x1(function (d) {
-                    return (xNum(d.normalized))
+                    if(my_normalized){
+                        return xNum(d.normalized)
+                    }
+                    else{
+                        return xNum(d.length)
+                    }
                 })
                 .y(function (d) {
                     return (y(d.x0))

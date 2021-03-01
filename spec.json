@@ -33,8 +33,7 @@
         "medium_scale_vis": {
           "id": 4,
           "name": "box-plot",
-          "header": "blabla",
-          "normalized": false
+          "normalized": true
         },
         "high_scale_vis": {
           "id": 5,
@@ -44,9 +43,8 @@
             "attribute": "min-distance-to-cell"
           },
           "y-axis": {
-            "label": "% of surface closer than 0.05 microns to cell",
-            "attribute": "surf-percentage",
-            "threshold": 0.05
+            "label": "mit volume in cubic microns",
+            "attribute": "mito-volume"
           }
         }
       },

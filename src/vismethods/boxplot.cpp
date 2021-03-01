@@ -47,8 +47,12 @@ QString Boxplot::createJSONString(QList<int>* selectedObjects)
 
 QWebEngineView* Boxplot::initVisWidget(int ID, SpecificVisParameters params)
 {
+  m_settings = params.settings;
+
+  bool normalized = m_settings.value("normalized").toBool();
+
   QString json = createJSONString(&m_global_vis_parameters->selected_objects);
-  m_data = new BoxplotData(json, m_datacontainer, m_global_vis_parameters);
+  m_data = new BoxplotData(json, m_datacontainer, m_global_vis_parameters, normalized);
 
   setSpecificVisParameters(params);
 
@@ -93,11 +97,12 @@ void Boxplot::setSpecificVisParameters(SpecificVisParameters params)
   m_data->setColors(params.colors);
 }
 
-BoxplotData::BoxplotData(QString json_data, DataContainer* data_container, GlobalVisParameters* global_vis_parameters)
+BoxplotData::BoxplotData(QString json_data, DataContainer* data_container, GlobalVisParameters* global_vis_parameters, bool normalized)
 {
   m_json_string = json_data;
   m_datacontainer = data_container;
-  m_global_vis_parameters = global_vis_parameters;
+  m_global_vis_parameters = global_vis_parameters; 
+  m_normalized = normalized;
 }
 
 BoxplotData::~BoxplotData()
@@ -112,6 +117,11 @@ Q_INVOKABLE QString BoxplotData::getData()
 Q_INVOKABLE QString BoxplotData::getColormap()
 {
   return Q_INVOKABLE m_colors;
+}
+
+Q_INVOKABLE bool BoxplotData::getNormalized()
+{
+  return Q_INVOKABLE m_normalized;
 }
 
 Q_INVOKABLE void BoxplotData::setHighlightedFrame(const QString& name)
