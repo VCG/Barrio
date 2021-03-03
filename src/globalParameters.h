@@ -11,7 +11,7 @@
 
 #define PATH        QString("C:/Users/jtroidl/Desktop/NeuroComparer/")
 
-#define RECOMPUTE_DATA TRUE
+#define RECOMPUTE_DATA FALSE
 
 #include <QList>
 #include <QJsonObject>
