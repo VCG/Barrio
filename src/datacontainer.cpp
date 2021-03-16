@@ -81,7 +81,7 @@ DataContainer::~DataContainer()
 void DataContainer::loadData()
 {
   QString data_path(PATH + QString("data"));
-  QString cache_subpath = QString("/cache");
+  QString cache_subpath = QString("/cache_m2");
 
   QString neurites_path = data_path + "/m3_data/m3_all_corrected.obj";
   QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
@@ -90,6 +90,7 @@ void DataContainer::loadData()
   QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
 
   QString mouse2 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m2/m2_test.obj";
+  QString mouse3 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_test_renamed_spines.obj";
 
   PreLoadMetaDataHVGX(hvgx_path);
 
@@ -97,8 +98,16 @@ void DataContainer::loadData()
   {
     auto t1 = std::chrono::high_resolution_clock::now();
 
+    m_vertex_offset = 0;
+
     //importObj(neurites_path);
-    importObjTest(mouse2);
+    int offset = importObjTest(mouse2, 2);
+
+    m_vertex_offset = offset;
+
+    importObjTest(mouse3, 3);
+
+    addSliceVertices();
 
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> ms = t2 - t1;
@@ -679,7 +688,7 @@ QList<int> DataContainer::getMitosOfCell(int cell_id)
   return mitos;
 }
 
-bool DataContainer::importObj(QString path)
+bool DataContainer::importObj(QString path, int mouse_id)
 {
   int vertexCounter = 0;
   int normalCounter = 0;
@@ -713,7 +722,7 @@ bool DataContainer::importObj(QString path)
 
       qDebug() << "Reading " << name;
 
-      obj = new Object(name.toUtf8().constData(), hvgxID);
+      obj = new Object(name.toUtf8().constData(), hvgxID, mouse_id);
 
       obj->setVolume(2.0f);
       //obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
@@ -779,7 +788,7 @@ bool DataContainer::importObj(QString path)
   addSliceVertices();
 
   m_mesh->computeNormalsPerVertex();
-  processParentChildStructure();
+  processParentChildStructure(mouse_id);
 
   qDebug() << "Done reading .obj file";
   qDebug() << vertexCounter << " vertices";
@@ -788,10 +797,11 @@ bool DataContainer::importObj(QString path)
   return true;
 }
 
-bool DataContainer::importObjTest(QString path)
+int DataContainer::importObjTest(QString path, int mouse_id)
 {
   int vertexCounter = 0;
   int normalCounter = 0;
+  int vertexIdx = 0;
 
   QFile inputFile(path);
   if (!inputFile.open(QIODevice::ReadOnly))
@@ -799,7 +809,7 @@ bool DataContainer::importObjTest(QString path)
     qDebug() << "Cant open " << path;
   }
 
-  int hvgxID = 0;
+  //int hvgxID = 0;
   Object* obj = NULL;
   std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
 
@@ -813,15 +823,16 @@ bool DataContainer::importObjTest(QString path)
     if (!strcmp(elements[0].toStdString().c_str(), "o"))
     {
       QString name = getName(elements[1]);
+      name += "_" + QString::number(mouse_id);
 
       qDebug() << "Reading " << name;
 
-      hvgxID++;
+      m_hvgx++;
 
-      obj = new Object(name.toUtf8().constData(), hvgxID);
+      obj = new Object(name.toUtf8().constData(), m_hvgx, mouse_id);
 
 
-      m_objects[hvgxID] = obj;
+      m_objects[m_hvgx] = obj;
       m_objectsByType[obj->getObjectType()].push_back(obj);
     }
 
@@ -834,15 +845,15 @@ bool DataContainer::importObjTest(QString path)
 
       vertexCounter++;
 
-      QVector4D mesh_vertex(x, y, z, float(hvgxID));
+      QVector4D mesh_vertex(x, y, z, float(m_hvgx));
 
       meshVertexList->emplace_back();
-      int vertexIdx = (int)meshVertexList->size() - 1;
+      vertexIdx = (int)meshVertexList->size() - 1;
       struct VertexData* v = &meshVertexList->at(vertexIdx);
 
       v->vertex = mesh_vertex;
       v->distance_to_cell = 0.0; // first init all distances with the default value
-      v->hvgxID = hvgxID;
+      v->hvgxID = m_hvgx;
       v->structure_type = (int)obj->getObjectType();
       v->is_skeleton = false;
     }
@@ -852,9 +863,9 @@ bool DataContainer::importObjTest(QString path)
     {
       int vertexIndex[3];
 
-      vertexIndex[0] = elements[1].toInt();
-      vertexIndex[1] = elements[2].toInt();
-      vertexIndex[2] = elements[3].toInt();
+      vertexIndex[0] = elements[1].toInt() + m_vertex_offset;
+      vertexIndex[1] = elements[2].toInt() + m_vertex_offset;
+      vertexIndex[2] = elements[3].toInt() + m_vertex_offset;
 
       if (!m_mesh->isValidFaces(vertexIndex[0], vertexIndex[1], vertexIndex[2])) {
         qDebug() << "Error in obj file! - invalid faces";
@@ -878,16 +889,14 @@ bool DataContainer::importObjTest(QString path)
   }
   inputFile.close();
 
-  addSliceVertices();
-
   m_mesh->computeNormalsPerVertex();
-  processParentChildStructure();
+  processParentChildStructure(mouse_id);
 
   qDebug() << "Done reading .obj file";
   qDebug() << vertexCounter << " vertices";
   qDebug() << normalCounter << " normals";
 
-  return true;
+  return meshVertexList->size();
 
 }
 
@@ -908,6 +917,10 @@ QString DataContainer::getName(QString name)
     return list[0] + "_" + list[1] + "_" + list[2];
   }
   else if(list[0].contains("syn", Qt::CaseInsensitive))
+  {
+    return list[0] + "_" + list[1] + "_" + list[2];
+  }
+  else if (list[0].contains("spine", Qt::CaseInsensitive))
   {
     return list[0] + "_" + list[1] + "_" + list[2];
   }
@@ -1205,91 +1218,108 @@ void DataContainer::findPermutations(QMap<int, MyBranch>* b)
   } while (std::next_permutation(branches.begin(), branches.end()));
 }
 
-void DataContainer::processParentChildStructure()
+void DataContainer::processParentChildStructure(int mouse_id)
 {
   std::vector<Object*> mitos = getObjectsByType(Object_t::MITO);
   for (auto const& mito : mitos)
   {
-    QString name = mito->getName().c_str();
-    QList<QString> nameList = name.split("_");
+    if (mito->getMouseID() == mouse_id)
+    {
+      QString name = mito->getName().c_str();
+      QList<QString> nameList = name.split("_");
 
-    if (name.contains("A")) // mito of axon
-    {
-      name = nameList[1].replace("A", "axon");
-    }
-    else if (name.contains("D")) // mito of dendrite
-    {
-      name = nameList[1].replace("D", "dendrite");
-    }
-    else if (name.contains("Astro")) // mito of astrocyte
-    {
-      // todo
-    }
+      if (name.contains("A")) // mito of axon
+      {
+        name = nameList[1].replace("A", "axon");
+      }
+      else if (name.contains("D")) // mito of dendrite
+      {
+        name = nameList[1].replace("D", "dendrite");
+      }
+      else if (name.contains("Astro")) // mito of astrocyte
+      {
+        // todo
+      }
 
-    Object* parent = getObjectByName(name);
-    mito->setParentID(parent->getHVGXID());
-    parent->addChildID(mito->getHVGXID());
+      name += "_" + QString::number(mouse_id);
+
+      Object* parent = getObjectByName(name);
+      mito->setParentID(parent->getHVGXID());
+      parent->addChildID(mito->getHVGXID());
+    }
   }
 
   std::vector<Object*> synapses = getObjectsByType(Object_t::SYNAPSE);
   for (auto const& syn : synapses)
   {
-    QString name = syn->getName().c_str();
-    QList<QString> list = name.split("_");
-
-    QString identifier = list[1];
-
-    QStringRef dendriteRef(&identifier, 0, 4);
-    QString dendrite = dendriteRef.toString();
-
-    dendrite.replace("d", "dendrite");
-    qDebug() << dendrite;
-
-    QStringRef axonRef(&identifier, 7, 4);
-    QString axon = axonRef.toString();
-
-    axon.replace("a", "axon");
-
-    Object* axon_obj = getObjectByName(axon);
-    Object* dendrite_obj = getObjectByName(dendrite);
-
-    if (axon_obj != NULL)
+    if (syn->getMouseID() == mouse_id)
     {
-      axon_obj->addSynapse(syn);
+      QString name = syn->getName().c_str();
+      QList<QString> list = name.split("_");
+
+      QString identifier = list[1];
+
+      QStringRef dendriteRef(&identifier, 0, 4);
+      QString dendrite = dendriteRef.toString();
+
+      dendrite.replace("d", "dendrite");
+      qDebug() << dendrite;
+
+      QStringRef axonRef(&identifier, 7, 4);
+      QString axon = axonRef.toString();
+
+      axon.replace("a", "axon");
+
+      axon += "_" + QString::number(mouse_id);
+      dendrite += "_" + QString::number(mouse_id);
+
+      Object* axon_obj = getObjectByName(axon);
+      Object* dendrite_obj = getObjectByName(dendrite);
+
+      if (axon_obj != NULL)
+      {
+        axon_obj->addSynapse(syn);
+      }
+
+      if (dendrite_obj != NULL)
+      {
+        dendrite_obj->addSynapse(syn);
+      }
+      qDebug() << axon;
     }
-
-    if (dendrite_obj != NULL)
-    {
-      dendrite_obj->addSynapse(syn);
-    }
-
-    qDebug() << axon;
-
   }
 
 
   std::vector<Object*> spines = getObjectsByType(Object_t::SPINE);
   for (auto const& spine : spines)
   {
-    QString name = spine->getName().c_str();
-    QList<QString> nameList = name.split("_");
-    int parentID = nameList[1].toInt();
+    if (spine->getMouseID() == mouse_id)
+    {
+      QString name = spine->getName().c_str();
+      QList<QString> nameList = name.split("_");
 
-    Object* parent = m_objects.at(parentID);
-    spine->setParentID(parent->getHVGXID());
-    parent->addChildID(spine->getHVGXID());
+      name = nameList[1].replace("D", "dendrite");
+      name += "_" + QString::number(mouse_id);
+
+      Object* parent = getObjectByName(name);
+      spine->setParentID(parent->getHVGXID());
+      parent->addChildID(spine->getHVGXID());
+    }
   }
 
   std::vector<Object*> boutons = getObjectsByType(Object_t::BOUTON);
   for (auto const& bouton : boutons)
   {
-    QString name = bouton->getName().c_str();
-    QList<QString> nameList = name.split("_");
-    int parentID = nameList[1].toInt();
+    if (bouton->getMouseID() == mouse_id)
+    {
+      QString name = bouton->getName().c_str();
+      QList<QString> nameList = name.split("_");
+      int parentID = nameList[1].toInt();
 
-    Object* parent = m_objects.at(parentID);
-    bouton->setParentID(parent->getHVGXID());
-    parent->addChildID(bouton->getHVGXID());
+      Object* parent = m_objects.at(parentID);
+      bouton->setParentID(parent->getHVGXID());
+      parent->addChildID(bouton->getHVGXID());
+    }
   }
 }
 
@@ -1530,8 +1560,11 @@ void DataContainer::compute_synapse_distances(Object* mito)
   std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
   for (Object* syn : synapses)
   {
-    double closest_distance = m_mesh_processing->compute_closest_distance(mito, syn, m_mesh->getVerticesList());
-    mito->setDistanceToStructure(syn->getHVGXID(), closest_distance);
+    if (syn->getMouseID() == mito->getMouseID())
+    {
+      double closest_distance = m_mesh_processing->compute_closest_distance(mito, syn, m_mesh->getVerticesList());
+      mito->setDistanceToStructure(syn->getHVGXID(), closest_distance);
+    }
   }
 }
 
@@ -1540,8 +1573,11 @@ void DataContainer::compute_mito_distances(Object* synapse)
   std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
   for (Object* mito : mitos)
   {
-    double closest_distance = m_mesh_processing->compute_closest_distance(synapse, mito, m_mesh->getVerticesList());
-    synapse->setDistanceToStructure(mito->getHVGXID(), closest_distance);
+    if (mito->getMouseID() == synapse->getMouseID())
+    {
+      double closest_distance = m_mesh_processing->compute_closest_distance(synapse, mito, m_mesh->getVerticesList());
+      synapse->setDistanceToStructure(mito->getHVGXID(), closest_distance);
+    }
   }
 }
 
@@ -1619,7 +1655,7 @@ Object* DataContainer::getObjectByName(QString name)
 
 void DataContainer::addSliceVertices()
 {
-  Object* obj = new Object("Slice", -1);
+  Object* obj = new Object("Slice", -1, 0);
   obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 
   m_objects[-1] = obj;

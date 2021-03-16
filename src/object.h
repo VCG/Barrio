@@ -43,7 +43,7 @@ class Object
 {
 public:
   Object();
-  Object(std::string name, int ID);
+  Object(std::string name, int ID, int mouse_id);
   ~Object();
 
   // temporary skeleton data points handleing function
@@ -71,6 +71,7 @@ public:
 
 
   int getHVGXID() { return m_ID; }
+  int getMouseID() { return m_mouse_id; }
   struct ssbo_mesh getSSBOData();
 
   //Object* getParent() { return m_parent; }
@@ -142,6 +143,7 @@ private:
   std::string                             m_name;
   int                                     m_ID;           // hvgx
   int                                     m_nodeIdx;
+  int                                     m_mouse_id;
 
   Object_t                                m_object_t;     /* object type */
   float                                   m_volume;       // volume of this object

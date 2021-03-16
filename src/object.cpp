@@ -19,7 +19,7 @@ Object::Object()
 }
 
 
-Object::Object(std::string name, int ID)
+Object::Object(std::string name, int ID, int mouse_id)
 {
   if (name[name.size() - 1] == '\n') {
     name.erase(name.size() - 1, name.size() - 1);
@@ -31,6 +31,8 @@ Object::Object(std::string name, int ID)
   m_color = QVector4D(1.0, 1.0, 0.0, 1.0);    // default one
   m_volume = 0;
   //m_center = QVector4D(0, 0, 0, 0);
+
+  m_mouse_id = mouse_id;
 
   m_closest_astro_vertex.second = 1000000.0;
   m_closest_astro_vertex.first = -1;
