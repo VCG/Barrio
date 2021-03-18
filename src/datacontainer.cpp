@@ -81,7 +81,7 @@ DataContainer::~DataContainer()
 void DataContainer::loadData()
 {
   QString data_path(PATH + QString("data"));
-  QString cache_subpath = QString("/cache");
+  QString cache_subpath = QString("/cache_m3");
 
   QString neurites_path = data_path + "/m3_data/m3_all_corrected.obj";
   QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
