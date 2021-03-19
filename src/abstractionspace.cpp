@@ -22,6 +22,10 @@ AbstractionSpace::AbstractionSpace(DataContainer* datacontainer)
   m_vis_space.insert({ 7, { VisName::MyMitoBoxPlot, ":/icons/boxplot.png", 7, NumberOfEntities::MEDIUM } });
   m_vis_space.insert({ 8, { VisName::MyMitoScatterPlot, ":/icons/scatterplot.png", 8, NumberOfEntities::HIGH } });
 
+  m_vis_space.insert({ 9, { VisName::MyMitoScatterPlot, ":/icons/scatterplot.png", 9, NumberOfEntities::HIGH } });
+
+
+
 }
 
 AbstractionSpace::~AbstractionSpace()

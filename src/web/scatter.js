@@ -11,6 +11,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     let yUnit = jsobject.y_unit;
 
     let data = JSON.parse(json_string);
+
+    console.log(data);
+
     let selected_structures = JSON.parse(selected_structures_string);
 
     var margin = {top: 50, right: 200, bottom: 50, left: 200},
@@ -32,12 +35,14 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var dend_identifier = "Mito_D";
     var axon_identifier = "Mito_A";
 
-    var dend_color = '#8c77ff';
-    var axon_color = '#ff8267';
+    var dend_color = '#8c77ff'; #mouse2
+    var axon_color = '#ff8267'; #mouse3
     var selected_color = "#358500";
 
+    var radius = 3;
+
     var selected_opacity = 1.0;
-    var unselected_opacity = 0.3;
+    var unselected_opacity = 0.7;
 
     var colorScale = d3.scale.ordinal()
         .domain([dendrite, axon, selected])
@@ -154,7 +159,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .data(data)
         .enter().append("circle")
         .classed("dot", true)
-        .attr("r", 5)
+        .attr("r", radius)
         .attr("transform", transform)
         .style("fill", function (d) {
             return colorScale(decide_type(d.name));
@@ -218,9 +223,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     {
         if (selected_structures.includes(name)) {
             return selected;
-        } else if (name.includes(dend_identifier)) {
+        } else if (name.endsWith("_2")) {
             return dendrite;
-        } else if (name.includes(axon_identifier)) {
+        } else if (name.endsWith("_3")) {
             return axon;
         }
     }

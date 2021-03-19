@@ -71,6 +71,22 @@
             "attribute": "mito-volume"
           }
         }
+      },
+      {
+        "name": "Task 4: Relation of synapses and mitochondria",
+        "explanation": "here comes the explanation",
+        "high_scale_vis": {
+          "id": 9,
+          "name": "scatter-plot",
+          "y-axis": {
+            "label": "Synapse surface area",
+            "attribute": "syn-surf-area"
+          },
+          "x-axis": {
+            "label": "closest mito surface area",
+            "attribute": "syn-close-mitos"
+          }
+        }
       }
     ]
   }

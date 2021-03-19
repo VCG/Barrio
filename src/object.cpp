@@ -319,7 +319,22 @@ void Object::addSynapse(Object* synapse_object)
   if (synapse_object == NULL)
     return;
 
+  if (std::find(m_synapse_ids.begin(), m_synapse_ids.end(), synapse_object->getHVGXID()) == m_synapse_ids.end())
+  {
+    m_synapse_ids.push_back(synapse_object->getHVGXID());
+  }
+ 
   m_synapses.push_back(synapse_object);
+}
+
+std::vector<Object*>* Object::getSynapses()
+{
+  return &m_synapses;
+}
+
+std::vector<int>* Object::getSynapseIDs()
+{
+  return &m_synapse_ids;
 }
 
 float Object::getAstroCoverage()

@@ -102,6 +102,7 @@ Scatterplot::~Scatterplot()
 QString Scatterplot::createJSONString()
 {
   std::vector<Object*> mitochondria = m_datacontainer->getObjectsByType(Object_t::MITO);
+  std::vector<Object*> synapses = m_datacontainer->getObjectsByType(Object_t::SYNAPSE);
 
   QJsonObject x_axis = m_settings.value("x-axis").toObject();
   QString x_attribute = x_axis.value("attribute").toString();
@@ -119,6 +120,52 @@ QString Scatterplot::createJSONString()
   QString mito_volume = "mito-volume";
   QString min_distance_to_cell = "min-distance-to-cell";
   QString surf_percentage = "surf-percentage";
+
+  QString syn_surface_area = "syn-surf-area";
+  QString syn_close_mitos = "syn-close-mitos";
+
+  if (x_attribute == syn_surface_area || y_attribute == syn_surface_area)
+  {
+    for (auto syn : synapses)
+    {
+      if (x_attribute == syn_surface_area) {
+        x_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
+      }
+      else if (y_attribute == syn_surface_area) {
+        y_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
+      }
+    }
+  }
+
+  if (x_attribute == syn_close_mitos || y_attribute == syn_close_mitos)
+  {
+    for (auto syn : synapses)
+    {
+      double min = 100000;
+      Object* closest_mito = NULL;
+      for (auto mito : mitochondria)
+      {
+        if (syn->getMouseID() == mito->getMouseID())
+        {
+          double distance = syn->get_distance_map_ptr()->at(mito->getHVGXID());
+          if (distance <= min) {
+            min = distance;
+            closest_mito = mito;
+          }
+        }
+      }
+
+      if (closest_mito != NULL)
+      {
+        if (x_attribute == syn_close_mitos) {
+          x_values.insert(syn->getName().c_str(), closest_mito->getVolume());
+        }
+        else if (y_attribute == syn_close_mitos) {
+          y_values.insert(syn->getName().c_str(), closest_mito->getVolume());
+        }
+      }
+    }
+  }
 
   if (x_attribute == mito_spine_coverage || y_attribute == mito_spine_coverage)
   {
@@ -252,9 +299,24 @@ QString Scatterplot::createJSONString()
   }
 
   QJsonArray document;
-  for (auto mito : mitochondria)
+  //for (auto mito : mitochondria)
+  //{
+  //  QString name = mito->getName().c_str();
+  //  QJsonObject object_json;
+
+  //  if (x_values.contains(name) && y_values.contains(name))
+  //  {
+  //    object_json.insert("name", name);
+  //    object_json.insert("x", x_values.value(name));
+  //    object_json.insert("y", y_values.value(name));
+
+  //    document.push_back(object_json);
+  //  }    
+  //}
+
+  for (auto syn : synapses)
   {
-    QString name = mito->getName().c_str();
+    QString name = syn->getName().c_str();
     QJsonObject object_json;
 
     if (x_values.contains(name) && y_values.contains(name))
@@ -264,7 +326,7 @@ QString Scatterplot::createJSONString()
       object_json.insert("y", y_values.value(name));
 
       document.push_back(object_json);
-    }    
+    }
   }
 
   QJsonDocument doc(document);

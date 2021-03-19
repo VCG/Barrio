@@ -89,8 +89,8 @@ void DataContainer::loadData()
   QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
   QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
 
-  QString mouse2 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m2/m2_test.obj";
-  QString mouse3 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/m3_test_renamed_spines.obj";
+  QString mouse2 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m2/m2_test_all_dendritic_mitos.obj";
+  QString mouse3 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/mouse3_renamed_spines.obj";
 
   PreLoadMetaDataHVGX(hvgx_path);
 
@@ -99,8 +99,8 @@ void DataContainer::loadData()
     auto t1 = std::chrono::high_resolution_clock::now();
 
     m_vertex_offset = 0;
+    m_hvgx = 0;
 
-    //importObj(neurites_path);
     int offset = importObjTest(mouse2, 2);
 
     m_vertex_offset = offset;
@@ -130,14 +130,16 @@ void DataContainer::loadData()
     loadDataFromCache(data_path + cache_subpath);
 
 
-    importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
+    //importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
     //importSkeletons(mitos_skeletons_path, Object_t::MITO);
-    importSemanticSkeleton(semantic_skeleton_path);
+    //importSemanticSkeleton(semantic_skeleton_path);
   }
+
+  qDebug() << m_objects; 
 
   /* 3 */
 
-  PostloadMetaDataHVGX(hvgx_path);
+  //PostloadMetaDataHVGX(hvgx_path);
 }
 
 //----------------------------------------------------------------------------
@@ -367,6 +369,17 @@ void DataContainer::readObjects(QString path)
 
     m_objects[hvgxID] = &obj;
   }
+
+  // rebuild synapse data structure
+  for (auto& [hvgxID, obj] : serializable_objects)
+  {
+    std::vector<int>* syn_ids = obj.getSynapseIDs();
+    for (auto& id : *syn_ids)
+    {
+      obj.addSynapse(m_objects[id]);
+    }
+  }
+
 }
 
 //----------------------------------------------------------------------------
@@ -922,7 +935,7 @@ QString DataContainer::getName(QString name)
   }
   else if (list[0].contains("spine", Qt::CaseInsensitive))
   {
-    return list[0] + "_" + list[1] + "_" + list[2];
+    return list[0]; //+ "_" + list[1] + "_" + list[2];
   }
   return QString();
 }
@@ -1290,22 +1303,22 @@ void DataContainer::processParentChildStructure(int mouse_id)
   }
 
 
-  std::vector<Object*> spines = getObjectsByType(Object_t::SPINE);
-  for (auto const& spine : spines)
-  {
-    if (spine->getMouseID() == mouse_id)
-    {
-      QString name = spine->getName().c_str();
-      QList<QString> nameList = name.split("_");
+  //std::vector<Object*> spines = getObjectsByType(Object_t::SPINE);
+  //for (auto const& spine : spines)
+  //{
+  //  if (spine->getMouseID() == mouse_id)
+  //  {
+  //    QString name = spine->getName().c_str();
+  //    QList<QString> nameList = name.split("_");
 
-      name = nameList[1].replace("D", "dendrite");
-      name += "_" + QString::number(mouse_id);
+  //    name = nameList[1].replace("D", "dendrite");
+  //    name += "_" + QString::number(mouse_id);
 
-      Object* parent = getObjectByName(name);
-      spine->setParentID(parent->getHVGXID());
-      parent->addChildID(spine->getHVGXID());
-    }
-  }
+  //    Object* parent = getObjectByName(name);
+  //    spine->setParentID(parent->getHVGXID());
+  //    parent->addChildID(spine->getHVGXID());
+  //  }
+  //}
 
   std::vector<Object*> boutons = getObjectsByType(Object_t::BOUTON);
   for (auto const& bouton : boutons)

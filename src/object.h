@@ -121,7 +121,8 @@ public:
   void updateClosestAstroVertex(float dist, int vertexIdx);
   void UpdateSynapseData(int axons_id, int dendrite_id, int spine_id, int bouton_id);
   void addSynapse(Object* synapse_object);
-  std::vector<Object*>* getSynapses() { return &m_synapses; }
+  std::vector<Object*>* getSynapses();
+  std::vector<int>* getSynapseIDs();
   struct synapse getSynapseData() { return m_synapse_data; }
 
   void setMappedValue(float value) { m_mappedValue = value; }
@@ -187,7 +188,7 @@ private:
   template<class Archive>
   void serialize(Archive& ar)
   {
-    ar(m_name, m_ID, m_nodeIdx,
+    ar(m_name, m_mouse_id, m_ID, m_nodeIdx,
       m_object_t, m_volume, m_surface_area, m_function,
       m_parentID, m_children_ids,
       m_meshIndices, 
