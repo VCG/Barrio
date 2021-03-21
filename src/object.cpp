@@ -381,14 +381,22 @@ int Object::getSynapseSize()
 
 bool Object::hasSynapse(int synapse_id)
 {
-  for (auto& syn : m_synapses)
+  if (std::find(m_synapse_ids.begin(), m_synapse_ids.end(), synapse_id) != m_synapse_ids.end()) 
   {
-    if (synapse_id == syn->getHVGXID())
-    {
-      return true;
-    }
+    return true;
   }
-  return false;
+  else {
+    return false;
+  }
+
+  //for (auto& syn : m_synapses)
+  //{
+  //  if (synapse_id == syn->getHVGXID())
+  //  {
+  //    return true;
+  //  }
+  //}
+  //return false;
 }
 
 bool Object::isChild(int hvgxID)

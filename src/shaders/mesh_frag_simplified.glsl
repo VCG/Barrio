@@ -76,7 +76,7 @@ float k_d = 0.8;
 float k_s = 0.5;
 
 vec3 selected_color =  vec3(1.0, 0.65, 0.0); // orange
-vec3 mito_standard = vec3(1.0, 0.0, 0.0); // red
+vec3 mito_standard = vec3(0.8, 0.0, 0.0); // red
 vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
 vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
 
@@ -155,7 +155,7 @@ vec4 computeColor()
     {
       if(show_mito_distance_to_cell)
       {
-        obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
+        obj_color = mito_standard;//vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
       }
       else
       {
@@ -209,7 +209,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {
-    out_color = vec4(result, 0.2);
+    out_color = vec4(result, 1.0);
   }
   else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {

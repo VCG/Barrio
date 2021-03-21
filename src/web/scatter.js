@@ -35,8 +35,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var dend_identifier = "Mito_D";
     var axon_identifier = "Mito_A";
 
-    var dend_color = '#8c77ff'; #mouse2
-    var axon_color = '#ff8267'; #mouse3
+    var dend_color = '#8c77ff'; // mouse2
+    var axon_color = '#ff8267'; // mouse3
     var selected_color = "#358500";
 
     var radius = 3;
