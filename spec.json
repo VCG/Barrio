@@ -7,16 +7,19 @@
         "explanation": "here comes the explanation",
         "low_scale_vis": {
           "id": 0,
+          "soi": "mitochondria",
           "name": "distance-tree",
           "params": "related-synapses"
         },
         "medium_scale_vis": {
           "id": 1,
+          "soi": "mitochondria",
           "name": "bar-chart",
           "params": "related-synapses"
         },
         "high_scale_vis": {
           "id": 2,
+          "soi": "mitochondria",
           "name": "distance-matrix",
           "params": "related-synapses"
         }
@@ -27,23 +30,26 @@
         "low_scale_vis": {
           "id": 3,
           "name": "histogram",
+          "soi": "mitochondria",
           "normalized": false,
           "params": "adjustable"
         },
         "medium_scale_vis": {
           "id": 4,
           "name": "box-plot",
+          "soi": "mitochondria",
           "normalized": true
         },
         "high_scale_vis": {
           "id": 5,
           "name": "scatter-plot",
+          "soi": "mitochondria",
           "x-axis": {
             "label": "Minimal Distance to Cell Boundary",
             "attribute": "min-distance-to-cell"
           },
           "y-axis": {
-            "label": "mit volume in cubic microns",
+            "label": "mitochondria volume in cubic microns",
             "attribute": "mito-volume"
           }
         }
@@ -53,15 +59,18 @@
         "explanation": "here comes the explanation",
         "low_scale_vis": {
           "id": 6,
-          "name": "mito-scheme"
+          "name": "mito-scheme",
+          "soi": "mitochondria"
         },
         "medium_scale_vis": {
           "id": 7,
-          "name": "mito-box-plot"
+          "name": "mito-box-plot",
+          "soi": "mitochondria"
         },
         "high_scale_vis": {
           "id": 8,
           "name": "scatter-plot",
+          "soi": "mitochondria",
           "x-axis": {
             "label": "number of spines covered by mitochondrion",
             "attribute": "mito-spine-coverage"
@@ -69,22 +78,6 @@
           "y-axis": {
             "label": "mitochondria volume in cubic microns",
             "attribute": "mito-volume"
-          }
-        }
-      },
-      {
-        "name": "Task 4: Relation of synapses and mitochondria",
-        "explanation": "here comes the explanation",
-        "high_scale_vis": {
-          "id": 9,
-          "name": "scatter-plot",
-          "y-axis": {
-            "label": "Synapse surface area",
-            "attribute": "syn-surf-area"
-          },
-          "x-axis": {
-            "label": "closest mito surface area",
-            "attribute": "syn-close-mitos"
           }
         }
       }

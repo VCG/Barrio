@@ -110,222 +110,244 @@ QString Scatterplot::createJSONString()
   QJsonObject y_axis = m_settings.value("y-axis").toObject();
   QString y_attribute = y_axis.value("attribute").toString();
 
+  QString soi = m_settings.value("soi").toString();
+
   QJsonDocument skeleton_doc = QJsonDocument::fromJson(m_datacontainer->m_sematic_skeleton_json.toUtf8());
   QJsonArray cell_array = skeleton_doc.array();
 
   QMap<QString, float> x_values;
   QMap<QString, float> y_values;
 
+  // mito as SOI
   QString mito_spine_coverage = "mito-spine-coverage";
   QString mito_volume = "mito-volume";
   QString min_distance_to_cell = "min-distance-to-cell";
   QString surf_percentage = "surf-percentage";
 
+  //synapse as SOI
   QString syn_surface_area = "syn-surf-area";
   QString syn_close_mitos = "syn-close-mitos";
 
-  if (x_attribute == syn_surface_area || y_attribute == syn_surface_area)
-  {
-    for (auto syn : synapses)
-    {
-      if (x_attribute == syn_surface_area) {
-        x_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
-      }
-      else if (y_attribute == syn_surface_area) {
-        y_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
-      }
-    }
-  }
+  QString soi_synapses = "synapses";
+  QString soi_mitochondria = "mitochondria";
 
-  if (x_attribute == syn_close_mitos || y_attribute == syn_close_mitos)
+  if (soi == soi_mitochondria)
   {
-    for (auto syn : synapses)
+    if (x_attribute == mito_spine_coverage || y_attribute == mito_spine_coverage)
     {
-      double min = 100000;
-      Object* closest_mito = NULL;
-      for (auto mito : mitochondria)
+      for (auto c : cell_array)
       {
-        if (syn->getMouseID() == mito->getMouseID())
-        {
-          double distance = syn->get_distance_map_ptr()->at(mito->getHVGXID());
-          if (distance <= min) {
-            min = distance;
-            closest_mito = mito;
+        QJsonObject cell = c.toObject();
+        QJsonArray spines = cell.value("spines").toArray();
+        QJsonArray mitos = cell.value("mitochondria").toArray();
+
+        for (auto m : mitos) {
+          QJsonObject mito = m.toObject();
+          QString name = mito.value("name").toString();
+          float spine_coverage = getMitoSpineCoverage(mito, spines);
+
+          if (x_attribute == mito_spine_coverage) {
+            x_values.insert(name, spine_coverage);
+          }
+          else if (y_attribute == mito_spine_coverage) {
+            y_values.insert(name, spine_coverage);
           }
         }
       }
+    }
 
-      if (closest_mito != NULL)
+    if (x_attribute == mito_volume || y_attribute == mito_volume)
+    {
+      for (auto mito : mitochondria)
       {
-        if (x_attribute == syn_close_mitos) {
-          x_values.insert(syn->getName().c_str(), closest_mito->getVolume());
-        }
-        else if (y_attribute == syn_close_mitos) {
-          y_values.insert(syn->getName().c_str(), closest_mito->getVolume());
-        }
-      }
-    }
-  }
+        QString name = mito->getName().c_str();
+        float volume = mito->getVolume();
 
-  if (x_attribute == mito_spine_coverage || y_attribute == mito_spine_coverage)
-  {
-    for (auto c : cell_array) 
-    {
-      QJsonObject cell = c.toObject();
-      QJsonArray spines = cell.value("spines").toArray();
-      QJsonArray mitos = cell.value("mitochondria").toArray();
+        qDebug() << volume;
 
-      for (auto m : mitos) {
-        QJsonObject mito = m.toObject();
-        QString name = mito.value("name").toString();
-        float spine_coverage = getMitoSpineCoverage(mito, spines);
-
-        if (x_attribute == mito_spine_coverage) {
-          x_values.insert(name, spine_coverage);
+        if (x_attribute == mito_volume) {
+          x_values.insert(name, volume);
         }
-        else if (y_attribute == mito_spine_coverage) {
-          y_values.insert(name, spine_coverage);
+        else if (y_attribute == mito_volume) {
+          y_values.insert(name, volume);
         }
       }
     }
-  } 
-  
-  if (x_attribute == mito_volume || y_attribute == mito_volume)
-  {
-    for (auto mito : mitochondria)
+
+    if (x_attribute == min_distance_to_cell || y_attribute == min_distance_to_cell)
     {
-      QString name = mito->getName().c_str();
-      float volume = mito->getVolume();
-
-      qDebug() << volume;
-
-      if (x_attribute == mito_volume) {
-        x_values.insert(name, volume);
-      }
-      else if (y_attribute == mito_volume) {
-        y_values.insert(name, volume);
-      }
-    }
-  }
-
-  if (x_attribute == min_distance_to_cell || y_attribute == min_distance_to_cell)
-  {
-    for (auto mito : mitochondria)
-    {
-      QJsonObject object_json;
-
-      QString name = mito->getName().c_str();
-      std::vector<int>* mito_indices = mito->get_indices_list();
-      std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
-
-      float minimum = 100.0;
-      int counter = 0;
-
-      for (auto j : *mito_indices)
+      for (auto mito : mitochondria)
       {
-        VertexData vertex = vertices->at(j);
-        float distance = (float)vertex.distance_to_cell;
+        QJsonObject object_json;
 
-        if (distance > 100) continue; // filter boarder values
+        QString name = mito->getName().c_str();
+        std::vector<int>* mito_indices = mito->get_indices_list();
+        std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
 
-        if (distance < minimum)
+        float minimum = 100.0;
+        int counter = 0;
+
+        for (auto j : *mito_indices)
         {
-          minimum = distance;
-        }
-        counter++;
-      }
+          VertexData vertex = vertices->at(j);
+          float distance = (float)vertex.distance_to_cell;
 
-      if (counter > 0 && x_attribute == min_distance_to_cell) {
-        x_values.insert(name, minimum);
-      }
-      else if (counter > 0 && y_attribute == min_distance_to_cell) {
-        y_values.insert(name, minimum);
-      }
-    }
-  }
+          if (distance > 100) continue; // filter boarder values
 
-
-  if (x_attribute == surf_percentage || y_attribute == surf_percentage)
-  {
-    float threshold = 1.0;
-    if (x_attribute == surf_percentage)
-    {
-      QJsonObject xaxis = m_settings.value("x-axis").toObject();
-      threshold = xaxis.value("threshold").toVariant().toFloat();
-    }
-    else if(y_attribute == surf_percentage)
-    {
-      QJsonObject yaxis = m_settings.value("y-axis").toObject();
-      threshold = yaxis.value("threshold").toVariant().toFloat();
-    }
-
-    for (auto mito : mitochondria)
-    {
-      QJsonObject object_json;
-
-      QString name = mito->getName().c_str();
-      std::vector<int>* mito_indices = mito->get_indices_list();
-      std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
-
-      float minimum = 1000.0;
-      float counter = 0.0;
-      //float threshold = 0.05;
-      float meshSize = 0.0;
-
-      for (auto j : *mito_indices)
-      {
-        VertexData vertex = vertices->at(j);
-        float distance = (float)vertex.distance_to_cell;
-
-        if (distance > 100) continue; // filter boarder values
-
-        if (distance < threshold)
-        {
+          if (distance < minimum)
+          {
+            minimum = distance;
+          }
           counter++;
         }
 
-        meshSize++;
+        if (counter > 0 && x_attribute == min_distance_to_cell) {
+          x_values.insert(name, minimum);
+        }
+        else if (counter > 0 && y_attribute == min_distance_to_cell) {
+          y_values.insert(name, minimum);
+        }
       }
 
-      float perc = counter / meshSize;
 
-      if (x_attribute == surf_percentage) {
-        x_values.insert(name, perc);
+    }
+
+    if (x_attribute == surf_percentage || y_attribute == surf_percentage)
+    {
+      float threshold = 1.0;
+      if (x_attribute == surf_percentage)
+      {
+        QJsonObject xaxis = m_settings.value("x-axis").toObject();
+        threshold = xaxis.value("threshold").toVariant().toFloat();
       }
-      else if (y_attribute == surf_percentage) {
-        y_values.insert(name, perc);
+      else if (y_attribute == surf_percentage)
+      {
+        QJsonObject yaxis = m_settings.value("y-axis").toObject();
+        threshold = yaxis.value("threshold").toVariant().toFloat();
+      }
+
+      for (auto mito : mitochondria)
+      {
+        QJsonObject object_json;
+
+        QString name = mito->getName().c_str();
+        std::vector<int>* mito_indices = mito->get_indices_list();
+        std::vector<VertexData>* vertices = m_datacontainer->getMesh()->getVerticesList();
+
+        float minimum = 1000.0;
+        float counter = 0.0;
+        //float threshold = 0.05;
+        float meshSize = 0.0;
+
+        for (auto j : *mito_indices)
+        {
+          VertexData vertex = vertices->at(j);
+          float distance = (float)vertex.distance_to_cell;
+
+          if (distance > 100) continue; // filter boarder values
+
+          if (distance < threshold)
+          {
+            counter++;
+          }
+
+          meshSize++;
+        }
+
+        float perc = counter / meshSize;
+
+        if (x_attribute == surf_percentage) {
+          x_values.insert(name, perc);
+        }
+        else if (y_attribute == surf_percentage) {
+          y_values.insert(name, perc);
+        }
+      }
+    }
+
+  }
+
+  if (soi == soi_synapses)
+  {
+    if (x_attribute == syn_close_mitos || y_attribute == syn_close_mitos)
+    {
+      for (auto syn : synapses)
+      {
+        double min = 100000;
+        Object* closest_mito = NULL;
+        for (auto mito : mitochondria)
+        {
+          if (syn->getMouseID() == mito->getMouseID())
+          {
+            double distance = syn->get_distance_map_ptr()->at(mito->getHVGXID());
+            if (distance <= min) {
+              min = distance;
+              closest_mito = mito;
+            }
+          }
+        }
+
+        if (closest_mito != NULL)
+        {
+          if (x_attribute == syn_close_mitos) {
+            x_values.insert(syn->getName().c_str(), closest_mito->getVolume());
+          }
+          else if (y_attribute == syn_close_mitos) {
+            y_values.insert(syn->getName().c_str(), closest_mito->getVolume());
+          }
+        }
+      }
+    }
+
+    if (x_attribute == syn_surface_area || y_attribute == syn_surface_area)
+    {
+      for (auto syn : synapses)
+      {
+        if (x_attribute == syn_surface_area) {
+          x_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
+        }
+        else if (y_attribute == syn_surface_area) {
+          y_values.insert(syn->getName().c_str(), syn->getSurfaceArea());
+        }
       }
     }
   }
 
+  
+
   QJsonArray document;
-  //for (auto mito : mitochondria)
-  //{
-  //  QString name = mito->getName().c_str();
-  //  QJsonObject object_json;
 
-  //  if (x_values.contains(name) && y_values.contains(name))
-  //  {
-  //    object_json.insert("name", name);
-  //    object_json.insert("x", x_values.value(name));
-  //    object_json.insert("y", y_values.value(name));
-
-  //    document.push_back(object_json);
-  //  }    
-  //}
-
-  for (auto syn : synapses)
+  if (soi == soi_mitochondria)
   {
-    QString name = syn->getName().c_str();
-    QJsonObject object_json;
-
-    if (x_values.contains(name) && y_values.contains(name))
+    for (auto mito : mitochondria)
     {
-      object_json.insert("name", name);
-      object_json.insert("x", x_values.value(name));
-      object_json.insert("y", y_values.value(name));
+      QString name = mito->getName().c_str();
+      QJsonObject object_json;
 
-      document.push_back(object_json);
+      if (x_values.contains(name) && y_values.contains(name))
+      {
+        object_json.insert("name", name);
+        object_json.insert("x", x_values.value(name));
+        object_json.insert("y", y_values.value(name));
+
+        document.push_back(object_json);
+      }
+    }
+  }
+  else if (soi == soi_synapses) {
+    for (auto syn : synapses)
+    {
+      QString name = syn->getName().c_str();
+      QJsonObject object_json;
+
+      if (x_values.contains(name) && y_values.contains(name))
+      {
+        object_json.insert("name", name);
+        object_json.insert("x", x_values.value(name));
+        object_json.insert("y", y_values.value(name));
+
+        document.push_back(object_json);
+      }
     }
   }
 
