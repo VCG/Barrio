@@ -46,10 +46,21 @@
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
+        // sort data based on the mouse
+        data.sort(function (a, b) {
+            let a_end = parseInt(a.key.slice(-1));
+            let b_end = parseInt(b.key.slice(-1));
+            return a_end - b_end;
+        })
+
         let domain = [];
         data.forEach(function (obj) {
             domain.push(obj.key);
         });
+
+
+
+
 
         // Build and Show the Y scale
         let y = d3.scaleLinear()
