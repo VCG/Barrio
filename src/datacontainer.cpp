@@ -117,29 +117,16 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
-
     compute_centers();
     compute_distance_mito_cell_boundary();
     compute_closest_distance_to_structures();
-
 
     writeDataToCache(data_path + cache_subpath);
   }
   else
   {
     loadDataFromCache(data_path + cache_subpath);
-
-
-    //importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
-    //importSkeletons(mitos_skeletons_path, Object_t::MITO);
-    //importSemanticSkeleton(semantic_skeleton_path);
   }
-
-  qDebug() << m_objects; 
-
-  /* 3 */
-
-  //PostloadMetaDataHVGX(hvgx_path);
 }
 
 //----------------------------------------------------------------------------
@@ -1274,14 +1261,16 @@ void DataContainer::processParentChildStructure(int mouse_id)
 
       QStringRef dendriteRef(&identifier, 0, 4);
       QString dendrite = dendriteRef.toString();
+      dendrite = dendrite.toLower();
 
-      dendrite.replace("d", "dendrite");
+      dendrite = dendrite.replace("d", "dendrite");
       qDebug() << dendrite;
 
       QStringRef axonRef(&identifier, 7, 4);
       QString axon = axonRef.toString();
+      axon = axon.toLower();
 
-      axon.replace("a", "axon");
+      axon = axon.replace("a", "axon");
 
       axon += "_" + QString::number(mouse_id);
       dendrite += "_" + QString::number(mouse_id);

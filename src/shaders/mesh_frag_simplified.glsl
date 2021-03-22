@@ -155,7 +155,7 @@ vec4 computeColor()
     {
       if(show_mito_distance_to_cell)
       {
-        obj_color = mito_standard;//vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
+        obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
       }
       else
       {

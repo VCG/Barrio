@@ -194,7 +194,7 @@ private:
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
-      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center, m_distance_map);
+      x_center, y_center, z_center, w_center, m_distance_map, m_synapse_ids);
 
 
   }
