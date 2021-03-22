@@ -26,6 +26,12 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
 
   names.sort();
 
+  QStandardItem* mouse2 = new QStandardItem("Mouse 2");
+  QStandardItem* mouse3 = new QStandardItem("Mouse 3");
+
+  paramList->appendRow(mouse2);
+  paramList->appendRow(mouse3);
+
   //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
   for (int i = 0; i < names.size(); i++)
   {
@@ -38,11 +44,19 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
       QStandardItem* item_name = new QStandardItem(name);
       item_name->setEditable(false);
 
+
       int id = object->getHVGXID();
       QStandardItem* item_id = new QStandardItem(QString::number(id));
       item_id->setEditable(false);
 
-      paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      if (name.endsWith("2"))
+      {
+        mouse2->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      }
+      else if(name.endsWith("3"))
+      {
+        mouse3->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      }
 
       /*std::vector<int>* childrenIDs = object->getChildrenIDs();
       int j = 0;
@@ -75,14 +89,18 @@ TreeModel::~TreeModel()
 
 void TreeModel::selectItem(const QModelIndex& index)
 {
-
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
   m_mainwidget->addWidgetGroup(hvgx, false);
 
   QList<QStandardItem*> items;
-  QStandardItem* col0 = paramList->item(index.row(), 0);
-  QStandardItem* col1 = paramList->item(index.row(), 1);
+  
+  QModelIndex c0 = index.sibling(index.row(), 0);
+  QModelIndex c1 = index.sibling(index.row(), 1);
+
+  QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+  QStandardItem* col0 = sModel->itemFromIndex(c0);
+  QStandardItem* col1 = sModel->itemFromIndex(c1);
 
   col0->setBackground(QColor(161, 255, 186));
   col1->setBackground(QColor(161, 255, 186));
@@ -91,6 +109,5 @@ void TreeModel::selectItem(const QModelIndex& index)
   items.append(col1);
 
   m_mainwidget->addStandardItem(hvgx, items);
-
 }
 
