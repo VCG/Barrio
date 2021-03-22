@@ -27,7 +27,10 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
   names.sort();
 
   QStandardItem* mouse2 = new QStandardItem("Mouse 2");
+  mouse2->setSelectable(false);
+
   QStandardItem* mouse3 = new QStandardItem("Mouse 3");
+  mouse3->setSelectable(false);
 
   paramList->appendRow(mouse2);
   paramList->appendRow(mouse3);
@@ -91,23 +94,25 @@ void TreeModel::selectItem(const QModelIndex& index)
 {
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
-  m_mainwidget->addWidgetGroup(hvgx, false);
+  if (hvgx > 0) {
+    m_mainwidget->addWidgetGroup(hvgx, false);
 
-  QList<QStandardItem*> items;
-  
-  QModelIndex c0 = index.sibling(index.row(), 0);
-  QModelIndex c1 = index.sibling(index.row(), 1);
+    QList<QStandardItem*> items;
 
-  QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
-  QStandardItem* col0 = sModel->itemFromIndex(c0);
-  QStandardItem* col1 = sModel->itemFromIndex(c1);
+    QModelIndex c0 = index.sibling(index.row(), 0);
+    QModelIndex c1 = index.sibling(index.row(), 1);
 
-  col0->setBackground(QColor(161, 255, 186));
-  col1->setBackground(QColor(161, 255, 186));
+    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+    QStandardItem* col0 = sModel->itemFromIndex(c0);
+    QStandardItem* col1 = sModel->itemFromIndex(c1);
 
-  items.append(col0);
-  items.append(col1);
+    col0->setBackground(QColor(161, 255, 186));
+    col1->setBackground(QColor(161, 255, 186));
 
-  m_mainwidget->addStandardItem(hvgx, items);
+    items.append(col0);
+    items.append(col1);
+
+    m_mainwidget->addStandardItem(hvgx, items);
+  }
 }
 
