@@ -28,8 +28,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var y = d3.scale.linear()
         .range([height, 0]).nice();
 
-    var dendrite = "Dendrite";
-    var axon = "Axon";
+    var mouse2 = "Mouse 2 (24 months)";
+    var mouse3 = "Mouse 3 (4 months)";
     var selected = "Selected";
 
     var dend_identifier = "Mito_D";
@@ -45,11 +45,11 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var unselected_opacity = 0.7;
 
     var colorScale = d3.scale.ordinal()
-        .domain([dendrite, axon, selected])
+        .domain([mouse2, mouse3, selected])
         .range([dend_color, axon_color, selected_color]);
 
     var opacityScale = d3.scale.ordinal()
-        .domain([dendrite, axon, selected])
+        .domain([mouse2, mouse3, selected])
         .range([unselected_opacity, unselected_opacity, selected_opacity]);
 
     var xAttrName = "x",
@@ -224,9 +224,9 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         if (selected_structures.includes(name)) {
             return selected;
         } else if (name.endsWith("_2")) {
-            return dendrite;
+            return mouse2;
         } else if (name.endsWith("_3")) {
-            return axon;
+            return mouse3;
         }
     }
 
