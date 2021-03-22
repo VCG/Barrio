@@ -27,13 +27,18 @@
         pointer-events: none;
     }
 
-    .bar {
-        fill: rgb(148,0,212);
+    .bar_mouse2 {
+        fill: #76528BFF;
         stroke: #ffffff;
     }
 
-    .bar:hover{
-        fill: #ffa500 ;
+    .bar_mouse3 {
+        fill: #cbce91;
+        stroke: #ffffff;
+    }
+
+    .bar:hover {
+        fill: #ffa500;
     }
 
 </style>
@@ -43,11 +48,11 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+<script crossorigin="anonymous"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="qrc:///qtwebchannel/qwebchannel.js" type="text/javascript"></script>
 <script>
     new QWebChannel(qt.webChannelTransport, function (channel) {
 
@@ -153,25 +158,41 @@
             })
             .enter()
             .append("rect")
-            .attr("class", "bar");
-
-        function highlightBars(bar_name)
-        {
-            bars.style("fill", function (d) {
-                if(d.candidate == bar_name)
+            .attr("class", function (d) {
+                console.log(d)
+                if(d.district.endsWith("2")){
+                    return "bar_mouse2";
+                }
+                else if(d.district.endsWith("3"))
                 {
+                    return "bar_mouse3";
+                }
+            });
+
+        function highlightBars(bar_name) {
+            bars.style("fill", function (d) {
+                if (d.candidate == bar_name) {
                     return "#ffa500";
                 }
-                return "rgb(148,0,212)";
+                if(d.district.endsWith("2"))
+                {
+                    return "#76528BFF";
+                }
+                else if(d.district.endsWith("3"))
+                {
+                    return "#cbce91";
+                }
+
+
 
             });
         }
 
         bars.attr("y", function (d) {
-                return y(d.votes)
-            })
+            return y(d.votes)
+        })
             .attr("x", function (d, i) {
-                return (x.rangeBand() / 2)  - (10 * d.group_size / 2) + i * 10;
+                return (x.rangeBand() / 2) - (10 * d.group_size / 2) + i * 10;
             })
             .attr("width", 10)
             .attr("height", function (d) {
@@ -187,55 +208,32 @@
             .style("stroke", "black")
             .style("opacity", 0.0);
 
-        bars.on("mouseenter", function(d){
+        bars.on("mouseenter", function (d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
 
-            //console.log(d);
-                div.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-
-                line.attr("x1", 0).attr("x2", w).attr("y1", y(d.votes))
+            line.attr("x1", 0).attr("x2", w).attr("y1", y(d.votes))
                 .attr("y2", y(d.votes))
                 .style("opacity", .9);
 
-                div.text(d.candidate)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
+            div.text(d.candidate)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
 
 
-                jsobject.setHighlightedStructure(d.candidate);
-                highlightBars(d.candidate);
-            })
-            .on("mouseleave", function(d){
+            jsobject.setHighlightedStructure(d.candidate);
+            highlightBars(d.candidate);
+        })
+            .on("mouseleave", function (d) {
                 div.transition()
-                        .duration(500)
-                        .style("opacity", 0);
+                    .duration(500)
+                    .style("opacity", 0);
 
                 line.style("opacity", 0.0);
 
                 jsobject.removeHighlightedStructure(d.candidate);
             });
-
-        // bars.append("title")
-        //     .text(function (d) {
-        //         return d.candidate + ", " + d.votes
-        //     });
-        //
-        // var labels = district.selectAll(".label")
-        //     .data(function(d){return d.values})
-        //     .enter().append("text");
-        //
-        // labels.text(function(d) {
-        //     return (d.votes);
-        // })
-        //     .attr("text-anchor", "start")
-        //     .attr("x", function(d) { return x(d.votes) + 4})
-        //     .attr("y", function(d, i) {
-        //         if(i % 2== 0){ return (y.rangeBand()/2 -2)+ (i/2 + 0.5)*10}
-        //         else { return (y.rangeBand()/2 -2)- (i/2)*10}
-        //     })
-        //     .attr("class", "axis");
-
     });
 </script>
 
