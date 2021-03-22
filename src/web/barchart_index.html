@@ -76,8 +76,6 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-
-
         let svg = d3.select("#chart").append("svg")
             .attr("width", w + m.right + m.left + 100)
             .attr("height", h + m.top + m.bottom)
@@ -98,6 +96,11 @@
             })
             .entries(data);
 
+        nested.sort(function (a, b) {
+            let a_end = parseInt(a.key.slice(-1));
+            let b_end = parseInt(b.key.slice(-1));
+            return a_end - b_end;
+        })
 
         x.domain(nested.map(function (d) {
             return d.key;
@@ -135,11 +138,9 @@
             .enter()
             .append("g")
             .attr("transform", function (d) {
-                console.log("add district");
                 return "translate(" + x(d.key) + ", 0)";
             })
             .on("mouseenter", function (d) {
-                //console.log("hallo");
                 jsobject.setHighlightedFrame(d.key);
             })
             .on("mouseleave", function (d) {
