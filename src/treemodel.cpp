@@ -94,7 +94,7 @@ void TreeModel::selectItem(const QModelIndex& index)
 {
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
-  if (hvgx > 0) {
+  if (hvgx > 0) { // avoid selecting the header like mouse2 or mouse3
     m_mainwidget->addWidgetGroup(hvgx, false);
 
     QList<QStandardItem*> items;
