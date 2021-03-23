@@ -380,9 +380,9 @@ void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
 
   ui_element->setLayout(new QHBoxLayout);
 
-  addVisualizationSelection(ui_element->layout(), "Low Scale", lsv);
-  addVisualizationSelection(ui_element->layout(), "Medium Scale", msv);
-  addVisualizationSelection(ui_element->layout(), "High Scale", hsv);
+  addVisualizationSelection(ui_element->layout(), "LCA", lsv);
+  addVisualizationSelection(ui_element->layout(), "MCA", msv);
+  addVisualizationSelection(ui_element->layout(), "HCA", hsv);
 }
 
 void MainWindow::addVisualizationSelection(QLayout* layout, QString scale, int vis_id)

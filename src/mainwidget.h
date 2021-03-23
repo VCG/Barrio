@@ -146,9 +146,9 @@ private:
   int m_number_of_selected_structures = 0;
   NumberOfEntities m_number_of_entities;
 
-  QString m_low_detail_name = "Low Scale";
-  QString m_medium_detail_name = "Medium Scale";
-  QString m_high_detail_name = "High Scale";
+  QString m_low_detail_name = "Low Cardinality";
+  QString m_medium_detail_name = "Medium Cardinality";
+  QString m_high_detail_name = "High Cardinality";
 
   
 

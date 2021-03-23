@@ -1926,9 +1926,9 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Neuro Comparer", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "NeuroSnack", nullptr));
         dockWidget->setWindowTitle(QString());
-        groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures", nullptr));
+        groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures of Interest", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Parameters", nullptr));
@@ -1936,7 +1936,7 @@ public:
         sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "3D views", nullptr));
         three_d_enabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
-        groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Opacity", nullptr));
+        groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Membrane Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));
         groupBox_5->setTitle(QCoreApplication::translate("MainWindow", "Visualization Parameters", nullptr));
