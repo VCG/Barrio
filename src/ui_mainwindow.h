@@ -1926,7 +1926,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "NeuroSnack", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "NeuroKit", nullptr));
         dockWidget->setWindowTitle(QString());
         groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures of Interest", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
