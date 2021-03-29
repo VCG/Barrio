@@ -6,16 +6,19 @@
         "name": "DT 1: synaptic neighborhood of mitochondria",
         "low_cardinality_vis": {
           "id": 0,
+          "target-structure": "mitochondria",
           "name": "distance-tree",
           "params": "related-synapses"
         },
         "medium_cardinality_vis": {
           "id": 1,
+          "target-structure": "mitochondria",
           "name": "grouped-bar-chart",
           "params": "related-synapses"
         },
         "high_cardinality_vis": {
           "id": 2,
+          "target-structure": "mitochondria",
           "name": "distance-matrix",
           "params": "related-synapses"
         }
@@ -24,17 +27,22 @@
         "name": "DT 2: mitochondria placement",
         "low_cardinality_vis": {
           "id": 3,
+          "target-structure": "mitochondria",
           "name": "cumulative-histogram",
+          "bins": "distance-to-cell-membrane",
           "normalized": false,
           "params": "adjustable"
         },
         "medium_cardinality_vis": {
           "id": 4,
+          "target-structure": "mitochondria",
           "name": "violin-plot",
+          "bins": "distance-to-cell-membrane",
           "normalized": true
         },
         "high_cardinality_vis": {
           "id": 5,
+          "target-structure": "mitochondria",
           "name": "scatter-plot",
           "x-axis": {
             "label": "Minimal Distance to Cell Boundary",
@@ -50,14 +58,17 @@
         "name": "DT 3: mitochondric spine coverage",
         "low_cardinality_vis": {
           "id": 6,
+          "target-structure": "mitochondria",
           "name": "dendrite-abstraction-1"
         },
         "medium_cardinality_vis": {
           "id": 7,
+          "target-structure": "mitochondria",
           "name": "dendrite-abstraction-2"
         },
         "high_cardinality_vis": {
           "id": 8,
+          "target-structure": "mitochondria",
           "name": "scatter-plot",
           "x-axis": {
             "label": "number of spines covered by mitochondrion",
