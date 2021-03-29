@@ -17,7 +17,7 @@
         "high_cardinality_vis": {
           "id": 2,
           "name": "distance-matrix",
-          "params": "surrounding-synapses"
+          "params": "related-synapses"
         }
       },
       {
