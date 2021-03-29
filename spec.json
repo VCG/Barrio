@@ -3,39 +3,37 @@
     "name": "Mitochondria Analysis",
     "subtasks": [
       {
-        "name": "Task 1: Relation of synapses and mitochondria",
-        "explanation": "here comes the explanation",
-        "low_scale_vis": {
+        "name": "DT 1: synaptic neighborhood of mitochondria",
+        "low_cardinality_vis": {
           "id": 0,
           "name": "distance-tree",
           "params": "related-synapses"
         },
-        "medium_scale_vis": {
+        "medium_cardinality_vis": {
           "id": 1,
-          "name": "bar-chart",
+          "name": "grouped-bar-chart",
           "params": "related-synapses"
         },
-        "high_scale_vis": {
+        "high_cardinality_vis": {
           "id": 2,
           "name": "distance-matrix",
-          "params": "related-synapses"
+          "params": "surrounding-synapses"
         }
       },
       {
-        "name": "Task 2: Relation of cell membrane and mitochondria",
-        "explanation": "here comes the explanation",
-        "low_scale_vis": {
+        "name": "DT 2: mitochondria placement",
+        "low_cardinality_vis": {
           "id": 3,
-          "name": "histogram",
+          "name": "cumulative-histogram",
           "normalized": false,
           "params": "adjustable"
         },
-        "medium_scale_vis": {
+        "medium_cardinality_vis": {
           "id": 4,
-          "name": "box-plot",
+          "name": "violin-plot",
           "normalized": true
         },
-        "high_scale_vis": {
+        "high_cardinality_vis": {
           "id": 5,
           "name": "scatter-plot",
           "x-axis": {
@@ -43,23 +41,22 @@
             "attribute": "min-distance-to-cell"
           },
           "y-axis": {
-            "label": "mit volume in cubic microns",
+            "label": "mitochondria volume in cubic microns",
             "attribute": "mito-volume"
           }
         }
       },
       {
-        "name": "Task 3: Relation of mitochondria and dendritic spines",
-        "explanation": "here comes the explanation",
-        "low_scale_vis": {
+        "name": "DT 3: mitochondric spine coverage",
+        "low_cardinality_vis": {
           "id": 6,
-          "name": "mito-scheme"
+          "name": "dendrite-abstraction-1"
         },
-        "medium_scale_vis": {
+        "medium_cardinality_vis": {
           "id": 7,
-          "name": "mito-box-plot"
+          "name": "dendrite-abstraction-2"
         },
-        "high_scale_vis": {
+        "high_cardinality_vis": {
           "id": 8,
           "name": "scatter-plot",
           "x-axis": {
