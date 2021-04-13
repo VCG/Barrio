@@ -1,4 +1,4 @@
-# NeuroSnack
+# NeuroKit
 
 ## Prerequisites
 * The application is developed and tested under `Windows 10`.
@@ -35,7 +35,7 @@ Soon you can find data sets here TODO
 For data preprocessing and input data specification, please refer to this [repo](https://github.com/jakobtroidl/neco_convert). 
 
 ## FAQs
-Check out the FAQs for further development and more [here](https://github.com/jakobtroidl/NeuroComparer/wiki/FAQs). 
+Check out the FAQs for further development and more [here](https://github.com/jakobtroidl/NeuroKit/wiki/FAQs). 
 
 
 
