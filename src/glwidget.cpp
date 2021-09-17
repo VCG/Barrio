@@ -337,7 +337,7 @@ void GLWidget::paintGL()
 
   m_mesh_program->release();
 
-  update();
+  //update();
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -575,8 +575,8 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
   case(Qt::Key_Shift): // enable hover
     setMouseTracking(true);
   case(Qt::Key_0): // switch vbo mesh rendering order
-    m_opengl_mngr->renderOrderToggle();
-    update();
+    //m_opengl_mngr->renderOrderToggle();
+    //update();
     break;
   case(Qt::Key_P):
     saveScreenshot();

@@ -54,6 +54,7 @@ void MainWidget::on_opacity_slider_changed(int value)
 void MainWidget::on_slice_position_slider_changed(int value)
 {
   set_slice_position(value);
+  update();
 }
 
 void MainWidget::set_slice_position(int value)
@@ -462,6 +463,7 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
 void MainWidget::showSlice(bool showSlice)
 {
   m_shared_resources.show_slice = showSlice;
+  update();
 }
 
 void MainWidget::show3DRenderings(bool show3DRenderings)
@@ -713,7 +715,7 @@ void MainWidget::paintGL()
   updateGroupBoxStyle();
   updateWidgets();
 
-  update();
+  //update();
 }
 
 void MainWidget::updateWidgets()
