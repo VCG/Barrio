@@ -183,6 +183,8 @@ Q_INVOKABLE void DistanceMatrixData::setHighlightedStructure(const QString& name
   {
     m_global_vis_parameters->highlighted_objects.append(hvgx_id);
   }
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void DistanceMatrixData::removeHighlightedStructure(const QString& name_to_remove)
@@ -199,6 +201,8 @@ Q_INVOKABLE void DistanceMatrixData::removeHighlightedStructure(const QString& n
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void DistanceMatrixData::setHighlightedFrame(const QString& name)
@@ -209,6 +213,7 @@ Q_INVOKABLE void DistanceMatrixData::setHighlightedFrame(const QString& name)
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -227,6 +232,6 @@ Q_INVOKABLE void DistanceMatrixData::removeHighlightedFrame(const QString& name_
       }
     }
   }
-
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }

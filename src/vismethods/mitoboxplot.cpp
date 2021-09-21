@@ -121,6 +121,7 @@ Q_INVOKABLE void MitoBoxPlotData::setHighlightedFrame(const QString& name)
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -138,6 +139,7 @@ Q_INVOKABLE void MitoBoxPlotData::removeHighlightedFrame(const QString& name_to_
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -157,6 +159,8 @@ Q_INVOKABLE void MitoBoxPlotData::setHighlightedStructure(const int parentID, in
       m_global_vis_parameters->highlighted_objects.append(id);
     }
   }
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void MitoBoxPlotData::removeHighlightedStructure(const int parentID, int spineNumber)
@@ -189,4 +193,6 @@ Q_INVOKABLE void MitoBoxPlotData::removeHighlightedStructure(const int parentID,
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }

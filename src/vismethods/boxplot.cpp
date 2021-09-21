@@ -131,7 +131,8 @@ Q_INVOKABLE void BoxplotData::setHighlightedFrame(const QString& name)
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
   }
-   return Q_INVOKABLE void();
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void BoxplotData::removeHighlightedFrame(const QString& name_to_remove)
@@ -148,5 +149,6 @@ Q_INVOKABLE void BoxplotData::removeHighlightedFrame(const QString& name_to_remo
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }

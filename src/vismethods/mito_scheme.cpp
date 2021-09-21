@@ -45,7 +45,8 @@ Q_INVOKABLE void MitoSchemeData::setHighlightedStructure(const int parentID, int
       m_global_vis_parameters->highlighted_objects.append(id);
     }
   }
-  
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void MitoSchemeData::removeHighlightedStructure(const int parentID, int spineNumber)
@@ -79,6 +80,9 @@ Q_INVOKABLE void MitoSchemeData::removeHighlightedStructure(const int parentID, 
       }
     }
   }
+
+  m_global_vis_parameters->needs_update = true;
+  return Q_INVOKABLE void();
 }
 
 MitoScheme::MitoScheme(MitoScheme* mitoScheme)

@@ -165,6 +165,7 @@ Q_INVOKABLE void BarChartData::setHighlightedFrame(const QString& name)
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -182,6 +183,7 @@ Q_INVOKABLE void BarChartData::removeHighlightedFrame(const QString& name_to_rem
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -192,6 +194,7 @@ Q_INVOKABLE void BarChartData::setHighlightedStructure(const QString& name)
   {
     m_global_vis_parameters->highlighted_objects.append(hvgx_id);
   }
+  m_global_vis_parameters->needs_update = true;
 }
 
 Q_INVOKABLE void BarChartData::removeHighlightedStructure(const QString& name_to_remove)
@@ -208,4 +211,5 @@ Q_INVOKABLE void BarChartData::removeHighlightedStructure(const QString& name_to
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
 }

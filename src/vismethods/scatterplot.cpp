@@ -46,6 +46,7 @@ Q_INVOKABLE void ScatterplotData::selectStructure(const QString& name)
 {
   int hvgx = m_datacontainer->getIndexByName(name);
   m_global_vis_parameters->my_add_queue.append(hvgx);
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -62,7 +63,7 @@ Q_INVOKABLE void ScatterplotData::setHighlightedFrame(const QString& name)
   {
     m_global_vis_parameters->highlighted_group_boxes.append(hvgx);
   }
-  
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 
@@ -80,6 +81,7 @@ Q_INVOKABLE void ScatterplotData::removeHighlightedFrame(const QString& name_to_
       }
     }
   }
+  m_global_vis_parameters->needs_update = true;
   return Q_INVOKABLE void();
 }
 

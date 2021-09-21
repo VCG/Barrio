@@ -23,6 +23,7 @@ enum NumberOfEntities
 
 struct GlobalVisParameters
 {
+  bool needs_update = false;
   double distance_threshold;
   float opacity;
   float slice_depth;

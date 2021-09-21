@@ -712,10 +712,15 @@ void MainWidget::paintGL()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
 
-  updateGroupBoxStyle();
-  updateWidgets();
-
-  //update();
+  if (m_abstraction_space->m_global_vis_parameters.needs_update)
+  {
+      updateGroupBoxStyle();
+      updateWidgets();
+      m_abstraction_space->m_global_vis_parameters.needs_update = false;
+  }
+  update();
+  
+  
 }
 
 void MainWidget::updateWidgets()
