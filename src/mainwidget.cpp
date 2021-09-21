@@ -54,6 +54,7 @@ void MainWidget::on_opacity_slider_changed(int value)
 void MainWidget::on_slice_position_slider_changed(int value)
 {
   set_slice_position(value);
+  m_abstraction_space->m_global_vis_parameters.needs_update = true;
   update();
 }
 
@@ -463,6 +464,7 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
 void MainWidget::showSlice(bool showSlice)
 {
   m_shared_resources.show_slice = showSlice;
+  m_abstraction_space->m_global_vis_parameters.needs_update = true;
   update();
 }
 
