@@ -1,6 +1,5 @@
 #include "glwidget.h"
 #include "object.h"
-#include "openglmanager.h"
 
 #include "mainwindow.h"
 #include <chrono>

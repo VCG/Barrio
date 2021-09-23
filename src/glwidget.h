@@ -8,10 +8,10 @@
 #include "mainopengl.h"
 #include "graphmanager.h"
 #include "abstractionspace.h"
-#include "openglmanager.h"
 #include "performancerate.h"
 #include "inputform.h"
 #include "globalParameters.h"
+#include "camera.h"
 
 
 enum BufferNames { COUNTER_BUFFER = 0, LINKED_LIST_BUFFER };
@@ -64,9 +64,7 @@ public:
   ~GLWidget();
   void init(DataContainer* data_container);
 
-  OpenGLManager* getOpenGLManager() { return m_opengl_mngr; }
   DataContainer* getDataContainer() { return m_data_container; }
-  float getZoomFactor() { return m_camera_distance; }
 
   int pickObject(QMouseEvent* event);
   void insertInTable(int);
@@ -190,9 +188,10 @@ protected:
 
   /* mesh */
   DataContainer* m_data_container;
-  OpenGLManager* m_opengl_mngr;
 
   struct WidgetUniforms               m_uniforms;
+
+  Camera*							  camera;
 
   /* matrices */
   QMatrix4x4                          m_projection;
@@ -207,10 +206,10 @@ protected:
 
   /* rotation */
   QPoint                              m_lastPos;
-  double                              m_camera_distance;
-  QQuaternion                         m_rotation;
-  QVector3D                           m_rotationAxis;
-  QVector3D                           m_translation;
+  //double                              m_camera_distance;
+  //QQuaternion                         m_rotation;
+  //QVector3D                           m_rotationAxis;
+  //QVector3D                           m_translation;
 
   /* mouse pad */
   int                                 m_yaxis;

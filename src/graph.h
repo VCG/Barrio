@@ -48,7 +48,6 @@ struct GEM_param {
 #include "edge.h"
 #include "spatialhash.h"
 #include "datacontainer.h"
-#include "openglmanager.h"
 
 #include <QDebug>
 #include <QFile>
@@ -102,7 +101,7 @@ class Node;
 class Graph
 {
 public:
-  Graph(Graph_t graphType, OpenGLManager* opengl_mnger, int gridCol);
+  Graph(Graph_t graphType, int gridCol);
   ~Graph();
 
   bool parseNODE_NODE(std::vector<Node*> neurites_nodes, std::vector<QVector2D> neurites_edges);
@@ -169,7 +168,7 @@ protected:
 
   struct WidgetUniforms           m_uniforms;
 
-  OpenGLManager* m_opengl_mngr;
+  //OpenGLManager* m_opengl_mngr;
 
   // I need a way to filter out nodes based on if they are shown or not
   std::map<std::pair<int, int>, Node*>     m_nodes;    // IDs are unique to identify nodes

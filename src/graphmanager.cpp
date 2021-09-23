@@ -1,9 +1,8 @@
 #include "graphmanager.h"
 
-GraphManager::GraphManager(DataContainer* objectManager, OpenGLManager* opengl_mnger)
+GraphManager::GraphManager(DataContainer* objectManager)
 {
-  m_data_containter = objectManager;
-  m_opengl_mngr = opengl_mnger;
+    m_data_containter = objectManager;
 }
 
 GraphManager::~GraphManager()
@@ -23,7 +22,7 @@ void GraphManager::update2Dflag(bool is2D, struct WidgetUniforms uniforms)
 {
   if (is2D) {
     // pass rotation matrix
-    m_opengl_mngr->multiplyWithRotation(uniforms.rMatrix);
+    //m_opengl_mngr->multiplyWithRotation(uniforms.rMatrix);
     // reset graph
     for (int i = 0; i < max_graphs; i++) {
       m_graph[i]->updateUniforms(uniforms);
@@ -100,31 +99,31 @@ void GraphManager::ExtractGraphFromMesh()
     }
   }
 
-  m_graph[0] = new Graph(Graph_t::NODE_NODE, m_opengl_mngr, 5 /* grid col */); // neurite-neurite
-  m_graph[0]->parseNODE_NODE(neurites_nodes, edges_info);
+  //m_graph[0] = new Graph(Graph_t::NODE_NODE, m_opengl_mngr, 5 /* grid col */); // neurite-neurite
+  //m_graph[0]->parseNODE_NODE(neurites_nodes, edges_info);
 
-  m_graph[1] = new Graph(Graph_t::NODE_SKELETON, m_opengl_mngr, 5 /* grid col */); // neurite-astrocyte skeleton
-  m_graph[1]->parseSKELETON(astrocyte_skeleton_nodes, astrocyte_skeleton_edges);
+  //m_graph[1] = new Graph(Graph_t::NODE_SKELETON, m_opengl_mngr, 5 /* grid col */); // neurite-astrocyte skeleton
+  //m_graph[1]->parseSKELETON(astrocyte_skeleton_nodes, astrocyte_skeleton_edges);
 
-  m_graph[2] = new Graph(Graph_t::ALL_SKELETONS, m_opengl_mngr, 5 /* grid col */); //  neurites skeletons - astrocyte skeleton
-  m_graph[2]->parseSKELETON(astrocyte_skeleton_nodes, astrocyte_skeleton_edges);
-  m_graph[2]->parseSKELETON(neurites_skeletons_nodes, neurites_skeletons_edges);
+  //m_graph[2] = new Graph(Graph_t::ALL_SKELETONS, m_opengl_mngr, 5 /* grid col */); //  neurites skeletons - astrocyte skeleton
+  //m_graph[2]->parseSKELETON(astrocyte_skeleton_nodes, astrocyte_skeleton_edges);
+  //m_graph[2]->parseSKELETON(neurites_skeletons_nodes, neurites_skeletons_edges);
 
-  m_graph[3] = new Graph(Graph_t::NEURITE_SKELETONS, m_opengl_mngr, 5 /* grid col */); // neuries skeletons
-  m_graph[3]->parseSKELETON(neurites_skeletons_nodes, neurites_skeletons_edges);
+  //m_graph[3] = new Graph(Graph_t::NEURITE_SKELETONS, m_opengl_mngr, 5 /* grid col */); // neuries skeletons
+  //m_graph[3]->parseSKELETON(neurites_skeletons_nodes, neurites_skeletons_edges);
 
-  // delete the nodes and edges
-  for (std::size_t i = 0; i != neurites_nodes.size(); i++) {
-    delete neurites_nodes[i];
-  }
+  //// delete the nodes and edges
+  //for (std::size_t i = 0; i != neurites_nodes.size(); i++) {
+  //  delete neurites_nodes[i];
+  //}
 
-  for (std::size_t i = 0; i != neurites_skeletons_nodes.size(); i++) {
-    delete neurites_skeletons_nodes[i];
-  }
+  //for (std::size_t i = 0; i != neurites_skeletons_nodes.size(); i++) {
+  //  delete neurites_skeletons_nodes[i];
+  //}
 
-  for (std::size_t i = 0; i != astrocyte_skeleton_nodes.size(); i++) {
-    delete astrocyte_skeleton_nodes[i];
-  }
+  //for (std::size_t i = 0; i != astrocyte_skeleton_nodes.size(); i++) {
+  //  delete astrocyte_skeleton_nodes[i];
+  //}
 
 }
 

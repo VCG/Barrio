@@ -71,7 +71,6 @@ set(project_headers
     mesh.h
     ssbo_structs.h
     glsluniform_structs.h
-    openglmanager.h
     datacontainer.h
     grid3d.h
     spatialhash3d.h
@@ -113,7 +112,6 @@ set(project_sources
     skeleton.cpp
     skeletonbranch.cpp
     mesh.cpp
-    openglmanager.cpp
     datacontainer.cpp
     grid3d.cpp
     spatialhash3d.cpp

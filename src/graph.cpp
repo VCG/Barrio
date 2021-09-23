@@ -1,14 +1,14 @@
 #include "graph.h"
 #include <cmath>
 
-Graph::Graph(Graph_t graphType, OpenGLManager* opengl_mnger, int gridCol)
+Graph::Graph(Graph_t graphType, int gridCol)
   : m_FDL_terminate(true),
   m_dupEdges(0)
 
 
 {
   m_gType = graphType;
-  m_opengl_mngr = opengl_mnger;
+  //m_opengl_mngr = opengl_mnger;
 
   FDL_initParameters();
 
@@ -66,24 +66,24 @@ Graph::~Graph()
 // edges simple just end points
 bool Graph::parseNODE_NODE(std::vector<Node*> neurites_nodes, std::vector<QVector2D> neurites_edges)
 {
-  for (int i = 0; i < neurites_nodes.size(); i++) {
-    Node* node = neurites_nodes[i];
-    int hvgxID = node->getID();
-    QVector3D position = node->get3DPosition();
-    std::pair<int, int> id_tuple = std::make_pair(node->getID(), -1);
-    Object_t object_type = m_opengl_mngr->getObjectTypeByID(hvgxID);
-    Node_t node_type = Node_t::NONE;
-    if (object_type == Object_t::ASTROCYTE)
-      node_type = Node_t::ASTROCYTE;
+  //for (int i = 0; i < neurites_nodes.size(); i++) {
+  //  Node* node = neurites_nodes[i];
+  //  int hvgxID = node->getID();
+  //  QVector3D position = node->get3DPosition();
+  //  std::pair<int, int> id_tuple = std::make_pair(node->getID(), -1);
+  //  Object_t object_type = m_opengl_mngr->getObjectTypeByID(hvgxID);
+  //  Node_t node_type = Node_t::NONE;
+  //  if (object_type == Object_t::ASTROCYTE)
+  //    node_type = Node_t::ASTROCYTE;
 
-    this->addNode(id_tuple, position.x(), position.y(), position.z(), node_type);
-  }
+  //  this->addNode(id_tuple, position.x(), position.y(), position.z(), node_type);
+  //}
 
-  for (int i = 0; i < neurites_edges.size(); i++) {
-    int nID1 = neurites_edges[i].x();
-    int nID2 = neurites_edges[i].y();
-    this->addEdge(i, -1, nID1, nID2);
-  }
+  //for (int i = 0; i < neurites_edges.size(); i++) {
+  //  int nID1 = neurites_edges[i].x();
+  //  int nID2 = neurites_edges[i].y();
+  //  this->addEdge(i, -1, nID1, nID2);
+  //}
 
   return true;
 }
@@ -103,31 +103,31 @@ bool Graph::parseNODE_NODE(std::vector<Node*> neurites_nodes, std::vector<QVecto
 bool Graph::parseSKELETON(std::vector<Node*> neurites_skeletons_nodes,
   std::vector<QVector4D> neurites_skeletons_edges)
 {
-  qDebug() << "parseSKELETON";
-  // eventually all graph nodes are in one map with unique IDs regardless of which skeleton
-  // they belong to.
-  // iterate over the objets
-  for (int i = 0; i < neurites_skeletons_nodes.size(); i++) {
-    Node* node = neurites_skeletons_nodes[i];
-    int hvgxID = node->getID();
-    QVector3D position = node->get3DPosition();
-    std::pair<int, int> id_tuple = std::make_pair(hvgxID, node->getIdxID());
-    // I can access the objects using their IDs then get the type
-    Object_t object_type = m_opengl_mngr->getObjectTypeByID(hvgxID);
-    Node_t node_type = Node_t::NONE;
-    if (object_type == Object_t::ASTROCYTE)
-      node_type = Node_t::ASTROCYTE;
+  //qDebug() << "parseSKELETON";
+  //// eventually all graph nodes are in one map with unique IDs regardless of which skeleton
+  //// they belong to.
+  //// iterate over the objets
+  //for (int i = 0; i < neurites_skeletons_nodes.size(); i++) {
+  //  Node* node = neurites_skeletons_nodes[i];
+  //  int hvgxID = node->getID();
+  //  QVector3D position = node->get3DPosition();
+  //  std::pair<int, int> id_tuple = std::make_pair(hvgxID, node->getIdxID());
+  //  // I can access the objects using their IDs then get the type
+  //  Object_t object_type = m_opengl_mngr->getObjectTypeByID(hvgxID);
+  //  Node_t node_type = Node_t::NONE;
+  //  if (object_type == Object_t::ASTROCYTE)
+  //    node_type = Node_t::ASTROCYTE;
 
-    this->addNode(id_tuple, position.x(), position.y(), position.z(), node_type /* need to assin for each node their type */);
-  }
+  //  this->addNode(id_tuple, position.x(), position.y(), position.z(), node_type /* need to assin for each node their type */);
+  //}
 
-  for (int i = 0; i < neurites_skeletons_edges.size(); i++) {
-    int j = neurites_skeletons_edges[i].x();
-    int hvgxID = neurites_skeletons_edges[i].y();
-    int nID1 = neurites_skeletons_edges[i].z();
-    int nID2 = neurites_skeletons_edges[i].w();
-    this->addEdge(j, hvgxID, nID1, nID2);
-  }
+  //for (int i = 0; i < neurites_skeletons_edges.size(); i++) {
+  //  int j = neurites_skeletons_edges[i].x();
+  //  int hvgxID = neurites_skeletons_edges[i].y();
+  //  int nID1 = neurites_skeletons_edges[i].z();
+  //  int nID2 = neurites_skeletons_edges[i].w();
+  //  this->addEdge(j, hvgxID, nID1, nID2);
+  //}
 
   return true;
 }
@@ -215,72 +215,72 @@ void Graph::updateNode(Node* node)
 // each time we filter we need to reset this to exclude filtered nodes
 void Graph::resetCoordinates()
 {
-  if (m_opengl_mngr == NULL)
-    return;
-
-  m_FDL_terminate = false;
-  std::map<int, Object*>  objectMap = m_opengl_mngr->getObjectsMap();
-
-  hashGrid->clear();
-  m_FilteredHVGX.clear();
-
-  GEM_initParameters();
-
-  // this take so much time that by the time we reach it still do this?
-  // create many threads within one thread?
-  for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
-    if (m_FDL_terminate) goto quit;
-
-    Node* node = (*iter).second;
-
-    // if node filtered then ignore it
-    //if node is filtered then continue
-    // here I can get the list of filtered objects
-    int hvgxID = node->getID();
-    if (objectMap.find(hvgxID) == objectMap.end() ||
-      objectMap[hvgxID] == NULL)
-    {
-      qDebug() << hvgxID << " Node not in map, why? quite layouting";
-      goto quit;
-    }
-
-    if (objectMap[hvgxID]->isFiltered()) {
-      m_FilteredHVGX[hvgxID] = 1;
-      continue;
-    }
-
-
-    node->resetLayout(m_uniforms.rMatrix);
-    node->setLocalTemp(m_Tinit);
-
-    update_node_data(node);
-
-    // add to the spatial hash
-    hashGrid->insert((*iter).second);
-  }
-
-  if (m_gType == Graph_t::NODE_NODE || m_gType == Graph_t::NODE_SKELETON)
-    runforceDirectedLayout();
-  // GEM_run();
-
-
-quit:
-  qDebug() << "Exist resetCoordinates";
+//  if (m_opengl_mngr == NULL)
+//    return;
+//
+//  m_FDL_terminate = false;
+//  std::map<int, Object*>  objectMap = m_opengl_mngr->getObjectsMap();
+//
+//  hashGrid->clear();
+//  m_FilteredHVGX.clear();
+//
+//  GEM_initParameters();
+//
+//  // this take so much time that by the time we reach it still do this?
+//  // create many threads within one thread?
+//  for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
+//    if (m_FDL_terminate) goto quit;
+//
+//    Node* node = (*iter).second;
+//
+//    // if node filtered then ignore it
+//    //if node is filtered then continue
+//    // here I can get the list of filtered objects
+//    int hvgxID = node->getID();
+//    if (objectMap.find(hvgxID) == objectMap.end() ||
+//      objectMap[hvgxID] == NULL)
+//    {
+//      qDebug() << hvgxID << " Node not in map, why? quite layouting";
+//      goto quit;
+//    }
+//
+//    if (objectMap[hvgxID]->isFiltered()) {
+//      m_FilteredHVGX[hvgxID] = 1;
+//      continue;
+//    }
+//
+//
+//    node->resetLayout(m_uniforms.rMatrix);
+//    node->setLocalTemp(m_Tinit);
+//
+//    update_node_data(node);
+//
+//    // add to the spatial hash
+//    hashGrid->insert((*iter).second);
+//  }
+//
+//  if (m_gType == Graph_t::NODE_NODE || m_gType == Graph_t::NODE_SKELETON)
+//    runforceDirectedLayout();
+//  // GEM_run();
+//
+//
+//quit:
+//  qDebug() << "Exist resetCoordinates";
 }
 
 void Graph::update_node_data(Node* node)
 {
-  if (m_opengl_mngr == NULL)
-    return;
+  //if (m_opengl_mngr == NULL)
+  //  return;
 
 
   switch (m_gType) {
   case Graph_t::NODE_NODE:
   {
-    // layout1 using hvgx ID and -1
-    m_opengl_mngr->update_ssbo_data_layout1(node->getLayoutedPosition(),
-      node->getID() /*hvgx*/);
-    break;
+    //// layout1 using hvgx ID and -1
+    //m_opengl_mngr->update_ssbo_data_layout1(node->getLayoutedPosition(),
+    //  node->getID() /*hvgx*/);
+    //break;
   }
   case Graph_t::NODE_SKELETON:
   {
@@ -291,26 +291,26 @@ void Graph::update_node_data(Node* node)
     if (node->getNodeType() == Node_t::ASTROCYTE) {
       // update astrocyte skeleton
       // layout 2
-      m_opengl_mngr->update_skeleton_layout2(node->getLayoutedPosition(),
-        node->getIdxID(), node->getID() /*hvgx*/);
+      //m_opengl_mngr->update_skeleton_layout2(node->getLayoutedPosition(),
+      //  node->getIdxID(), node->getID() /*hvgx*/);
     }
     else {
-      m_opengl_mngr->update_ssbo_data_layout2(node->getLayoutedPosition(),
-        node->getID());
+      //m_opengl_mngr->update_ssbo_data_layout2(node->getLayoutedPosition(),
+      //  node->getID());
     }
 
     break;
   }
   case Graph_t::NEURITE_SKELETONS:
   {
-    m_opengl_mngr->update_skeleton_layout3(node->getLayoutedPosition(),
-      node->getIdxID(), node->getID() /*hvgx*/);
+    //m_opengl_mngr->update_skeleton_layout3(node->getLayoutedPosition(),
+    //  node->getIdxID(), node->getID() /*hvgx*/);
     break;
   }
   case Graph_t::ALL_SKELETONS:
   {
-    m_opengl_mngr->update_skeleton_layout1(node->getLayoutedPosition(),
-      node->getIdxID(), node->getID() /*hvgx*/);
+    //m_opengl_mngr->update_skeleton_layout1(node->getLayoutedPosition(),
+    //  node->getIdxID(), node->getID() /*hvgx*/);
     break;
   }
   }
@@ -323,113 +323,113 @@ void Graph::update_node_data(Node* node)
 // dont filter in the connectivity graph??
 void Graph::runforceDirectedLayout()
 {
-  std::map<int, Object*>  objectMap = m_opengl_mngr->getObjectsMap();
-
-  m_FDL_terminate = false;
-  float area = 1.0;
-  float k = std::sqrt(area / m_nodes.size());
-  std::vector<Node*> nearNodes;
-  // reset layouted coordinates to original values
-  for (int i = 0; i < m_fdr_params.iterations; i++) {
-    if (m_FDL_terminate) goto quit;
-
-    // forces on nodes due to node-node repulsion
-    for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
-      if (m_FDL_terminate) goto quit;
-
-      Node* node1 = (*iter).second;
-      // if node is filtered then continue
-      // not all nodes belong to an object
-      // there is the connectivity node
-      int hvgxID1 = node1->getID();
-      if (!(m_FilteredHVGX.find(hvgxID1) == m_FilteredHVGX.end()))
-      {
-
-        continue;
-      }
-
-      nearNodes.clear();
-      hashGrid->queryAABB(node1, m_fdr_params.AABBdim, nearNodes);
-      for (auto iter2 = nearNodes.begin(); iter2 != nearNodes.end(); iter2++) {
-        if (m_FDL_terminate) goto quit;
-
-        Node* node2 = (*iter2);
-        int hvgxID2 = node2->getID();
-        if (!(m_FilteredHVGX.find(hvgxID2) == m_FilteredHVGX.end()))
-        {
-          continue;
-        }
-
-        repulseNodes(node1, node2, m_fdr_params.Cr * k);
-      }
-
-      attractToOriginalPosition(node1, m_fdr_params.originalPosAttraction); // the less the more
-    }
-
-    // forcs due to edge attraction
-    for (auto iter = m_edges.begin(); iter != m_edges.end(); iter++) {
-      if (m_FDL_terminate) goto quit;
-
-      Edge* edge = (*iter).second;
-      attractConnectedNodes(edge, m_fdr_params.Ca * k);
-    }
-
-    float moveAccumlation = 0.0;
-    // update nodes position fter force
-    for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
-      if (m_FDL_terminate) goto quit;
-
-      Node* node = (*iter).second;
-
-      //if node is filtered then continue
-      int hvgxID = node->getID();
-      if (!(m_FilteredHVGX.find(hvgxID) == m_FilteredHVGX.end()))
-      {
-        continue;
-      }
-
-      // get amount of force on node
-      QVector2D force = m_fdr_params.slow_factor * node->getForceSum();
-      if (force.length() > m_fdr_params.max_force) {
-        force = force.normalized() * m_fdr_params.max_force;
-      }
-      // calculate how much to move
-      float xMove = force.x();
-      float yMove = force.y();
-
-      // check if this would take the node outside the bounding area
-      // if yes, then compute the torque, and apply that instead
-
-      // limit the movement to the maximum defined
-      if (xMove > m_fdr_params.max_vertex_movement) {
-        xMove = m_fdr_params.max_vertex_movement;
-      }
-      if (xMove < -m_fdr_params.max_vertex_movement) {
-        xMove = -m_fdr_params.max_vertex_movement;
-      }
-      if (yMove > m_fdr_params.max_vertex_movement) {
-        yMove = m_fdr_params.max_vertex_movement;
-      }
-      if (yMove < -m_fdr_params.max_vertex_movement) {
-        yMove = -m_fdr_params.max_vertex_movement;
-      }
-
-      moveAccumlation += std::abs(xMove) + std::abs(yMove);
-      node->addToLayoutedPosition(QVector2D(xMove, yMove)); // add to 2D position
-
-      // update node value in m_nodes buffer
-      update_node_data(node);
-
-      // reset node force
-      node->resetForce();
-
-      // update node position in spatial hash
-      updateNode(node);
-    }
-  } // end iterations
-
-quit:
-  qDebug() << "Exist Thread";
+//  std::map<int, Object*>  objectMap = m_opengl_mngr->getObjectsMap();
+//
+//  m_FDL_terminate = false;
+//  float area = 1.0;
+//  float k = std::sqrt(area / m_nodes.size());
+//  std::vector<Node*> nearNodes;
+//  // reset layouted coordinates to original values
+//  for (int i = 0; i < m_fdr_params.iterations; i++) {
+//    if (m_FDL_terminate) goto quit;
+//
+//    // forces on nodes due to node-node repulsion
+//    for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
+//      if (m_FDL_terminate) goto quit;
+//
+//      Node* node1 = (*iter).second;
+//      // if node is filtered then continue
+//      // not all nodes belong to an object
+//      // there is the connectivity node
+//      int hvgxID1 = node1->getID();
+//      if (!(m_FilteredHVGX.find(hvgxID1) == m_FilteredHVGX.end()))
+//      {
+//
+//        continue;
+//      }
+//
+//      nearNodes.clear();
+//      hashGrid->queryAABB(node1, m_fdr_params.AABBdim, nearNodes);
+//      for (auto iter2 = nearNodes.begin(); iter2 != nearNodes.end(); iter2++) {
+//        if (m_FDL_terminate) goto quit;
+//
+//        Node* node2 = (*iter2);
+//        int hvgxID2 = node2->getID();
+//        if (!(m_FilteredHVGX.find(hvgxID2) == m_FilteredHVGX.end()))
+//        {
+//          continue;
+//        }
+//
+//        repulseNodes(node1, node2, m_fdr_params.Cr * k);
+//      }
+//
+//      attractToOriginalPosition(node1, m_fdr_params.originalPosAttraction); // the less the more
+//    }
+//
+//    // forcs due to edge attraction
+//    for (auto iter = m_edges.begin(); iter != m_edges.end(); iter++) {
+//      if (m_FDL_terminate) goto quit;
+//
+//      Edge* edge = (*iter).second;
+//      attractConnectedNodes(edge, m_fdr_params.Ca * k);
+//    }
+//
+//    float moveAccumlation = 0.0;
+//    // update nodes position fter force
+//    for (auto iter = m_nodes.begin(); iter != m_nodes.end(); iter++) {
+//      if (m_FDL_terminate) goto quit;
+//
+//      Node* node = (*iter).second;
+//
+//      //if node is filtered then continue
+//      int hvgxID = node->getID();
+//      if (!(m_FilteredHVGX.find(hvgxID) == m_FilteredHVGX.end()))
+//      {
+//        continue;
+//      }
+//
+//      // get amount of force on node
+//      QVector2D force = m_fdr_params.slow_factor * node->getForceSum();
+//      if (force.length() > m_fdr_params.max_force) {
+//        force = force.normalized() * m_fdr_params.max_force;
+//      }
+//      // calculate how much to move
+//      float xMove = force.x();
+//      float yMove = force.y();
+//
+//      // check if this would take the node outside the bounding area
+//      // if yes, then compute the torque, and apply that instead
+//
+//      // limit the movement to the maximum defined
+//      if (xMove > m_fdr_params.max_vertex_movement) {
+//        xMove = m_fdr_params.max_vertex_movement;
+//      }
+//      if (xMove < -m_fdr_params.max_vertex_movement) {
+//        xMove = -m_fdr_params.max_vertex_movement;
+//      }
+//      if (yMove > m_fdr_params.max_vertex_movement) {
+//        yMove = m_fdr_params.max_vertex_movement;
+//      }
+//      if (yMove < -m_fdr_params.max_vertex_movement) {
+//        yMove = -m_fdr_params.max_vertex_movement;
+//      }
+//
+//      moveAccumlation += std::abs(xMove) + std::abs(yMove);
+//      node->addToLayoutedPosition(QVector2D(xMove, yMove)); // add to 2D position
+//
+//      // update node value in m_nodes buffer
+//      update_node_data(node);
+//
+//      // reset node force
+//      node->resetForce();
+//
+//      // update node position in spatial hash
+//      updateNode(node);
+//    }
+//  } // end iterations
+//
+//quit:
+//  qDebug() << "Exist Thread";
 
 }
 

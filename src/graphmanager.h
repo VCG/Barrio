@@ -6,7 +6,6 @@
 
 #include "graph.h"
 #include "datacontainer.h"
-#include "openglmanager.h"
 #include "glsluniform_structs.h"
 #include <thread>
 
@@ -19,7 +18,7 @@
 class GraphManager
 {
 public:
-  GraphManager(DataContainer* objectManager, OpenGLManager* opengl_mnger);
+  GraphManager(DataContainer* objectManager);
   ~GraphManager();
 
   void ExtractGraphFromMesh();
@@ -43,7 +42,6 @@ public:
 
 protected:
   DataContainer* m_data_containter;
-  OpenGLManager* m_opengl_mngr;
   Graph* m_graph[max_graphs];
 
   // thread management
