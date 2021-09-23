@@ -15,7 +15,7 @@ layout (early_fragment_tests) in;
 layout (location = 0) out vec4 FragColor;
 
 in vec4         normal_frag;
-in vec3			eye_frag;
+in vec4			eye_frag;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
@@ -135,7 +135,7 @@ vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
   vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
   vec3 reflectDir = reflect(-L, N);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-  vec3 specular = k_s * spec * light_color;  
+  vec3 specular = k_s * spec * light_color;
 
   return (ambient + diffuse + specular) * obj_color;
 }
@@ -187,7 +187,6 @@ vec4 computeColor()
     {
       obj_color = neurite_color;
     }
-    
   } 
   else
   {
