@@ -17,23 +17,8 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
   m_2D(false),
   m_hover(false)
 {
-  m_camera_distance = 1.0;
-
   m_distance_threshold = resources->distance_threshold;
   m_all_selected_mitos = resources->all_selected_mitos;
-
-  m_rotation = QQuaternion();
-  //reset rotation
-  m_rotation.setScalar(1.0f);
-  m_rotation.setX(0.0f);
-  m_rotation.setY(0.0f);
-  m_rotation.setZ(0.0f);
-  //reset translation
-  m_translation = QVector3D(0.0, 0.0, 0.0);
-
-  /*m_lockRotation2D_timer = new QTimer(this);
-  connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(update()));
-  m_lockRotation2D_timer->start(0);*/
 
   m_lockRotation2D_timer = new QTimer(this);
   connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(lockRotation2D()));
@@ -49,17 +34,12 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
   m_parent = parent;
 
   m_active_graph_tab = 0;
-  //setFocusPolicy(Qt::StrongFocus);
   m_hide_toggle = false;
-
-  m_auto_rotate = false;
-  m_rot_ydiff = 1;
 
   m_xy_slice_z = 0.5f * MESH_MAX_Z;
 
   m_shared_resources = resources;
   m_selected_hvgx_id = hvgx_id;
-
 
   headPtrClearBuf = new std::vector<GLuint>();
   m_init = false;
@@ -100,49 +80,29 @@ void GLWidget::init(DataContainer* data_container)
     m_parent_id = 0;
   }
 
-  // graph manager with 4 graphs and 2D space layouted data
-  //m_graphManager = new GraphManager(m_data_container, m_opengl_mngr);
+  if (m_is_overview_widget)
+  {
+      m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
+  }
 
+  camera = new Camera(45.0f, 1.0f, 1000.0f, m_center);
 }
 
 
 
 void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 {
-  // calculate model view transformation
-  // world/model matrix: determines the position and orientation of an object in 3D space
-  m_mMatrix.setToIdentity();
-
-  // Center Zoom
-  m_mMatrix.translate(m_center);
-  m_mMatrix.scale(m_camera_distance);
-  m_mMatrix.translate(-1.0 * m_center);
-
-  //// Translation
-  m_mMatrix.translate(m_translation);
-
-  // Model Matrix without rotation
-  m_model_noRotation.setToIdentity();
-  m_model_noRotation = m_mMatrix;
-
-  // Rotation
-  m_rotationMatrix.setToIdentity();
-  m_rotationMatrix.translate(m_center);
-  m_rotationMatrix.rotate(m_rotation);
-  m_rotationMatrix.translate(-1.0 * m_center);
-  m_mMatrix *= m_rotationMatrix;
-
-  int rMatrix = program->uniformLocation("rMatrix");
-  if (rMatrix >= 0) program->setUniformValue(rMatrix, m_rotationMatrix);
-
   int mMatrix = program->uniformLocation("mMatrix");
   if (mMatrix >= 0) program->setUniformValue(mMatrix, m_mMatrix);
 
   int vMatrix = program->uniformLocation("vMatrix");
-  if (vMatrix >= 0) program->setUniformValue(vMatrix, m_vMatrix);
+  if (vMatrix >= 0) program->setUniformValue(vMatrix, camera->getViewMatrix());
 
   int pMatrix = program->uniformLocation("pMatrix");
-  if (pMatrix >= 0) program->setUniformValue(pMatrix, m_projection);
+  if (pMatrix >= 0) program->setUniformValue(pMatrix, camera->getProjection());
+
+  int eye = program->uniformLocation("eye");
+  if (eye >= 0) program->setUniformValue(eye, camera->getPosition());
 
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
@@ -169,7 +129,6 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   if (curr_hovered >= 0) program->setUniformValue(curr_hovered, *m_shared_resources->currently_hovered_widget);
 
   GL_Error();
-
 }
 
 void GLWidget::updateVisParameters()
@@ -186,21 +145,12 @@ void GLWidget::updateVisParameters()
 
 void GLWidget::resetCamera()
 {
-  m_rotation.setScalar(0.942247);
-  m_rotation.setX(0.228046);
-  m_rotation.setY(-0.238609);
-  m_rotation.setZ(-0.056791);
-  //reset translation
-  m_translation = QVector3D(0.0, 0.0, 0.0);
-  //reset zoom
-  m_camera_distance = 0.6f;
-  m_opengl_mngr->setZoom(m_camera_distance);
-  update();
+   // todo
 }
 
 void GLWidget::zoom(double delta)
 {
-  m_camera_distance *= delta;
+  camera->processScroll(delta);
   update();
 }
 
@@ -309,14 +259,7 @@ void GLWidget::initializeGL()
   }
 
   m_mesh_program->release();
-
-  /*if (m_FDL_running) {
-    stopForecDirectedLayout();
-  }*/
   updateVisParameters();
-
-  //updateVisParameters();
-
   m_lockRotation2D_timer->start(500);
 }
 
@@ -325,6 +268,8 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
   startRotation();
+
+  camera->frameUpdate();
 
   m_mesh_program->bind();
   updateMVPAttrib(m_mesh_program);
@@ -336,49 +281,21 @@ void GLWidget::paintGL()
   pass2();
 
   m_mesh_program->release();
-
-  //update();
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
+  qDebug() << "Resize Widget: " << m_width << ", " << m_height;
+  
   const qreal retinaScale = devicePixelRatio();
   h = (h == 0) ? 1 : h;
 
   m_width = w * retinaScale;
   m_height = h * retinaScale;
 
-
-  qDebug() << "Resize Widget: " << m_width << ", " << m_height;
-
-  // Calculate aspect ratio
-  m_uniforms.viewport = QVector4D(0, 0, m_width, m_height);
-
-  qreal aspect = retinaScale * qreal(w) / qreal(h ? h : 1);
-  m_projection.setToIdentity();
-  m_projection.perspective(45.0, aspect, 1.0, 10 * MESH_MAX_Z);
-
-  // set up view
-  // view matrix: transform a model's vertices from world space to view space, represents the camera
-  if (m_is_overview_widget)
-  {
-    m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
-  }
-  else
-  {
-    Object* selectedObject = m_data_container->getObjectsMapPtr()->at(m_selected_hvgx_id);
-    m_center = selectedObject->getCenter().toVector3D();
-  }
-
-  m_cameraUpDirection = QVector3D(0.0, 1.0, 0.0);
-  m_eye = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
-
-  m_vMatrix.setToIdentity();
-  m_vMatrix.lookAt(m_eye, m_center, m_cameraUpDirection);
-
+  camera->setAspectRatio(m_width / m_height);
 
   initMeshShaderStorage(m_width, m_height);
-  //initSelectionFrameBuffer(m_width, m_height);
 }
 
 int GLWidget::pickObject(QMouseEvent* event)
@@ -496,44 +413,14 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
     doneCurrent();
   }
-  else if (event->buttons() == Qt::RightButton) {
-    m_translation = QVector3D(m_translation.x() + deltaX / (float)width(),
-      m_translation.y() + -1.0 * (deltaY / (float)height()),
-      0.0);
-
-    setMouseTracking(false);
-
-  }
-  else if (event->buttons() == Qt::LeftButton /*m_xaxis < 60 || m_yaxis < 60*/)
+  else if (event->buttons() == Qt::RightButton) 
   {
-    setMouseTracking(false);
-
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(deltaX, deltaY);
-
-    // Rotation axis is perpendicular to the mouse position difference
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0).normalized();
-
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal angle = diff.length() / 2.0;;
-
-    // Calculate new rotation axis as weighted sum
-    m_rotationAxis = (m_rotationAxis + n).normalized();
-
-    // angle in degrees and rotation axis
-    m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angle) * m_rotation;
-
-    // whenever the rotation matrix is changed, reset the force directed layout and the nodes rotation matrix!
-    // the 2D view is always locked from rotating
-    // and the reset is alway rotatable
-
-    // do wait function, if the user stayed in this view more than t seconds then do this
-    // 1) stop previous layouting algorithm if running
-
-    /*if (m_FDL_running) {
-      stopForecDirectedLayout();
-    }*/
-
+    // TODO implement shift wih new camera
+  }
+  else if (event->buttons() == Qt::LeftButton)
+  {
+      setMouseTracking(false);
+      camera->processMouseInput(deltaX, deltaY);
     m_lockRotation2D_timer->start(500);
   }
   else {
@@ -552,14 +439,9 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 {
   int delta = event->delta();
 
-  if (event->orientation() == Qt::Vertical) {
-    if (delta < 0) {
-      m_camera_distance *= 1.1;
-    }
-    else {
-      m_camera_distance *= 0.9;
-    }
-    m_opengl_mngr->setZoom(m_camera_distance);
+  if (event->orientation() == Qt::Vertical) 
+  {
+    camera->processScroll(delta);
     update();
   }
 }
@@ -659,10 +541,6 @@ void GLWidget::getActiveGraphTab(int tab_graph)
 
 void GLWidget::reset_layouting(bool flag)
 {
-  /*if (m_FDL_running) {
-    stopForecDirectedLayout();
-  }*/
-
   m_lockRotation2D_timer->start(10);
 }
 

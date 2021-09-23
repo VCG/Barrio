@@ -85,6 +85,7 @@ set(project_headers
     mainwidget.h
     treemodel.h
     treeitem.h
+    camera.h
 
     vismethods/vismethod.h
     vismethods/barchart.h
@@ -124,6 +125,7 @@ set(project_sources
     mainwidget.cpp
     treemodel.cpp
     treeitem.cpp
+    camera.cpp
 
     vismethods/barchart.cpp
     vismethods/scatterplot.cpp

@@ -2,60 +2,57 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
+#include <qmath.h>
+#include <math.h>
 
 #include "globalParameters.h"
 
 class Camera
 {
 	public:
-		Camera(float fov, float aspectRatio, float near, float far);
+		Camera(float fov, float near, float far, QVector3D center);
 		~Camera();
 
-		void frameUpdate(float deltaT, float time);
+		void frameUpdate();
 		void setPosition(float x, float y, float z);
 		void setPosition(const QVector3D& pos);
 		void setLookAt(const QVector3D& lookAt);
 		void setFront(const QVector3D& newFront);
 		void switchMovement();
+		void setAspectRatio(float ratio);
 
 		const QVector3D& getPosition() const;
 		const QVector3D& getFront() const;
 		const QVector3D& getUp() const;
-		const QVector3D& getViewMatrix() const;
-		const QVector3D& getProjection() const;
-		const QVector3D& getVP() const;
+		const QMatrix4x4& getViewMatrix() const;
+		const QMatrix4x4& getProjection() const;
+		const QMatrix4x4& getVP() const;
 		const float& getYaw() const;
 		const float& getPitch() const;
-		const QVector3D getLightDirection();
 
-		void processKeyInput(float frameDeltaTime);
-		void processScroll(double yoffset);
+		void processMouseInput(float deltaX, float deltaY);
+		void processScroll(int delta);
 		void resetCamera();
 
-		// Frustum Plane Distances
-		float nearPlane = 0.1f;
-		float farPlane = 40.f;
-
-		float speed = 100.00f;
-
 	private:
-
-		void initPaths();
 
 		QMatrix4x4 viewMatrix;
 		QMatrix4x4 projection;
 
-		QMatrix4x4 position;
-		QMatrix4x4 front;
-		QMatrix4x4 up;
+		QVector3D center;
+		QVector3D position;
+		QVector3D front;
+		QVector3D up;
 
-		int currentPoint;
-		QVector3D target;
+		float fov;
 
-		float pitch;
+		float speed;
+
 		float yaw;
+		float pitch;
 		float distance;
-		bool moveFree;
+		float nearPlane;
+        float farPlane;
 
 		void calculateFront();
 
