@@ -14,8 +14,8 @@ layout (early_fragment_tests) in;
 
 layout (location = 0) out vec4 FragColor;
 
-in vec4         normal_frag;
-in vec4			eye_frag;
+in vec4         frag_normal;
+in vec4			frag_camera_position;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
@@ -122,7 +122,7 @@ int isHighlighted(int hvgx)
 vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
 {
   vec3 L = normalize(light_dir);
-  vec3 N = normal_frag.xyz;
+  vec3 N = frag_normal.xyz;
   
   // ambient component
   vec3 ambient = k_a * light_color;
@@ -132,7 +132,7 @@ vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
   vec3 diffuse = k_d * diff * light_color;
   
   // specular component
-  vec3 viewDir = normalize(eye_frag.xyz - frag_vert_pos.xyz);
+  vec3 viewDir = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
   vec3 reflectDir = reflect(-L, N);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
   vec3 specular = k_s * spec * light_color;
@@ -214,12 +214,13 @@ vec4 computeColor()
   {
     out_color = vec4(result, 1.0);
   }
-  else
+  else if(frag_structure_type == DENDS || frag_structure_type == AXONS)
   {
-    out_color = vec4(result, cell_opacity);
+    vec3 N = normalize(frag_normal.xyz);
+    vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
+    float opacity = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
+    out_color = vec4(result, opacity);
   }
-
-
 
   return out_color;
 }

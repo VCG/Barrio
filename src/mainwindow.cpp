@@ -85,7 +85,7 @@ void MainWindow::initializeSlicePositionSlider()
 void MainWindow::initializeOpacitySlider()
 {
   QSlider* opacity_slider = mainwindow_ui->horizontalSlider_4;
-  int initial_tick_position = 30;
+  int initial_tick_position = 100;
   opacity_slider->setValue(initial_tick_position);
   double opacity_value = (double)initial_tick_position / 100.0;
 

@@ -18,8 +18,8 @@ uniform float slice_z;
 uniform int   is_overview;
 uniform int   currently_hovered_id;
 
-out vec4          normal_frag;
-out vec4          eye_frag;
+out vec4          frag_normal;
+out vec4          frag_camera_position;
 flat out int      frag_structure_type;
 out float         frag_cell_distance;
 out vec4          frag_vert_pos;
@@ -42,8 +42,8 @@ void main()
       gl_Position =  vpMatrix * vec4(mesh_vtx.xyz, 1.0);
     }
 
-    normal_frag = normal;
-    eye_frag = vpMatrix * vec4(eye, 1.0);
+    frag_normal = normal;
+    frag_camera_position = vec4(eye, 1.0);
     frag_vert_pos = mesh_vtx;
 
     frag_structure_type = structure_type;
