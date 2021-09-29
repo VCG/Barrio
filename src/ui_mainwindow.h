@@ -82,6 +82,7 @@ public:
     QGroupBox *groupBox_6;
     QVBoxLayout *verticalLayout_26;
     QCheckBox *three_d_enabled;
+    QCheckBox *checkBox;
     QGroupBox *groupBox_25;
     QHBoxLayout *horizontalLayout_42;
     QSlider *horizontalSlider_4;
@@ -517,6 +518,11 @@ public:
         three_d_enabled->setObjectName(QString::fromUtf8("three_d_enabled"));
 
         verticalLayout_26->addWidget(three_d_enabled);
+
+        checkBox = new QCheckBox(groupBox_6);
+        checkBox->setObjectName(QString::fromUtf8("checkBox"));
+
+        verticalLayout_26->addWidget(checkBox);
 
         groupBox_25 = new QGroupBox(groupBox_6);
         groupBox_25->setObjectName(QString::fromUtf8("groupBox_25"));
@@ -995,7 +1001,7 @@ public:
         toolBox_graphsParam->setObjectName(QString::fromUtf8("toolBox_graphsParam"));
         graph1 = new QWidget();
         graph1->setObjectName(QString::fromUtf8("graph1"));
-        graph1->setGeometry(QRect(0, 0, 241, 433));
+        graph1->setGeometry(QRect(0, 0, 304, 479));
         formLayout_5 = new QFormLayout(graph1);
         formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
         frame_11 = new QFrame(graph1);
@@ -1187,7 +1193,7 @@ public:
         toolBox_graphsParam->addItem(graph1, QString::fromUtf8("Neurites Connectivity"));
         graph2 = new QWidget();
         graph2->setObjectName(QString::fromUtf8("graph2"));
-        graph2->setGeometry(QRect(0, 0, 241, 433));
+        graph2->setGeometry(QRect(0, 0, 304, 479));
         formLayout_4 = new QFormLayout(graph2);
         formLayout_4->setObjectName(QString::fromUtf8("formLayout_4"));
         frame_13 = new QFrame(graph2);
@@ -1380,7 +1386,7 @@ public:
         toolBox_graphsParam->addItem(graph2, QString::fromUtf8("Astrocyte Skeleton - Neurites Nodes"));
         graph3 = new QWidget();
         graph3->setObjectName(QString::fromUtf8("graph3"));
-        graph3->setGeometry(QRect(0, 0, 241, 433));
+        graph3->setGeometry(QRect(0, 0, 304, 479));
         formLayout_31 = new QFormLayout(graph3);
         formLayout_31->setObjectName(QString::fromUtf8("formLayout_31"));
         frame_20 = new QFrame(graph3);
@@ -1573,7 +1579,7 @@ public:
         toolBox_graphsParam->addItem(graph3, QString::fromUtf8("Astrocyte Skeleton - Neurites Skeleton"));
         graph4 = new QWidget();
         graph4->setObjectName(QString::fromUtf8("graph4"));
-        graph4->setGeometry(QRect(0, 0, 277, 1338));
+        graph4->setGeometry(QRect(0, 0, 360, 1305));
         formLayout = new QFormLayout(graph4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         frame_28 = new QFrame(graph4);
@@ -1936,6 +1942,7 @@ public:
         sliceEnabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "3D views", nullptr));
         three_d_enabled->setText(QCoreApplication::translate("MainWindow", "enabled", nullptr));
+        checkBox->setText(QCoreApplication::translate("MainWindow", "colorcode", nullptr));
         groupBox_25->setTitle(QCoreApplication::translate("MainWindow", "Cell Membrane Opacity", nullptr));
         groupBox_28->setTitle(QCoreApplication::translate("MainWindow", "Colormap", nullptr));
         groupBox_29->setTitle(QCoreApplication::translate("MainWindow", "Number of Bins", nullptr));

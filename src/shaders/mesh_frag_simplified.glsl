@@ -25,7 +25,7 @@ in flat int     frag_is_skeleton;
 in flat int     frag_is_overview;
 in flat int     frag_currently_hovered_id;
 
-uniform bool          show_mito_distance_to_cell;
+uniform bool          color_code;
 uniform int           main_mito;
 uniform sampler1D	  mito_colormap;
 
@@ -153,7 +153,7 @@ vec4 computeColor()
   {
     if(frag_is_skeleton == 0)
     {
-      if(show_mito_distance_to_cell)
+      if(color_code)
       {
         obj_color = vec3(texture(mito_colormap, 1 - frag_cell_distance * 4.0).xyz);
       }
@@ -216,6 +216,7 @@ vec4 computeColor()
   }
   else if(frag_structure_type == DENDS || frag_structure_type == AXONS)
   {
+    // compute view dependent transparency based on dot product between viewing ray and surface normal
     vec3 N = normalize(frag_normal.xyz);
     vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
     float opacity = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;

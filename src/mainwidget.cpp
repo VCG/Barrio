@@ -598,6 +598,13 @@ void MainWidget::setVisMethod(Vis vis)
   }
 }
 
+void MainWidget::setColorcodingEnabled(bool enabled)
+{
+    m_shared_resources.show_color_coding = enabled;
+    m_abstraction_space->m_global_vis_parameters.needs_update = true;
+    update();
+}
+
 void MainWidget::setupVisParams(Vis vis_method, QJsonObject settings)
 {
   clearWidget(m_vis_params_widget);

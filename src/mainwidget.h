@@ -48,6 +48,7 @@ public:
   void setNumberOfBinsForHistogram(int bins);
   void setColormap(QString colormap);
   void setVisMethod(Vis vis);
+  void setColorcodingEnabled(bool enabled);
 
   void setupVisParams(Vis vis_method, QJsonObject settings);
 

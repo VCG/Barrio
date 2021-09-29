@@ -26,7 +26,7 @@ out vec4          frag_vert_pos;
 flat out int      frag_hvgx;
 flat out int      frag_is_skeleton;
 out float         frag_slice_z;
-
+   
 flat out int         frag_is_overview;
 flat out int         frag_currently_hovered_id;
 
@@ -54,4 +54,5 @@ void main()
 
     frag_currently_hovered_id = currently_hovered_id;
     frag_is_overview = is_overview;
+
 }

@@ -97,8 +97,8 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   int mNodes = program->uniformLocation("maxNodes");
   if (mNodes >= 0) program->setUniformValue(mNodes, m_maxNodes);
 
-  int show_mcd_colormap = program->uniformLocation("show_mito_distance_to_cell");
-  if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, true);
+  int show_mcd_colormap = program->uniformLocation("color_code");
+  if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, m_shared_resources->show_color_coding);
 
   int main_mito = program->uniformLocation("main_mito");
   if (show_mcd_colormap >= 0) program->setUniformValue(main_mito, m_selected_hvgx_id);

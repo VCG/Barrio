@@ -39,11 +39,12 @@ struct SharedGLResources
   QOpenGLBuffer* slice_vertex_vbo;
 
   bool          show_3d_renderings;
-  float         cell_opacity;
+  bool			show_color_coding;
   bool          show_slice;
-  float         slice_depth;
-
   bool          show_related_synapses;
+  
+  float         cell_opacity;
+  float         slice_depth;
   double        distance_threshold; 
 
   QVector<int>*   highlighted_objects;

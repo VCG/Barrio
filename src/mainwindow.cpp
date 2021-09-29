@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   //initializeSynapseThresholdSlider();
   initializeOpacitySlider();
   initializeColormapComboBox();
+  initializeColorCodeCheckBox();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
@@ -92,8 +93,13 @@ void MainWindow::initializeOpacitySlider()
   connect(opacity_slider, SIGNAL(valueChanged(int)), this, SLOT(on_opacity_slider_changed(int)));
 
   on_opacity_slider_changed(initial_tick_position);
+}
 
-  
+void MainWindow::initializeColorCodeCheckBox()
+{
+    QCheckBox* color_coding_checkbox = mainwindow_ui->checkBox;
+    color_coding_checkbox->setChecked(true);
+    connect(color_coding_checkbox, SIGNAL(stateChanged(int)), this, SLOT(on_color_code_checkbox_changed(int)));
 }
 
 void MainWindow::initializeColormapComboBox()
@@ -337,6 +343,11 @@ void MainWindow::on_opacity_slider_changed(int value)
 void MainWindow::on_colormap_changed(QString text)
 {
   m_main_widget->setColormap(text);
+}
+
+void MainWindow::on_color_code_checkbox_changed(int state)
+{
+    m_main_widget->setColorcodingEnabled((bool)state);
 }
 
 void MainWindow::on_number_of_bins_input_changed(int value)
