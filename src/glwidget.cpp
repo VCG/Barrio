@@ -53,22 +53,11 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 GLWidget::~GLWidget()
 {
   qDebug() << "~GLWidget()";
-
-  //makeCurrent();
-  ////delete m_2dspace;
-  //delete m_graphManager;
-  //delete m_data_container;
-  //delete m_glycogenAnalysisManager;
-  //doneCurrent();
 }
 
 void GLWidget::init(DataContainer* data_container)
 {
-
   m_data_container = data_container;
-
-  // objects manager with all objects data
-  //m_opengl_mngr = new OpenGLManager(m_data_container);
 
   Object* object = m_data_container->getObject(m_selected_hvgx_id);
   if (object != nullptr)
@@ -86,7 +75,7 @@ void GLWidget::init(DataContainer* data_container)
       m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
   }
 
-  camera = new Camera(45.0f, 1.0f, 1000.0f, m_center);
+  camera = new Camera(85.0f, 1.0f, 10000.0f, m_center);
 }
 
 
@@ -264,10 +253,9 @@ void GLWidget::initializeGL()
   m_lockRotation2D_timer->start(500);
 }
 
-
-
 void GLWidget::paintGL()
 {
+  qDebug() << "render " << m_selected_hvgx_id;
   startRotation();
 
   camera->frameUpdate();

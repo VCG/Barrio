@@ -27,10 +27,10 @@ void MainOpenGL::GL_Error()
     return;
   }
 
-  if (glerr == GL_OUT_OF_MEMORY) {
+  /*if (glerr == GL_OUT_OF_MEMORY) {
     qDebug() << "GL_OUT_OF_MEMORY";
     return;
-  }
+  }*/
 
   // todo: handle errors
   qDebug() << "GL error is : " << glerr;

@@ -27,7 +27,7 @@ public:
   Vis getVisInfo(int id);
   
   bool deleteAllInfoVisWidgets();
-  bool deleteAllGLWidgets();
+  //bool deleteAllGLWidgets();
   bool deleteAllWidgets(bool deleteGeneralInfoVisWidgets);
 
   void addCloseButtonToWidget(QGroupBox* groupBox);

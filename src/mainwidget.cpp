@@ -224,7 +224,6 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
   // low configuration
   if (m_number_of_entities == NumberOfEntities::LOW)
   {
-    //addCloseButtonToWidget(groupBox);
     addInfoVisWidget(ID, groupBox, m_vis_methods.method->clone(), settings);
 
     QFrame* line = new QFrame;
@@ -347,8 +346,8 @@ bool MainWidget::deleteAllInfoVisWidgets()
   return true;
 }
 
-bool MainWidget::deleteAllGLWidgets()
-{
+//bool MainWidget::deleteAllGLWidgets()
+//{
   // clear group box map
   //for (auto it = m_gl_boxes.cbegin(); it != m_gl_boxes.cend();)
   //{
@@ -369,8 +368,8 @@ bool MainWidget::deleteAllGLWidgets()
   //m_current_col = 0;
   //m_current_row = 0;
 
-  return false;
-}
+  //return false;
+//}
 
 bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 {
@@ -721,8 +720,6 @@ void MainWidget::paintGL()
       m_abstraction_space->m_global_vis_parameters.needs_update = false;
   }
   update();
-  
-  
 }
 
 void MainWidget::updateWidgets()
