@@ -29,11 +29,11 @@ void Camera::frameUpdate()
 	this->viewMatrix.lookAt(this->position, center, this->up);
 }
 
-void Camera::setAspectRatio(float ratio)
+void Camera::setAspectRatio(qreal aspect_ratio)
 {
 	float fov_rad = qDegreesToRadians(this->fov);
 	this->projection.setToIdentity();
-	this->projection.perspective(fov_rad, ratio, this->nearPlane, this->farPlane);
+	this->projection.perspective(fov_rad, aspect_ratio, this->nearPlane, this->farPlane);
 }
 
 const QVector3D& Camera::getPosition() const

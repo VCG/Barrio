@@ -19,7 +19,7 @@ class Camera
 		void setLookAt(const QVector3D& lookAt);
 		void setFront(const QVector3D& newFront);
 		void switchMovement();
-		void setAspectRatio(float ratio);
+		void setAspectRatio(qreal aspect_ratio);
 
 		const QVector3D& getPosition() const;
 		const QVector3D& getFront() const;

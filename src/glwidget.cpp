@@ -255,7 +255,6 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
-  qDebug() << "render " << m_selected_hvgx_id;
   startRotation();
 
   camera->frameUpdate();
@@ -282,7 +281,9 @@ void GLWidget::resizeGL(int w, int h)
   m_width = w * retinaScale;
   m_height = h * retinaScale;
 
-  camera->setAspectRatio(m_width / m_height);
+  qreal aspect_ratio = retinaScale * qreal(w) / qreal(h ? h : 1);
+
+  camera->setAspectRatio(aspect_ratio);
 
   initMeshShaderStorage(m_width, m_height);
 }
