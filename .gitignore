@@ -410,3 +410,6 @@ test.json
 data/cache_m2/
 
 data/cache_m3/
+
+build/
+data_bak/
