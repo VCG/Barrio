@@ -51,17 +51,6 @@ public:
     QDockWidget *dockWidget;
     QWidget *dockWidgetContents_2;
     QGridLayout *gridLayout_15;
-    QFrame *frame_64;
-    QVBoxLayout *verticalLayout_23;
-    QGroupBox *groupBox_16;
-    QFormLayout *formLayout_6;
-    QVBoxLayout *verticalLayout_5;
-    QGroupBox *groupBox_3;
-    QVBoxLayout *verticalLayout_25;
-    QVBoxLayout *verticalLayout_24;
-    QDockWidget *dockWidget_2;
-    QWidget *dockWidgetContents;
-    QGridLayout *gridLayout_25;
     QFrame *frame_61;
     QGridLayout *gridLayout_16;
     QTabWidget *tabWidget;
@@ -361,6 +350,17 @@ public:
     QGridLayout *gridLayout_10;
     QPushButton *pushButton_13;
     QSpacerItem *verticalSpacer_2;
+    QDockWidget *dockWidget_2;
+    QWidget *dockWidgetContents;
+    QGridLayout *gridLayout_25;
+    QFrame *frame_64;
+    QVBoxLayout *verticalLayout_23;
+    QGroupBox *groupBox_16;
+    QFormLayout *formLayout_6;
+    QVBoxLayout *verticalLayout_5;
+    QGroupBox *groupBox_3;
+    QVBoxLayout *verticalLayout_25;
+    QVBoxLayout *verticalLayout_24;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -403,54 +403,7 @@ public:
         dockWidgetContents_2->setCursor(QCursor(Qt::ArrowCursor));
         gridLayout_15 = new QGridLayout(dockWidgetContents_2);
         gridLayout_15->setObjectName(QString::fromUtf8("gridLayout_15"));
-        frame_64 = new QFrame(dockWidgetContents_2);
-        frame_64->setObjectName(QString::fromUtf8("frame_64"));
-        frame_64->setMaximumSize(QSize(400, 16777215));
-        frame_64->setFrameShape(QFrame::StyledPanel);
-        frame_64->setFrameShadow(QFrame::Raised);
-        verticalLayout_23 = new QVBoxLayout(frame_64);
-        verticalLayout_23->setObjectName(QString::fromUtf8("verticalLayout_23"));
-        groupBox_16 = new QGroupBox(frame_64);
-        groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
-        groupBox_16->setMinimumSize(QSize(0, 0));
-        groupBox_16->setMaximumSize(QSize(372, 400));
-        formLayout_6 = new QFormLayout(groupBox_16);
-        formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
-        formLayout_6->setSizeConstraint(QLayout::SetMaximumSize);
-        verticalLayout_5 = new QVBoxLayout();
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-
-        formLayout_6->setLayout(0, QFormLayout::FieldRole, verticalLayout_5);
-
-
-        verticalLayout_23->addWidget(groupBox_16);
-
-        groupBox_3 = new QGroupBox(frame_64);
-        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        groupBox_3->setMinimumSize(QSize(0, 300));
-        verticalLayout_25 = new QVBoxLayout(groupBox_3);
-        verticalLayout_25->setObjectName(QString::fromUtf8("verticalLayout_25"));
-        verticalLayout_24 = new QVBoxLayout();
-        verticalLayout_24->setObjectName(QString::fromUtf8("verticalLayout_24"));
-
-        verticalLayout_25->addLayout(verticalLayout_24);
-
-
-        verticalLayout_23->addWidget(groupBox_3);
-
-
-        gridLayout_15->addWidget(frame_64, 0, 0, 1, 1);
-
-        dockWidget->setWidget(dockWidgetContents_2);
-        MainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-        dockWidget_2 = new QDockWidget(MainWindow);
-        dockWidget_2->setObjectName(QString::fromUtf8("dockWidget_2"));
-        dockWidget_2->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
-        dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-        gridLayout_25 = new QGridLayout(dockWidgetContents);
-        gridLayout_25->setObjectName(QString::fromUtf8("gridLayout_25"));
-        frame_61 = new QFrame(dockWidgetContents);
+        frame_61 = new QFrame(dockWidgetContents_2);
         frame_61->setObjectName(QString::fromUtf8("frame_61"));
         frame_61->setFrameShape(QFrame::StyledPanel);
         frame_61->setFrameShadow(QFrame::Raised);
@@ -1001,7 +954,7 @@ public:
         toolBox_graphsParam->setObjectName(QString::fromUtf8("toolBox_graphsParam"));
         graph1 = new QWidget();
         graph1->setObjectName(QString::fromUtf8("graph1"));
-        graph1->setGeometry(QRect(0, 0, 304, 479));
+        graph1->setGeometry(QRect(0, 0, 252, 464));
         formLayout_5 = new QFormLayout(graph1);
         formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
         frame_11 = new QFrame(graph1);
@@ -1193,7 +1146,7 @@ public:
         toolBox_graphsParam->addItem(graph1, QString::fromUtf8("Neurites Connectivity"));
         graph2 = new QWidget();
         graph2->setObjectName(QString::fromUtf8("graph2"));
-        graph2->setGeometry(QRect(0, 0, 304, 479));
+        graph2->setGeometry(QRect(0, 0, 252, 464));
         formLayout_4 = new QFormLayout(graph2);
         formLayout_4->setObjectName(QString::fromUtf8("formLayout_4"));
         frame_13 = new QFrame(graph2);
@@ -1386,7 +1339,7 @@ public:
         toolBox_graphsParam->addItem(graph2, QString::fromUtf8("Astrocyte Skeleton - Neurites Nodes"));
         graph3 = new QWidget();
         graph3->setObjectName(QString::fromUtf8("graph3"));
-        graph3->setGeometry(QRect(0, 0, 304, 479));
+        graph3->setGeometry(QRect(0, 0, 252, 464));
         formLayout_31 = new QFormLayout(graph3);
         formLayout_31->setObjectName(QString::fromUtf8("formLayout_31"));
         frame_20 = new QFrame(graph3);
@@ -1579,7 +1532,7 @@ public:
         toolBox_graphsParam->addItem(graph3, QString::fromUtf8("Astrocyte Skeleton - Neurites Skeleton"));
         graph4 = new QWidget();
         graph4->setObjectName(QString::fromUtf8("graph4"));
-        graph4->setGeometry(QRect(0, 0, 360, 1305));
+        graph4->setGeometry(QRect(0, 0, 327, 1338));
         formLayout = new QFormLayout(graph4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         frame_28 = new QFrame(graph4);
@@ -1915,7 +1868,54 @@ public:
         gridLayout_16->addWidget(tabWidget, 0, 0, 1, 1);
 
 
-        gridLayout_25->addWidget(frame_61, 0, 0, 1, 1);
+        gridLayout_15->addWidget(frame_61, 0, 0, 1, 1);
+
+        dockWidget->setWidget(dockWidgetContents_2);
+        MainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+        dockWidget_2 = new QDockWidget(MainWindow);
+        dockWidget_2->setObjectName(QString::fromUtf8("dockWidget_2"));
+        dockWidget_2->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+        dockWidgetContents = new QWidget();
+        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
+        gridLayout_25 = new QGridLayout(dockWidgetContents);
+        gridLayout_25->setObjectName(QString::fromUtf8("gridLayout_25"));
+        frame_64 = new QFrame(dockWidgetContents);
+        frame_64->setObjectName(QString::fromUtf8("frame_64"));
+        frame_64->setMaximumSize(QSize(400, 16777215));
+        frame_64->setFrameShape(QFrame::StyledPanel);
+        frame_64->setFrameShadow(QFrame::Raised);
+        verticalLayout_23 = new QVBoxLayout(frame_64);
+        verticalLayout_23->setObjectName(QString::fromUtf8("verticalLayout_23"));
+        groupBox_16 = new QGroupBox(frame_64);
+        groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
+        groupBox_16->setMinimumSize(QSize(0, 0));
+        groupBox_16->setMaximumSize(QSize(372, 400));
+        formLayout_6 = new QFormLayout(groupBox_16);
+        formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
+        formLayout_6->setSizeConstraint(QLayout::SetMaximumSize);
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+
+        formLayout_6->setLayout(0, QFormLayout::FieldRole, verticalLayout_5);
+
+
+        verticalLayout_23->addWidget(groupBox_16);
+
+        groupBox_3 = new QGroupBox(frame_64);
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        groupBox_3->setMinimumSize(QSize(0, 300));
+        verticalLayout_25 = new QVBoxLayout(groupBox_3);
+        verticalLayout_25->setObjectName(QString::fromUtf8("verticalLayout_25"));
+        verticalLayout_24 = new QVBoxLayout();
+        verticalLayout_24->setObjectName(QString::fromUtf8("verticalLayout_24"));
+
+        verticalLayout_25->addLayout(verticalLayout_24);
+
+
+        verticalLayout_23->addWidget(groupBox_3);
+
+
+        gridLayout_25->addWidget(frame_64, 0, 0, 1, 1);
 
         dockWidget_2->setWidget(dockWidgetContents);
         MainWindow->addDockWidget(Qt::RightDockWidgetArea, dockWidget_2);
@@ -1934,8 +1934,6 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "NeuroKit", nullptr));
         dockWidget->setWindowTitle(QString());
-        groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures of Interest", nullptr));
-        groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Parameters", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Slice View", nullptr));
@@ -2060,6 +2058,8 @@ public:
         groupBox_21->setTitle(QCoreApplication::translate("MainWindow", "Auto Rotation", nullptr));
         pushButton_13->setText(QCoreApplication::translate("MainWindow", "Start/Stop", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_6), QCoreApplication::translate("MainWindow", "Debugging", nullptr));
+        groupBox_16->setTitle(QCoreApplication::translate("MainWindow", "Structures of Interest", nullptr));
+        groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Overview", nullptr));
     } // retranslateUi
 
 };

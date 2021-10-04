@@ -83,81 +83,6 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_15">
      <item row="0" column="0">
-      <widget class="QFrame" name="frame_64">
-       <property name="maximumSize">
-        <size>
-         <width>400</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_23">
-        <item>
-         <widget class="QGroupBox" name="groupBox_16">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>372</width>
-            <height>400</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Structures of Interest</string>
-          </property>
-          <layout class="QFormLayout" name="formLayout_6">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMaximumSize</enum>
-           </property>
-           <item row="0" column="1">
-            <layout class="QVBoxLayout" name="verticalLayout_5"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Overview</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_25">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_24"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QGridLayout" name="gridLayout_25">
-     <item row="0" column="0">
       <widget class="QFrame" name="frame_61">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -1073,8 +998,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>304</width>
-                 <height>479</height>
+                 <width>252</width>
+                 <height>464</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1347,8 +1272,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>304</width>
-                 <height>479</height>
+                 <width>252</width>
+                 <height>464</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1624,8 +1549,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>304</width>
-                 <height>479</height>
+                 <width>252</width>
+                 <height>464</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1901,8 +1826,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>360</width>
-                 <height>1305</height>
+                 <width>327</width>
+                 <height>1338</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -2372,6 +2297,81 @@
             </item>
            </layout>
           </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_25">
+     <item row="0" column="0">
+      <widget class="QFrame" name="frame_64">
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_23">
+        <item>
+         <widget class="QGroupBox" name="groupBox_16">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>372</width>
+            <height>400</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Structures of Interest</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_6">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <item row="0" column="1">
+            <layout class="QVBoxLayout" name="verticalLayout_5"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Overview</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_25">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_24"/>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
