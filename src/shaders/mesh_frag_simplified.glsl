@@ -209,7 +209,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {
-    out_color = vec4(result, 0.2);
+    out_color = vec4(result, 0.0);
   }
   else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {
@@ -221,7 +221,8 @@ vec4 computeColor()
     vec3 N = normalize(frag_normal.xyz);
     vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
     float opacity = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
-    out_color = vec4(result, opacity);
+    //out_color = vec4(result, opacity);
+    out_color = vec4(result, cell_opacity);
   }
 
   return out_color;
