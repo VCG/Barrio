@@ -203,7 +203,7 @@ void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)
 
 bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
 {
-  if (ID < 0) // avoid readding the overview widget
+  if (ID < 0) // avoid reading the overview widget
   {
     return false;
   }

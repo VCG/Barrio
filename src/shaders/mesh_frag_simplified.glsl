@@ -209,7 +209,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {
-    out_color = vec4(result, 0.0);
+    out_color = vec4(result, 0.25);
   }
   else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {

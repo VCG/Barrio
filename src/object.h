@@ -43,7 +43,7 @@ class Object
 {
 public:
   Object();
-  Object(std::string name, int ID);
+  Object(std::string name, int ID, int mouse_id);
   ~Object();
 
   // temporary skeleton data points handleing function
@@ -71,6 +71,7 @@ public:
 
 
   int getHVGXID() { return m_ID; }
+  int getMouseID() { return m_mouse_id; }
   struct ssbo_mesh getSSBOData();
 
   //Object* getParent() { return m_parent; }
@@ -120,7 +121,8 @@ public:
   void updateClosestAstroVertex(float dist, int vertexIdx);
   void UpdateSynapseData(int axons_id, int dendrite_id, int spine_id, int bouton_id);
   void addSynapse(Object* synapse_object);
-  std::vector<Object*>* getSynapses() { return &m_synapses; }
+  std::vector<Object*>* getSynapses();
+  std::vector<int>* getSynapseIDs();
   struct synapse getSynapseData() { return m_synapse_data; }
 
   void setMappedValue(float value) { m_mappedValue = value; }
@@ -142,6 +144,7 @@ private:
   std::string                             m_name;
   int                                     m_ID;           // hvgx
   int                                     m_nodeIdx;
+  int                                     m_mouse_id;
 
   Object_t                                m_object_t;     /* object type */
   float                                   m_volume;       // volume of this object
@@ -185,13 +188,13 @@ private:
   template<class Archive>
   void serialize(Archive& ar)
   {
-    ar(m_name, m_ID, m_nodeIdx,
+    ar(m_name, m_mouse_id, m_ID, m_nodeIdx,
       m_object_t, m_volume, m_surface_area, m_function,
       m_parentID, m_children_ids,
       m_meshIndices, 
       m_isFiltered, m_isAstroSynapse,
       m_VertexidxCloseToAstro, m_averageDistance, m_mappedValue,
-      m_synapse_ids, m_synapse_data, x_center, y_center, z_center, w_center, m_distance_map);
+      x_center, y_center, z_center, w_center, m_distance_map, m_synapse_ids);
 
 
   }

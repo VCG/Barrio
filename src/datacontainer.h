@@ -81,13 +81,18 @@ public:
   int getObjectThatHasSynapse(int syn_id, int not_this_object);
   QList<int> getMitosOfCell(int cell_id);
 
-  bool importObj(QString path);
+  bool importObj(QString path, int mouse_id);
+
+  int importObjTest(QString path, int mouse_id);
+
+  QString getName(QString name);
+
   bool importSkeletons(QString path, Object_t skeleton_type);
   bool importSemanticSkeleton(QString path);
 
   MySkeleton processSkeletonStructure(int hvgx, QList<int>* edges, std::vector< struct VertexData >* vertices);
 
-  void processParentChildStructure();
+  void processParentChildStructure(int mouse_id);
 
   void loadConnectivityGraph(QString path);
   void addEdgeToConnectivityGraph(int, int, std::set< std::tuple<int, int> >&);
@@ -176,6 +181,8 @@ protected:
   int                                         m_indices_size; // used to allocate indices of a mesh
   int                                         m_vertex_offset; // used to unify vertices for one mesh
   int                                         m_faces_offset; // used to unify vertices for one mesh
+
+  int                                         m_hvgx;
 
   int                                         m_limit;
 

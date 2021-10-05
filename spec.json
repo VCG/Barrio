@@ -44,6 +44,7 @@
           "id": 5,
           "target-structure": "mitochondria",
           "name": "scatter-plot",
+          "soi": "mitochondria",
           "x-axis": {
             "label": "Minimal Distance to Cell Boundary",
             "attribute": "min-distance-to-cell"
@@ -70,6 +71,7 @@
           "id": 8,
           "target-structure": "mitochondria",
           "name": "scatter-plot",
+          "soi": "mitochondria",
           "x-axis": {
             "label": "number of spines covered by mitochondrion",
             "attribute": "mito-spine-coverage"

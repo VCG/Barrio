@@ -26,6 +26,15 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
 
   names.sort();
 
+  QStandardItem* mouse2 = new QStandardItem("Mouse 2");
+  mouse2->setSelectable(false);
+
+  QStandardItem* mouse3 = new QStandardItem("Mouse 3");
+  mouse3->setSelectable(false);
+
+  paramList->appendRow(mouse2);
+  paramList->appendRow(mouse3);
+
   //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
   for (int i = 0; i < names.size(); i++)
   {
@@ -38,11 +47,19 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
       QStandardItem* item_name = new QStandardItem(name);
       item_name->setEditable(false);
 
+
       int id = object->getHVGXID();
       QStandardItem* item_id = new QStandardItem(QString::number(id));
       item_id->setEditable(false);
 
-      paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      if (name.endsWith("2"))
+      {
+        mouse2->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      }
+      else if(name.endsWith("3"))
+      {
+        mouse3->appendRow(QList<QStandardItem*>() << item_name << item_id);
+      }
 
       /*std::vector<int>* childrenIDs = object->getChildrenIDs();
       int j = 0;
@@ -75,24 +92,33 @@ TreeModel::~TreeModel()
 
 void TreeModel::selectItem(const QModelIndex& index)
 {
-
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
-  m_mainwidget->addWidgetGroup(hvgx, false);
+  if (hvgx > 0) { // avoid selecting the header like mouse2 or mouse3
+    m_mainwidget->addWidgetGroup(hvgx, false);
 
-  QList<QStandardItem*> items;
-  QStandardItem* col0 = paramList->item(index.row(), 0);
-  QStandardItem* col1 = paramList->item(index.row(), 1);
+    QList<QStandardItem*> items;
 
-  QColor background_color(195, 147, 226);
+    QModelIndex c0 = index.sibling(index.row(), 0);
+    QModelIndex c1 = index.sibling(index.row(), 1);
 
-  col0->setBackground(background_color);
-  col1->setBackground(background_color);
+    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+    QStandardItem* col0 = sModel->itemFromIndex(c0);
+    QStandardItem* col1 = sModel->itemFromIndex(c1);
 
-  items.append(col0);
-  items.append(col1);
+    QColor background_color_purple(195, 147, 226);
+    QColor background_color_green(202, 205, 143);
 
-  m_mainwidget->addStandardItem(hvgx, items);
+    //col0->setBackground(background_color_purple);
+    //col1->setBackground(background_color_purple);
 
+    col0->setBackground(background_color_green);
+    col1->setBackground(background_color_green);
+
+    items.append(col0);
+    items.append(col1);
+
+    m_mainwidget->addStandardItem(hvgx, items);
+  }
 }
 

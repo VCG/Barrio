@@ -856,6 +856,7 @@ void GLWidget::updateVisibilitySSBO()
     setVisibleStructuresOverView();
   }
 
+
   int bufferSize = m_visible_structures.size() * sizeof(int);
 
   glGenBuffers(1, &m_visibility_ssbo);
@@ -885,41 +886,83 @@ void GLWidget::setVisibleStructuresOverView()
 void GLWidget::setVisibleStructures(int id)
 {
   std::map<int, Object*> objects_map = m_data_container->getObjectsMap();
-  
+
   Object* object = objects_map.at(id);
-  int parentID = object->getParentID();
 
-  m_visible_structures.push_back(parentID);
-
-  Object* parent = objects_map.at(parentID);
-
-  if (m_shared_resources->show_related_synapses)
+  if (object->getObjectType() == Object_t::MITO)
   {
-    std::vector<Object*>* synapses = parent->getSynapses();
-    for (int i = 0; i < synapses->size(); i++)
-    {
-      m_visible_structures.push_back(synapses->at(i)->getHVGXID());
-    }
-  }
-  else
-  {
-    std::vector<Object*> synapses = m_data_container->getObjectsByType(Object_t::SYNAPSE);
+    int parentID = object->getParentID();
 
-    for (auto syn : synapses)
+    m_visible_structures.push_back(parentID);
+
+    Object* parent = objects_map.at(parentID);
+
+    if (m_shared_resources->show_related_synapses)
     {
-      std::map<int, double>* distance_map = objects_map.at(id)->get_distance_map_ptr();
-      double distance = distance_map->at(syn->getHVGXID());
-      if (distance < m_distance_threshold)
+      std::vector<Object*>* synapses = parent->getSynapses();
+      for (int i = 0; i < synapses->size(); i++)
       {
-        m_visible_structures.push_back(syn->getHVGXID());
+        m_visible_structures.push_back(synapses->at(i)->getHVGXID());
       }
     }
-  }
+    else
+    {
+      std::vector<Object*> synapses = m_data_container->getObjectsByType(Object_t::SYNAPSE);
 
-  std::vector<int>* siblings = parent->getChildrenIDs();
-  for (size_t i = 0; i < siblings->size(); i++)
+      for (auto syn : synapses)
+      {
+        std::map<int, double>* distance_map = objects_map.at(id)->get_distance_map_ptr();
+        double distance = distance_map->at(syn->getHVGXID());
+        if (distance < m_distance_threshold)
+        {
+          m_visible_structures.push_back(syn->getHVGXID());
+        }
+
+      }
+    }
+
+    std::vector<int>* siblings = parent->getChildrenIDs();
+    for (size_t i = 0; i < siblings->size(); i++)
+    {
+      m_visible_structures.push_back(siblings->at(i));
+    }
+  }
+  else if (object->getObjectType() == Object_t::SYNAPSE)
   {
-    m_visible_structures.push_back(siblings->at(i));
+    m_visible_structures.push_back(object->getHVGXID());
+    std::vector<Object*> dendrites = m_data_container->getObjectsByType(Object_t::DENDRITE);
+
+    for (size_t i = 0; i < dendrites.size(); i++)
+    {
+      Object* dend = dendrites.at(i);
+      if (dend->getMouseID() == object->getMouseID())
+      {
+        if (dend->hasSynapse(object->getHVGXID()))
+        {
+          m_visible_structures.push_back(dend->getHVGXID());
+        }
+      }
+    }
+
+    std::vector<Object*> mitochondria = m_data_container->getObjectsByType(Object_t::MITO);
+
+    double min = 100000;
+    Object* closest_mito = NULL;
+    for (auto mito : mitochondria)
+    {
+      if (object->getMouseID() == mito->getMouseID())
+      {
+        double distance = object->get_distance_map_ptr()->at(mito->getHVGXID());
+        if (distance <= min) {
+          min = distance;
+          closest_mito = mito;
+        }
+      }
+    }
+    if (closest_mito != NULL)
+    {
+      m_visible_structures.push_back(closest_mito->getHVGXID());
+    }
   }
 }
 
