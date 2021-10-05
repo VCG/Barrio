@@ -8,19 +8,19 @@
           "id": 0,
           "target-structure": "mitochondria",
           "name": "distance-tree",
-          "params": "related-synapses"
+          "params": "surrounding-synapses"
         },
         "medium_cardinality_vis": {
           "id": 1,
           "target-structure": "mitochondria",
           "name": "grouped-bar-chart",
-          "params": "related-synapses"
+          "params": "surrounding-synapses"
         },
         "high_cardinality_vis": {
           "id": 2,
           "target-structure": "mitochondria",
           "name": "distance-matrix",
-          "params": "related-synapses"
+          "params": "surrounding-synapses"
         }
       },
       {

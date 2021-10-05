@@ -65,7 +65,7 @@ subroutine void       RenderPassType();
 subroutine uniform    RenderPassType RenderPass;
 
 //-------------------- DIFFUSE LIGHT PROPERTIES --------------------
-vec3 lightColor1 = vec3(1.0, 1.0, 1.0);
+vec3 lightColor1 = vec3(0.8, 0.8, 0.8);
 vec3 lightColor2 = vec3(0.7, 0.7, 0.7);
 
 vec3 lightDir1 = vec3(-2.5f, -2.5f, -0.9f);
@@ -76,10 +76,11 @@ float k_d = 0.8;
 float k_s = 0.5;
 
 vec3 selected_color =  vec3(1.0, 0.65, 0.0); // orange
-vec3 mito_standard = vec3(1.0, 0.0, 0.0); // red
+// vec3 mito_standard = vec3(0.925, 0.341, 0.298); // red
+vec3 mito_standard = vec3(0.329, 0.584, 0.941);
 vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
-vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
-
+//vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
+vec3 neurite_color = vec3(0.627, 0.870, 0.682);
 int isVisible(int hvgx)
 {
   if(show3D)
@@ -134,7 +135,7 @@ vec3 computeLight(vec3 light_dir, vec3 light_color, vec3 obj_color)
   // specular component
   vec3 viewDir = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
   vec3 reflectDir = reflect(-L, N);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
   vec3 specular = k_s * spec * light_color;
 
   return (ambient + diffuse + specular) * obj_color;

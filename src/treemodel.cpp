@@ -84,8 +84,10 @@ void TreeModel::selectItem(const QModelIndex& index)
   QStandardItem* col0 = paramList->item(index.row(), 0);
   QStandardItem* col1 = paramList->item(index.row(), 1);
 
-  col0->setBackground(QColor(161, 255, 186));
-  col1->setBackground(QColor(161, 255, 186));
+  QColor background_color(195, 147, 226);
+
+  col0->setBackground(background_color);
+  col1->setBackground(background_color);
 
   items.append(col0);
   items.append(col1);
