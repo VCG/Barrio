@@ -79,7 +79,8 @@ float k_s = 0.5;
 vec3 selected_color =  vec3(1.0, 0.65, 0.0); // orange
 // vec3 mito_standard = vec3(0.925, 0.341, 0.298); // red
 vec3 mito_standard = vec3(0.329, 0.584, 0.941);
-vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
+//vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
+vec3 synapse_color = vec3(0.79, 0.38, 0.38);
 //vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
 vec3 neurite_color = vec3(0.627, 0.870, 0.682);
 int isVisible(int hvgx)
