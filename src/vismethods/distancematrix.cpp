@@ -83,29 +83,37 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
     Object* mito = objects->at(mito_id);
 
     int cell_id = mito->getParentID();
-    Object* cell = objects->at(cell_id);
+    Object* object = objects->at(cell_id);
     std::map<int, double>* distance_map = mito->get_distance_map_ptr();
 
     if (synapse_param == related_synapses) 
     {
-      for (auto& syn : *cell->getSynapses())
+      for (auto& syn : *object->getSynapses())
       {
-        double distance_to_mito = distance_map->at(syn->getHVGXID());
-        if (!selected_synapses.contains(syn->getHVGXID()))
-        {
-          selected_synapses.append(syn->getHVGXID());
-        }
+          if (object->getMouseID() == syn->getMouseID())
+          {
+              double distance_to_mito = distance_map->at(syn->getHVGXID());
+              if (!selected_synapses.contains(syn->getHVGXID()))
+              {
+                  selected_synapses.append(syn->getHVGXID());
+              }
+          }
+
       }
     }
     else if(synapse_param == surrounding_synapses)
     {
       for (auto& syn : synapses)
       {
-        double distance_to_mito = distance_map->at(syn->getHVGXID());
-        if (distance_to_mito < distanceThreshold && !selected_synapses.contains(syn->getHVGXID()))
-        {
-          selected_synapses.append(syn->getHVGXID());
-        }
+          if (object->getMouseID() == syn->getMouseID())
+          {
+              double distance_to_mito = distance_map->at(syn->getHVGXID());
+              if (distance_to_mito < distanceThreshold && !selected_synapses.contains(syn->getHVGXID()))
+              {
+                  selected_synapses.append(syn->getHVGXID());
+              }
+          }
+
       }
     }
   }

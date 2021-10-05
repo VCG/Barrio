@@ -911,13 +911,16 @@ void GLWidget::setVisibleStructures(int id)
 
       for (auto syn : synapses)
       {
-        std::map<int, double>* distance_map = objects_map.at(id)->get_distance_map_ptr();
-        double distance = distance_map->at(syn->getHVGXID());
-        if (distance < m_distance_threshold)
+        Object* object = objects_map.at(id);
+        std::map<int, double>* distance_map = object->get_distance_map_ptr();
+        if (object->getMouseID() == syn->getMouseID())
         {
-          m_visible_structures.push_back(syn->getHVGXID());
+            double distance = distance_map->at(syn->getHVGXID());
+            if (distance < m_distance_threshold)
+            {
+                m_visible_structures.push_back(syn->getHVGXID());
+            }
         }
-
       }
     }
 

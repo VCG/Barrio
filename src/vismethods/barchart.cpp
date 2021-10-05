@@ -86,26 +86,31 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
     {
       for each (Object * syn in *cell->getSynapses())
       {
-        QString syn_name = syn->getName().c_str();
-        double distance_to_mito = distance_map->at(syn->getHVGXID());
+          if (mito->getMouseID() == syn->getMouseID())
+          {
+              QString syn_name = syn->getName().c_str();
+              double distance_to_mito = distance_map->at(syn->getHVGXID());
 
-        selected_syns[syn_name] = distance_to_mito;
-        group_synapse_counter++;
-
+              selected_syns[syn_name] = distance_to_mito;
+              group_synapse_counter++;
+          }
       }
     }
     else if (synapse_param == surrounding_synapses)
     {
       for each (Object * syn in synapses)
       {
-        QString syn_name = syn->getName().c_str();
-        double distance_to_mito = distance_map->at(syn->getHVGXID());
+          if (mito->getMouseID() == syn->getMouseID())
+          {
+              QString syn_name = syn->getName().c_str();
+              double distance_to_mito = distance_map->at(syn->getHVGXID());
 
-        if (distance_to_mito < distance_threshold) 
-        {
-          selected_syns[syn_name] = distance_to_mito;
-          group_synapse_counter++;
-        }
+              if (distance_to_mito < distance_threshold)
+              {
+                  selected_syns[syn_name] = distance_to_mito;
+                  group_synapse_counter++;
+              }
+          }
       }
     }
     
