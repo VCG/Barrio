@@ -49,6 +49,7 @@ public:
   void setColormap(QString colormap);
   void setVisMethod(Vis vis);
   void setColorcodingEnabled(bool enabled);
+  void setSilhouetteEnabled(bool enabled);
 
   void setupVisParams(Vis vis_method, QJsonObject settings);
 

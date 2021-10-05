@@ -40,6 +40,7 @@ struct SharedGLResources
 
   bool          show_3d_renderings;
   bool			show_color_coding;
+  bool			show_silhouette;
   bool          show_slice;
   bool          show_related_synapses;
   

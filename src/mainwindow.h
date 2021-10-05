@@ -65,6 +65,7 @@ public slots:
   void on_opacity_slider_changed(int value);
   void on_colormap_changed(QString text);
   void on_color_code_checkbox_changed(int state);
+  void on_silhouette_checkbox_changed(int state);
 
   void on_number_of_bins_input_changed(int value);
 
@@ -103,6 +104,7 @@ private:
   void initializeColormapComboBox();
 
   void initializeColorCodeCheckBox();
+  void initializeSilhouetteCheckBox();
 
   void initializeVisualizationPresets();
 

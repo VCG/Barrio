@@ -26,6 +26,7 @@ in flat int     frag_is_overview;
 in flat int     frag_currently_hovered_id;
 
 uniform bool          color_code;
+uniform bool          show_silhouette;  
 uniform int           main_mito;
 uniform sampler1D	  mito_colormap;
 
@@ -209,7 +210,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {
-    out_color = vec4(result, 0.25);
+    out_color = vec4(result, 0.23);
   }
   else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {
@@ -218,11 +219,18 @@ vec4 computeColor()
   else if(frag_structure_type == DENDS || frag_structure_type == AXONS)
   {
     // compute view dependent transparency based on dot product between viewing ray and surface normal
-    vec3 N = normalize(frag_normal.xyz);
-    vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
-    float opacity = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
-    //out_color = vec4(result, opacity);
-    out_color = vec4(result, cell_opacity);
+    float alpha = 1.0;
+    if(show_silhouette)
+    {
+        vec3 N = normalize(frag_normal.xyz);
+        vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
+        alpha  = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
+    }
+    else {
+        alpha = cell_opacity;
+    }
+    
+    out_color = vec4(result, alpha);
   }
 
   return out_color;
