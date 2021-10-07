@@ -83,13 +83,13 @@ void GLWidget::init(DataContainer* data_container)
 void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 {
   int mMatrix = program->uniformLocation("mMatrix");
-  if (mMatrix >= 0) program->setUniformValue(mMatrix, m_mMatrix);
+  if (mMatrix >= 0) program->setUniformValue(mMatrix, camera->getModelMatrix());
 
   int vMatrix = program->uniformLocation("vMatrix");
   if (vMatrix >= 0) program->setUniformValue(vMatrix, camera->getViewMatrix());
 
   int pMatrix = program->uniformLocation("pMatrix");
-  if (pMatrix >= 0) program->setUniformValue(pMatrix, camera->getProjection());
+  if (pMatrix >= 0) program->setUniformValue(pMatrix, camera->getProjectionMatrix());
 
   int eye = program->uniformLocation("eye");
   if (eye >= 0) program->setUniformValue(eye, camera->getPosition());
@@ -325,9 +325,10 @@ void GLWidget::leaveEvent(QEvent* event)
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
-  m_lastPos = event->pos();
-  setFocus();
+  //m_lastPos = event->pos();
+  //setFocus();
 
+  camera->mouse_press_event(event);
   makeCurrent();
 
 quit:
@@ -363,40 +364,41 @@ void GLWidget::lockRotation2D()
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
-  int deltaX = event->x() - m_lastPos.x();
-  int deltaY = event->y() - m_lastPos.y();
+  //int deltaX = event->x() - m_lastPos.x();
+  //int deltaY = event->y() - m_lastPos.y();
 
-  if (event->modifiers() == Qt::ShiftModifier) {
-    makeCurrent();
+  //if (event->modifiers() == Qt::ShiftModifier) {
+  //  makeCurrent();
 
-    //m_opengl_mngr->renderSelection(&m_uniforms);
+  //  //m_opengl_mngr->renderSelection(&m_uniforms);
 
-    //int hvgxID = pickObject(event); // hovered object
+  //  //int hvgxID = pickObject(event); // hovered object
 
-    // mark it by lighter color
-    //m_opengl_mngr->highlightObject(hvgxID);
+  //  // mark it by lighter color
+  //  //m_opengl_mngr->highlightObject(hvgxID);
 
-    doneCurrent();
-  }
-  else if (event->buttons() == Qt::RightButton) 
-  {
-    // TODO implement shift wih new camera
-  }
-  else if (event->buttons() == Qt::LeftButton)
-  {
-      setMouseTracking(false);
-      camera->processMouseInput(deltaX, deltaY);
-    m_lockRotation2D_timer->start(500);
-  }
-  else {
-    setMouseTracking(false);
-  }
+  //  doneCurrent();
+  //}
+  //else if (event->buttons() == Qt::RightButton) 
+  //{
+  //  // TODO implement shift wih new camera
+  //}
+  //else if (event->buttons() == Qt::LeftButton)
+  //{
+  //    setMouseTracking(false);
+  //    camera->processMouseInput(deltaX, deltaY);
+  //  m_lockRotation2D_timer->start(500);
+  //}
+  //else {
+  //  setMouseTracking(false);
+  //}
 
-  m_lastPos = event->pos();
-  event->accept();
+  //m_lastPos = event->pos();
+  //event->accept();
+
+  camera->mouse_move_event(event);
 
   update();
-
   doneCurrent();
 }
 

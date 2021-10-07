@@ -19,7 +19,7 @@ uniform int   is_overview;
 uniform int   currently_hovered_id;
 
 out vec4          frag_normal;
-out vec4          frag_camera_position;
+out vec3          frag_camera_position;
 flat out int      frag_structure_type;
 out float         frag_cell_distance;
 out vec4          frag_vert_pos;
@@ -32,18 +32,18 @@ flat out int         frag_currently_hovered_id;
 
 void main()
 {
-    mat4 vpMatrix = pMatrix * vMatrix;
+    mat4 mvp = pMatrix * vMatrix * mMatrix;
     if(structure_type == SLICE)
     {
-      gl_Position =  vpMatrix * vec4(mesh_vtx.y, slice_z, mesh_vtx.z, 1.0);
+      gl_Position =  mvp * vec4(mesh_vtx.y, slice_z, mesh_vtx.z, 1.0);
     }
     else
     {
-      gl_Position =  vpMatrix * vec4(mesh_vtx.xyz, 1.0);
+      gl_Position =  mvp * vec4(mesh_vtx.xyz, 1.0);
     }
 
     frag_normal = normal;
-    frag_camera_position = vec4(eye, 1.0);
+    frag_camera_position = eye;
     frag_vert_pos = mesh_vtx;
 
     frag_structure_type = structure_type;

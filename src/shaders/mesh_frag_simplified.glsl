@@ -15,7 +15,7 @@ layout (early_fragment_tests) in;
 layout (location = 0) out vec4 FragColor;
 
 in vec4         frag_normal;
-in vec4			frag_camera_position;
+in vec3			frag_camera_position;
 flat in int     frag_structure_type;
 in float        frag_cell_distance;
 in vec4         frag_vert_pos;
