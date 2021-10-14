@@ -89,8 +89,8 @@ void DataContainer::loadData()
   QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
   QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
 
-  QString mouse2 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m2/m2_test_all_dendritic_mitos.obj";
-  QString mouse3 = "C:/Users/jtroidl/Desktop/resources/6mice_sp_bo/m3/mouse3_renamed_spines.obj";
+  QString mouse2 = "E:/University/resources/6mice_sp_bo/m2/m2_test_all_dendritic_mitos.obj";
+  QString mouse3 = "E:/University/resources/6mice_sp_bo/m3/mouse3_renamed_spines.obj";
 
   PreLoadMetaDataHVGX(hvgx_path);
 
@@ -1570,15 +1570,15 @@ void DataContainer::compute_synapse_distances(Object* mito)
   }
 }
 
-void DataContainer::compute_mito_distances(Object* synapse)
+void DataContainer::compute_mito_distances(Object* object)
 {
   std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
   for (Object* mito : mitos)
   {
-    if (mito->getMouseID() == synapse->getMouseID())
+    if (mito->getMouseID() == object->getMouseID())
     {
-      double closest_distance = m_mesh_processing->compute_closest_distance(synapse, mito, m_mesh->getVerticesList());
-      synapse->setDistanceToStructure(mito->getHVGXID(), closest_distance);
+      double closest_distance = m_mesh_processing->compute_closest_distance(object, mito, m_mesh->getVerticesList());
+      object->setDistanceToStructure(mito->getHVGXID(), closest_distance);
     }
   }
 }
@@ -1589,6 +1589,7 @@ void DataContainer::compute_closest_distance_to_structures()
   for (Object* mito : mitos)
   {
     compute_synapse_distances(mito);
+    compute_mito_distances(mito);
   }
 
   std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
@@ -1653,6 +1654,21 @@ Object* DataContainer::getObjectByName(QString name)
     }
   }
   return nullptr;
+}
+
+bool DataContainer::isWithinDistance(int from, int to, float threshold)
+{
+    Object* from_object = m_objects.at(from);
+    std::map<int, double>* distances = from_object->get_distance_map_ptr();
+
+    if (distances->count(to))
+    {
+        if (distances->at(to) <= threshold)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void DataContainer::addSliceVertices()
