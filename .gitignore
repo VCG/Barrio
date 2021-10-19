@@ -415,3 +415,9 @@ data_bak/
 
 build/
 
+
+*.dat
+
+*.cereal
+
+*.txt
