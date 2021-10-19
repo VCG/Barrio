@@ -58,6 +58,7 @@ public slots:
   void on_listWidget_itemChanged(QListWidgetItem*);
 
   void on_structure_selection_changed(int state);
+  void on_silhouette_checkbox_changed(int state);
 
   void on_vis_clicked();
 
@@ -101,6 +102,7 @@ private:
   void initializeSlicePositionSlider();
   void initializeOpacitySlider();
   void initializeColormapComboBox();
+  void initializeSilhouetteCheckBox();
 
   void initializeColorCodeCheckBox();
 

@@ -32,6 +32,7 @@ uniform sampler1D	  mito_colormap;
 uniform sampler3D     volume;
 uniform bool          showSlice;
 uniform bool          show3D;
+uniform bool          show_silhouette; 
 
 
 uniform int           maxNodes;
@@ -78,7 +79,8 @@ float k_s = 0.5;
 vec3 selected_color =  vec3(1.0, 0.65, 0.0); // orange
 // vec3 mito_standard = vec3(0.925, 0.341, 0.298); // red
 vec3 mito_standard = vec3(0.329, 0.584, 0.941);
-vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
+//vec3 synapse_color = vec3(0.58, 0.0, 0.83); // purple
+vec3 synapse_color = vec3(0.79, 0.38, 0.38);
 //vec3 neurite_color = vec3(0.6, 1.0, 0.6); // greenish
 vec3 neurite_color = vec3(0.627, 0.870, 0.682);
 int isVisible(int hvgx)
@@ -209,7 +211,7 @@ vec4 computeColor()
 
   if(frag_structure_type == MITO && frag_hvgx != main_mito)
   {
-    out_color = vec4(result, 0.0);
+    out_color = vec4(result, 0.23);
   }
   else if(frag_structure_type == MITO || frag_structure_type == SYNPS || frag_structure_type == SLICE || isHighlighted(frag_hvgx) == 1 || frag_is_skeleton == 1)
   {
@@ -218,13 +220,18 @@ vec4 computeColor()
   else if(frag_structure_type == DENDS || frag_structure_type == AXONS)
   {
     // compute view dependent transparency based on dot product between viewing ray and surface normal
-    vec3 N = normalize(frag_normal.xyz);
-    vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
-    float opacity = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
-    //out_color = vec4(result, opacity);
-    out_color = vec4(result, cell_opacity);
+    float alpha = 1.0;
+    if(show_silhouette)
+    {
+        vec3 N = normalize(frag_normal.xyz);
+        vec3 V = normalize(frag_camera_position.xyz - frag_vert_pos.xyz);
+        alpha  = pow(1.0 - abs(dot(N, V)), 2.5) * cell_opacity;
+    }
+    else {
+        alpha = cell_opacity;
+    } 
+    out_color = vec4(result, alpha);
   }
-
   return out_color;
 }
 

@@ -185,6 +185,13 @@
                       </widget>
                      </item>
                      <item>
+                      <widget class="QCheckBox" name="checkBox_2">
+                       <property name="text">
+                        <string>silhouette</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
                       <widget class="QGroupBox" name="groupBox_25">
                        <property name="title">
                         <string>Cell Membrane Opacity</string>
@@ -998,8 +1005,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>252</width>
-                 <height>464</height>
+                 <width>241</width>
+                 <height>433</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1272,8 +1279,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>252</width>
-                 <height>464</height>
+                 <width>241</width>
+                 <height>433</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1549,8 +1556,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>252</width>
-                 <height>464</height>
+                 <width>241</width>
+                 <height>433</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1826,7 +1833,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>327</width>
+                 <width>328</width>
                  <height>1338</height>
                 </rect>
                </property>

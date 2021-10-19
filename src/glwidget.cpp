@@ -100,8 +100,11 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   int show_mcd_colormap = program->uniformLocation("color_code");
   if (show_mcd_colormap >= 0) program->setUniformValue(show_mcd_colormap, m_shared_resources->show_color_coding);
 
+  int show_silhouette = program->uniformLocation("show_silhouette");
+  if (show_silhouette >= 0) program->setUniformValue(show_silhouette, m_shared_resources->show_silhouette);
+
   int main_mito = program->uniformLocation("main_mito");
-  if (show_mcd_colormap >= 0) program->setUniformValue(main_mito, m_selected_hvgx_id);
+  if (main_mito >= 0) program->setUniformValue(main_mito, m_selected_hvgx_id);
 
   int showSlice = program->uniformLocation("showSlice");
   if (showSlice >= 0) program->setUniformValue(showSlice, m_shared_resources->show_slice);

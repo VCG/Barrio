@@ -729,6 +729,13 @@ void MainWidget::paintGL()
   update();
 }
 
+void MainWidget::setSilhouetteEnabled(bool enabled)
+{
+    m_shared_resources.show_silhouette = enabled;
+    m_abstraction_space->m_global_vis_parameters.needs_update = true;
+    update();
+}
+
 void MainWidget::updateWidgets()
 {
   if (m_shared_resources.widget_queue->size() > 0)

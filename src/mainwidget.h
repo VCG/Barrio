@@ -37,6 +37,8 @@ public:
   bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings);
   bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
 
+  void setSilhouetteEnabled(bool enabled);
+
  // void setupMainWidget(VisConfiguration vis_config);
   //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
   void showSlice(bool showSlice);

@@ -42,6 +42,7 @@ struct SharedGLResources
   bool			show_color_coding;
   bool          show_slice;
   bool          show_related_synapses;
+  bool			show_silhouette;
   
   float         cell_opacity;
   float         slice_depth;

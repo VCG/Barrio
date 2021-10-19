@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget* parent, InputForm* input_form) :
   initializeOpacitySlider();
   initializeColormapComboBox();
   initializeColorCodeCheckBox();
+  initializeSilhouetteCheckBox();
  
   m_treemodel = new TreeModel(mainwindow_ui->groupBox_16, m_data_container, m_main_widget);
   mainwindow_ui->verticalLayout_5->addWidget(m_treemodel);
@@ -70,6 +71,18 @@ void MainWindow::initializeSlicePositionSlider()
 
   connect(slice_position_slider, SIGNAL(valueChanged(int)), this, SLOT(on_slice_position_slider_changed(int)));
   m_main_widget->set_slice_position(initial_tick_position);
+}
+
+void MainWindow::initializeSilhouetteCheckBox()
+{
+    QCheckBox* silhouette_checkbox = mainwindow_ui->checkBox_2;
+    silhouette_checkbox->setChecked(true);
+    connect(silhouette_checkbox, SIGNAL(stateChanged(int)), this, SLOT(on_silhouette_checkbox_changed(int)));
+}
+
+void MainWindow::on_silhouette_checkbox_changed(int state)
+{
+    m_main_widget->setSilhouetteEnabled((bool)state);
 }
 
 //void MainWindow::initializeSynapseThresholdSlider()
