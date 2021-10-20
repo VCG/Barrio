@@ -43,8 +43,6 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
 
       paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
   }
-
- 
 }
 
 TreeModel::~TreeModel()
@@ -64,20 +62,6 @@ void TreeModel::selectItem(const QModelIndex& index)
   QColor color_reset(255, 255, 255);
 
   clearCloseColorMarking(color_close, color_reset);
-
-
-  //QList<QStandardItem*> items;
-  //QStandardItem* col0 = paramList->item(index.row(), 0);
-  //QStandardItem* col1 = paramList->item(index.row(), 1);
-
-  //QColor background_color_purple(195, 147, 226);
-  //QColor background_color_green(202, 205, 143);
-
-  //col0->setBackground(background_color_green);
-  //col1->setBackground(background_color_green);
-
-  //items.append(col0);
-  //items.append(col1);
 
   QList<QStandardItem*> items = setBackgroundColor(index, color_selected);
   m_mainwidget->addStandardItem(hvgx, items);
@@ -121,17 +105,10 @@ void TreeModel::clearCloseColorMarking(QColor close_color, QColor reset_color)
     QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
     for (int r = 0; r < sModel->rowCount(); r++) {
         QModelIndex index = sModel->index(r, 0);
-        if (sModel->hasChildren(index))
+        int hvgx_id = index.siblingAtColumn(1).data().toInt();
+        if (close_indices.contains(hvgx_id))
         {
-            for (int i = 0; i < sModel->rowCount(index); i++)
-            {
-                QModelIndex object_index = sModel->index(i, 1, index);
-                int hvgx_id = object_index.data().toInt();
-                if (close_indices.contains(hvgx_id))
-                {
-                    setBackgroundColor(object_index, reset_color);
-                }
-            }
+           setBackgroundColor(index, reset_color);
         }
     }
     close_indices.clear();
