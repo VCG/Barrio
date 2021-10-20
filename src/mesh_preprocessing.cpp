@@ -130,12 +130,12 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
   }
 
   // load astrocyte into a tree
-  qDebug() << QString(my_cell.name.c_str()) << " has: " << my_cell.triangles.size() << " Triangles";
+  //qDebug() << QString(my_cell.name.c_str()) << " has: " << my_cell.triangles.size() << " Triangles";
 
-  qDebug() << "Started building distance tree ...";
+  //qDebug() << "Started building distance tree ...";
   tree tree(my_cell.triangles.begin(), my_cell.triangles.end());
   tree.accelerate_distance_queries();
-  qDebug() << "Finished building distance tree ...";
+  //qDebug() << "Finished building distance tree ...";
 
   const auto mito_indices = mito->get_indices_list();
 
@@ -160,6 +160,8 @@ int MeshProcessing::compute_distance_distribution(Object* mito, Object* cell, st
     }
     
   }
+
+  qDebug() << "Done computing distance distribution between " << QString(mito->getName().c_str()) << " and " << QString(cell->getName().c_str());
 
   return EXIT_SUCCESS;
 }
@@ -198,12 +200,12 @@ double MeshProcessing::compute_closest_distance(Object* from, Object* to, std::v
   }
 
   // load astrocyte into a tree
-  qDebug() << QString(structure.name.c_str()) << " has: " << structure.triangles.size() << " Triangles";
+  //qDebug() << QString(structure.name.c_str()) << " has: " << structure.triangles.size() << " Triangles";
 
-  qDebug() << "Started building distance tree ...";
+  //qDebug() << "Started building distance tree ...";
   tree tree(structure.triangles.begin(), structure.triangles.end());
   tree.accelerate_distance_queries();
-  qDebug() << "Finished building distance tree ...";
+  //qDebug() << "Finished building distance tree ...";
 
   const auto from_indices = from->get_indices_list();
 
@@ -219,6 +221,8 @@ double MeshProcessing::compute_closest_distance(Object* from, Object* to, std::v
     if (distance < min_distance)
       min_distance = distance;
   }
+
+  qDebug() << "Closest Distance between " << QString(from->getName().c_str()) << " to " << QString(to->getName().c_str()) << ": " << min_distance;
 
   return min_distance;
 }

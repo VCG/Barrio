@@ -9,6 +9,8 @@
 #define DIM_Z       449
 #define DIM_G		64
 
+#define CONSIDER_CLOSE 1.0
+
 #define PATH        QString("C:/Users/jakobtroidl/Desktop/NeuroKit/")
 
 #define RECOMPUTE_DATA FALSE

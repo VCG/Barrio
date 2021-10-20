@@ -137,6 +137,8 @@ public:
   Object*               getObject(int hvgxID);
   Object*               getObjectByName(QString name);
 
+  bool					isWithinDistance(int from, int to, float distance);
+
   void                  addSliceVertices();
   int                   addSliceVertex(float x, float y, float u, float v);
 

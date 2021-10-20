@@ -75,7 +75,7 @@ void GLWidget::init(DataContainer* data_container)
       m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
   }
 
-  camera = new Camera(85.0f, 1.0f, 10000.0f, m_center);
+  camera = new Camera(45.0f, 1.0f, 50.0f, m_center);
 }
 
 

@@ -2,12 +2,11 @@
 
 Camera::Camera(float fov, float near, float far, QVector3D center)
 {
-	//this->position = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, 2.0 * MESH_MAX_Z);
 	this->front = QVector3D(0.0f, 0.0f, 1.0f);
 	this->up = QVector3D(0.0f, 1.0f, 0.0);
 	this->center = center;
 
-	this->distance = 50.0f;
+	this->distance = 10.0f;
 	this->fov = fov;
 	this->speed = 0.5;
 
@@ -32,15 +31,12 @@ void Camera::frameUpdate()
 	this->position = -this->front * this->distance;
 	this->view.setToIdentity();
 	this->view.translate(position);
-
-	qDebug() << model * position;
 }
 
 void Camera::setAspectRatio(qreal aspect_ratio)
 {
-	float fov_rad = qDegreesToRadians(this->fov);
 	this->projection.setToIdentity();
-	this->projection.perspective(fov_rad, aspect_ratio, this->nearPlane, this->farPlane);
+	this->projection.perspective(this->fov, aspect_ratio, this->nearPlane, this->farPlane);
 }
 
 QVector3D Camera::getPosition()

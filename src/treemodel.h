@@ -68,9 +68,17 @@ public:
   ~TreeModel();
   void selectItem(const QModelIndex& index);
 
+  QList<QStandardItem*> setBackgroundColor(const QModelIndex& index, QColor color);
+  void clearCloseColorMarking(QColor close_color, QColor reset_color);
+  void resetCloseColor(const QModelIndex& index, QColor close_color, QColor reset_color);
+
 private:
   QStandardItemModel* paramList;
   MainWidget* m_mainwidget;
+
+  QList<QStandardItem*> m_mouse_categories;
+  DataContainer* m_datacontainer;
+  QList<int> close_indices;
 };
 
 #endif

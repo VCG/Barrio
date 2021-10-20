@@ -105,13 +105,16 @@ void DataContainer::loadData()
     qDebug() << "vertices: " << m_mesh->getVerticesSize();
     qDebug() << "normals: " << m_mesh->getNormalsListSize();
 
-
     compute_centers();
     compute_distance_mito_cell_boundary();
+
     compute_closest_distance_to_structures();
 
+    qDebug() << "------------ Writing data to cache now ---------------";
 
     writeDataToCache(data_path + cache_subpath);
+
+    qDebug() << "------------ Done writing data to cache ---------------";
   }
   else
   {
@@ -256,6 +259,21 @@ void DataContainer::parseSynapsesGraph(QList<QByteArray>& wordList, std::set< st
   default:
     qDebug() << synapse_parts << "Case Was Missed!!"; break;
   }
+}
+
+bool DataContainer::isWithinDistance(int from, int to, float threshold)
+{
+    Object* from_object = getObject(from);
+    std::map<int, double>* distances = from_object->get_distance_map_ptr();
+
+    if (distances->count(to))
+    {
+        if (distances->at(to) <= threshold)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //----------------------------------------------------------------------------
@@ -1385,6 +1403,7 @@ void DataContainer::compute_closest_distance_to_structures()
   for (Object* mito : mitos)
   {
     compute_synapse_distances(mito);
+    compute_mito_distances(mito);
   }
 
   std::vector<Object*> synapses = m_objectsByType.at(Object_t::SYNAPSE);
