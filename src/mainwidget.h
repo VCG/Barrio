@@ -76,7 +76,6 @@ public:
 protected:
   void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
 public slots:
-  void on_widget_close_button_clicked();
   void OnWidgetClose();
 
   // params slots
@@ -92,10 +91,7 @@ private:
   std::map<int, IVisMethod*>  m_infovis_views;
   std::map<int, QFrame*>      m_seperation_elements;
 
-  QVector<int>                m_all_selected_mitos;
-
-
-  QList<int>    getSelectedIDs();
+  QVector<int>                m_all_selected_structures;
 
   QMap<int, QList<QStandardItem*>> m_selected_standard_items;
   QMap<int, QJsonObject>* m_vis_settings;

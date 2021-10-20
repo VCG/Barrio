@@ -11,7 +11,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap
   setFocusPolicy(Qt::StrongFocus);
 
   m_main_layout = new QGridLayout(this);
-  m_shared_resources.all_selected_mitos = &m_all_selected_mitos;
+  m_shared_resources.all_selected_mitos = &m_all_selected_structures;
 
   m_shared_resources.currently_hovered_widget = 0;
 
@@ -60,36 +60,6 @@ void MainWidget::on_slice_position_slider_changed(int value)
 void MainWidget::set_slice_position(int value)
 {
   m_shared_resources.slice_depth = (float)value / (100.0 / MESH_MAX_Z);
-}
-
-void MainWidget::on_widget_close_button_clicked()
-{
-  //qDebug() << "Close button pressed";
-
-  //QPushButton* button = qobject_cast<QPushButton*>(sender());
-  //QWidget* widget_to_delete = button->parentWidget()->parentWidget();
-
-  //int id_to_delete = 0;
-  //for (auto& i : m_groupboxes) {
-  //  if (i.second == widget_to_delete) {
-  //    id_to_delete = i.first;
-  //    break; // to stop searching
-  //  }
-  //}
-
-  //QList<int> currentlySelectedIDs = getSelectedIDs();
-
-  //deleteAllWidgets(false);
-
-  //for each (int ID in currentlySelectedIDs)
-  //{
-  //  if (ID != id_to_delete)
-  //  {
-  //    addWidgetGroup(ID, false);
-  //  }
-  //}
-
-  //updateInfoVisViews();
 }
 
 void MainWidget::keyPressEvent(QKeyEvent* event)
@@ -151,13 +121,11 @@ void MainWidget::OnWidgetClose()
     m_selected_standard_items.remove(id_to_delete);
   }
 
-  QList<int> currentlySelectedIDs = getSelectedIDs();
-
-  m_all_selected_mitos.removeOne(id_to_delete);
+  m_all_selected_structures.removeOne(id_to_delete);
 
   deleteAllWidgets(false);
 
-  for each (int ID in currentlySelectedIDs)
+  for each (int ID in m_all_selected_structures)
   {
     if (ID != id_to_delete)
     {
@@ -469,9 +437,9 @@ bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget,
 
   m_opengl_views[ID] = widget;
 
-  if (!m_all_selected_mitos.contains(ID))
+  if (!m_all_selected_structures.contains(ID))
   {
-    m_all_selected_mitos.append(ID);
+    m_all_selected_structures.append(ID);
   }
 
   return true;
@@ -549,18 +517,15 @@ void MainWidget::setVisMethod(Vis vis)
   m_vis_methods.method = m_abstraction_space->decideOnVisMethod(vis);
   QJsonObject settings = m_vis_settings->value(vis.id);
 
-  setupVisParams(vis, settings);
-
-  QList<int> currentlySelectedIDs = getSelectedIDs();
   QMap<int, CameraSettings> cameraSettings = allGLCameraSettings();
-
+  setupVisParams(vis, settings);
   deleteAllWidgets(true);
 
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
 
-    for each (int ID in currentlySelectedIDs)
+    for each (int ID in m_all_selected_structures)
     {
         addWidgetGroup(ID, false, cameraSettings);
     }
@@ -581,7 +546,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     addInfoVisWidget(medium_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
-    for each (int ID in currentlySelectedIDs)
+    for each (int ID in m_all_selected_structures)
     {
       addWidgetGroup(ID, false, cameraSettings);
     }
@@ -602,7 +567,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     addInfoVisWidget(high_entities_id, groupBox, m_vis_methods.method->clone(), settings);
 
-    for each (int ID in currentlySelectedIDs)
+    for each (int ID in m_all_selected_structures)
     {
       addWidgetGroup(ID, false, cameraSettings);
     }
@@ -770,16 +735,6 @@ void MainWidget::updateWidgets()
     }
     m_shared_resources.widget_queue->clear();
   }
-}
-
-QList<int> MainWidget::getSelectedIDs()
-{
-  QList<int> selectedIDs;
-  for (const auto [ID, widget] : m_opengl_views)
-  {
-    selectedIDs.push_back(ID);
-  }
-  return selectedIDs;
 }
 
 SelectedVisMethods MainWidget::getSelectedVisMethods()
