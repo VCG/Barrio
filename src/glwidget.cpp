@@ -119,7 +119,7 @@ void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
   if (is_overview >= 0) program->setUniformValue(is_overview, m_is_overview_widget);
 
   int curr_hovered = program->uniformLocation("currently_hovered_id");
-  if (curr_hovered >= 0) program->setUniformValue(curr_hovered, *m_shared_resources->currently_hovered_widget);
+  if (curr_hovered >= 0) program->setUniformValue(curr_hovered, m_shared_resources->currently_hovered_widget);
 
   GL_Error();
 }
@@ -272,6 +272,12 @@ void GLWidget::paintGL()
   pass2();
 
   m_mesh_program->release();
+
+  // overview widget needs to update every frame
+  if (m_is_overview_widget)
+  {
+      update();
+  }
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -315,12 +321,13 @@ int GLWidget::pickObject(QMouseEvent* event)
 
 void GLWidget::enterEvent(QEvent* event)
 {
-  m_shared_resources->currently_hovered_widget = &m_parent_id;
+  m_shared_resources->currently_hovered_widget = m_parent_id;
+  update();
 }
 void GLWidget::leaveEvent(QEvent* event)
 {
-  int zero = 0;
-  m_shared_resources->currently_hovered_widget = &zero;
+  m_shared_resources->currently_hovered_widget = 0;
+  update();
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)

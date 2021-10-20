@@ -34,7 +34,7 @@ struct SharedGLResources
   GLuint*        mito_cell_distance_colormap;
   GLuint*        image_stack_volume;
 
-  int*           currently_hovered_widget;
+  int           currently_hovered_widget;
 
   QOpenGLBuffer* slice_vertex_vbo;
 

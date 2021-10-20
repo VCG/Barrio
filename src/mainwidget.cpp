@@ -13,8 +13,7 @@ MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap
   m_main_layout = new QGridLayout(this);
   m_shared_resources.all_selected_mitos = &m_all_selected_mitos;
 
-  int zero = 0;
-  m_shared_resources.currently_hovered_widget = &zero;
+  m_shared_resources.currently_hovered_widget = 0;
 
   m_abstraction_space = new AbstractionSpace(datacontainer);
   m_vis_settings = vis_settings;
