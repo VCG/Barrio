@@ -55,7 +55,7 @@ void TreeModel::selectItem(const QModelIndex& index)
 
   //extracting hvgx id
   int hvgx = index.siblingAtColumn(1).data().toInt();
-  m_mainwidget->addWidgetGroup(hvgx, false);
+  m_mainwidget->addWidgetGroup(hvgx, false, m_mainwidget->allGLCameraSettings());
 
   QColor color_selected(195, 147, 226);
   QColor color_close(202, 205, 143);

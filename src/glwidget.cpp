@@ -55,7 +55,7 @@ GLWidget::~GLWidget()
   qDebug() << "~GLWidget()";
 }
 
-void GLWidget::init(DataContainer* data_container)
+void GLWidget::init(DataContainer* data_container, bool use_camera_settings, CameraSettings cameraSettings)
 {
   m_data_container = data_container;
 
@@ -75,7 +75,19 @@ void GLWidget::init(DataContainer* data_container)
       m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
   }
 
-  camera = new Camera(45.0f, 1.0f, 50.0f, m_center);
+  float fov = 45.0f;
+  float nearPlane = 1.0f;
+  float farPlane = 50.0f;
+
+  if (use_camera_settings)
+  {
+      camera = new Camera(cameraSettings, fov, nearPlane, farPlane);
+  }
+  else
+  {
+      camera = new Camera(fov, nearPlane, farPlane, m_center);
+  }
+
 }
 
 
@@ -898,6 +910,11 @@ void GLWidget::setVisibleStructures(int id)
   {
     m_visible_structures.push_back(siblings->at(i));
   }
+}
+
+CameraSettings GLWidget::getCameraSettings()
+{
+    return camera->getCameraSettings();
 }
 
 void GLWidget::update_synapse_distance_threshold(double distance)

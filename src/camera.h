@@ -10,11 +10,28 @@
 
 #include "globalParameters.h"
 
+// used to store camera parameters when switching data cardinality
+struct CameraSettings
+{
+	QVector3D center;
+	QVector3D position;
+	QVector3D front;
+	QVector3D up;
+
+	int x_rotation;
+	int y_rotation;
+	int z_rotation;
+
+	QVector3D translate;
+
+	float distance;
+};
 
 class Camera
 {
 public:
 	Camera(float fov, float near, float far, QVector3D center);
+	Camera(CameraSettings settings, float fov, float near, float far);
 	~Camera();
 
 	void frameUpdate();
@@ -25,6 +42,8 @@ public:
 	QMatrix4x4& getModelMatrix();
 	QMatrix4x4& getViewMatrix();
 	QMatrix4x4& getProjectionMatrix();
+
+	CameraSettings getCameraSettings();
 
 	void resetCamera();
 	void mouse_press_event(QMouseEvent* event);

@@ -20,11 +20,13 @@ class MainWidget: public QOpenGLWidget, MainOpenGL
 public:
   MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent = 0);
   
-  bool addWidgetGroup(int ID, bool isOverviewWidget);
+  bool addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraSettings> cameraSettings);
   void updateOverviewWidget();
   //bool deleteInfoVisWidget(int ID);
 
   Vis getVisInfo(int id);
+
+  QMap<int, CameraSettings> allGLCameraSettings();
   
   bool deleteAllInfoVisWidgets();
   //bool deleteAllGLWidgets();
@@ -35,8 +37,9 @@ public:
   void addStandardItem(int id, QList<QStandardItem*> items);
 
   bool addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMethod, QJsonObject settings);
-  bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget);
+  bool addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget, bool use_camera_settings, CameraSettings settings);
 
+  bool useCameraSettings(QMap<int, CameraSettings> map, int ID);
   void setSilhouetteEnabled(bool enabled);
 
  // void setupMainWidget(VisConfiguration vis_config);

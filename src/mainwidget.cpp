@@ -128,6 +128,7 @@ void MainWidget::wheelEvent(QWheelEvent* event)
 void MainWidget::OnWidgetClose()
 {
   QObject* widget = sender();
+  QMap<int, CameraSettings> cameraSettings = allGLCameraSettings();
 
   QObject* widget_to_delete = widget->parent()->parent();
 
@@ -160,7 +161,7 @@ void MainWidget::OnWidgetClose()
   {
     if (ID != id_to_delete)
     {
-      addWidgetGroup(ID, false);
+      addWidgetGroup(ID, false, cameraSettings);
     }
   }
 
@@ -200,13 +201,20 @@ void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)
   m_selected_standard_items.insert(id, items);
 }
 
-bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
+bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraSettings> cameraSettingsMap)
 {
   if (ID < 0) // avoid readding the overview widget
   {
     return false;
   }
 
+  bool use_camera_settings = false;
+  CameraSettings cameraSettings;
+  if (cameraSettingsMap.count() > 0 && cameraSettingsMap.contains(ID))
+  {
+      use_camera_settings = true;
+      cameraSettings = cameraSettingsMap.value(ID);
+  }
   
   QString name = m_datacontainer->getObjectsMapPtr()->at(ID)->getName().c_str();
   
@@ -231,11 +239,11 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget)
     groupBox->layout()->addWidget(line);
     m_seperation_elements[ID] = line;
 
-    addGLWidget(ID, groupBox, isOverviewWidget);
+    addGLWidget(ID, groupBox, isOverviewWidget, use_camera_settings, cameraSettings);
   }
   // medium and high configuration
   else {
-    addGLWidget(ID, groupBox, isOverviewWidget);
+    addGLWidget(ID, groupBox, isOverviewWidget, use_camera_settings, cameraSettings);
   }
   updateInfoVisViews();
 
@@ -289,6 +297,16 @@ void MainWidget::updateOverviewWidget()
 Vis MainWidget::getVisInfo(int id)
 {
   return m_abstraction_space->m_vis_space.at(id);
+}
+
+QMap<int, CameraSettings> MainWidget::allGLCameraSettings()
+{
+    QMap<int, CameraSettings> settings;
+    for (auto const& [id, widget] : m_opengl_views)
+    {
+        settings.insert(id, widget->getCameraSettings());
+    }
+    return settings;
 }
 
 bool MainWidget::deleteAllInfoVisWidgets()
@@ -443,10 +461,10 @@ bool MainWidget::addInfoVisWidget(int ID, QGroupBox* groupBox, IVisMethod* visMe
   return true;
 }
 
-bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget)
+bool MainWidget::addGLWidget(int ID, QGroupBox* groupBox, bool isOverviewWidget, bool use_camera_settings, CameraSettings settings)
 {
   GLWidget* widget = new GLWidget(ID, &m_shared_resources, isOverviewWidget, this);
-  widget->init(m_datacontainer);
+  widget->init(m_datacontainer, use_camera_settings, settings);
   groupBox->layout()->addWidget(widget);
 
   m_opengl_views[ID] = widget;
@@ -533,26 +551,24 @@ void MainWidget::setVisMethod(Vis vis)
 
   setupVisParams(vis, settings);
 
+  QList<int> currentlySelectedIDs = getSelectedIDs();
+  QMap<int, CameraSettings> cameraSettings = allGLCameraSettings();
+
+  deleteAllWidgets(true);
+
   if (vis.scale == NumberOfEntities::LOW)
   {
     m_number_of_entities = NumberOfEntities::LOW;
-    QList<int> currentlySelectedIDs = getSelectedIDs();
-
-    deleteAllWidgets(true);
 
     for each (int ID in currentlySelectedIDs)
     {
-      addWidgetGroup(ID, false);
+        addWidgetGroup(ID, false, cameraSettings);
     }
   }
   else if (vis.scale == NumberOfEntities::MEDIUM)
   {
     m_number_of_entities = NumberOfEntities::MEDIUM;
     int medium_entities_id = -1;
-
-    QList<int> currentlySelectedIDs = getSelectedIDs();
-
-    deleteAllWidgets(true);
 
     QGroupBox* groupBox = new QGroupBox(m_medium_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
@@ -567,17 +583,13 @@ void MainWidget::setVisMethod(Vis vis)
 
     for each (int ID in currentlySelectedIDs)
     {
-      addWidgetGroup(ID, false);
+      addWidgetGroup(ID, false, cameraSettings);
     }
   }
   else if (vis.scale == NumberOfEntities::HIGH)
   {
     int high_entities_id = -2;
     m_number_of_entities = NumberOfEntities::HIGH;
-
-    QList<int> currentlySelectedIDs = getSelectedIDs();
-
-    deleteAllWidgets(true);
 
     QGroupBox* groupBox = new QGroupBox(m_high_detail_name, this);
     QVBoxLayout* vbox = new QVBoxLayout;
@@ -592,7 +604,7 @@ void MainWidget::setVisMethod(Vis vis)
 
     for each (int ID in currentlySelectedIDs)
     {
-      addWidgetGroup(ID, false);
+      addWidgetGroup(ID, false, cameraSettings);
     }
   }
 }
@@ -704,7 +716,7 @@ void MainWidget::initializeGL()
 
   // add overview widget
   GLWidget* overview = new GLWidget(-3, &m_shared_resources, true, m_overview);
-  overview->init(m_datacontainer);
+  overview->init(m_datacontainer, false, CameraSettings());
   m_opengl_views[-3] = overview;
   m_overview->layout()->addWidget(overview);
 }
@@ -722,10 +734,21 @@ void MainWidget::paintGL()
   if (m_abstraction_space->m_global_vis_parameters.needs_update)
   {
       updateGroupBoxStyle();
-      updateWidgets();
+      //updateWidgets();
       m_abstraction_space->m_global_vis_parameters.needs_update = false;
   }
   update();
+}
+
+bool MainWidget::useCameraSettings(QMap<int, CameraSettings> map, int ID)
+{
+    bool use_camera_settings = false;
+    CameraSettings cameraSettings;
+    if (map.count() > 0 && map.contains(ID))
+    {
+        use_camera_settings = true;
+    }
+    return use_camera_settings;
 }
 
 void MainWidget::setSilhouetteEnabled(bool enabled)
@@ -737,12 +760,13 @@ void MainWidget::setSilhouetteEnabled(bool enabled)
 
 void MainWidget::updateWidgets()
 {
+  QMap<int, CameraSettings> cameraSettings = allGLCameraSettings();
   if (m_shared_resources.widget_queue->size() > 0)
   {
     for (int i = 0; i < m_shared_resources.widget_queue->size(); i++)
     {
       int id = m_shared_resources.widget_queue->at(i);
-      addWidgetGroup(id, false);
+      addWidgetGroup(id, false, cameraSettings);
     }
     m_shared_resources.widget_queue->clear();
   }

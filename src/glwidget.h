@@ -64,7 +64,7 @@ class GLWidget : public QOpenGLWidget, MainOpenGL
 public:
   GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent = 0);
   ~GLWidget();
-  void init(DataContainer* data_container);
+  void init(DataContainer* data_container, bool use_camera_settings, CameraSettings cameraSettings = CameraSettings());
 
   DataContainer* getDataContainer() { return m_data_container; }
 
@@ -81,6 +81,8 @@ public:
   void setVisibleStructuresOverView();
 
   void setVisibleStructures(int id);
+
+  CameraSettings getCameraSettings();
 
   void update_synapse_distance_threshold(double distance);
   void update_visibility();

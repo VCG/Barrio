@@ -14,6 +14,27 @@ Camera::Camera(float fov, float near, float far, QVector3D center)
 	this->farPlane = far;
 }
 
+Camera::Camera(CameraSettings settings, float fov, float near, float far)
+{
+	this->front = settings.front;
+	this->up = settings.up;
+	this->center = settings.center;
+
+	this->distance = settings.distance;
+	this->fov = fov;
+	this->speed = 0.5;
+
+	this->nearPlane = near;
+	this->farPlane = far;
+
+	this->position = settings.position;
+	this->translate = settings.translate;
+
+	this->x_rotation = settings.x_rotation;
+	this->y_rotation = settings.y_rotation;
+	this->z_rotation = settings.z_rotation;
+}
+
 Camera::~Camera()
 {
 }
@@ -143,4 +164,22 @@ QMatrix4x4& Camera::getViewMatrix()
 QMatrix4x4& Camera::getProjectionMatrix()
 {
 	return this->projection;
+}
+
+CameraSettings Camera::getCameraSettings()
+{
+	CameraSettings settings;
+
+	settings.center = this->center;
+	settings.distance = this->distance;
+	settings.front = this->front;
+	settings.position = this->position;
+	settings.translate = this->translate;
+	settings.up = this->up;
+
+	settings.x_rotation = this->x_rotation;
+	settings.y_rotation = this->y_rotation;
+	settings.z_rotation = this->z_rotation;
+
+	return settings;
 }
