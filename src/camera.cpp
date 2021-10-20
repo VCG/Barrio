@@ -31,6 +31,7 @@ void Camera::frameUpdate()
 	this->position = -this->front * this->distance;
 	this->view.setToIdentity();
 	this->view.translate(position);
+	this->view.translate(translate);
 }
 
 void Camera::setAspectRatio(qreal aspect_ratio)
@@ -59,15 +60,25 @@ void Camera::mouse_move_event(QMouseEvent* event)
 	int dy = event->y() - last_mouse_position.y();
 	int delta = 8;
 
-	if (event->buttons() & Qt::LeftButton) {
-		setXRotation(x_rotation + delta * dy);
-		setYRotation(y_rotation + delta * dx);
+	// rotate the camera
+	if (event->buttons() == Qt::LeftButton) 
+	{
+		if (event->buttons() & Qt::LeftButton) {
+			setXRotation(x_rotation + delta * dy);
+			setYRotation(y_rotation + delta * dx);
+		}
+		else if (event->buttons() & Qt::RightButton) {
+			setXRotation(x_rotation + delta * dy);
+			setZRotation(z_rotation + delta * dx);
+		}
+		last_mouse_position = event->pos();
 	}
-	else if (event->buttons() & Qt::RightButton) {
-		setXRotation(x_rotation + delta * dy);
-		setZRotation(z_rotation + delta * dx);
+	// pan the camera
+	else if (event->buttons() == Qt::RightButton)
+	{
+		float slow_down_factor = 10000.0;
+		translate = QVector3D(translate.x() + (dx * this->distance / slow_down_factor) , translate.y() - dy * this->distance / slow_down_factor, 0.0);
 	}
-	last_mouse_position = event->pos();
 }
 
 void Camera::processScroll(double delta)

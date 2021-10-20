@@ -54,6 +54,8 @@ private:
 	int y_rotation;
 	int z_rotation;
 
+	QVector3D translate;
+
 	float fov;
 	float speed;
 	float distance;
