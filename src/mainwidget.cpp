@@ -699,7 +699,7 @@ void MainWidget::paintGL()
   if (m_abstraction_space->m_global_vis_parameters.needs_update)
   {
       updateGroupBoxStyle();
-      //updateWidgets();
+      updateWidgets();
       m_abstraction_space->m_global_vis_parameters.needs_update = false;
   }
   update();
