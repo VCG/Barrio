@@ -336,6 +336,25 @@ void DataContainer::PreLoadMetaDataHVGX(QString path)
   file.close();
 }
 
+bool DataContainer::hasSemanticSkeleton(int hvgx)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(m_sematic_skeleton_json.toUtf8());
+    std::map<int, Object*>* objects = getObjectsMapPtr();
+
+    QJsonArray output;
+
+    for (auto it : doc.array()) {
+        QJsonObject element = it.toObject();
+        int id = element["id"].toInt();
+
+        if (hvgx == id)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void DataContainer::dumpObjects(QString path)
 {
   std::map<int, Object> objs;

@@ -17,6 +17,8 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
   this->setColumnWidth(0, 200);
   this->setColumnWidth(1, 100);
 
+  skeletonColor = QColor(225, 225, 225);
+
 
 
   std::vector<Object*> mitos = datacontainer->getObjectsByType(Object_t::MITO);
@@ -42,6 +44,19 @@ TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* 
       item_id->setEditable(false);
 
       paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
+  }
+
+  // set background to objects with available semantic skeleton to the skeleton color
+  QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+  for (int r = 0; r < sModel->rowCount(); r++)
+  {
+      QModelIndex object_index = sModel->index(r, 0);
+      int hvgx = object_index.siblingAtColumn(1).data().toInt();
+      int parentID = m_datacontainer->getObject(hvgx)->getParentID();
+      if (m_datacontainer->hasSemanticSkeleton(parentID))
+      {
+          setBackgroundColor(object_index, skeletonColor);
+      }
   }
 }
 
@@ -110,6 +125,12 @@ void TreeModel::clearCloseColorMarking(QColor close_color, QColor reset_color)
         {
            setBackgroundColor(index, reset_color);
         }
+        int parentID = m_datacontainer->getObject(hvgx_id)->getParentID();
+        if (m_datacontainer->hasSemanticSkeleton(parentID))
+        {
+            setBackgroundColor(index, skeletonColor);
+        }
+
     }
     close_indices.clear();
 }

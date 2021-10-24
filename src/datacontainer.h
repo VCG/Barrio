@@ -96,6 +96,8 @@ public:
   void PreLoadMetaDataHVGX(QString path);
   bool findAndSetParentID(Object* obj, int hvgxID);
 
+  bool hasSemanticSkeleton(int hvgx);
+
   void dumpObjects(QString path);
   void readObjects(QString path);
 

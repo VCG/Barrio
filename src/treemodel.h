@@ -79,6 +79,7 @@ private:
   QList<QStandardItem*> m_mouse_categories;
   DataContainer* m_datacontainer;
   QList<int> close_indices;
+  QColor skeletonColor;
 };
 
 #endif
