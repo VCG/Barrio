@@ -119,7 +119,7 @@ QString Scatterplot::createJSONString()
 
   QString mito_spine_coverage = "mito-spine-coverage";
   QString mito_volume = "mito-volume";
-  QString min_distance_to_cell = "min-distance-to-cell";
+  QString min_distance_to_cell = "mito-min-distance-to-cell";
   QString surf_percentage = "surf-percentage";
 
   if (x_attribute == mito_spine_coverage || y_attribute == mito_spine_coverage)

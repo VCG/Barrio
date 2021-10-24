@@ -32,10 +32,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
         var circle = dom_element.selectAll("circle");
         if (node_object.name.includes("Syn")) {
-            circle.style("fill", "rgb(148,0,212)");
+            circle.style("fill", "rgb(184,47,53)");
         }
         if (node_object.name.includes("Mito")) {
-            circle.style("fill", "#ff0000");
+            circle.style("fill", "#354cc0");
         }
 
         dom_element.on('mouseenter', function() {
