@@ -394,7 +394,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(dockWidget->sizePolicy().hasHeightForWidth());
         dockWidget->setSizePolicy(sizePolicy);
-        dockWidget->setMinimumSize(QSize(410, 634));
+        dockWidget->setMinimumSize(QSize(410, 668));
         dockWidget->setMaximumSize(QSize(410, 2000));
         dockWidget->setLayoutDirection(Qt::LeftToRight);
         dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -427,6 +427,9 @@ public:
         verticalLayout_21->setObjectName(QString::fromUtf8("verticalLayout_21"));
         groupBox_24 = new QGroupBox(frame_52);
         groupBox_24->setObjectName(QString::fromUtf8("groupBox_24"));
+        QFont font;
+        font.setPointSize(12);
+        groupBox_24->setFont(font);
         verticalLayout_15 = new QVBoxLayout(groupBox_24);
         verticalLayout_15->setObjectName(QString::fromUtf8("verticalLayout_15"));
 
@@ -434,6 +437,7 @@ public:
 
         groupBox_8 = new QGroupBox(frame_52);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
+        groupBox_8->setFont(font);
         verticalLayout_3 = new QVBoxLayout(groupBox_8);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         groupBox = new QGroupBox(groupBox_8);
@@ -466,10 +470,12 @@ public:
 
         groupBox_6 = new QGroupBox(groupBox_8);
         groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        groupBox_6->setFont(font);
         verticalLayout_26 = new QVBoxLayout(groupBox_6);
         verticalLayout_26->setObjectName(QString::fromUtf8("verticalLayout_26"));
         three_d_enabled = new QCheckBox(groupBox_6);
         three_d_enabled->setObjectName(QString::fromUtf8("three_d_enabled"));
+        three_d_enabled->setFont(font);
 
         verticalLayout_26->addWidget(three_d_enabled);
 
@@ -501,6 +507,7 @@ public:
 
         groupBox_28 = new QGroupBox(groupBox_8);
         groupBox_28->setObjectName(QString::fromUtf8("groupBox_28"));
+        groupBox_28->setFont(font);
         horizontalLayout_45 = new QHBoxLayout(groupBox_28);
         horizontalLayout_45->setObjectName(QString::fromUtf8("horizontalLayout_45"));
         comboBox_2 = new QComboBox(groupBox_28);
@@ -514,6 +521,7 @@ public:
 
         groupBox_29 = new QGroupBox(groupBox_8);
         groupBox_29->setObjectName(QString::fromUtf8("groupBox_29"));
+        groupBox_29->setFont(font);
         horizontalLayout_47 = new QHBoxLayout(groupBox_29);
         horizontalLayout_47->setObjectName(QString::fromUtf8("horizontalLayout_47"));
         numberOfBins = new QSpinBox(groupBox_29);
@@ -530,6 +538,7 @@ public:
 
         groupBox_5 = new QGroupBox(frame_52);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
+        groupBox_5->setFont(font);
         verticalLayout_19 = new QVBoxLayout(groupBox_5);
         verticalLayout_19->setObjectName(QString::fromUtf8("verticalLayout_19"));
         verticalLayout_18 = new QVBoxLayout();
@@ -1896,6 +1905,7 @@ public:
         groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
         groupBox_16->setMinimumSize(QSize(0, 0));
         groupBox_16->setMaximumSize(QSize(372, 400));
+        groupBox_16->setFont(font);
         formLayout_6 = new QFormLayout(groupBox_16);
         formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
         formLayout_6->setSizeConstraint(QLayout::SetMaximumSize);
@@ -1910,6 +1920,7 @@ public:
         groupBox_3 = new QGroupBox(frame_64);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setMinimumSize(QSize(0, 300));
+        groupBox_3->setFont(font);
         verticalLayout_25 = new QVBoxLayout(groupBox_3);
         verticalLayout_25->setObjectName(QString::fromUtf8("verticalLayout_25"));
         verticalLayout_24 = new QVBoxLayout();

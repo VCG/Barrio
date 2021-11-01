@@ -50,7 +50,7 @@
    <property name="minimumSize">
     <size>
      <width>410</width>
-     <height>634</height>
+     <height>668</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -121,6 +121,11 @@
               <layout class="QVBoxLayout" name="verticalLayout_21">
                <item>
                 <widget class="QGroupBox" name="groupBox_24">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
                  <property name="title">
                   <string>Preview</string>
                  </property>
@@ -129,6 +134,11 @@
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_8">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
                  <property name="title">
                   <string>Parameters</string>
                  </property>
@@ -166,12 +176,22 @@
                   </item>
                   <item>
                    <widget class="QGroupBox" name="groupBox_6">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                     </font>
+                    </property>
                     <property name="title">
                      <string>3D views</string>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_26">
                      <item>
                       <widget class="QCheckBox" name="three_d_enabled">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
                        <property name="text">
                         <string>enabled</string>
                        </property>
@@ -212,6 +232,11 @@
                   </item>
                   <item>
                    <widget class="QGroupBox" name="groupBox_28">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                     </font>
+                    </property>
                     <property name="title">
                      <string>Colormap</string>
                     </property>
@@ -228,6 +253,11 @@
                   </item>
                   <item>
                    <widget class="QGroupBox" name="groupBox_29">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                     </font>
+                    </property>
                     <property name="title">
                      <string>Number of Bins</string>
                     </property>
@@ -247,6 +277,11 @@
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_5">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
                  <property name="title">
                   <string>Visualization Parameters</string>
                  </property>
@@ -2350,6 +2385,11 @@
             <height>400</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Structures of Interest</string>
           </property>
@@ -2370,6 +2410,11 @@
             <width>0</width>
             <height>300</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
           <property name="title">
            <string>Overview</string>

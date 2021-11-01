@@ -60,26 +60,26 @@
 #include "mainwidget.h"
 
 //! [0]
-class TreeModel: public QTreeView
+class TreeModel : public QTreeView
 {
 
 public:
-  TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainwidget);
-  ~TreeModel();
-  void selectItem(const QModelIndex& index);
+	TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainwidget);
+	~TreeModel();
+	void selectItem(const QModelIndex& index);
 
-  QList<QStandardItem*> setBackgroundColor(const QModelIndex& index, QColor color);
-  void clearCloseColorMarking(QColor close_color, QColor reset_color);
-  void resetCloseColor(const QModelIndex& index, QColor close_color, QColor reset_color);
+	QList<QStandardItem*> setBackgroundColor(const QModelIndex& index, QColor color);
+	void clearCloseColorMarking(QColor close_color, QColor reset_color);
+	void resetCloseColor(const QModelIndex& index, QColor close_color, QColor reset_color);
 
 private:
-  QStandardItemModel* paramList;
-  MainWidget* m_mainwidget;
+	QStandardItemModel* paramList;
+	MainWidget* m_mainwidget;
 
-  QList<QStandardItem*> m_mouse_categories;
-  DataContainer* m_datacontainer;
-  QList<int> close_indices;
-  QColor skeletonColor;
+	QList<QStandardItem*> m_mouse_categories;
+	DataContainer* m_datacontainer;
+	QList<int> close_indices;
+	QColor skeletonColor;
 };
 
 #endif

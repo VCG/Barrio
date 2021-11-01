@@ -3,35 +3,40 @@
     "name": "Mitochondria Analysis",
     "subtasks": [
       {
-        "name": "DT 1: synaptic neighborhood of mitochondria",
+        "name": "Task 1: synapses",
         "low_cardinality_vis": {
           "id": 0,
           "target-structure": "mitochondria",
           "name": "distance-tree",
-          "params": "surrounding-synapses"
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
         },
         "medium_cardinality_vis": {
           "id": 1,
           "target-structure": "mitochondria",
           "name": "grouped-bar-chart",
-          "params": "surrounding-synapses"
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
         },
         "high_cardinality_vis": {
           "id": 2,
           "target-structure": "mitochondria",
           "name": "distance-matrix",
-          "params": "surrounding-synapses"
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
+
         }
       },
       {
-        "name": "DT 2: mitochondria placement",
+        "name": "Task 2: cell membrane",
         "low_cardinality_vis": {
           "id": 3,
           "target-structure": "mitochondria",
           "name": "cumulative-histogram",
           "bins": "distance-to-cell-membrane",
-          "normalized": false,
-          "params": "adjustable"
+          "normalized": true,
+          "params": "adjustable",
+          "comment": "fixed"
         },
         "medium_cardinality_vis": {
           "id": 4,
@@ -45,8 +50,11 @@
           "target-structure": "mitochondria",
           "name": "scatter-plot",
           "x-axis": {
-            "label": "Minimal Distance to Cell Boundary",
-            "attribute": "min-distance-to-cell"
+            "label": "Surf percentage, Minimal Distance to Cell Boundary",
+            "attribute": "mito-min-distance-to-cell",
+            
+            "attribute_bak": "surf-percentage",
+            "threshold_bak": 0.1
           },
           "y-axis": {
             "label": "mitochondria volume in cubic microns",
@@ -55,7 +63,7 @@
         }
       },
       {
-        "name": "DT 3: mitochondric spine coverage",
+        "name": "Task 3: dendritic spines",
         "low_cardinality_vis": {
           "id": 6,
           "target-structure": "mitochondria",
@@ -76,7 +84,13 @@
           },
           "y-axis": {
             "label": "mitochondria volume in cubic microns",
-            "attribute": "mito-volume"
+            "attribute": "mito-volume", 
+
+            "label_bak": "Surf percentage, Minimal Distance to Cell Boundary",
+            "attribute_bak": "mito-min-distance-to-cell",
+            
+            "attribute_bak": "surf-percentage",
+            "threshold_bak": 0.1
           }
         }
       }

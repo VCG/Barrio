@@ -8,25 +8,25 @@
 class PerformanceRate
 {
 public:
-  PerformanceRate();
+	PerformanceRate();
 
-  void startTimer();
+	void startTimer();
 
-  float getFPS();
+	float getFPS();
 
 protected:
-  // fps
-  QTime                               m_time;
+	// fps
+	QTime                               m_time;
 
-  int                                 m_frameCount;
+	int                                 m_frameCount;
 
-  int                                 m_starttime;
+	int                                 m_starttime;
 
-  bool                                m_first;
-  float                               m_fps;
+	bool                                m_first;
+	float                               m_fps;
 
-  std::queue<float>                   m_windowFPS;
-  float                               m_windowSUM;
+	std::queue<float>                   m_windowFPS;
+	float                               m_windowSUM;
 };
 
 #endif // PERFORMANCERATE_H

@@ -20,25 +20,25 @@
 
 enum NumberOfEntities
 {
-  LOW, MEDIUM, HIGH
+	LOW, MEDIUM, HIGH
 };
 
 struct GlobalVisParameters
 {
-  bool needs_update = false;
-  double distance_threshold;
-  float opacity;
-  float slice_depth;
+	bool needs_update = false;
+	double distance_threshold;
+	float opacity;
+	float slice_depth;
 
-  QList<int> selected_objects;
-  QVector<int> highlighted_objects;
-  QVector<int> highlighted_group_boxes;
-  QVector<int> my_add_queue;
+	QList<int> selected_objects;
+	QVector<int> highlighted_objects;
+	QVector<int> highlighted_group_boxes;
+	QVector<int> my_add_queue;
 };
 
 struct SpecificVisParameters
 {
-  int number_of_bins = 20;
-  QString colors; 
-  QJsonObject settings;
+	int number_of_bins = 20;
+	QString colors;
+	QJsonObject settings;
 };

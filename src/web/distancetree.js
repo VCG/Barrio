@@ -108,7 +108,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         tree.placenodes().layout();
 
         tree.selection_callback(selection => {
-            console.log(selection);
             jsobject.removeAllHighlightedStructures();
             var names = selection.map(d => d.name);
             names.forEach(function (name) {

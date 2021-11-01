@@ -82,7 +82,7 @@ void Camera::mouse_move_event(QMouseEvent* event)
 	int delta = 8;
 
 	// rotate the camera
-	if (event->buttons() == Qt::LeftButton) 
+	if (event->buttons() == Qt::LeftButton)
 	{
 		if (event->buttons() & Qt::LeftButton) {
 			setXRotation(x_rotation + delta * dy);
@@ -98,7 +98,7 @@ void Camera::mouse_move_event(QMouseEvent* event)
 	else if (event->buttons() == Qt::RightButton)
 	{
 		float slow_down_factor = 10000.0;
-		translate = QVector3D(translate.x() + (dx * this->distance / slow_down_factor) , translate.y() - dy * this->distance / slow_down_factor, 0.0);
+		translate = QVector3D(translate.x() + (dx * this->distance / slow_down_factor), translate.y() - dy * this->distance / slow_down_factor, 0.0);
 	}
 }
 
