@@ -23,35 +23,35 @@ struct ListNode {
 
 struct SharedGLResources
 {
-	QOpenGLBuffer* vertex_vbo;
-	QOpenGLBuffer* mesh_index_vbo;
-	QOpenGLBuffer* skeleton_index_vbo;
+	QOpenGLBuffer*			vertex_vbo;
+	QOpenGLBuffer*			mesh_index_vbo;
+	QOpenGLBuffer*			skeleton_index_vbo;
 
-	int            mesh_index_count;
-	int            skeleton_index_count;
+	int						mesh_index_count;
+	int						skeleton_index_count;
 
-	GLuint* mito_cell_distance_colormap;
-	GLuint* image_stack_volume;
+	GLuint*					mito_cell_distance_colormap;
+	GLuint*					image_stack_volume;
 
-	int           currently_hovered_widget;
+	int						currently_hovered_widget;
 
-	QOpenGLBuffer* slice_vertex_vbo;
+	QOpenGLBuffer*			slice_vertex_vbo;
 
-	bool          show_3d_renderings;
-	bool			show_color_coding;
-	bool          show_slice;
-	bool          show_related_synapses;
-	bool			show_silhouette;
+	bool					show_3d_renderings;
+	bool					show_color_coding;
+	bool					show_slice;
+	bool					show_related_synapses;
+	bool					show_silhouette;
 
-	float         cell_opacity;
-	float         slice_depth;
-	double        distance_threshold;
+	float					cell_opacity;
+	float					slice_depth;
+	double					distance_threshold;
 
-	QVector<int>* highlighted_objects;
-	QVector<int>* highlighted_group_boxes;
-	QVector<int>* widget_queue;
+	QVector<int>*			highlighted_objects;
+	QVector<int>*			highlighted_group_boxes;
+	QVector<int>*			widget_queue;
 
-	QVector<int>* all_selected_mitos;
+	QVector<int>*			all_selected_mitos;
 };
 
 class GLWidget : public QOpenGLWidget, MainOpenGL

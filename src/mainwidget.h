@@ -22,17 +22,14 @@ public:
 
 	bool addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraSettings> cameraSettings);
 	void updateOverviewWidget();
-	//bool deleteInfoVisWidget(int ID);
 
 	Vis getVisInfo(int id);
 
 	QMap<int, CameraSettings> allGLCameraSettings();
 
 	bool deleteAllInfoVisWidgets();
-	//bool deleteAllGLWidgets();
-	bool deleteAllWidgets(bool deleteGeneralInfoVisWidgets);
 
-	void addCloseButtonToWidget(QGroupBox* groupBox);
+	bool deleteAllWidgets(bool deleteGeneralInfoVisWidgets);
 
 	void addStandardItem(int id, QList<QStandardItem*> items);
 
@@ -42,8 +39,6 @@ public:
 	bool useCameraSettings(QMap<int, CameraSettings> map, int ID);
 	void setSilhouetteEnabled(bool enabled);
 
-	// void setupMainWidget(VisConfiguration vis_config);
-	 //SelectedVisMethods setThumbnailIcons(VisConfiguration vis_config);
 	void showSlice(bool showSlice);
 	void show3DRenderings(bool show3DRenderings);
 
@@ -121,9 +116,6 @@ private:
 
 	QString m_selected_colormap = "0_colormap_tom.png";
 
-
-
-
 	void initSharedVBOs();
 	void initSharedSlice();
 	void initSharedMeshVBOs();
@@ -140,9 +132,6 @@ private:
 	int m_current_row = 0;
 	int m_current_col = 0;
 
-	/************************************/
-
-	/************************************/
 	int m_max_cols = 4;
 
 	int m_number_of_selected_structures = 0;
@@ -151,8 +140,5 @@ private:
 	QString m_low_detail_name = "Low Cardinality";
 	QString m_medium_detail_name = "Medium Cardinality";
 	QString m_high_detail_name = "High Cardinality";
-
-
-
 };
 

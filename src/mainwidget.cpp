@@ -134,34 +134,12 @@ void MainWidget::OnWidgetClose()
 	}
 
 	updateInfoVisViews();
-
-	qDebug() << "close widget";
 }
 
 void MainWidget::histogram_slider_changed(int bins)
 {
 	QToolTip::showText(QCursor::pos(), QString("%1").arg(bins), nullptr);
 	setNumberOfBinsForHistogram(bins);
-}
-
-
-void MainWidget::addCloseButtonToWidget(QGroupBox* groupBox)
-{
-	/*QFrame* frame = new QFrame;
-	frame->setMaximumHeight(40);
-	QHBoxLayout* horizontal_layout = new QHBoxLayout();
-
-	QPushButton* closeButton = new QPushButton("X", groupBox);
-	closeButton->setMaximumSize(QSize(20, 20));
-
-	horizontal_layout->addStretch();
-	horizontal_layout->addWidget(closeButton);
-
-	frame->setLayout(horizontal_layout);
-
-	groupBox->layout()->addWidget(frame);
-	connect(closeButton, SIGNAL(released()), this, SLOT(on_widget_close_button_clicked()));*/
-
 }
 
 void MainWidget::addStandardItem(int id, QList<QStandardItem*> items)

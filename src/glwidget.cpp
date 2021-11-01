@@ -236,7 +236,6 @@ void GLWidget::initializeGL()
 
 	m_mesh_program->release();
 	updateVisParameters();
-	//m_lockRotation2D_timer->start(500);
 }
 
 void GLWidget::paintGL()
@@ -346,26 +345,6 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
 		break;
 	}
 }
-
-/*void GLWidget::getSliderX(int value)
-{
-	if (value > 100 || value < 0) {
-		return;
-	}
-
-	if (value > 98)
-		value = 100;
-}*/
-
-/*void GLWidget::getSliderY(int value)
-{
-	if (value > 100 || value < 0) {
-		return;
-	}
-
-	if (value > 98)
-		value = 100;
-}*/
 
 void GLWidget::drawScene()
 {
