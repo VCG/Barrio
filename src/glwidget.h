@@ -98,19 +98,6 @@ public slots:
 	void prepareResize();
 	void ShowContextMenu(const QPoint&);
 
-signals:
-	//void setAbstractionData(AbstractionSpace* space_instance);
-	void setHoveredID(int);
-	void setHoveredName(QString);
-	void object_clicked(QList<QStandardItem*>);
-	void clearRowsTable();
-	void RemoveRowAt_GL(QModelIndex);
-	void GetIDFrom(QModelIndex);
-	void checkAllListWidget_GL();
-	void updateFPS(QString);
-	void updateFrameTime(QString);
-	void signalCheckByType(std::map<QString, int>);
-
 protected:
 	void initializeGL() Q_DECL_OVERRIDE;
 	void resizeGL(int w, int h) Q_DECL_OVERRIDE;
