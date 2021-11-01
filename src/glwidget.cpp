@@ -67,7 +67,6 @@ void GLWidget::init(DataContainer* data_container, bool use_camera_settings, Cam
 	{
 		camera = new Camera(fov, nearPlane, farPlane, center);
 	}
-
 }
 
 void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
@@ -341,20 +340,14 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 
 void GLWidget::keyPressEvent(QKeyEvent* event)
 {
+	// key events can b handled here
 	switch (event->key()) {
-	case(Qt::Key_S): // reset
-		break;
-	case(Qt::Key_X): // stop layouting algorithm
-	  //stopForecDirectedLayout();
-		break;
-	case(Qt::Key_Shift): // enable hover
-		setMouseTracking(true);
-	case(Qt::Key_0): // switch vbo mesh rendering order
+	case(Qt::Key_S):
 		break;
 	}
 }
 
-void GLWidget::getSliderX(int value)
+/*void GLWidget::getSliderX(int value)
 {
 	if (value > 100 || value < 0) {
 		return;
@@ -362,9 +355,9 @@ void GLWidget::getSliderX(int value)
 
 	if (value > 98)
 		value = 100;
-}
+}*/
 
-void GLWidget::getSliderY(int value)
+/*void GLWidget::getSliderY(int value)
 {
 	if (value > 100 || value < 0) {
 		return;
@@ -372,12 +365,7 @@ void GLWidget::getSliderY(int value)
 
 	if (value > 98)
 		value = 100;
-}
-
-void GLWidget::getIntervalID(int ID)
-{
-
-}
+}*/
 
 void GLWidget::drawScene()
 {
@@ -449,9 +437,7 @@ void GLWidget::setVisibleStructures(int id)
 
 	Object* object = objects_map.at(id);
 	int parentID = object->getParentID();
-
 	m_visible_structures.push_back(parentID);
-
 	Object* parent = objects_map.at(parentID);
 
 	if (m_shared_resources->show_related_synapses)
@@ -500,7 +486,6 @@ void GLWidget::update_visibility()
 	updateVisibilitySSBO();
 }
 
-
 void GLWidget::prepareResize()
 {
 	makeCurrent();
@@ -523,7 +508,6 @@ void GLWidget::ShowContextMenu(const QPoint& pos)
 	contextMenu.addAction(&action1);
 
 	contextMenu.exec(mapToGlobal(pos));
-
 }
 
 void GLWidget::pass1()

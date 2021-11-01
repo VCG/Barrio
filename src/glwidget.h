@@ -91,10 +91,6 @@ public:
 	void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
 public slots:
-	void getSliderX(int value);
-	void getSliderY(int value);
-	void getIntervalID(int ID);
-
 	void prepareResize();
 	void ShowContextMenu(const QPoint&);
 
