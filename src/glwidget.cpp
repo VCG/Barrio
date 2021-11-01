@@ -6,21 +6,10 @@
 #include "mainwidget.h"
 
 GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWidget, QWidget* parent)
-	: QOpenGLWidget(parent),
-	m_yaxis(0),
-	m_xaxis(0),
-	m_FDL_running(false),
-	m_2D(false),
-	m_hover(false)
+	: QOpenGLWidget(parent)
 {
 	m_distance_threshold = resources->distance_threshold;
 	m_all_selected_mitos = resources->all_selected_mitos;
-
-	//m_lockRotation2D_timer = new QTimer(this);
-	//connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(lockRotation2D()));
-
-	//m_auto_rotation_timer = new QTimer(this);
-	//connect(m_auto_rotation_timer, SIGNAL(timeout()), this, SLOT(startRotation()));
 
 	connect(this, SIGNAL(aboutToResize()), this, SLOT(prepareResize()));
 
@@ -28,11 +17,6 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 	connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
 
 	m_parent = parent;
-
-	m_active_graph_tab = 0;
-	m_hide_toggle = false;
-
-	m_xy_slice_z = 0.5f * MESH_MAX_Z;
 
 	m_shared_resources = resources;
 	m_selected_hvgx_id = hvgx_id;
@@ -54,11 +38,11 @@ GLWidget::~GLWidget()
 void GLWidget::init(DataContainer* data_container, bool use_camera_settings, CameraSettings cameraSettings)
 {
 	m_data_container = data_container;
-
+	QVector3D center;
 	Object* object = m_data_container->getObject(m_selected_hvgx_id);
 	if (object != nullptr)
 	{
-		m_center = object->getCenter().toVector3D();
+		center = object->getCenter().toVector3D();
 		m_parent_id = object->getParentID();
 	}
 	else
@@ -68,7 +52,7 @@ void GLWidget::init(DataContainer* data_container, bool use_camera_settings, Cam
 
 	if (m_is_overview_widget)
 	{
-		m_center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
+		center = QVector3D(MESH_MAX_X / 2.0, MESH_MAX_Y / 2.0, MESH_MAX_Z / 2.0);
 	}
 
 	float fov = 45.0f;
@@ -81,12 +65,10 @@ void GLWidget::init(DataContainer* data_container, bool use_camera_settings, Cam
 	}
 	else
 	{
-		camera = new Camera(fov, nearPlane, farPlane, m_center);
+		camera = new Camera(fov, nearPlane, farPlane, center);
 	}
 
 }
-
-
 
 void GLWidget::updateMVPAttrib(QOpenGLShaderProgram* program)
 {
@@ -157,8 +139,6 @@ void GLWidget::zoom(double delta)
 
 void GLWidget::initializeGL()
 {
-	m_performaceMeasure.startTimer();
-
 	initializeOpenGLFunctions();
 
 	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
@@ -332,7 +312,6 @@ void GLWidget::leaveEvent(QEvent* event)
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
-
 	camera->mouse_press_event(event);
 	makeCurrent();
 
@@ -341,31 +320,6 @@ quit:
 
 	event->accept();
 }
-
-/*void GLWidget::insertInTable(int hvgxID)
-{
-
-	std::string name = m_data_container->getObjectName(hvgxID);
-	if (name == "Unknown")
-		return;
-
-	QString oname = QString::fromUtf8(name.c_str());
-
-	QList<QStandardItem*> items;
-	items.append(new QStandardItem(QString::number(hvgxID)));
-	items.append(new QStandardItem(oname));
-	object_clicked(items);
-
-}*/
-
-/*void GLWidget::lockRotation2D()
-{
-	if (m_FDL_running == true)
-		return;
-
-	m_lockRotation2D_timer->stop();
-	m_FDL_running = true;   // run force layout
-}*/
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
@@ -396,48 +350,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
 	case(Qt::Key_Shift): // enable hover
 		setMouseTracking(true);
 	case(Qt::Key_0): // switch vbo mesh rendering order
-	  //m_opengl_mngr->renderOrderToggle();
-	  //update();
 		break;
-	case(Qt::Key_P):
-		saveScreenshot();
-		break;
-	case (Qt::Key_Down):
-		if ((m_rot_ydiff - 0.1) > 0)
-			m_rot_ydiff -= 0.1;
-		else if ((m_rot_ydiff - 0.01) > 0)
-			m_rot_ydiff -= 0.01;
-
-		qDebug() << m_rot_ydiff;
-		break;
-	case (Qt::Key_Up):
-		m_rot_ydiff += 0.1;
-		qDebug() << m_rot_ydiff;
-		break;
-	case(Qt::Key_Right):
-		if (m_xy_slice_z < MESH_MAX_Z) {
-			m_xy_slice_z += 0.005f * MESH_MAX_Z;
-		}
-		break;
-	case(Qt::Key_Left):
-		if (m_xy_slice_z > 0.0f) {
-			m_xy_slice_z -= 0.005f * MESH_MAX_Z;
-		}
-		break;
-	}
-
-}
-
-void GLWidget::saveScreenshot()
-{
-	QString fileName = QFileDialog::getSaveFileName(this,
-		tr("Save Screenshot"), "",
-		tr("PNG Images (*.png);;All Files (*)"));
-
-	if (!fileName.isEmpty())
-	{
-		QImage screenshot = grabFramebuffer();
-		screenshot.save(fileName, "png");
 	}
 }
 
@@ -449,10 +362,6 @@ void GLWidget::getSliderX(int value)
 
 	if (value > 98)
 		value = 100;
-
-	m_xaxis = value;
-
-	//update();
 }
 
 void GLWidget::getSliderY(int value)
@@ -463,332 +372,12 @@ void GLWidget::getSliderY(int value)
 
 	if (value > 98)
 		value = 100;
-	m_yaxis = value;
-
-	//update();
 }
 
 void GLWidget::getIntervalID(int ID)
 {
 
 }
-
-void GLWidget::getActiveGraphTab(int tab_graph)
-{
-	m_active_graph_tab = tab_graph;
-}
-
-/*void GLWidget::reset_layouting(bool flag)
-{
-	//m_lockRotation2D_timer->start(10);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFilteredID(QString value)
-{
-	//if (m_opengl_mngr == NULL)
-	//  return;
-	//// check if there are more than one ID
-	//QList<QString> tokens = value.split(',');
-	//qDebug() << tokens;
-
-	////stopForecDirectedLayout();
-
-	//bool invisibility = false; // meaning not filtered (visible)
-	//m_opengl_mngr->FilterByID(tokens, invisibility);
-
-	//// start force layout
-	//m_lockRotation2D_timer->start(0);
-	////  check whatever needed to be updated in the checkbox
-	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
-	//this->getToggleCheckBox(visibilityUpdate);
-
-	////update();
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFilterWithChildren(bool value)
-{
-	// todo delete
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFilterWithParent(bool value)
-{
-	//m_opengl_mngr->updateDisplayParentFlag(value);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFilterWithSynapses(bool value)
-{
-	//m_opengl_mngr->updateDisplaySynapseFlag(value);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getDepth(int d)
-{
-	if (d < 0)
-		return;
-
-	//m_opengl_mngr->updateDepth(d);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getNodeSizeEncoding(QString encoding)
-{
-	//qDebug() << encoding;
-	//if (encoding == "Volume")
-	//  m_opengl_mngr->updateNodeSizeEncoding(Size_e::VOLUME);
-	//else if (encoding == "Astrocyte Coverage")
-	//  m_opengl_mngr->updateNodeSizeEncoding(Size_e::ASTRO_COVERAGE);
-	//else if (encoding == "Synapse Size")
-	//  m_opengl_mngr->updateNodeSizeEncoding(Size_e::SYNAPSE_SIZE);
-	////update();
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getColorEncoding(QString encoding)
-{
-	/* qDebug() << encoding;
-	 if (encoding == "Type")
-	   m_opengl_mngr->updateColorEncoding(Color_e::TYPE);
-	 else if (encoding == "Astrocyte Coverage")
-	   m_opengl_mngr->updateColorEncoding(Color_e::ASTRO_COVERAGE);
-	 else if (encoding == "Function")
-	   m_opengl_mngr->updateColorEncoding(Color_e::FUNCTION);
-	 else if (encoding == "Glycogen Distribution")
-	   m_opengl_mngr->updateColorEncoding(Color_e::GLYCOGEN_MAPPING);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::get2DtextureEncoding(QString encoding)
-{
-	//qDebug() << encoding;
-	//if (encoding == "Astrocyte Coverage")
-	//  m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::ASTRO_COVERAGE);
-	//else if (encoding == "Glycogen Distribution")
-	//  m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::GLYCOGEN_MAPPING);
-}*/
-
-
-//------------------------------------------------------
-//
-/*void GLWidget::getItemChanged(QListWidgetItem* item)
-{
-	Qt::CheckState state = item->checkState();
-	bool flag;
-	if (state == Qt::Unchecked) // do filter them from view
-		flag = true;
-	else if (state == Qt::Checked) {
-		flag = false;
-	}
-	else {
-		return;
-	}
-
-	getFilteredType(item->text(), flag);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFilteredType(QString value, bool flag)
-{
-	//if (m_opengl_mngr == NULL)
-	//  return;
-
-	//Object_t object_type = Object_t::UNKNOWN;
-	//if (value == "Axons")
-	//  object_type = Object_t::AXON;
-	//else if (value == "Dendrites")
-	//  object_type = Object_t::DENDRITE;
-	//else if (value == "Boutons")
-	//  object_type = Object_t::BOUTON;
-	//else if (value == "Spines")
-	//  object_type = Object_t::SPINE;
-	//else if (value == "Mitochondria")
-	//  object_type = Object_t::MITO;
-	//else if (value == "Synapse")
-	//  object_type = Object_t::SYNAPSE;
-	//else if (value == "Astrocyte")
-	//  object_type = Object_t::ASTROCYTE;
-
-	//m_opengl_mngr->FilterByType(object_type, flag);
-
-	//// start force layout
-	//m_lockRotation2D_timer->start(0);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getDoubleClickedTableView(QModelIndex index)
-{
-	RemoveRowAt_GL(index);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getDeletedHVGXID(int hvgxID)
-{
-	m_selectedObjects.erase(hvgxID);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getFitlerButtonClicked(bool)
-{
-	//bool invisibility = false; // meaning not filtered (visible)
-	//m_opengl_mngr->FilterByID(m_selectedObjects, invisibility);
-	////  check whatever needed to be updated in the checkbox
-	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
-	//this->getToggleCheckBox(visibilityUpdate);
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::getResetFitlerButtonClicked(bool)
-{
-	//  m_opengl_mngr->showAll();
-	//  checkAllListWidget_GL();
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::clearSelectedObjectsTable()
-{
-	clearRowsTable();
-	m_selectedObjects.clear();
-}*/
-
-//------------------------------------------------------
-//
-/*void GLWidget::hideSelectedObjects()
-{
-	//m_hide_toggle = !m_hide_toggle;
-	//m_opengl_mngr->VisibilityToggleSelectedObjects(m_selectedObjects, m_hide_toggle);
-	////  check whatever needed to be updated in the checkbox
-	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
-	//this->getToggleCheckBox(visibilityUpdate);
-}*/
-
-/*void GLWidget::highlightSelected(QModelIndex index)
-{
-	GetIDFrom(index);
-}*/
-
-/*void GLWidget::getHVGXIDAtSelectedRow(int ID)
-{
-	/* m_opengl_mngr->highlightObject(ID);
-
-}*/
-
-/*void GLWidget::togglWeightedAstroCoverage()
-{
-	/*m_opengl_mngr->toggleWeightedCoverage();
-}*/
-
-/*void GLWidget::getglycogenMappedSelectedState(QString ID_str, bool state)
-{
-	//int ID = ID_str.toInt();
-	//m_opengl_mngr->highlightObject(ID);
-	//std::set<int> obj_set;
-	//obj_set.insert(ID);
-	//m_opengl_mngr->VisibilityToggleSelectedObjects(obj_set, !state);
-	////  check whatever needed to be updated in the checkbox
-	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
-	//this->getToggleCheckBox(visibilityUpdate);
-}*/
-
-/*void GLWidget::getProximityTypeState(QString type, bool flag)
-{
-	//int flag_value = (flag) ? 1 : 0;
-	//if (type == "Astrocyte") {
-	//  m_filterByProximityType.setX(flag_value);
-	//}
-	//else if (type == "Glycogen") {
-	//  m_filterByProximityType.setY(flag_value);
-	//}
-	//else if (type == "Astro. Mitochondria") {
-	//  m_filterByProximityType.setZ(flag_value);
-	//}
-}*/
-
-/*void GLWidget::getFilteredListByProximity()
-{
-	//m_opengl_mngr->updateFilterByProximityType(m_filterByProximityType);
-
-	//qDebug() << "Insert in selected Objects";
-	//std::vector<int> ssbo_filtered_by_proximity = m_opengl_mngr->getSSBOFilterByProximity();
-
-	//for (int i = 0; i < ssbo_filtered_by_proximity.size(); ++i) {
-	//  int hvgxID = ssbo_filtered_by_proximity[i];
-	//  if (m_selectedObjects.find(hvgxID) == m_selectedObjects.end()) {
-	//    m_selectedObjects.insert(hvgxID);
-	//    insertInTable(hvgxID);
-	//  }
-	//}
-}*/
-
-/*void GLWidget::updateMinProximity(double min)
-{
-	/*m_opengl_mngr->updateMinProximity(min);
-}*/
-
-/*void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibilityUpdate)
-{
-	std::map<QString, int> checkBoxByType;
-	for (auto iter = visibilityUpdate.begin(); iter != visibilityUpdate.end(); iter++) {
-		Object_t obj_type = (*iter).first;
-		std::pair<int, int> counts_pair = (*iter).second;
-
-		QString obj_typeName;
-		int flag;
-
-		switch (obj_type) {
-		case Object_t::ASTROCYTE: // 0
-			obj_typeName = "Astrocyte";
-			break;
-		case Object_t::SPINE:
-			obj_typeName = "Spines";
-			break;
-		case Object_t::DENDRITE:
-			obj_typeName = "Dendrites";
-			break;
-		case Object_t::AXON:
-			obj_typeName = "Axons";
-			break;
-		case Object_t::BOUTON:
-			obj_typeName = "Boutons";
-			break;
-		case Object_t::MITO:
-			obj_typeName = "Mitochondria";
-			break;
-		case Object_t::SYNAPSE:
-			obj_typeName = "Synapse";
-			break;
-		}
-
-		if (counts_pair.second <= 0)
-			flag = 0; // not checked
-		else if (counts_pair.second == counts_pair.first)
-			flag = 1; // full
-		else
-			flag = 2; // half
-
-
-		checkBoxByType[obj_typeName] = flag;
-	}
-
-	signalCheckByType(checkBoxByType);
-
-}*/
 
 void GLWidget::drawScene()
 {
@@ -1077,69 +666,3 @@ void GLWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum textu
 
 	delete[] rawData;
 }
-
-/*void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
-{
-	qDebug() << "getListWidget" << treeWidget->topLevelItemCount();
-	std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
-
-	QTreeWidgetItemIterator it(treeWidget);
-	while (*it) {
-		QString ID_str = ((*it)->text(0));
-		int ID = ID_str.toInt();
-		if (objectMap->find(ID) != objectMap->end()) {
-			Object* obj = objectMap->at(ID);
-			qDebug() << obj->getName().data();
-			if (obj->isFiltered())
-				(*it)->setCheckState(0, Qt::Unchecked);
-			else
-				(*it)->setCheckState(0, Qt::Checked);
-		}
-		++it;
-	}
-
-}*/
-
-/*void GLWidget::selectAllVisible()
-{
-	std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
-	for (auto iter = objectMap->rbegin(); iter != objectMap->rend(); iter++) {
-		Object* obj = (*iter).second;
-		if (obj->isFiltered())
-			continue;
-		// add it to list
-		int hvgxID = obj->getHVGXID();
-		if (m_selectedObjects.find(hvgxID) == m_selectedObjects.end()) {
-			m_selectedObjects.insert(hvgxID);
-			//insertInTable(hvgxID);
-		}
-	}
-}*/
-
-/*void GLWidget::updateProximitySSBO()
-{
-	//m_opengl_mngr->updateProximitySSBOFlag();
-}*/
-
-/*void GLWidget::autoRotation()
-{
-	// only enabled if we are not in the 2D space
-	//m_auto_rotate = !m_auto_rotate;
-}*/
-
-/*void GLWidget::startRotation()
-{
-	// Mouse release position - mouse press position
-	//if (m_auto_rotate) {
-	//  QVector2D diff = QVector2D(0, m_rot_ydiff);
-	//  QVector3D n = QVector3D(diff.x(), diff.y() /* diff.y(), 0).normalized();
-
-	//  // Accelerate angular speed relative to the length of the mouse sweep
-	//  qreal acc = diff.length() / 2.0;;
-
-	//  // Calculate new rotation axis as weighted sum
-	//  m_rotationAxis = (m_rotationAxis + n).normalized();
-	//  // angle in degrees and rotation axis
-	//  m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, acc) * m_rotation;
-	//}
-}*/

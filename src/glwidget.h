@@ -6,9 +6,8 @@
 #include <QtOpenGL>
 
 #include "mainopengl.h"
-#include "graphmanager.h"
+
 #include "abstractionspace.h"
-#include "performancerate.h"
 #include "inputform.h"
 #include "globalParameters.h"
 #include "camera.h"
@@ -55,8 +54,6 @@ struct SharedGLResources
 	QVector<int>* all_selected_mitos;
 };
 
-
-
 class GLWidget : public QOpenGLWidget, MainOpenGL
 {
 	Q_OBJECT
@@ -69,30 +66,19 @@ public:
 	DataContainer* getDataContainer() { return m_data_container; }
 
 	//int pickObject(QMouseEvent* event);
-	//void insertInTable(int);
-	//void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
 	void drawScene();
-
 	void updateHighlightedSSBO();
 	void updateVisibilitySSBO();
-
 	void setVisibleStructuresSingelObject();
 	void setVisibleStructuresOverView();
-
 	void setVisibleStructures(int id);
-
 	CameraSettings getCameraSettings();
-
 	void update_synapse_distance_threshold(double distance);
 	void update_visibility();
-
 	void updateVisParameters();
-
 	void resetCamera();
 	void zoom(double delta);
-
-
 
 	void pass1();
 	void pass2();
@@ -109,54 +95,11 @@ public slots:
 	void getSliderY(int value);
 	void getIntervalID(int ID);
 
-	void getActiveGraphTab(int);
-	//void reset_layouting(bool);
-
-	//void lockRotation2D();
-
-	//void getFilteredType(QString value, bool);
-	//void getFilteredID(QString value);
-
-	//void getFilterWithChildren(bool value);
-	//void getFilterWithParent(bool value);
-	//void getFilterWithSynapses(bool value);
-
-	//void getDepth(int d);
-
-	//void getNodeSizeEncoding(QString);
-	//void getColorEncoding(QString);
-	//void get2DtextureEncoding(QString);
-
-	//void getItemChanged(QListWidgetItem*);
-	//void getDoubleClickedTableView(QModelIndex);
-	//void highlightSelected(QModelIndex);
-
-	//void getDeletedHVGXID(int);
-	//void getFitlerButtonClicked(bool);
-	//void getResetFitlerButtonClicked(bool);
-	//void clearSelectedObjectsTable();
-
-	//void hideSelectedObjects();
-	//void getHVGXIDAtSelectedRow(int);
-	//void togglWeightedAstroCoverage();
-	//void getglycogenMappedSelectedState(QString, bool);
-	//void getProximityTypeState(QString, bool);
-
-	//void getFilteredListByProximity();
-	//void updateMinProximity(double);
-
-	//void getMappingTreeWidget(QTreeWidget*);
-	//void selectAllVisible();
-	//void updateProximitySSBO();
-
-	//void autoRotation();
-	//void startRotation();
 	void prepareResize();
-
 	void ShowContextMenu(const QPoint&);
 
 signals:
-	void setAbstractionData(AbstractionSpace* space_instance);
+	//void setAbstractionData(AbstractionSpace* space_instance);
 	void setHoveredID(int);
 	void setHoveredName(QString);
 	void object_clicked(QList<QStandardItem*>);
@@ -179,70 +122,21 @@ protected:
 	void enterEvent(QEvent* event) Q_DECL_OVERRIDE;
 	void leaveEvent(QEvent* event) Q_DECL_OVERRIDE;
 
-
 	void updateMVPAttrib(QOpenGLShaderProgram* program);
 
-	void saveScreenshot();
+	DataContainer*						m_data_container;
+	Camera*								camera;
 
-	AbstractionSpace* m_2dspace;
-	bool                                m_2D;
-
-	/* mesh */
-	DataContainer* m_data_container;
-
-	struct WidgetUniforms               m_uniforms;
-
-	Camera* camera;
-
-	/* matrices */
-	QMatrix4x4                          m_projection;
-	QMatrix4x4                          m_mMatrix;
-	QMatrix4x4                          m_vMatrix;
-	QMatrix4x4                          m_model_noRotation;
-	QMatrix4x4                          m_rotationMatrix;
-
-	QVector3D                           m_center;
-	QVector3D                           m_eye;
-	QVector3D                           m_cameraUpDirection;
-
-	/* rotation */
-	QPoint                              m_lastPos;
-	//double                              m_camera_distance;
-	//QQuaternion                         m_rotation;
-	//QVector3D                           m_rotationAxis;
-	//QVector3D                           m_translation;
-
-	/* mouse pad */
-	int                                 m_yaxis;
-	int                                 m_xaxis;
-
-	// force directed layout
-	bool                                m_FDL_running;
-
-	QTimer* m_refresh_timer;
-	//QTimer* m_lockRotation2D_timer;
-	QTimer* m_auto_rotation_timer;
-
-	std::set<int>                       m_selectedObjects;
-	bool                                m_hover;
-	bool                                m_hide_toggle;
-	int                                 m_active_graph_tab;
-	PerformanceRate                     m_performaceMeasure;
-	QVector3D                           m_filterByProximityType;
-	bool                                m_auto_rotate;
-	float                               m_rot_ydiff;
-	float                               m_xy_slice_z;
-
-	SharedGLResources* m_shared_resources;
+	SharedGLResources*					m_shared_resources;
 
 	int                                 m_selected_hvgx_id;
 	int                                 m_parent_id;
 
-	QOpenGLShaderProgram* m_mesh_program;
-	QOpenGLVertexArrayObject             m_mesh_vao;
+	QOpenGLShaderProgram*				m_mesh_program;
+	QOpenGLVertexArrayObject            m_mesh_vao;
 
-	QOpenGLShaderProgram* m_slice_program;
-	QOpenGLVertexArrayObject             m_slice_vao;
+	QOpenGLShaderProgram*				m_slice_program;
+	QOpenGLVertexArrayObject            m_slice_vao;
 
 	std::vector<int>                    m_visible_structures; // list of hvgx ids with visible structures
 	GLuint                              m_visibility_ssbo;
@@ -251,32 +145,21 @@ protected:
 	GLuint                              m_selectionFrameBuffer;
 	GLuint                              m_selectionRenderBuffer;
 
-	/* order independent transparency vars*/
+	/* order independent transparency */
 	QOpenGLVertexArrayObject            m_fsQuad_vao;
 	GLuint                              oit_buffers[2], headPtrTex;
 	GLuint                              mesh_shader_pass_idx_1, mesh_shader_pass_idx_2;
 	GLuint                              clear_oit_buffers;
 	GLint                               m_maxNodes;
 
-	std::vector<GLuint>* headPtrClearBuf;
+	std::vector<GLuint>*				headPtrClearBuf;
 
 	int                                 m_width, m_height;
 	bool                                m_init;
 	bool                                m_is_overview_widget;
-	QVector<int>* m_all_selected_mitos;
-
+	QVector<int>*						m_all_selected_mitos;
 	double                              m_distance_threshold;
-
-	QWidget* m_parent;
-
-	//GLuint                              m_mito_cell_distance_colormap;
-
-
-	GLuint        m_image_stack_texture;
-
-
-
+	QWidget*							m_parent;
+	GLuint								m_image_stack_texture;
 };
-
-
 #endif // GLWIDGET_H
