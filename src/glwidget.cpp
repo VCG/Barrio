@@ -1,7 +1,3 @@
-/*
- * FinalMatrix = Projection * View * Model
- * Model = RotationAroundOrigin * TranslationFromOrigin * RotationAroundObjectCenter
- */
 #include <QResource>
 #include <QTimer>
 
@@ -20,11 +16,11 @@ GLWidget::GLWidget(int hvgx_id, SharedGLResources* resources, bool isOverviewWid
 	m_distance_threshold = resources->distance_threshold;
 	m_all_selected_mitos = resources->all_selected_mitos;
 
-	m_lockRotation2D_timer = new QTimer(this);
-	connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(lockRotation2D()));
+	//m_lockRotation2D_timer = new QTimer(this);
+	//connect(m_lockRotation2D_timer, SIGNAL(timeout()), this, SLOT(lockRotation2D()));
 
-	m_auto_rotation_timer = new QTimer(this);
-	connect(m_auto_rotation_timer, SIGNAL(timeout()), this, SLOT(startRotation()));
+	//m_auto_rotation_timer = new QTimer(this);
+	//connect(m_auto_rotation_timer, SIGNAL(timeout()), this, SLOT(startRotation()));
 
 	connect(this, SIGNAL(aboutToResize()), this, SLOT(prepareResize()));
 
@@ -161,7 +157,6 @@ void GLWidget::zoom(double delta)
 
 void GLWidget::initializeGL()
 {
-	qDebug() << "initializeGL";
 	m_performaceMeasure.startTimer();
 
 	initializeOpenGLFunctions();
@@ -176,9 +171,6 @@ void GLWidget::initializeGL()
 	m_mesh_program->link();
 
 	f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//------------------------------------------------------------------------------------------------------------------//
-	// Mesh Setup
 
 	int success = m_mesh_program->bind();
 
@@ -265,13 +257,11 @@ void GLWidget::initializeGL()
 
 	m_mesh_program->release();
 	updateVisParameters();
-	m_lockRotation2D_timer->start(500);
+	//m_lockRotation2D_timer->start(500);
 }
 
 void GLWidget::paintGL()
 {
-	startRotation();
-
 	camera->frameUpdate();
 
 	m_mesh_program->bind();
@@ -294,8 +284,6 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
-	qDebug() << "Resize Widget: " << m_width << ", " << m_height;
-
 	const qreal retinaScale = devicePixelRatio();
 	h = (h == 0) ? 1 : h;
 
@@ -309,10 +297,10 @@ void GLWidget::resizeGL(int w, int h)
 	initMeshShaderStorage(m_width, m_height);
 }
 
-int GLWidget::pickObject(QMouseEvent* event)
+/*int GLWidget::pickObject(QMouseEvent* event)
 {
 	const qreal retinaScale = devicePixelRatio();
-	GLint viewport[4]; //  return of glGetIntegerv() -> x, y, width, height of viewport
+	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	int x = event->x() * retinaScale;
@@ -329,7 +317,7 @@ int GLWidget::pickObject(QMouseEvent* event)
 	QString oname = QString::fromUtf8(name.c_str());
 	setHoveredName(oname);
 	return hvgxID;
-}
+}*/
 
 void GLWidget::enterEvent(QEvent* event)
 {
@@ -354,7 +342,7 @@ quit:
 	event->accept();
 }
 
-void GLWidget::insertInTable(int hvgxID)
+/*void GLWidget::insertInTable(int hvgxID)
 {
 
 	std::string name = m_data_container->getObjectName(hvgxID);
@@ -368,16 +356,16 @@ void GLWidget::insertInTable(int hvgxID)
 	items.append(new QStandardItem(oname));
 	object_clicked(items);
 
-}
+}*/
 
-void GLWidget::lockRotation2D()
+/*void GLWidget::lockRotation2D()
 {
 	if (m_FDL_running == true)
 		return;
 
 	m_lockRotation2D_timer->stop();
 	m_FDL_running = true;   // run force layout
-}
+}*/
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
@@ -490,14 +478,14 @@ void GLWidget::getActiveGraphTab(int tab_graph)
 	m_active_graph_tab = tab_graph;
 }
 
-void GLWidget::reset_layouting(bool flag)
+/*void GLWidget::reset_layouting(bool flag)
 {
-	m_lockRotation2D_timer->start(10);
-}
+	//m_lockRotation2D_timer->start(10);
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFilteredID(QString value)
+/*void GLWidget::getFilteredID(QString value)
 {
 	//if (m_opengl_mngr == NULL)
 	//  return;
@@ -517,42 +505,42 @@ void GLWidget::getFilteredID(QString value)
 	//this->getToggleCheckBox(visibilityUpdate);
 
 	////update();
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFilterWithChildren(bool value)
+/*void GLWidget::getFilterWithChildren(bool value)
 {
 	// todo delete
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFilterWithParent(bool value)
+/*void GLWidget::getFilterWithParent(bool value)
 {
 	//m_opengl_mngr->updateDisplayParentFlag(value);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFilterWithSynapses(bool value)
+/*void GLWidget::getFilterWithSynapses(bool value)
 {
 	//m_opengl_mngr->updateDisplaySynapseFlag(value);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getDepth(int d)
+/*void GLWidget::getDepth(int d)
 {
 	if (d < 0)
 		return;
 
 	//m_opengl_mngr->updateDepth(d);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getNodeSizeEncoding(QString encoding)
+/*void GLWidget::getNodeSizeEncoding(QString encoding)
 {
 	//qDebug() << encoding;
 	//if (encoding == "Volume")
@@ -562,11 +550,11 @@ void GLWidget::getNodeSizeEncoding(QString encoding)
 	//else if (encoding == "Synapse Size")
 	//  m_opengl_mngr->updateNodeSizeEncoding(Size_e::SYNAPSE_SIZE);
 	////update();
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getColorEncoding(QString encoding)
+/*void GLWidget::getColorEncoding(QString encoding)
 {
 	/* qDebug() << encoding;
 	 if (encoding == "Type")
@@ -576,24 +564,24 @@ void GLWidget::getColorEncoding(QString encoding)
 	 else if (encoding == "Function")
 	   m_opengl_mngr->updateColorEncoding(Color_e::FUNCTION);
 	 else if (encoding == "Glycogen Distribution")
-	   m_opengl_mngr->updateColorEncoding(Color_e::GLYCOGEN_MAPPING);*/
-}
+	   m_opengl_mngr->updateColorEncoding(Color_e::GLYCOGEN_MAPPING);
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::get2DtextureEncoding(QString encoding)
+/*void GLWidget::get2DtextureEncoding(QString encoding)
 {
 	//qDebug() << encoding;
 	//if (encoding == "Astrocyte Coverage")
 	//  m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::ASTRO_COVERAGE);
 	//else if (encoding == "Glycogen Distribution")
 	//  m_opengl_mngr->update2DTextureEncoding(HeatMap2D_e::GLYCOGEN_MAPPING);
-}
+}*/
 
 
 //------------------------------------------------------
 //
-void GLWidget::getItemChanged(QListWidgetItem* item)
+/*void GLWidget::getItemChanged(QListWidgetItem* item)
 {
 	Qt::CheckState state = item->checkState();
 	bool flag;
@@ -607,11 +595,11 @@ void GLWidget::getItemChanged(QListWidgetItem* item)
 	}
 
 	getFilteredType(item->text(), flag);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFilteredType(QString value, bool flag)
+/*void GLWidget::getFilteredType(QString value, bool flag)
 {
 	//if (m_opengl_mngr == NULL)
 	//  return;
@@ -636,77 +624,77 @@ void GLWidget::getFilteredType(QString value, bool flag)
 
 	//// start force layout
 	//m_lockRotation2D_timer->start(0);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getDoubleClickedTableView(QModelIndex index)
+/*void GLWidget::getDoubleClickedTableView(QModelIndex index)
 {
 	RemoveRowAt_GL(index);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getDeletedHVGXID(int hvgxID)
+/*void GLWidget::getDeletedHVGXID(int hvgxID)
 {
 	m_selectedObjects.erase(hvgxID);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getFitlerButtonClicked(bool)
+/*void GLWidget::getFitlerButtonClicked(bool)
 {
 	//bool invisibility = false; // meaning not filtered (visible)
 	//m_opengl_mngr->FilterByID(m_selectedObjects, invisibility);
 	////  check whatever needed to be updated in the checkbox
 	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
 	//this->getToggleCheckBox(visibilityUpdate);
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::getResetFitlerButtonClicked(bool)
+/*void GLWidget::getResetFitlerButtonClicked(bool)
 {
 	//  m_opengl_mngr->showAll();
 	//  checkAllListWidget_GL();
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::clearSelectedObjectsTable()
+/*void GLWidget::clearSelectedObjectsTable()
 {
 	clearRowsTable();
 	m_selectedObjects.clear();
-}
+}*/
 
 //------------------------------------------------------
 //
-void GLWidget::hideSelectedObjects()
+/*void GLWidget::hideSelectedObjects()
 {
 	//m_hide_toggle = !m_hide_toggle;
 	//m_opengl_mngr->VisibilityToggleSelectedObjects(m_selectedObjects, m_hide_toggle);
 	////  check whatever needed to be updated in the checkbox
 	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
 	//this->getToggleCheckBox(visibilityUpdate);
-}
+}*/
 
-void GLWidget::highlightSelected(QModelIndex index)
+/*void GLWidget::highlightSelected(QModelIndex index)
 {
 	GetIDFrom(index);
-}
+}*/
 
-void GLWidget::getHVGXIDAtSelectedRow(int ID)
+/*void GLWidget::getHVGXIDAtSelectedRow(int ID)
 {
-	/* m_opengl_mngr->highlightObject(ID);*/
+	/* m_opengl_mngr->highlightObject(ID);
 
-}
+}*/
 
-void GLWidget::togglWeightedAstroCoverage()
+/*void GLWidget::togglWeightedAstroCoverage()
 {
-	/*m_opengl_mngr->toggleWeightedCoverage();*/
-}
+	/*m_opengl_mngr->toggleWeightedCoverage();
+}*/
 
-void GLWidget::getglycogenMappedSelectedState(QString ID_str, bool state)
+/*void GLWidget::getglycogenMappedSelectedState(QString ID_str, bool state)
 {
 	//int ID = ID_str.toInt();
 	//m_opengl_mngr->highlightObject(ID);
@@ -716,9 +704,9 @@ void GLWidget::getglycogenMappedSelectedState(QString ID_str, bool state)
 	////  check whatever needed to be updated in the checkbox
 	//std::map<Object_t, std::pair<int, int>> visibilityUpdate = m_opengl_mngr->getObjectCountByType();
 	//this->getToggleCheckBox(visibilityUpdate);
-}
+}*/
 
-void GLWidget::getProximityTypeState(QString type, bool flag)
+/*void GLWidget::getProximityTypeState(QString type, bool flag)
 {
 	//int flag_value = (flag) ? 1 : 0;
 	//if (type == "Astrocyte") {
@@ -730,9 +718,9 @@ void GLWidget::getProximityTypeState(QString type, bool flag)
 	//else if (type == "Astro. Mitochondria") {
 	//  m_filterByProximityType.setZ(flag_value);
 	//}
-}
+}*/
 
-void GLWidget::getFilteredListByProximity()
+/*void GLWidget::getFilteredListByProximity()
 {
 	//m_opengl_mngr->updateFilterByProximityType(m_filterByProximityType);
 
@@ -746,14 +734,14 @@ void GLWidget::getFilteredListByProximity()
 	//    insertInTable(hvgxID);
 	//  }
 	//}
-}
+}*/
 
-void GLWidget::updateMinProximity(double min)
+/*void GLWidget::updateMinProximity(double min)
 {
-	/*m_opengl_mngr->updateMinProximity(min);*/
-}
+	/*m_opengl_mngr->updateMinProximity(min);
+}*/
 
-void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibilityUpdate)
+/*void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibilityUpdate)
 {
 	std::map<QString, int> checkBoxByType;
 	for (auto iter = visibilityUpdate.begin(); iter != visibilityUpdate.end(); iter++) {
@@ -800,7 +788,7 @@ void GLWidget::getToggleCheckBox(std::map<Object_t, std::pair<int, int>> visibil
 
 	signalCheckByType(checkBoxByType);
 
-}
+}*/
 
 void GLWidget::drawScene()
 {
@@ -810,15 +798,10 @@ void GLWidget::drawScene()
 	glActiveTexture(GL_TEXTURE0 + 1); // activate the texture unit first before binding texture
 	glBindTexture(GL_TEXTURE_1D, *m_shared_resources->mito_cell_distance_colormap);
 
-	//glLineWidth(2.0f);
-
 	m_mesh_vao.bind();
 
 	m_shared_resources->mesh_index_vbo->bind();
 	glDrawElements(GL_TRIANGLES, m_shared_resources->mesh_index_count, GL_UNSIGNED_INT, 0);
-
-	//m_shared_resources->skeleton_index_vbo->bind();
-	//glDrawElements(GL_LINES, m_shared_resources->skeleton_index_count, GL_UNSIGNED_INT, 0);
 
 	m_mesh_vao.release();
 }
@@ -1031,10 +1014,8 @@ void GLWidget::initMeshShaderStorage(int width, int height)
 	m_init = true;
 }
 
-void GLWidget::initSelectionFrameBuffer(int width, int height)
+/*void GLWidget::initSelectionFrameBuffer(int width, int height)
 {
-	qDebug() << "initSelectionFrameBuffer";
-
 	// create FBO
 	glGenFramebuffers(1, &m_selectionFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
@@ -1052,9 +1033,9 @@ void GLWidget::initSelectionFrameBuffer(int width, int height)
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
+}*/
 
-int GLWidget::processSelection(float x, float y)
+/*int GLWidget::processSelection(float x, float y)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_selectionFrameBuffer);
 	glEnable(GL_DEPTH_TEST);
@@ -1070,7 +1051,7 @@ int GLWidget::processSelection(float x, float y)
 	GL_Error();
 
 	return pickedID;
-}
+}*/
 
 void GLWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ)
 {
@@ -1097,23 +1078,10 @@ void GLWidget::load3DTexturesFromRaw(QString path, GLuint& texture, GLenum textu
 	delete[] rawData;
 }
 
-
-// GET THE WIDGET LIST FROM MAIN WINDOW
-// CALL ANOTHER FUNCTINO TO HANDLE THAT
-
-// mapping and fitlering
-// take the whole mapping
-// iterate over the objects
-// get their type
-// check if they should be checked or not
-void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
+/*void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
 {
 	qDebug() << "getListWidget" << treeWidget->topLevelItemCount();
 	std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
-
-	// iterate over these
-	// use ID to get type of object
-	// for each check in the visibilityMapByType
 
 	QTreeWidgetItemIterator it(treeWidget);
 	while (*it) {
@@ -1130,9 +1098,9 @@ void GLWidget::getMappingTreeWidget(QTreeWidget* treeWidget)
 		++it;
 	}
 
-}
+}*/
 
-void GLWidget::selectAllVisible()
+/*void GLWidget::selectAllVisible()
 {
 	std::map<int, Object*>* objectMap = m_data_container->getObjectsMapPtr();
 	for (auto iter = objectMap->rbegin(); iter != objectMap->rend(); iter++) {
@@ -1143,28 +1111,28 @@ void GLWidget::selectAllVisible()
 		int hvgxID = obj->getHVGXID();
 		if (m_selectedObjects.find(hvgxID) == m_selectedObjects.end()) {
 			m_selectedObjects.insert(hvgxID);
-			insertInTable(hvgxID);
+			//insertInTable(hvgxID);
 		}
 	}
-}
+}*/
 
-void GLWidget::updateProximitySSBO()
+/*void GLWidget::updateProximitySSBO()
 {
 	//m_opengl_mngr->updateProximitySSBOFlag();
-}
+}*/
 
-void GLWidget::autoRotation()
+/*void GLWidget::autoRotation()
 {
 	// only enabled if we are not in the 2D space
 	//m_auto_rotate = !m_auto_rotate;
-}
+}*/
 
-void GLWidget::startRotation()
+/*void GLWidget::startRotation()
 {
 	// Mouse release position - mouse press position
 	//if (m_auto_rotate) {
 	//  QVector2D diff = QVector2D(0, m_rot_ydiff);
-	//  QVector3D n = QVector3D(diff.x(), diff.y() /* diff.y()*/, 0).normalized();
+	//  QVector3D n = QVector3D(diff.x(), diff.y() /* diff.y(), 0).normalized();
 
 	//  // Accelerate angular speed relative to the length of the mouse sweep
 	//  qreal acc = diff.length() / 2.0;;
@@ -1174,4 +1142,4 @@ void GLWidget::startRotation()
 	//  // angle in degrees and rotation axis
 	//  m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, acc) * m_rotation;
 	//}
-}
+}*/

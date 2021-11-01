@@ -68,9 +68,9 @@ public:
 
 	DataContainer* getDataContainer() { return m_data_container; }
 
-	int pickObject(QMouseEvent* event);
-	void insertInTable(int);
-	void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
+	//int pickObject(QMouseEvent* event);
+	//void insertInTable(int);
+	//void getToggleCheckBox(std::map<Object_t, std::pair<int, int>>);
 
 	void drawScene();
 
@@ -99,11 +99,8 @@ public:
 	void clearBuffers();
 
 	void initMeshShaderStorage(int width, int height);
-	void initSelectionFrameBuffer(int width, int height);
-
-	int processSelection(float x, float y);
-
-
+	//void initSelectionFrameBuffer(int width, int height);
+	//int processSelection(float x, float y);
 
 	void load3DTexturesFromRaw(QString path, GLuint& texture, GLenum texture_unit, int sizeX, int sizeY, int sizeZ);
 
@@ -113,47 +110,47 @@ public slots:
 	void getIntervalID(int ID);
 
 	void getActiveGraphTab(int);
-	void reset_layouting(bool);
+	//void reset_layouting(bool);
 
-	void lockRotation2D();
+	//void lockRotation2D();
 
-	void getFilteredType(QString value, bool);
-	void getFilteredID(QString value);
+	//void getFilteredType(QString value, bool);
+	//void getFilteredID(QString value);
 
-	void getFilterWithChildren(bool value);
-	void getFilterWithParent(bool value);
-	void getFilterWithSynapses(bool value);
+	//void getFilterWithChildren(bool value);
+	//void getFilterWithParent(bool value);
+	//void getFilterWithSynapses(bool value);
 
-	void getDepth(int d);
+	//void getDepth(int d);
 
-	void getNodeSizeEncoding(QString);
-	void getColorEncoding(QString);
-	void get2DtextureEncoding(QString);
+	//void getNodeSizeEncoding(QString);
+	//void getColorEncoding(QString);
+	//void get2DtextureEncoding(QString);
 
-	void getItemChanged(QListWidgetItem*);
-	void getDoubleClickedTableView(QModelIndex);
-	void highlightSelected(QModelIndex);
+	//void getItemChanged(QListWidgetItem*);
+	//void getDoubleClickedTableView(QModelIndex);
+	//void highlightSelected(QModelIndex);
 
-	void getDeletedHVGXID(int);
-	void getFitlerButtonClicked(bool);
-	void getResetFitlerButtonClicked(bool);
-	void clearSelectedObjectsTable();
+	//void getDeletedHVGXID(int);
+	//void getFitlerButtonClicked(bool);
+	//void getResetFitlerButtonClicked(bool);
+	//void clearSelectedObjectsTable();
 
-	void hideSelectedObjects();
-	void getHVGXIDAtSelectedRow(int);
-	void togglWeightedAstroCoverage();
-	void getglycogenMappedSelectedState(QString, bool);
-	void getProximityTypeState(QString, bool);
+	//void hideSelectedObjects();
+	//void getHVGXIDAtSelectedRow(int);
+	//void togglWeightedAstroCoverage();
+	//void getglycogenMappedSelectedState(QString, bool);
+	//void getProximityTypeState(QString, bool);
 
-	void getFilteredListByProximity();
-	void updateMinProximity(double);
+	//void getFilteredListByProximity();
+	//void updateMinProximity(double);
 
-	void getMappingTreeWidget(QTreeWidget*);
-	void selectAllVisible();
-	void updateProximitySSBO();
+	//void getMappingTreeWidget(QTreeWidget*);
+	//void selectAllVisible();
+	//void updateProximitySSBO();
 
-	void autoRotation();
-	void startRotation();
+	//void autoRotation();
+	//void startRotation();
 	void prepareResize();
 
 	void ShowContextMenu(const QPoint&);
@@ -223,7 +220,7 @@ protected:
 	bool                                m_FDL_running;
 
 	QTimer* m_refresh_timer;
-	QTimer* m_lockRotation2D_timer;
+	//QTimer* m_lockRotation2D_timer;
 	QTimer* m_auto_rotation_timer;
 
 	std::set<int>                       m_selectedObjects;

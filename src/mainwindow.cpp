@@ -267,10 +267,6 @@ void MainWindow::deleteSelectedPath(QModelIndex index)
 	signalDeletedPathLabel(pathLabel);
 }
 
-
-
-//------------------------------------------------------
-//
 void  MainWindow::on_glycogenMappingTreeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
 	bool state = true;
@@ -281,8 +277,6 @@ void  MainWindow::on_glycogenMappingTreeWidget_itemChanged(QTreeWidgetItem* item
 	glycogenMappedSelectedState(ID_str, state);
 }
 
-//------------------------------------------------------
-//
 void MainWindow::on_filterByProximityListWidget_itemChanged(QListWidgetItem* item)
 {
 	bool flag = true;
@@ -292,8 +286,6 @@ void MainWindow::on_filterByProximityListWidget_itemChanged(QListWidgetItem* ite
 	signalProximityTypeState(item->text(), flag);
 }
 
-//------------------------------------------------------
-//
 void MainWindow::on_listWidget_itemChanged(QListWidgetItem*)
 {
 	signalMappingTreeWidget(mainwindow_ui->glycogenMappingTreeWidget);
@@ -333,13 +325,11 @@ void MainWindow::on_vis_clicked()
 void MainWindow::on_slice_position_slider_changed(int value)
 {
 	m_main_widget->on_slice_position_slider_changed(value);
-	//mainwindow_ui->lineEdit_5->setText(QString::number(std::round(value) / (100.0 / MESH_MAX_Z)));
 }
 
 void MainWindow::on_opacity_slider_changed(int value)
 {
 	m_main_widget->on_opacity_slider_changed(value);
-	//mainwindow_ui->lineEdit_4->setText(QString::number(std::round(value) / 100.0));
 }
 
 void MainWindow::on_colormap_changed(QString text)
