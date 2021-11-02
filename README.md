@@ -7,8 +7,15 @@
   **A Visual Tool to Compare and Analyze Nanoscale Brain Structures.**
   
 </div>
-![alt text](doc/teaser.png "Title")
-## Getting started
+
+<div id="teaser" align="center">
+  
+  ![UI](doc/teaser.png)
+  
+</div>
+
+
+## Installation
 Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki/Getting-Started).
 
 ## Datasets
