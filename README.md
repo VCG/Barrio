@@ -1,4 +1,12 @@
-# Barrio
+<h1 align="center">
+  Barrio
+</h1>
+
+<div align="center">
+  
+  **A Visual Tool to Compare and Analyze Nanoscale Brain Structures.**
+  
+</div>
 ![alt text](doc/teaser.png "Title")
 ## Getting started
 Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki/Getting-Started).
