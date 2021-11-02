@@ -1,4 +1,4 @@
-# NeuroKit
+# Barrio
 
 ## Prerequisites
 * The application is developed and tested under `Windows 10`.
