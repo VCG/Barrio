@@ -421,10 +421,10 @@ void GLWidget::setVisibleStructures(int id)
 
 	if (m_shared_resources->show_related_synapses)
 	{
-		std::vector<Object*>* synapses = parent->getSynapses();
+		std::vector<int>* synapses = parent->getSynapseIDs();
 		for (int i = 0; i < synapses->size(); i++)
 		{
-			m_visible_structures.push_back(synapses->at(i)->getHVGXID());
+			m_visible_structures.push_back(synapses->at(i));
 		}
 	}
 	else

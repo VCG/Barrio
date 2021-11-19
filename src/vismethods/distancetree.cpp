@@ -144,10 +144,10 @@ QString DistanceTree::createNewickString(int root_hvgx_id, float distanceThresho
 		std::map<int, double>* mito_distance_map = root_object->get_distance_map_ptr();
 		std::vector<std::pair<int, double>> synapes_distances;
 
-		for (auto& syn : *parent->getSynapses())
+		for (int syn_id : *parent->getSynapseIDs())
 		{
-			double distance_to_root = mito_distance_map->at(syn->getHVGXID());
-			synapes_distances.push_back(std::make_pair(syn->getHVGXID(), distance_to_root));
+			double distance_to_root = mito_distance_map->at(syn_id);
+			synapes_distances.push_back(std::make_pair(syn_id, distance_to_root));
 		}
 
 		std::sort(synapes_distances.begin(), synapes_distances.end(), sortByVal); // sort by value ascending

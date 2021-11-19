@@ -317,7 +317,8 @@ void Object::addSynapse(Object* synapse_object)
 	if (synapse_object == NULL)
 		return;
 
-	m_synapses.push_back(synapse_object);
+	//m_synapses.push_back(synapse_object);
+	m_synapse_ids.push_back(synapse_object->getHVGXID());
 }
 
 float Object::getAstroCoverage()
@@ -337,39 +338,36 @@ int Object::getSynapseSize()
 {
 	// loop over list of synapses this object has (spine , bouton)
 	// loop over children and get their size if (dendrite, axon )
-	int synapse_size = 0;
-	if (m_synapses.size() > 0 && (m_object_t == Object_t::SPINE || m_object_t == Object_t::BOUTON)) {
-		// or get the maximum?
-		for (int i = 0; i < m_synapses.size(); ++i) {
-			Object* synapse = m_synapses[i];
-			if (synapse_size < synapse->getVolume())
-				synapse_size = synapse->getVolume();
-		}
+	//int synapse_size = 0;
+	//if (m_synapse_ids.size() > 0 && (m_object_t == Object_t::SPINE || m_object_t == Object_t::BOUTON)) {
+	//	// or get the maximum?
+	//	for (int i = 0; i < m_synapse_ids.size(); ++i) {
+	//		Object* synapse = m_synapse_ids.at(i);
+	//		if (synapse_size < synapse->getVolume())
+	//			synapse_size = synapse->getVolume();
+	//	}
 
-	}
-	else if (m_children.size() > 0 && (m_object_t == Object_t::DENDRITE || m_object_t == Object_t::AXON)) {
-		for (int i = 0; i < m_children.size(); ++i) {
-			Object* child = m_children[i];
-			synapse_size += child->getSynapseSize();
-		}
+	//}
+	//else if (m_children.size() > 0 && (m_object_t == Object_t::DENDRITE || m_object_t == Object_t::AXON)) {
+	//	for (int i = 0; i < m_children.size(); ++i) {
+	//		Object* child = m_children[i];
+	//		synapse_size += child->getSynapseSize();
+	//	}
 
-		synapse_size /= m_children.size();
-	}
-	else {
-		synapse_size = 5;
-	}
+	//	synapse_size /= m_children.size();
+	//}
+	//else {
+	//	synapse_size = 5;
+	//}
 
-	return synapse_size;
+	return m_synapse_ids.size();
 }
 
 bool Object::hasSynapse(int synapse_id)
 {
-	for (auto& syn : m_synapses)
+	if (std::count(m_synapse_ids.begin(), m_synapse_ids.end(), synapse_id)) 
 	{
-		if (synapse_id == syn->getHVGXID())
-		{
-			return true;
-		}
+		return true;
 	}
 	return false;
 }

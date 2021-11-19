@@ -230,16 +230,6 @@ void MainWidget::updateOverviewWidget()
 	}
 }
 
-//bool MainWidget::deleteInfoVisWidget(int ID)
-//{
-//  QGroupBox* widget = m_info_vis_boxes[ID];
-//  widget->hide();
-//  m_gl_layout->removeWidget(widget);
-//  delete widget;
-//  
-//  return true;
-//}
-
 Vis MainWidget::getVisInfo(int id)
 {
 	return m_abstraction_space->m_vis_space.at(id);
@@ -308,31 +298,6 @@ bool MainWidget::deleteAllInfoVisWidgets()
 
 	return true;
 }
-
-//bool MainWidget::deleteAllGLWidgets()
-//{
-  // clear group box map
-  //for (auto it = m_gl_boxes.cbegin(); it != m_gl_boxes.cend();)
-  //{
-  //  int ID = (*it).first;
-  //  QGroupBox* widget = (*it).second;
-  //  widget->hide();
-  //  m_gl_layout->removeWidget(widget);
-  //  delete widget;
-  //  it = m_gl_boxes.erase(it);
-  //}
-
-  //// clear group box map
-  //for (auto it = m_opengl_views.cbegin(); it != m_opengl_views.cend();)
-  //{
-  //  it = m_opengl_views.erase(it);
-  //}
-
-  //m_current_col = 0;
-  //m_current_row = 0;
-
-  //return false;
-//}
 
 bool MainWidget::deleteAllWidgets(bool deleteGeneralInfoVisWidgets)
 {
@@ -641,17 +606,6 @@ void MainWidget::clearWidget(QWidget* widget)
 	}
 }
 
-//void MainWidget::keyPressEvent(QKeyEvent* event)
-//{
-// /* qDebug() << "Key pressed";
-//  switch (event->key())
-//  {
-//  case(Qt::Key_A):
-//    addInfoVisWidget(m_lastID);
-//    break;
-//  }*/
-//}
-
 void MainWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
@@ -674,10 +628,9 @@ void MainWidget::initializeGL()
 	m_overview->layout()->addWidget(overview);
 }
 
-
-
 void MainWidget::resizeGL(int width, int height)
 {
+
 }
 
 void MainWidget::paintGL()

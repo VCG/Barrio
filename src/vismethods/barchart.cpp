@@ -84,10 +84,10 @@ QString BarChart::createJSONString(QList<int>* selected_mitos, double distance_t
 		int group_synapse_counter = 0;
 		if (synapse_param == related_synapses)
 		{
-			for each (Object * syn in *cell->getSynapses())
+			for each (int syn_id in *cell->getSynapseIDs())
 			{
-				QString syn_name = syn->getName().c_str();
-				double distance_to_mito = distance_map->at(syn->getHVGXID());
+				QString syn_name = objects->at(syn_id)->getName().c_str();
+				double distance_to_mito = distance_map->at(syn_id);
 
 				selected_syns[syn_name] = distance_to_mito;
 				group_synapse_counter++;

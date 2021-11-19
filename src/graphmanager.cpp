@@ -43,7 +43,7 @@ void GraphManager::ExtractGraphFromMesh()
 	// create a node for each object and store it in neurites_nodes
 
 	std::vector<Node*> neurites_nodes;
-	std::vector<QVector2D> edges_info = m_data_containter->getNeuritesEdges();
+	//std::vector<QVector2D> edges_info = m_data_containter->getNeuritesEdges();
 
 	std::vector<Node*> neurites_skeletons_nodes;
 	std::vector<QVector4D> neurites_skeletons_edges;

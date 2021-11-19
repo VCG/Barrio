@@ -122,7 +122,7 @@ public:
 	void updateClosestAstroVertex(float dist, int vertexIdx);
 	void UpdateSynapseData(int axons_id, int dendrite_id, int spine_id, int bouton_id);
 	void addSynapse(Object* synapse_object);
-	std::vector<Object*>* getSynapses() { return &m_synapses; }
+	std::vector<int>* getSynapseIDs() { return &m_synapse_ids; }
 	struct synapse getSynapseData() { return m_synapse_data; }
 
 	void setMappedValue(float value) { m_mappedValue = value; }
@@ -176,7 +176,7 @@ private:
 	float									  m_mappedValue;
 
 
-	std::vector<Object*>                    m_synapses;     // list of synapses
+	//std::vector<Object*>                    m_synapses;     // list of synapses
 	std::vector<int>                        m_synapse_ids;
 	struct synapse                          m_synapse_data;
 

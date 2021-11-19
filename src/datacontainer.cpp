@@ -16,51 +16,16 @@ DataContainer::DataContainer(InputForm* input_form) :
 	max_volume(2),
 	max_astro_coverage(0),
 	max_synapse_volume(0),
-	m_limit(1),
 	m_vertex_offset(0),
-	m_faces_offset(0),
-	m_debug_msg(false)
+	m_faces_offset(0)
 {
-
 	m_mesh_processing = new MeshProcessing();
-
-	input_files_dir = input_form->getInputFilesPath();
-
-	m_limit = input_form->getObjectsCountLimit();
-	m_load_data = input_form->getLoadDataType();
-
-	// check if the extra files exist or not
-	m_loadType = input_form->getLoadFileType(); // disable all allow only one type (astrocyte or neurites)
-
-	if (m_loadType == LoadFile_t::DUMP_ASTRO || m_loadType == LoadFile_t::DUMP_NEURITES)
-		m_normals_t = Normals_t::DUMP_NORMAL;
-	else
-		m_normals_t = Normals_t::LOAD_NORMAL;
-
 	m_mesh = new Mesh();
-	m_glycogen3DGrid.setSize(DIM_G, DIM_G, DIM_G);
-	m_boutonHash.setSize(32, 32, 32);
-	m_spineHash.setSize(32, 32, 32);
-	m_neuroMitoHash.setSize(32, 32, 32);
-
 	objs_filename = QString("/objects.cereal");
 
-	/* 1: load all data */
 	loadData();
-
-	///* 2: build missing skeletons due to order of objects in file */
-	//buildMissingSkeletons();
-
-	///* 3 */
-	//qDebug() << "setting up glycogen octree";
-	//m_glycogenOctree.initialize(&m_glycogenList);
-	//qDebug() << "octree ready";
-
-	this->recomputeMaxValues(false);
 }
 
-//----------------------------------------------------------------------------
-//
 DataContainer::~DataContainer()
 {
 	qDebug() << "~Mesh()";
@@ -69,37 +34,22 @@ DataContainer::~DataContainer()
 	}
 }
 
-//----------------------------------------------------------------------------
-//
-// *** To write binary files:
-// run 1)  m_loadType = LoadFile_t::DUMP_ASTRO;
-// run 2)  m_loadType = LoadFile_t::DUMP_NEURITES;
-// *** To read from binary files:
-// m_loadType = LoadFile_t::LOAD_MESH_NO_VERTEX;
-// *** To read from normal xml:
-// m_loadType = LoadFile_t::LOAD_MESH_W_VERTEX;
 void DataContainer::loadData()
 {
 	QString data_path(PATH + QString("data"));
 	QString cache_subpath = QString("/cache_m3");
 
 	QString neurites_path = data_path + "/m3_data/m3_all_corrected.obj";
-	QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
-	QString astro_path = data_path + "/m3_data/m3_astrocyte.obj";
 	QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
-	QString hvgx_path = data_path + "/m3_data/m3_full_corr.hvgx";
+	//QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
 
-	PreLoadMetaDataHVGX(hvgx_path);
-
-	if (RECOMPUTE_DATA)
+	if (true)
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
-
 		importObj(neurites_path);
-
 		auto t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> ms = t2 - t1;
 
+		std::chrono::duration<double, std::milli> ms = t2 - t1;
 		qDebug() << "Objects Loading time: " << ms.count();
 		qDebug() << "faces: " << m_mesh->getFacesListSize();
 		qDebug() << "vertices: " << m_mesh->getVerticesSize();
@@ -107,42 +57,22 @@ void DataContainer::loadData()
 
 		compute_centers();
 		compute_distance_mito_cell_boundary();
-
-		compute_closest_distance_to_structures();
+		//compute_closest_distance_to_structures();
 
 		qDebug() << "------------ Writing data to cache now ---------------";
-
 		writeDataToCache(data_path + cache_subpath);
-
 		qDebug() << "------------ Done writing data to cache ---------------";
 	}
 	else
 	{
-		loadDataFromCache(data_path + cache_subpath);
-
-
-		importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
-		//importSkeletons(mitos_skeletons_path, Object_t::MITO);
-		importSemanticSkeleton(semantic_skeleton_path);
+		loadDataFromCache(data_path + cache_subpath);	
 	}
 
-	/* 3 */
-
-	PostloadMetaDataHVGX(hvgx_path);
+	importSemanticSkeleton(semantic_skeleton_path);
+	//importSkeletons(neurite_skeletons_path, Object_t::DENDRITE);
+	//importSkeletons(mitos_skeletons_path, Object_t::MITO);
 }
 
-//----------------------------------------------------------------------------
-//
-bool DataContainer::isNormalsEnabled()
-{
-	if (m_normals_t == Normals_t::NO_NORMALS)
-		return false;
-
-	return true;
-}
-
-//----------------------------------------------------------------------------
-//
 char* DataContainer::loadRawFile(QString path, int size)
 {
 	QFile  file(path);
@@ -160,107 +90,6 @@ char* DataContainer::loadRawFile(QString path, int size)
 	return  buffer;
 }
 
-//----------------------------------------------------------------------------
-//
-void DataContainer::loadConnectivityGraph(QString path)
-{
-	qDebug() << "Func: loadConnectivityGraph";
-	QFile file(path);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		qDebug() << "Could not open the file for reading";
-		return;
-	}
-
-	QTextStream in(&file);
-	QList<QByteArray> wordList;
-	while (!file.atEnd()) {
-		QByteArray line = file.readLine();
-		wordList = line.split(',');
-
-		if (wordList[0] == "Id") {
-			continue;
-		}
-		else {
-			if (wordList.size() < 3) {
-				qDebug() << "wordList.size() < 3";
-				return;
-			}
-			int ID = wordList[0].toInt();
-			int nodeID1 = wordList[1].toInt();
-			int nodeID2 = wordList[2].toInt();
-
-			QVector2D edge_info = QVector2D(nodeID1, nodeID2);
-			neurites_neurite_edge.push_back(edge_info);
-		}
-	}
-
-	file.close();
-}
-
-void DataContainer::addEdgeToConnectivityGraph(int n1, int n2, std::set< std::tuple<int, int> >& connectivity_e_set)
-{
-
-	if (connectivity_e_set.find(std::tuple<int, int>(n1, n2)) != connectivity_e_set.end())
-		return;
-
-	if (!n1 || !n2)
-		return;
-
-	connectivity_e_set.insert(std::tuple<int, int>(n1, n2));
-	neurites_neurite_edge.push_back(QVector2D(n1, n2));
-}
-
-void DataContainer::parseSynapsesGraph(QList<QByteArray>& wordList, std::set< std::tuple<int, int> >& connectivity_e_set)
-{
-	// connectivity info
-	// id, vol_node_id, abs_edge_id, axon_id, dendrite_id, spine_id, bouton_id, name
-	// if no ID -> 0
-	int hvgxID = wordList[1].toInt(); // object ID
-	int axon_id = wordList[4].toInt();
-	int dendrite_id = wordList[5].toInt();
-	int spine_id = wordList[6].toInt();
-	int bouton_id = wordList[7].toInt();
-
-	unsigned int synapse_parts = 0; // 1111
-
-	if (axon_id > 0)        synapse_parts |= 1 << 3;
-	if (dendrite_id > 0)    synapse_parts |= 1 << 2;
-	if (spine_id > 0)       synapse_parts |= 1 << 1;
-	if (bouton_id > 0)      synapse_parts |= 1 << 0;
-
-
-	switch (synapse_parts) {
-	case 15:
-		addEdgeToConnectivityGraph(dendrite_id, spine_id, connectivity_e_set);
-		addEdgeToConnectivityGraph(axon_id, bouton_id, connectivity_e_set);
-		addEdgeToConnectivityGraph(spine_id, bouton_id, connectivity_e_set);
-		break;
-	case 14:
-		qDebug() << "no bouton";
-		addEdgeToConnectivityGraph(dendrite_id, spine_id, connectivity_e_set);
-		addEdgeToConnectivityGraph(axon_id, spine_id, connectivity_e_set);
-		break;
-	case 13:
-		qDebug() << "no spine";
-		addEdgeToConnectivityGraph(dendrite_id, bouton_id, connectivity_e_set);
-		addEdgeToConnectivityGraph(axon_id, bouton_id, connectivity_e_set);
-		break;
-	case 9:
-		qDebug() << "no den or spine";
-		addEdgeToConnectivityGraph(axon_id, bouton_id, connectivity_e_set);
-		break;
-	case 6:
-		qDebug() << "no axon or bouton";
-		addEdgeToConnectivityGraph(dendrite_id, spine_id, connectivity_e_set);
-		break;
-	case 0:
-		qDebug() << "nothing. Check this problematic object " << hvgxID;
-		break;
-	default:
-		qDebug() << synapse_parts << "Case Was Missed!!"; break;
-	}
-}
-
 bool DataContainer::isWithinDistance(int from, int to, float threshold)
 {
 	Object* from_object = getObject(from);
@@ -274,66 +103,6 @@ bool DataContainer::isWithinDistance(int from, int to, float threshold)
 		}
 	}
 	return false;
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::PreLoadMetaDataHVGX(QString path)
-{
-	QFile file(path);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		qDebug() << "Could not open the file for reading";
-		return;
-	}
-
-	// temp set to check for edges
-	std::set< std::tuple<int, int> > connectivity_e_set;
-
-
-	QTextStream in(&file);
-	QList<QByteArray> wordList;
-	int glycogenCount = 0;
-	while (!file.atEnd()) {
-		QByteArray line = file.readLine();
-		wordList = line.split(',');
-
-
-		if (wordList[0] == "sg") {
-			// vast_id, flags, r,g,b, pattern1, r2, g2, b2, pattern2, anchorx, anchory, anchorz, parent_id, child_id, previous_sibiling_id, next_sibiling_id, collapsed, bboxx1, bboxy1, bboxz1, bboxx2, bboxy2, bboxz2, voxels, type, object_id, name
-			std::string object_type = wordList[26].toStdString();
-
-			if (object_type == "MITOCHONDERIA") {
-				qDebug() << line;
-				continue;
-			}
-
-			int hvgxID = wordList[1].toInt();
-			int parentID = wordList[14].toInt();
-			QString name = wordList[28];
-			name.replace("\n", "");
-
-			m_id_name_map.insert(std::pair< std::string, int>(name.toStdString(), hvgxID));
-
-			m_parents[hvgxID] = parentID;
-
-			if (object_type == "DENDRITE" || object_type == "SPINE" || object_type == "AXON" || object_type == "BOUTON") {
-				addEdgeToConnectivityGraph(parentID, hvgxID, connectivity_e_set);
-			}
-
-		}
-		else if (wordList[0] == "mt") {
-			// update mitochoneria parent here if any exists
-			//"mt,1053,307,DENDRITE,144,mito_d048_01_029\n"
-			int hvgxID = wordList[1].toInt();
-			int parentID = wordList[4].toInt();
-			m_parents[hvgxID] = parentID;
-		}
-		else if (wordList[0] == "sy") {
-			parseSynapsesGraph(wordList, connectivity_e_set);
-		}
-	}
-
-	file.close();
 }
 
 bool DataContainer::hasSemanticSkeleton(int hvgx)
@@ -392,286 +161,7 @@ void DataContainer::readObjects(QString path)
 
 		m_objects[hvgxID] = &obj;
 	}
-}
 
-//----------------------------------------------------------------------------
-// load this after loading obj file
-// get center from here, and volume, and connectivity?
-void DataContainer::PostloadMetaDataHVGX(QString path)
-{
-	QFile file(path);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		qDebug() << "Could not open the file for reading";
-		return;
-	}
-
-	QTextStream in(&file);
-	QList<QByteArray> wordList;
-	int glycogenCount = 0;
-	while (!file.atEnd())
-	{
-		QByteArray line = file.readLine();
-		wordList = line.split(',');
-
-		if (wordList[0] == "sg") {
-			// update the nodes center here?
-			// get the point from neurite to astrocyte skeleton
-			// update: m_closest_astro_vertex.first -> astro skeleton point ID
-			// or get theat point from astrocyte and mark it with the object ID
-
-			// just to debug the value and see if it is on astrocyte skeleton
-			// use center as this value
-
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			//int pID = wordList[18].toInt();
-			float x = wordList[19].toFloat();
-			float y = wordList[20].toFloat();
-			float z = wordList[21].toFloat();
-		}
-		else if (wordList[0] == "sy") {
-			// add this info to the related objects
-			// id, vol_node_id, abs_edge_id, axon_id, dendrite_id, spine_id, bouton_id, name
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			int axon_id = wordList[4].toInt();
-			int dendrite_id = wordList[5].toInt();
-			int spine_id = wordList[6].toInt();
-			int bouton_id = wordList[7].toInt();
-
-			Object* synapse = m_objects[hvgxID];
-			synapse->UpdateSynapseData(axon_id, dendrite_id, spine_id, bouton_id);
-
-			if (axon_id && m_objects.find(axon_id) != m_objects.end()) {
-				m_objects[axon_id]->addSynapse(synapse);
-			}
-
-			if (dendrite_id && m_objects.find(dendrite_id) != m_objects.end()) {
-				m_objects[dendrite_id]->addSynapse(synapse);
-			}
-
-			if (spine_id && m_objects.find(spine_id) != m_objects.end()) {
-				m_objects[spine_id]->addSynapse(synapse);
-			}
-
-			if (bouton_id && m_objects.find(bouton_id) != m_objects.end()) {
-				m_objects[bouton_id]->addSynapse(synapse);
-			}
-
-
-		}
-		else if (wordList[0] == "mt") {
-			// update mitochoneria parent here if any exists
-			//"mt,1053,307,DENDRITE,144,mito_d048_01_029\n"
-			int hvgxID = wordList[1].toInt();
-			int parentID = wordList[4].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			if (m_objects.find(parentID) == m_objects.end()) {
-				continue;
-			}
-
-			m_objects[hvgxID]->setParentID(parentID);
-			m_objects[parentID]->addChild(m_objects[hvgxID]);
-
-		}
-		else if (wordList[0] == "bo") {
-			// id, vesicleNo, volume, surfaceArea, axon_id, name, is_terminal_branch, is_mitochondrion
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			int parentID = m_objects[hvgxID]->getParentID();
-			if (m_objects.find(parentID) == m_objects.end()) {
-				continue;
-			}
-
-			Object* parent = m_objects[parentID];
-			int function = parent->getFunction();
-			m_objects[hvgxID]->setFunction(function);
-
-		}
-		else if (wordList[0] == "sp") {
-			// id, psd_area, volume, dendrite_id, does_form_synapse, with_apparatus, has_glia_nearby, spine name
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			int parentID = m_objects[hvgxID]->getParentID();
-			if (m_objects.find(parentID) == m_objects.end()) {
-				continue;
-			}
-
-			Object* parent = m_objects[parentID];
-			int function = parent->getFunction();
-			m_objects[hvgxID]->setFunction(function);
-
-		}
-		else if (wordList[0] == "dn") {
-			// id, function (0:ex,1:in), abs_node_id, name
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			int function = wordList[2].toInt();
-			m_objects[hvgxID]->setFunction(function);
-
-		}
-		else if (wordList[0] == "ax") {
-			// id, function (0:ex,1:in), is_mylenated, abs_node_id, name
-			int hvgxID = wordList[1].toInt();
-			if (m_objects.find(hvgxID) == m_objects.end()) {
-				continue;
-			}
-
-			int function = wordList[2].toInt();
-			m_objects[hvgxID]->setFunction(function);
-		}
-
-
-	}
-
-	file.close();
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::parseSkeleton(QXmlStreamReader& xml, Object* obj)
-{
-	// read skeleton vertices and their edges
-	// read vertices and their faces into the mesh
-	if (xml.tokenType() != QXmlStreamReader::StartElement && xml.name() != "skeleton") {
-		qDebug() << "Called XML parseObejct without attribs";
-		return;
-	}
-
-	if (m_debug_msg)
-		qDebug() << xml.name();
-
-	xml.readNext();
-
-	if (obj->getObjectType() == Object_t::SYNAPSE)
-		return;
-
-	// this object structure is not done
-	while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "skeleton")) {
-		// go to the next child of object node
-		if (xml.tokenType() == QXmlStreamReader::StartElement) {
-			if (xml.name() == "nodes") { // make it v
-				parseSkeletonNodes(xml, obj);
-			}
-			else if (xml.name() == "points") {
-				parseSkeletonPoints(xml, obj);
-			}
-			else if (xml.name() == "branches") { // children has only branches which uses their parents points
-		   // process branches
-				parseBranch(xml, obj);
-			}
-		} // if start element
-		xml.readNext();
-	} // while
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::parseSkeletonNodes(QXmlStreamReader& xml, Object* obj)
-{
-	// read vertices and their faces into the mesh
-	if (xml.tokenType() != QXmlStreamReader::StartElement && xml.name() != "nodes") {
-		qDebug() << "Called XML parseSkeletonNodes without attribs";
-		return;
-	}
-
-	if (m_debug_msg)
-		qDebug() << xml.name();
-
-	xml.readNext();
-
-	int nodes = 0;
-
-	// this object structure is not done
-	while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "nodes")) {
-		// go to the next child of object node
-		if (xml.tokenType() == QXmlStreamReader::StartElement) {
-			if (xml.name() == "v") {
-				++nodes;
-				xml.readNext();
-				QString coords = xml.text().toString();
-				QStringList stringlist = coords.split(" ");
-				if (stringlist.size() < 3) {
-					continue;
-				}
-
-				float x = stringlist.at(0).toDouble() / MESH_MAX_X;
-				float y = stringlist.at(1).toDouble() / MESH_MAX_X;
-				float z = stringlist.at(2).toDouble() / MESH_MAX_X;
-				QVector3D node(x, y, z);
-				obj->addSkeletonNode(node);
-			}
-		} // if start element
-		xml.readNext();
-	} // while
-
-
-	if (m_debug_msg)
-		qDebug() << "nodes count: " << nodes;
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::parseSkeletonPoints(QXmlStreamReader& xml, Object* obj)
-{
-	// read vertices and their faces into the mesh
-	if (xml.tokenType() != QXmlStreamReader::StartElement && xml.name() != "points") {
-		qDebug() << "Called XML parseSkeletonNodes without attribs";
-		return;
-	}
-
-	if (m_debug_msg)
-		qDebug() << xml.name();
-
-	xml.readNext();
-
-	int nodes = 0;
-
-	// this object structure is not done
-	while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "points")) {
-		// go to the next child of object node
-		if (xml.tokenType() == QXmlStreamReader::StartElement) {
-			if (xml.name() == "v") {
-				++nodes;
-				m_skeleton_points_size++;
-				xml.readNext();
-				QString coords = xml.text().toString();
-				QStringList stringlist = coords.split(" ");
-				if (stringlist.size() < 3) {
-					continue;
-				}
-
-				// children? they should not have points
-				float x = stringlist.at(0).toDouble() / MESH_MAX_X;
-				float y = stringlist.at(1).toDouble() / MESH_MAX_X;
-				float z = stringlist.at(2).toDouble() / MESH_MAX_X;
-				QVector3D node(x, y, z);
-				obj->addSkeletonPoint(node);
-			}
-		} // if start element
-		xml.readNext();
-	} // while
-
-	if (m_debug_msg)
-		qDebug() << "points count: " << nodes;
 }
 
 int DataContainer::getObjectThatHasSynapse(int syn_id, int not_this_object)
@@ -750,7 +240,6 @@ bool DataContainer::importObj(QString path)
 			obj = new Object(name.toUtf8().constData(), hvgxID);
 
 			obj->setVolume(2.0f);
-			//obj->setCenter(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 			obj->setAstPoint(QVector4D(1.0f / MESH_MAX_X, 1.0f / MESH_MAX_Y, 1.0f / MESH_MAX_Z, 0));
 
 			m_objects[hvgxID] = obj;
@@ -1162,130 +651,35 @@ void DataContainer::processParentChildStructure()
 		bouton->setParentID(parent->getHVGXID());
 		parent->addChildID(bouton->getHVGXID());
 	}
-}
 
-//----------------------------------------------------------------------------
-//
-void DataContainer::parseBranch(QXmlStreamReader& xml, Object* obj)
-{
-	// b -> one branch
-	// knots
-	// points
-	if (xml.tokenType() != QXmlStreamReader::StartElement && xml.name() != "branches") {
-		qDebug() << "Called XML parseBranch without attribs";
-		return;
-	}
+	std::vector<Object*> synapses = getObjectsByType(Object_t::SYNAPSE);
+	for (auto const& syn : synapses)
+	{
+		QString name = syn->getName().c_str();
+		QList<QString> nameList = name.split("_");
+		QString synapse_identifier = nameList[1];
 
-	if (m_debug_msg)
-		qDebug() << xml.name();
-
-	xml.readNext();
-
-	if (obj == NULL) {
-		qDebug() << "Problem Obj is Null parseBranch.";
-		return;
-	}
-
-	SkeletonBranch* branch = NULL;
-	// this object structure is not done
-	while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "branches")) {
-		// go to the next child of object node
-		if (xml.tokenType() == QXmlStreamReader::StartElement) {
-			if (xml.name() == "b") {
-				branch = new SkeletonBranch();
-				int ID = xml.attributes().value("name").toInt();
-			}
-			else if (xml.name() == "knots") { // for children knots uses parents points not nodes
-				if (branch == NULL) {
-					qDebug() << "branch null";
-					continue;
-				}
-				xml.readNext();
-				// two integers for the skeleton end nodes IDs
-				QString coords = xml.text().toString();
-				QStringList stringlist = coords.split(" ");
-				if (stringlist.size() < 2) {
-					continue;
-				}
-
-				int knot1 = stringlist.at(0).toInt();
-				int knot2 = stringlist.at(1).toInt();
-				branch->addKnots(knot1, knot2);
-			}
-			else if (xml.name() == "points_ids") { // uses parent points, I need to mark these points with the child ID that uses them
-				if (branch == NULL || obj == NULL) {
-					qDebug() << "branch null or obj is NULL";
-					continue;
-				}
-				xml.readNext();
-				// list of integers for points IDs
-				QString coords = xml.text().toString();
-				QStringList stringlist = coords.split(" ");
-				branch->addPointsIndxs(stringlist);
-				int parentID = obj->getParentID();
-				Object* parent = NULL;
-				if (m_objects.find(parentID) != m_objects.end()) {
-					parent = m_objects[parentID];
-				}
-
-				if (parent != NULL && parent->hasParent()) {
-					int parentParentID = parent->getParentID();
-					if (m_objects.find(parentParentID) == m_objects.end()) {
-						qDebug() << "No parentParentID Again!!! " << parentParentID << " " << obj->getHVGXID();
-					}
-					else {
-						parent = m_objects[parentParentID];
-					}
-				}
-
-				// pass parent here if exists else null
-				bool branch_added = obj->addSkeletonBranch(branch, parent);
-				if (branch_added == false) {
-					// add this to the list that would be processed later again
-					m_missingParentSkeleton.insert(obj);
-				}
-			}
-		} // if start element
-		xml.readNext();
-	} // while
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::buildMissingSkeletons()
-{
-	int k = 0;
-
-	// check the missing skeletons due to missing parents
-	for (auto iter = m_missingParentSkeleton.begin(); iter != m_missingParentSkeleton.end(); ++iter) { // 135
-		Object* obj = *iter;
-		// get object parent
-		int parentID = obj->getParentID();
-		if (m_objects.find(parentID) == m_objects.end()) {
-			qDebug() << "No Parent Again!!! " << parentID << " " << obj->getHVGXID();
-			continue;
+		// parse dendrite name
+		QString dendrite_identifier = synapse_identifier.mid(0, 4);
+		QString dendrite_name = dendrite_identifier.replace("D", "Dendrite");
+		Object* dendrite = getObjectByName(dendrite_name);
+		if (dendrite != nullptr)
+		{
+			dendrite->addSynapse(syn);
+			syn->setParentID(dendrite->getHVGXID());
 		}
 
-		m_objects[parentID]->addChild(obj);
-
-		Object* parent = m_objects[parentID];
-
-		if (parent->hasParent()) {
-			int parentParentID = parent->getParentID();
-			if (m_objects.find(parentParentID) == m_objects.end()) {
-				qDebug() << "No parentParentID Again!!! " << parentParentID << " " << obj->getHVGXID();
-				continue;
-			}
-
-			parent = m_objects[parentParentID];
-			m_objects[parentParentID]->addChild(obj);// and if parent has parent add it to the parent as well
+		// parse axon name
+		QString axon_identifier = synapse_identifier.mid(7, 4);
+		qDebug() << "Axon identifier: " << axon_identifier;
+		QString axon_name = axon_identifier.replace("A", "Axon");
+		Object* axon = getObjectByName(axon_name);
+		if (axon != nullptr)
+		{
+			axon->addSynapse(syn);
+			syn->setParentID(axon->getHVGXID());
 		}
-		if (m_debug_msg)
-			qDebug() << k++ << " " << obj->getHVGXID() << " " << obj->getName().data();
-		obj->fixSkeleton(parent);
 	}
-
-	m_missingParentSkeleton.clear();
 }
 
 int DataContainer::getTypeByID(int hvgx)
@@ -1299,55 +693,19 @@ int DataContainer::getTypeByID(int hvgx)
 	return -1;
 }
 
-
-//----------------------------------------------------------------------------
-//
-int DataContainer::getSkeletonPointsSize()
-{
-	return m_skeleton_points_size;
-}
-
-//----------------------------------------------------------------------------
-//
 Mesh* DataContainer::getMesh()
 {
 	return m_mesh;
 }
 
-//----------------------------------------------------------------------------
-//
 int DataContainer::getMeshIndicesSize()
 {
 	return m_indices_size;
 }
 
-//----------------------------------------------------------------------------
-//
-unsigned char* DataContainer::getGlycogen3DGridData()
-{
-	return m_glycogen3DGrid.getData8Bit();
-}
-
-void DataContainer::resetMappingValues()
-{
-	for (auto iter = m_objects.begin(); iter != m_objects.end(); iter++)
-	{
-		iter->second->setMappedValue(0);
-	}
-}
-
-//----------------------------------------------------------------------------
-//
 std::map<int, Object*>  DataContainer::getObjectsMap()
 {
 	return m_objects;
-}
-
-//----------------------------------------------------------------------------
-//
-std::vector<QVector2D> DataContainer::getNeuritesEdges()
-{
-	return neurites_neurite_edge;
 }
 
 int DataContainer::getIndexByName(QString name)
@@ -1432,8 +790,6 @@ void DataContainer::compute_closest_distance_to_structures()
 	}
 }
 
-//----------------------------------------------------------------------------
-//
 Object_t DataContainer::getObjectTypeByID(int hvgxID)
 {
 	Object* obj = m_objects[hvgxID]; // check if the ID is valid
@@ -1443,15 +799,11 @@ Object_t DataContainer::getObjectTypeByID(int hvgxID)
 	return obj->getObjectType();
 }
 
-//----------------------------------------------------------------------------
-//
 std::vector<Object*> DataContainer::getObjectsByType(Object_t type)
 {
 	return m_objectsByType[type];
 }
 
-//----------------------------------------------------------------------------
-//
 std::string DataContainer::getObjectName(int hvgxID)
 {
 	if (hvgxID == 0)
@@ -1462,8 +814,6 @@ std::string DataContainer::getObjectName(int hvgxID)
 	return m_objects[hvgxID]->getName();
 }
 
-//----------------------------------------------------------------------------
-//
 Object* DataContainer::getObject(int hvgxID)
 {
 	if (hvgxID > 0 && m_objects.count(1) == 1)
@@ -1531,49 +881,4 @@ int DataContainer::addSliceVertex(float y, float z, float u, float v)
 	vertex->is_skeleton = false;
 
 	return vertexIdx;
-}
-
-//----------------------------------------------------------------------------
-//
-void DataContainer::recomputeMaxValues(bool weighted)
-{
-	float temp_max_astro_coverage = 0;
-	float temp_max_synapse_volume = 0;
-	int temp_max_volume = 1;
-	float weightByVolume = 1;
-
-	for (auto iter = m_objects.begin(); iter != m_objects.end(); iter++) {
-		Object* obj = (*iter).second;
-		if (obj->isFiltered() || obj->getObjectType() == Object_t::ASTROCYTE)
-			continue;
-
-		if (obj->getObjectType() == Object_t::MITO) {
-			// check its parent, if astrocyte it wont be fair to include it
-			int parentID = obj->getParentID();
-			if (m_objects.find(parentID) != m_objects.end()) {
-				Object* parent = m_objects[parentID];
-				if (parent->getObjectType() == Object_t::ASTROCYTE)
-					continue;
-			}
-		}
-
-		if (weighted) {
-			weightByVolume = obj->getVolume() / max_volume;
-		}
-
-		if (temp_max_synapse_volume < obj->getSynapseSize())
-			temp_max_synapse_volume = obj->getSynapseSize();
-
-		// need to update these info whenever we filter or change the threshold
-		if (temp_max_astro_coverage < weightByVolume * obj->getAstroCoverage())
-			temp_max_astro_coverage = weightByVolume * obj->getAstroCoverage();
-
-		if (temp_max_volume < obj->getVolume())
-			temp_max_volume = obj->getVolume();
-
-	}
-
-	max_synapse_volume = temp_max_synapse_volume;
-	max_volume = temp_max_volume;
-	max_astro_coverage = temp_max_astro_coverage;
 }

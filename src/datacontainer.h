@@ -71,13 +71,6 @@ public:
 
 	void loadData();
 
-	bool isNormalsEnabled();
-
-	void parseSkeleton(QXmlStreamReader& xml, Object* obj);
-	void parseSkeletonNodes(QXmlStreamReader& xml, Object* obj);
-	void parseBranch(QXmlStreamReader& xml, Object* obj);
-	void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
-
 	int getObjectThatHasSynapse(int syn_id, int not_this_object);
 	QList<int> getMitosOfCell(int cell_id);
 
@@ -89,11 +82,6 @@ public:
 
 	void processParentChildStructure();
 
-	void loadConnectivityGraph(QString path);
-	void addEdgeToConnectivityGraph(int, int, std::set< std::tuple<int, int> >&);
-	void parseSynapsesGraph(QList<QByteArray>&, std::set< std::tuple<int, int> >&);
-	void PostloadMetaDataHVGX(QString path);
-	void PreLoadMetaDataHVGX(QString path);
 	bool findAndSetParentID(Object* obj, int hvgxID);
 
 	bool hasSemanticSkeleton(int hvgx);
@@ -106,14 +94,11 @@ public:
 	SpacePartitioning::SpatialHash3D* getSpineHash() { return &m_spineHash; }
 	SpacePartitioning::SpatialHash3D* getBoutonHash() { return &m_boutonHash; }
 	SpacePartitioning::SpatialHash3D* getNeuroMitoHash() { return &m_neuroMitoHash; }
-	unsigned char* getGlycogen3DGridData();
-	void								  resetMappingValues();
 
 
 	// graph related function
 	std::map<int, Object*>  getObjectsMap();
 	std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
-	std::vector<QVector2D>  getNeuritesEdges();
 
 	QVector<int>* getSkeletonIndices() { return &m_skeleton_indices; }
 
@@ -128,8 +113,6 @@ public:
 	void compute_mito_distances(Object* synapse); // computes distance to closest mitochondrion for the given synapse
 	void compute_closest_distance_to_structures();
 
-
-	int   getSkeletonPointsSize();
 	int   getMeshIndicesSize();
 	Mesh* getMesh();
 
@@ -148,20 +131,13 @@ public:
 	int     getMaxVolume() { return max_volume; }
 	int     getMaxSynapseVolume() { return max_synapse_volume; }
 
-	// iterate over objects and get max volume and astro coverage
-	void recomputeMaxValues(bool weighted);
-
-	//************ Load Raw Data
 	char* loadRawFile(QString path, int size);
 
-
-	void buildMissingSkeletons();
 
 	int getIndicesSizeByObjectType(Object_t type) { return m_indices_size_byType[type]; }
 	int getTypeByID(int hvgx);
 
 public:
-	struct input_files                          input_files_dir;
 	QString                                     m_sematic_skeleton_json;
 
 protected:
@@ -180,8 +156,6 @@ protected:
 	int                                         m_indices_size; // used to allocate indices of a mesh
 	int                                         m_vertex_offset; // used to unify vertices for one mesh
 	int                                         m_faces_offset; // used to unify vertices for one mesh
-
-	int                                         m_limit;
 
 	// objects
 	std::map<int, int>                          m_parents;
@@ -203,13 +177,6 @@ protected:
 	SpacePartitioning::SpatialHash3D			  m_boutonHash;
 	SpacePartitioning::SpatialHash3D			  m_spineHash;
 	SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;
-
-	// file management
-	Normals_t                                   m_normals_t;
-	LoadFile_t                                  m_loadType;
-	LoadData_t                                  m_load_data;
-	bool                                        m_debug_msg;
-	std::set<Object*>                           m_missingParentSkeleton;
 
 private:
 	std::map<int, Object>                     serializable_objects;

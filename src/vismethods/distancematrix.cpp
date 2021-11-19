@@ -88,12 +88,12 @@ QString DistanceMatrix::getJSONString(QList<int>* selected_mitos, double distanc
 
 		if (synapse_param == related_synapses)
 		{
-			for (auto& syn : *cell->getSynapses())
+			for (int syn_id : *cell->getSynapseIDs())
 			{
-				double distance_to_mito = distance_map->at(syn->getHVGXID());
-				if (!selected_synapses.contains(syn->getHVGXID()))
+				double distance_to_mito = distance_map->at(syn_id);
+				if (!selected_synapses.contains(syn_id))
 				{
-					selected_synapses.append(syn->getHVGXID());
+					selected_synapses.append(syn_id);
 				}
 			}
 		}
