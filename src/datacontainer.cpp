@@ -43,7 +43,7 @@ void DataContainer::loadData()
 	QString semantic_skeleton_path = data_path + "/m3_data/skeletons.json";
 	//QString neurite_skeletons_path = data_path + "/m3_data/m3_neurite_skeletons.json";
 
-	if (true)
+	if (RECOMPUTE_DATA)
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
 		importObj(neurites_path);
@@ -57,7 +57,7 @@ void DataContainer::loadData()
 
 		compute_centers();
 		compute_distance_mito_cell_boundary();
-		//compute_closest_distance_to_structures();
+		compute_closest_distance_to_structures();
 
 		qDebug() << "------------ Writing data to cache now ---------------";
 		writeDataToCache(data_path + cache_subpath);
