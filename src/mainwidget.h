@@ -54,6 +54,12 @@ public:
 
 	void clearWidget(QWidget* widget_to_clear);
 
+	int getSelectedStructures();
+	int setVisMethodBasedOnID();
+
+	void addStructure();
+	void deleteStructure();
+
 
 	void   on_opacity_slider_changed(int value);
 	void   on_slice_position_slider_changed(int value);

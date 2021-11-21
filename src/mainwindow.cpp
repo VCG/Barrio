@@ -349,10 +349,10 @@ void MainWindow::on_number_of_bins_input_changed(int value)
 
 void MainWindow::addTask(QGroupBox* ui_element, QJsonObject task)
 {
-	QString task_name = task.value("name").toString();
+	QString task_name = task.value("scenario").toString();
 	ui_element->setTitle(task_name);
 
-	QJsonArray sub_tasks = task.value("subtasks").toArray();
+	QJsonArray sub_tasks = task.value("scenario_subtasks").toArray();
 	for (auto sub_task : sub_tasks)
 	{
 		QGroupBox* gb_sub_task = new QGroupBox();

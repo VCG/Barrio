@@ -1949,7 +1949,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "NeuroKit", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Barrio", nullptr));
         dockWidget->setWindowTitle(QString());
         groupBox_24->setTitle(QCoreApplication::translate("MainWindow", "Preview", nullptr));
         groupBox_8->setTitle(QCoreApplication::translate("MainWindow", "Parameters", nullptr));

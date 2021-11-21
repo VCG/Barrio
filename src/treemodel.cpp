@@ -1,6 +1,7 @@
 #include "treemodel.h"
 #include "treeitem.h"
 #include <QFormLayout>
+#include <QFormLayout>
 
 TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainWidget) : QTreeView(parent)
 {
@@ -70,10 +71,15 @@ TreeModel::~TreeModel()
 
 void TreeModel::selectItem(const QModelIndex& index)
 {
-
 	//extracting hvgx id
 	int hvgx = index.siblingAtColumn(1).data().toInt();
+
+	int selectedStructures = m_mainwidget->getSelectedStructures();
+
+	m_mainwidget->addStructure();
+
 	m_mainwidget->addWidgetGroup(hvgx, false, m_mainwidget->allGLCameraSettings());
+	m_mainwidget->setVisMethodBasedOnID();
 
 	QColor color_selected(195, 147, 226);
 	QColor color_close(202, 205, 143);

@@ -60,6 +60,7 @@ public:
 	~AbstractionSpace();
 
 	IVisMethod* decideOnVisMethod(Vis vis);
+	Vis getVisMethod(int vis_id);
 
 	std::vector<struct AbstractionPoint> get2DSpaceVertices() { return m_vertices; }
 	std::vector<GLuint> get2DSpaceIndices() { return m_indices; }

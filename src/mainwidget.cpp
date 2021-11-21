@@ -134,6 +134,7 @@ void MainWidget::OnWidgetClose()
 	}
 
 	updateInfoVisViews();
+	deleteStructure();
 }
 
 void MainWidget::histogram_slider_changed(int bins)
@@ -211,7 +212,7 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraS
 		m_current_col = 0;
 	}
 
-	m_number_of_selected_structures++;
+
 
 	updateOverviewWidget();
 
@@ -604,6 +605,80 @@ void MainWidget::clearWidget(QWidget* widget)
 		delete item->widget();
 		delete item;
 	}
+}
+
+int MainWidget::getSelectedStructures()
+{
+	return m_number_of_selected_structures;
+}
+
+int MainWidget::setVisMethodBasedOnID()
+{
+	int id = (int)m_vis_methods.method->getType();
+	int normailzed_id = id % 3;
+
+	// switch to low cardinality vis 
+	if (m_number_of_selected_structures <= 4)
+	{
+		if (normailzed_id == 0)
+		{
+			 // all set
+		}
+		else if (normailzed_id == 1)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id - 1);
+		}
+		else if (normailzed_id == 2)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id - 2);
+			setVisMethod(vis);
+		}
+	} // switch the medium cardinality vis
+	else if(m_number_of_selected_structures > 4 && m_number_of_selected_structures <= 8)
+	{
+		if (normailzed_id == 0)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id + 1);
+			setVisMethod(vis);
+		}
+		else if (normailzed_id == 1)
+		{
+			// all set
+		}
+		else if (normailzed_id == 2)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id - 1);
+			setVisMethod(vis);
+		}
+	}
+	else if(m_number_of_selected_structures > 8) // switch to high cardinality
+	{
+		if (normailzed_id == 0)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id + 2);
+			setVisMethod(vis);
+		}
+		else if (normailzed_id == 1)
+		{
+			Vis vis = m_abstraction_space->getVisMethod(id + 1);
+			setVisMethod(vis);
+		}
+		else if (normailzed_id == 2)
+		{
+			// all set
+		}
+	}
+	return 0;
+}
+
+void MainWidget::addStructure()
+{
+	m_number_of_selected_structures += 1;
+}
+
+void MainWidget::deleteStructure()
+{
+	m_number_of_selected_structures -= 1;
 }
 
 void MainWidget::initializeGL()

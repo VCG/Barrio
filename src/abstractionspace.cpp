@@ -53,3 +53,8 @@ IVisMethod* AbstractionSpace::decideOnVisMethod(Vis vis)
 		return new Scatterplot(&m_global_vis_parameters, m_datacontainer);
 	}
 }
+
+Vis AbstractionSpace::getVisMethod(int vis_id)
+{
+	return  m_vis_space.at(vis_id);
+}
