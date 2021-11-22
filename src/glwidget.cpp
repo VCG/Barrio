@@ -321,9 +321,12 @@ quit:
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
-	camera->mouse_move_event(event);
-	update();
-	doneCurrent();
+	if (!event->modifiers().testFlag(Qt::ControlModifier))
+	{
+		camera->mouse_move_event(event);
+		update();
+		doneCurrent();
+	}
 }
 
 void GLWidget::wheelEvent(QWheelEvent* event)

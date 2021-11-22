@@ -84,12 +84,7 @@ void MainWidget::wheelEvent(QWheelEvent* event)
 		{
 			for (auto const& [id, widget] : m_opengl_views)
 			{
-				if (delta < 0) {
-					widget->zoom(1.1);
-				}
-				else {
-					widget->zoom(0.9);
-				}
+				widget->zoom(delta);
 			}
 		}
 	}
