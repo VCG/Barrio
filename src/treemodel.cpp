@@ -78,8 +78,9 @@ void TreeModel::selectItem(const QModelIndex& index)
 
 	m_mainwidget->addStructure();
 
-	m_mainwidget->addWidgetGroup(hvgx, false, m_mainwidget->allGLCameraSettings());
 	m_mainwidget->setVisMethodBasedOnID();
+	m_mainwidget->addWidgetGroup(hvgx, false, m_mainwidget->allGLCameraSettings());
+
 
 	QColor color_selected(195, 147, 226);
 	QColor color_close(202, 205, 143);

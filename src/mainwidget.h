@@ -18,7 +18,7 @@ class MainWidget : public QOpenGLWidget, MainOpenGL
 {
 	Q_OBJECT;
 public:
-	MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent = 0);
+	MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QMap<int, QGroupBox*>* selection_box, QWidget* parent = 0);
 
 	bool addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraSettings> cameraSettings);
 	void updateOverviewWidget();
@@ -56,6 +56,8 @@ public:
 
 	int getSelectedStructures();
 	int setVisMethodBasedOnID();
+
+	void highlightVisBoxes(int box_vis_id);
 
 	void addStructure();
 	void deleteStructure();
@@ -96,6 +98,7 @@ private:
 
 	QMap<int, QList<QStandardItem*>> m_selected_standard_items;
 	QMap<int, QJsonObject>* m_vis_settings;
+	QMap<int, QGroupBox*>* m_selection_box;
 
 	QGridLayout* m_main_layout;
 	QGroupBox* m_overview;

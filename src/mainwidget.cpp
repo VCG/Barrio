@@ -2,13 +2,15 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QWidget* parent)
+MainWidget::MainWidget(DataContainer* datacontainer, InputForm* input_form, QMap<int, QJsonObject>* vis_settings, RelatedWidgets relatedWidgets, QMap<int, QGroupBox*>* selection_box, QWidget* parent)
 	: QOpenGLWidget(parent)
 {
 	m_datacontainer = datacontainer;
 	m_input_form = input_form;
 	m_number_of_entities = NumberOfEntities::LOW;
 	setFocusPolicy(Qt::StrongFocus);
+
+	m_selection_box = selection_box;
 
 	m_main_layout = new QGridLayout(this);
 	m_shared_resources.all_selected_mitos = &m_all_selected_structures;
@@ -206,8 +208,6 @@ bool MainWidget::addWidgetGroup(int ID, bool isOverviewWidget, QMap<int, CameraS
 		m_current_row = m_current_row + 1;
 		m_current_col = 0;
 	}
-
-
 
 	updateOverviewWidget();
 
@@ -622,11 +622,14 @@ int MainWidget::setVisMethodBasedOnID()
 		else if (normailzed_id == 1)
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id - 1);
+			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 		else if (normailzed_id == 2)
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id - 2);
 			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 	} // switch the medium cardinality vis
 	else if(m_number_of_selected_structures > 4 && m_number_of_selected_structures <= 8)
@@ -635,6 +638,7 @@ int MainWidget::setVisMethodBasedOnID()
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id + 1);
 			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 		else if (normailzed_id == 1)
 		{
@@ -644,6 +648,7 @@ int MainWidget::setVisMethodBasedOnID()
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id - 1);
 			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 	}
 	else if(m_number_of_selected_structures > 8) // switch to high cardinality
@@ -652,11 +657,13 @@ int MainWidget::setVisMethodBasedOnID()
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id + 2);
 			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 		else if (normailzed_id == 1)
 		{
 			Vis vis = m_abstraction_space->getVisMethod(id + 1);
 			setVisMethod(vis);
+			highlightVisBoxes(vis.id);
 		}
 		else if (normailzed_id == 2)
 		{
@@ -664,6 +671,17 @@ int MainWidget::setVisMethodBasedOnID()
 		}
 	}
 	return 0;
+}
+
+void MainWidget::highlightVisBoxes(int box_vis_id)
+{
+	// reset style of other boxes
+	foreach(const auto & id, m_selection_box->keys())
+	{
+		m_selection_box->value(id)->setStyleSheet("border: 1px solid gray; font-size: 12pt");
+	}
+
+	m_selection_box->value(box_vis_id)->setStyleSheet("border: 1px solid orange; font-size: 12pt");
 }
 
 void MainWidget::addStructure()
