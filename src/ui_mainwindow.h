@@ -351,9 +351,6 @@ public:
     QGridLayout *gridLayout_10;
     QPushButton *pushButton_13;
     QSpacerItem *verticalSpacer_2;
-    QDockWidget *dockWidget_2;
-    QWidget *dockWidgetContents;
-    QGridLayout *gridLayout_25;
     QFrame *frame_64;
     QVBoxLayout *verticalLayout_23;
     QGroupBox *groupBox_16;
@@ -394,8 +391,8 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(dockWidget->sizePolicy().hasHeightForWidth());
         dockWidget->setSizePolicy(sizePolicy);
-        dockWidget->setMinimumSize(QSize(410, 668));
-        dockWidget->setMaximumSize(QSize(410, 2000));
+        dockWidget->setMinimumSize(QSize(700, 668));
+        dockWidget->setMaximumSize(QSize(700, 2000));
         dockWidget->setLayoutDirection(Qt::LeftToRight);
         dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         dockWidgetContents_2 = new QWidget();
@@ -1547,7 +1544,7 @@ public:
         toolBox_graphsParam->addItem(graph3, QString::fromUtf8("Astrocyte Skeleton - Neurites Skeleton"));
         graph4 = new QWidget();
         graph4->setObjectName(QString::fromUtf8("graph4"));
-        graph4->setGeometry(QRect(0, 0, 328, 1338));
+        graph4->setGeometry(QRect(0, 0, 284, 1338));
         formLayout = new QFormLayout(graph4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         frame_28 = new QFrame(graph4);
@@ -1882,20 +1879,9 @@ public:
 
         gridLayout_16->addWidget(tabWidget, 0, 0, 1, 1);
 
-
-        gridLayout_15->addWidget(frame_61, 0, 0, 1, 1);
-
-        dockWidget->setWidget(dockWidgetContents_2);
-        MainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-        dockWidget_2 = new QDockWidget(MainWindow);
-        dockWidget_2->setObjectName(QString::fromUtf8("dockWidget_2"));
-        dockWidget_2->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
-        dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-        gridLayout_25 = new QGridLayout(dockWidgetContents);
-        gridLayout_25->setObjectName(QString::fromUtf8("gridLayout_25"));
-        frame_64 = new QFrame(dockWidgetContents);
+        frame_64 = new QFrame(frame_61);
         frame_64->setObjectName(QString::fromUtf8("frame_64"));
+        frame_64->setMinimumSize(QSize(300, 0));
         frame_64->setMaximumSize(QSize(400, 16777215));
         frame_64->setFrameShape(QFrame::StyledPanel);
         frame_64->setFrameShadow(QFrame::Raised);
@@ -1932,10 +1918,13 @@ public:
         verticalLayout_23->addWidget(groupBox_3);
 
 
-        gridLayout_25->addWidget(frame_64, 0, 0, 1, 1);
+        gridLayout_16->addWidget(frame_64, 0, 1, 1, 1);
 
-        dockWidget_2->setWidget(dockWidgetContents);
-        MainWindow->addDockWidget(Qt::RightDockWidgetArea, dockWidget_2);
+
+        gridLayout_15->addWidget(frame_61, 0, 0, 1, 1);
+
+        dockWidget->setWidget(dockWidgetContents_2);
+        MainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
 
         retranslateUi(MainWindow);
 
