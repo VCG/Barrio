@@ -33,6 +33,7 @@ uniform sampler1D	  mito_colormap;
 uniform sampler3D     volume;
 uniform bool          showSlice;
 uniform bool          show3D;
+uniform bool          show_silhouette; 
 
 
 uniform int           maxNodes;
@@ -229,11 +230,9 @@ vec4 computeColor()
     }
     else {
         alpha = cell_opacity;
-    }
-    
+    } 
     out_color = vec4(result, alpha);
   }
-
   return out_color;
 }
 

@@ -38,195 +38,157 @@
 #include "mesh_preprocessing.h"
 
 struct MyEdge {
-  int p1;
-  int p2;
+	int p1;
+	int p2;
 };
 
 struct MyBranch {
 
-  QVector<int> indices;
-  int start_index;
-  int end_index;
-  
-  double length;
-  double avg_radius;
-  double min_radius;
-  double max_radius;
+	QVector<int> indices;
+	int start_index;
+	int end_index;
 
-  double vertex_count;
+	double length;
+	double avg_radius;
+	double min_radius;
+	double max_radius;
 
-  int type; // bouton/spine or cell body
+	double vertex_count;
+
+	int type; // bouton/spine or cell body
 };
 
 struct MySkeleton {
-  int hvgx;
-  QMap<int, MyBranch> branches;
+	int hvgx;
+	QMap<int, MyBranch> branches;
 };
 
 class DataContainer
 {
 public:
-  DataContainer(InputForm* input_form);
-  ~DataContainer();
+	DataContainer(InputForm* input_form);
+	~DataContainer();
 
-  void loadData();
+	void loadData();
 
-  bool isNormalsEnabled();
+	int getObjectThatHasSynapse(int syn_id, int not_this_object);
+	QList<int> getMitosOfCell(int cell_id);
 
-  void parseSkeleton(QXmlStreamReader& xml, Object* obj);
-  void parseSkeletonNodes(QXmlStreamReader& xml, Object* obj);
-  void parseBranch(QXmlStreamReader& xml, Object* obj);
-  void parseSkeletonPoints(QXmlStreamReader& xml, Object* obj);
+	bool importObj(QString path);
+	bool importSkeletons(QString path, Object_t skeleton_type);
+	bool importSemanticSkeleton(QString path);
 
-  int getObjectThatHasSynapse(int syn_id, int not_this_object);
-  QList<int> getMitosOfCell(int cell_id);
+	MySkeleton processSkeletonStructure(int hvgx, QList<int>* edges, std::vector< struct VertexData >* vertices);
 
-  bool importObj(QString path, int mouse_id);
+	void processParentChildStructure();
 
-  int importObjTest(QString path, int mouse_id);
+	bool findAndSetParentID(Object* obj, int hvgxID);
 
-  QString getName(QString name);
+	bool hasSemanticSkeleton(int hvgx);
 
-  bool importSkeletons(QString path, Object_t skeleton_type);
-  bool importSemanticSkeleton(QString path);
+	void dumpObjects(QString path);
+	void readObjects(QString path);
 
-  MySkeleton processSkeletonStructure(int hvgx, QList<int>* edges, std::vector< struct VertexData >* vertices);
+	std::vector<VertexData*>* getGlycogenVertexDataPtr() { return &m_glycogenList; }
 
-  void processParentChildStructure(int mouse_id);
-
-  void loadConnectivityGraph(QString path);
-  void addEdgeToConnectivityGraph(int, int, std::set< std::tuple<int, int> >&);
-  void parseSynapsesGraph(QList<QByteArray>&, std::set< std::tuple<int, int> >&);
-  void PostloadMetaDataHVGX(QString path);
-  void PreLoadMetaDataHVGX(QString path);
-  bool findAndSetParentID(Object* obj, int hvgxID);
-
-  void dumpObjects(QString path);
-  void readObjects(QString path);
-
-  std::vector<VertexData*>*           getGlycogenVertexDataPtr() { return &m_glycogenList; }
-
-  SpacePartitioning::SpatialHash3D*   getSpineHash() { return &m_spineHash; }
-  SpacePartitioning::SpatialHash3D*   getBoutonHash() { return &m_boutonHash; }
-  SpacePartitioning::SpatialHash3D*   getNeuroMitoHash() { return &m_neuroMitoHash; }
-  unsigned char*                      getGlycogen3DGridData();
-  void								  resetMappingValues();
+	SpacePartitioning::SpatialHash3D* getSpineHash() { return &m_spineHash; }
+	SpacePartitioning::SpatialHash3D* getBoutonHash() { return &m_boutonHash; }
+	SpacePartitioning::SpatialHash3D* getNeuroMitoHash() { return &m_neuroMitoHash; }
 
 
-  // graph related function
-  std::map<int, Object*>  getObjectsMap();
-  std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
-  std::vector<QVector2D>  getNeuritesEdges();
+	// graph related function
+	std::map<int, Object*>  getObjectsMap();
+	std::map<int, Object*>* getObjectsMapPtr() { return &m_objects; }
 
-  QVector<int>*           getSkeletonIndices() { return &m_skeleton_indices; }
+	QVector<int>* getSkeletonIndices() { return &m_skeleton_indices; }
 
-  int getIndexByName(QString name);
+	int getIndexByName(QString name);
 
-  void writeDataToCache(QString cache_path);
-  void loadDataFromCache(QString cache_path);
-  void compute_distance_mito_cell_boundary();
-  void compute_centers();
+	void writeDataToCache(QString cache_path);
+	void loadDataFromCache(QString cache_path);
+	void compute_distance_mito_cell_boundary();
+	void compute_centers();
 
-  void compute_synapse_distances(Object* mito); // computes distance to closest synapse for the given mitochondrion
-  void compute_mito_distances(Object* synapse); // computes distance to closest mitochondrion for the given synapse
-  void compute_closest_distance_to_structures();
+	void compute_synapse_distances(Object* mito); // computes distance to closest synapse for the given mitochondrion
+	void compute_mito_distances(Object* synapse); // computes distance to closest mitochondrion for the given synapse
+	void compute_closest_distance_to_structures();
 
+	int   getMeshIndicesSize();
+	Mesh* getMesh();
 
-  int   getSkeletonPointsSize();
-  int   getMeshIndicesSize();
-  Mesh* getMesh();
+	Object_t              getObjectTypeByID(int hvgxID);
+	std::string           getObjectName(int hvgxID);
+	std::vector<Object*>  getObjectsByType(Object_t type);
+	Object* getObject(int hvgxID);
+	Object* getObjectByName(QString name);
 
-  Object_t              getObjectTypeByID(int hvgxID);
-  std::string           getObjectName(int hvgxID);
-  std::vector<Object*>  getObjectsByType(Object_t type);
-  Object*               getObject(int hvgxID);
-  Object*               getObjectByName(QString name);
+	bool					isWithinDistance(int from, int to, float distance);
 
-  bool					isWithinDistance(int from, int to, float distance);
+	void                  addSliceVertices();
+	int                   addSliceVertex(float x, float y, float u, float v);
 
-  void                  addSliceVertices();
-  int                   addSliceVertex(float x, float y, float u, float v);
+	float   getMaxAstroCoverage() { return max_astro_coverage; }
+	int     getMaxVolume() { return max_volume; }
+	int     getMaxSynapseVolume() { return max_synapse_volume; }
 
-  float   getMaxAstroCoverage() { return max_astro_coverage; }
-  int     getMaxVolume() { return max_volume; }
-  int     getMaxSynapseVolume() { return max_synapse_volume; }
-
-  // iterate over objects and get max volume and astro coverage
-  void recomputeMaxValues(bool weighted);
-
-  //************ Load Raw Data
-  char* loadRawFile(QString path, int size);
+	char* loadRawFile(QString path, int size);
 
 
-  void buildMissingSkeletons();
-
-  int getIndicesSizeByObjectType(Object_t type) { return m_indices_size_byType[type]; }
-  int getTypeByID(int hvgx); 
+	int getIndicesSizeByObjectType(Object_t type) { return m_indices_size_byType[type]; }
+	int getTypeByID(int hvgx);
 
 public:
-  struct input_files                          input_files_dir;
-  QString                                     m_sematic_skeleton_json;
+	QString                                     m_sematic_skeleton_json;
 
 protected:
-  // maximum volume from displayed objects
-  int                                         max_volume;
-  float                                       max_synapse_volume;
-  // maximum vertices from neurites covered by astrocyte
-  float                                       max_astro_coverage;
+	// maximum volume from displayed objects
+	int                                         max_volume;
+	float                                       max_synapse_volume;
+	// maximum vertices from neurites covered by astrocyte
+	float                                       max_astro_coverage;
 
-  // store all vertices of the mesh.
-  // unique vertices, faces to index them.
-  Mesh* m_mesh;
+	// store all vertices of the mesh.
+	// unique vertices, faces to index them.
+	Mesh* m_mesh;
 
-  Object* m_curParent;
-  int                                         m_skeleton_points_size;
-  int                                         m_indices_size; // used to allocate indices of a mesh
-  int                                         m_vertex_offset; // used to unify vertices for one mesh
-  int                                         m_faces_offset; // used to unify vertices for one mesh
+	Object* m_curParent;
+	int                                         m_skeleton_points_size;
+	int                                         m_indices_size; // used to allocate indices of a mesh
+	int                                         m_vertex_offset; // used to unify vertices for one mesh
+	int                                         m_faces_offset; // used to unify vertices for one mesh
 
-  int                                         m_hvgx;
+	// objects
+	std::map<int, int>                          m_parents;
+	std::map<int, Object*>                      m_objects;
+	std::map<Object_t, std::vector<Object*> >   m_objectsByType;
+	std::map<Object_t, int >                    m_indices_size_byType;
+	std::map<std::string, int>                  m_id_name_map;
 
-  int                                         m_limit;
-
-  // objects
-  std::map<int, int>                          m_parents;
-  std::map<int, Object*>                      m_objects;
-  std::map<Object_t, std::vector<Object*> >   m_objectsByType;
-  std::map<Object_t, int >                    m_indices_size_byType;
-  std::map<std::string, int>                  m_id_name_map;
-
-  QVector<int>                                m_skeleton_indices;
+	QVector<int>                                m_skeleton_indices;
 
 
-  // graph related data
-  std::vector<QVector2D>                      neurites_neurite_edge;
+	// graph related data
+	std::vector<QVector2D>                      neurites_neurite_edge;
 
-  // glycogen
-  std::vector<VertexData*>                    m_glycogenList;
-  SpacePartitioning::Grid3D					  m_glycogen3DGrid;
+	// glycogen
+	std::vector<VertexData*>                    m_glycogenList;
+	SpacePartitioning::Grid3D					  m_glycogen3DGrid;
 
-  SpacePartitioning::SpatialHash3D			  m_boutonHash;
-  SpacePartitioning::SpatialHash3D			  m_spineHash;
-  SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;
+	SpacePartitioning::SpatialHash3D			  m_boutonHash;
+	SpacePartitioning::SpatialHash3D			  m_spineHash;
+	SpacePartitioning::SpatialHash3D			   m_neuroMitoHash;
 
-  // file management
-  Normals_t                                   m_normals_t;
-  LoadFile_t                                  m_loadType;
-  LoadData_t                                  m_load_data;
-  bool                                        m_debug_msg;
-  std::set<Object*>                           m_missingParentSkeleton;
+private:
+	std::map<int, Object>                     serializable_objects;
+	QString                                   objs_filename;
 
- private:
-   std::map<int, Object>                     serializable_objects;
-   QString                                   objs_filename;
+	MeshProcessing* m_mesh_processing;
 
-   MeshProcessing*                            m_mesh_processing;
+	bool edgeTouchesForkVertex(MyEdge edge, QVector<int>* fork_vertices);
+	bool edgeContainsIndex(MyEdge edge, int index);
 
-   bool edgeTouchesForkVertex(MyEdge edge, QVector<int>* fork_vertices);
-   bool edgeContainsIndex(MyEdge edge, int index);
-
-   void display(const std::vector<MyBranch>* branches, int n);
-   void findPermutations(QMap<int, MyBranch>* branches);
+	void display(const std::vector<MyBranch>* branches, int n);
+	void findPermutations(QMap<int, MyBranch>* branches);
 };
 
 #endif // OBJECTMANAGER_H

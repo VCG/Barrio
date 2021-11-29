@@ -14,6 +14,27 @@ Camera::Camera(float fov, float near, float far, QVector3D center)
 	this->farPlane = far;
 }
 
+Camera::Camera(CameraSettings settings, float fov, float near, float far)
+{
+	this->front = settings.front;
+	this->up = settings.up;
+	this->center = settings.center;
+
+	this->distance = settings.distance;
+	this->fov = fov;
+	this->speed = 0.5;
+
+	this->nearPlane = near;
+	this->farPlane = far;
+
+	this->position = settings.position;
+	this->translate = settings.translate;
+
+	this->x_rotation = settings.x_rotation;
+	this->y_rotation = settings.y_rotation;
+	this->z_rotation = settings.z_rotation;
+}
+
 Camera::~Camera()
 {
 }
@@ -27,10 +48,11 @@ void Camera::frameUpdate()
 	this->model.rotate(z_rotation / 16.0f, 0, 0, 1);
 
 	this->model.translate(-center);
-	
+
 	this->position = -this->front * this->distance;
 	this->view.setToIdentity();
 	this->view.translate(position);
+	this->view.translate(translate);
 }
 
 void Camera::setAspectRatio(qreal aspect_ratio)
@@ -59,15 +81,25 @@ void Camera::mouse_move_event(QMouseEvent* event)
 	int dy = event->y() - last_mouse_position.y();
 	int delta = 8;
 
-	if (event->buttons() & Qt::LeftButton) {
-		setXRotation(x_rotation + delta * dy);
-		setYRotation(y_rotation + delta * dx);
+	// rotate the camera
+	if (event->buttons() == Qt::LeftButton)
+	{
+		if (event->buttons() & Qt::LeftButton) {
+			setXRotation(x_rotation + delta * dy);
+			setYRotation(y_rotation + delta * dx);
+		}
+		else if (event->buttons() & Qt::RightButton) {
+			setXRotation(x_rotation + delta * dy);
+			setZRotation(z_rotation + delta * dx);
+		}
+		last_mouse_position = event->pos();
 	}
-	else if (event->buttons() & Qt::RightButton) {
-		setXRotation(x_rotation + delta * dy);
-		setZRotation(z_rotation + delta * dx);
+	// pan the camera
+	else if (event->buttons() == Qt::RightButton)
+	{
+		float slow_down_factor = 10000.0;
+		translate = QVector3D(translate.x() + (dx * this->distance / slow_down_factor), translate.y() - dy * this->distance / slow_down_factor, 0.0);
 	}
-	last_mouse_position = event->pos();
 }
 
 void Camera::processScroll(double delta)
@@ -127,6 +159,29 @@ QMatrix4x4& Camera::getModelMatrix()
 QMatrix4x4& Camera::getViewMatrix()
 {
 	return this->view;
+}
+
+QMatrix4x4& Camera::getProjectionMatrix()
+{
+	return this->projection;
+}
+
+CameraSettings Camera::getCameraSettings()
+{
+	CameraSettings settings;
+
+	settings.center = this->center;
+	settings.distance = this->distance;
+	settings.front = this->front;
+	settings.position = this->position;
+	settings.translate = this->translate;
+	settings.up = this->up;
+
+	settings.x_rotation = this->x_rotation;
+	settings.y_rotation = this->y_rotation;
+	settings.z_rotation = this->z_rotation;
+
+	return settings;
 }
 
 QMatrix4x4& Camera::getProjectionMatrix()

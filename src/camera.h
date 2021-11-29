@@ -10,54 +10,75 @@
 
 #include "globalParameters.h"
 
+// used to store camera parameters when switching data cardinality
+struct CameraSettings
+{
+	QVector3D center;
+	QVector3D position;
+	QVector3D front;
+	QVector3D up;
+
+	int x_rotation;
+	int y_rotation;
+	int z_rotation;
+
+	QVector3D translate;
+
+	float distance;
+};
 
 class Camera
 {
-	public:
-		Camera(float fov, float near, float far, QVector3D center);
-		~Camera();
+public:
+	Camera(float fov, float near, float far, QVector3D center);
+	Camera(CameraSettings settings, float fov, float near, float far);
+	~Camera();
 
-		void frameUpdate();
-		void setAspectRatio(qreal aspect_ratio);
+	void frameUpdate();
+	void setAspectRatio(qreal aspect_ratio);
 
-		QVector3D getPosition();
+	QVector3D getPosition();
 
-	    QMatrix4x4& getModelMatrix();
-		QMatrix4x4& getViewMatrix();
-		QMatrix4x4& getProjectionMatrix();
+	QMatrix4x4& getModelMatrix();
+	QMatrix4x4& getViewMatrix();
+	QMatrix4x4& getProjectionMatrix();
 
-		void resetCamera();
-		void mouse_press_event(QMouseEvent* event);
-		void mouse_move_event(QMouseEvent* event);
-		void processScroll(double delta);
+	CameraSettings getCameraSettings();
 
-		static int normalize_angle(int angle);
+	void resetCamera();
+	void mouse_press_event(QMouseEvent* event);
+	void mouse_move_event(QMouseEvent* event);
+	void processScroll(double delta);
 
-		void setXRotation(int angle);
-		void setYRotation(int angle);
-		void setZRotation(int angle);
+	static int normalize_angle(int angle);
 
-	private:
+	void setXRotation(int angle);
+	void setYRotation(int angle);
+	void setZRotation(int angle);
 
-		QMatrix4x4 model;
-		QMatrix4x4 view;
-		QMatrix4x4 projection;
+private:
 
-		QVector3D center;
-		QVector3D position;
-		QVector3D front;
-		QVector3D up;
+	QMatrix4x4 model;
+	QMatrix4x4 view;
+	QMatrix4x4 projection;
 
-		QPoint last_mouse_position;
-		
-		int x_rotation;
-		int y_rotation;
-		int z_rotation;
+	QVector3D center;
+	QVector3D position;
+	QVector3D front;
+	QVector3D up;
 
-		float fov;
-		float speed;
-		float distance;
-		float nearPlane;
-        float farPlane;
+	QPoint last_mouse_position;
+
+	int x_rotation;
+	int y_rotation;
+	int z_rotation;
+
+	QVector3D translate;
+
+	float fov;
+	float speed;
+	float distance;
+	float nearPlane;
+	float farPlane;
 };
 

@@ -27,8 +27,8 @@
         pointer-events: none;
     }
 
-    .bar_mouse2 {
-        fill: #76528BFF;
+    .bar {
+        fill: rgb(184,47,53);
         stroke: #ffffff;
     }
 
@@ -174,14 +174,7 @@
                 if (d.candidate == bar_name) {
                     return "#ffa500";
                 }
-                if(d.district.endsWith("2"))
-                {
-                    return "#76528BFF";
-                }
-                else if(d.district.endsWith("3"))
-                {
-                    return "#cbce91";
-                }
+                return "rgb(184,47,53)";
 
 
 

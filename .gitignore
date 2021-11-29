@@ -427,3 +427,11 @@ doc/.DS_Store
 data/m3_data/
 
 *.txt
+
+*.dat
+
+*.cereal
+
+*.txt
+
+.idea/

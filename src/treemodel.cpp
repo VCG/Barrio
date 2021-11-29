@@ -1,91 +1,67 @@
 #include "treemodel.h"
 #include "treeitem.h"
 #include <QFormLayout>
+#include <QFormLayout>
 
-TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainWidget): QTreeView(parent)
+TreeModel::TreeModel(QWidget* parent, DataContainer* datacontainer, MainWidget* mainWidget) : QTreeView(parent)
 {
-  paramList = new QStandardItemModel();
-  m_mainwidget = mainWidget;
-  m_datacontainer = datacontainer;
+	paramList = new QStandardItemModel();
+	m_mainwidget = mainWidget;
+	m_datacontainer = datacontainer;
 
-  paramList->setColumnCount(2);
-  paramList->setHeaderData(0, Qt::Horizontal, "Name");
-  paramList->setHeaderData(1, Qt::Horizontal, "ID");
+	paramList->setColumnCount(2);
+	paramList->setHeaderData(0, Qt::Horizontal, "Name");
+	paramList->setHeaderData(1, Qt::Horizontal, "ID");
 
-  this->setModel(paramList);
+	this->setModel(paramList);
 
-  this->setColumnWidth(0, 200);
-  this->setColumnWidth(1, 100);
+	this->setColumnWidth(0, 200);
+	this->setColumnWidth(1, 100);
 
-  std::vector<Object*> mitos = datacontainer->getObjectsByType(Object_t::MITO);
-  QStringList names = QStringList();
-
-  for (int i = 0; i < mitos.size(); i++)
-  {
-    names.append(mitos[i]->getName().c_str());
-  }
-
-  names.sort();
-
-  QStandardItem* mouse2 = new QStandardItem("Mouse 2");
-  mouse2->setSelectable(false);
-  m_mouse_categories.append(mouse2);
-
-  QStandardItem* mouse3 = new QStandardItem("Mouse 3");
-  mouse3->setSelectable(false);
-  m_mouse_categories.append(mouse3);
-
-  paramList->appendRow(mouse2);
-  paramList->appendRow(mouse3);
-
-  //std::map<int, Object*>* objects_map = datacontainer->getObjectsMapPtr();
-  for (int i = 0; i < names.size(); i++)
-  {
-    //Object* object_p = (*iter).second;
-    Object* object = datacontainer->getObjectByName(names[i]);
-
-    //if (object_p->getObjectType() != Object_t::MITO)
-    //{
-      QString name(object->getName().c_str());
-      QStandardItem* item_name = new QStandardItem(name);
-      item_name->setEditable(false);
+	skeletonColor = QColor(225, 225, 225);
 
 
-      int id = object->getHVGXID();
-      QStandardItem* item_id = new QStandardItem(QString::number(id));
-      item_id->setEditable(false);
 
-      if (name.endsWith("2"))
-      {
-        mouse2->appendRow(QList<QStandardItem*>() << item_name << item_id);
-      }
-      else if(name.endsWith("3"))
-      {
-        mouse3->appendRow(QList<QStandardItem*>() << item_name << item_id);
-      }
+	std::vector<Object*> mitos = datacontainer->getObjectsByType(Object_t::MITO);
+	QStringList names = QStringList();
 
-      /*std::vector<int>* childrenIDs = object->getChildrenIDs();
-      int j = 0;
-      for (int i=0; i < childrenIDs->size(); i++)
-      {
-        Object* child = mitos->at(childrenIDs->at(i));
-        QString child_name(child->getName().c_str());
-        QStandardItem* item_child_name = new QStandardItem(child_name);
-        item_child_name->setEditable(false);
+	for (int i = 0; i < mitos.size(); i++)
+	{
+		names.append(mitos[i]->getName().c_str());
+	}
 
-        int child_id = child->getHVGXID();
-        QStandardItem* child_item_id = new QStandardItem(QString::number(child_id));
-        child_item_id->setEditable(false);
+	names.sort();
 
-        item_name->appendRow(QList<QStandardItem*>() << item_child_name << child_item_id);
+	for (int i = 0; i < names.size(); i++)
+	{
+		Object* object = datacontainer->getObjectByName(names[i]);
 
-        j++;
-      }*/
-      //i++;
-    //}
-  }
+		QString name(object->getName().c_str());
+		QStandardItem* item_name = new QStandardItem(name);
+		item_name->setEditable(false);
 
- 
+		int id = object->getHVGXID();
+		QStandardItem* item_id = new QStandardItem(QString::number(id));
+		item_id->setEditable(false);
+
+		paramList->appendRow(QList<QStandardItem*>() << item_name << item_id);
+	}
+
+	this->setStyleSheet("QTreeView { font-size: " + QString::number(11) + "pt; }");
+
+
+	// set background to objects with available semantic skeleton to the skeleton color
+	QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+	for (int r = 0; r < sModel->rowCount(); r++)
+	{
+		QModelIndex object_index = sModel->index(r, 0);
+		int hvgx = object_index.siblingAtColumn(1).data().toInt();
+		int parentID = m_datacontainer->getObject(hvgx)->getParentID();
+		if (m_datacontainer->hasSemanticSkeleton(parentID))
+		{
+			setBackgroundColor(object_index, skeletonColor);
+		}
+	}
 }
 
 TreeModel::~TreeModel()
@@ -95,103 +71,101 @@ TreeModel::~TreeModel()
 
 void TreeModel::selectItem(const QModelIndex& index)
 {
-    QColor color_selected(195, 147, 226);
-    QColor color_close(202, 205, 143);
-    QColor color_reset(255, 255, 255);
+	//extracting hvgx id
+	int hvgx = index.siblingAtColumn(1).data().toInt();
 
-    clearCloseColorMarking(color_close, color_reset);
+	int selectedStructures = m_mainwidget->getSelectedStructures();
 
-  //extracting hvgx id
-  int hvgx = index.siblingAtColumn(1).data().toInt();
-  if (hvgx > 0) { // avoid selecting the header like mouse2 or mouse3
-    m_mainwidget->addWidgetGroup(hvgx, false);
+	m_mainwidget->addStructure();
 
-    QList<QStandardItem*> items = setBackgroundColor(index, color_selected);
-    m_mainwidget->addStandardItem(hvgx, items);
+	m_mainwidget->setVisMethodBasedOnID();
+	m_mainwidget->addWidgetGroup(hvgx, false, m_mainwidget->allGLCameraSettings());
 
-    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
-    for (int r = 0; r < sModel->rowCount(); r++) {
-        QModelIndex index = sModel->index(r, 0);
-        if (sModel->hasChildren(index)) 
-        {
-            for (int i = 0; i < sModel->rowCount(index); i++)
-            {
-                QModelIndex object_index = sModel->index(i, 1, index);
-                int potentially_close_structure = object_index.data().toInt();
-                bool isClose = m_datacontainer->isWithinDistance(hvgx, potentially_close_structure, CONSIDER_CLOSE);
-                if (isClose && hvgx != potentially_close_structure)
-                {
-                    setBackgroundColor(object_index, color_close);
-                    close_indices.append(potentially_close_structure);
-                }
-            }
-        }
-    }
-  }
+
+	QColor color_selected(195, 147, 226);
+	QColor color_close(202, 205, 143);
+	QColor color_reset(255, 255, 255);
+
+	clearCloseColorMarking(color_close, color_reset);
+
+	QList<QStandardItem*> items = setBackgroundColor(index, color_selected);
+	m_mainwidget->addStandardItem(hvgx, items);
+
+	QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+	for (int r = 0; r < sModel->rowCount(); r++)
+	{
+		QModelIndex object_index = sModel->index(r, 0);
+		int potentially_close_structure = object_index.siblingAtColumn(1).data().toInt();
+		bool isClose = m_datacontainer->isWithinDistance(hvgx, potentially_close_structure, CONSIDER_CLOSE);
+		if (isClose && hvgx != potentially_close_structure)
+		{
+			setBackgroundColor(object_index, color_close);
+			close_indices.append(potentially_close_structure);
+		}
+	}
 }
 
 QList<QStandardItem*> TreeModel::setBackgroundColor(const QModelIndex& index, QColor color)
 {
-    QList<QStandardItem*> items;
+	QList<QStandardItem*> items;
 
-    QModelIndex c0 = index.sibling(index.row(), 0);
-    QModelIndex c1 = index.sibling(index.row(), 1);
+	QModelIndex c0 = index.sibling(index.row(), 0);
+	QModelIndex c1 = index.sibling(index.row(), 1);
 
-    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
-    QStandardItem* col0 = sModel->itemFromIndex(c0);
-    QStandardItem* col1 = sModel->itemFromIndex(c1);
+	QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+	QStandardItem* col0 = sModel->itemFromIndex(c0);
+	QStandardItem* col1 = sModel->itemFromIndex(c1);
 
-    col0->setBackground(color);
-    col1->setBackground(color);
+	col0->setBackground(color);
+	col1->setBackground(color);
 
-    items.append(col0);
-    items.append(col1);
+	items.append(col0);
+	items.append(col1);
 
-    return items;
+	return items;
 }
 
 void TreeModel::clearCloseColorMarking(QColor close_color, QColor reset_color)
 {
-    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
-    for (int r = 0; r < sModel->rowCount(); r++) {
-        QModelIndex index = sModel->index(r, 0);
-        if (sModel->hasChildren(index))
-        {
-            for (int i = 0; i < sModel->rowCount(index); i++)
-            {
-                QModelIndex object_index = sModel->index(i, 1, index);
-                int hvgx_id = object_index.data().toInt();
-                if (close_indices.contains(hvgx_id))
-                {
-                    setBackgroundColor(object_index, reset_color);
-                }
-            }
-        }
-    }
-    close_indices.clear();
+	QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+	for (int r = 0; r < sModel->rowCount(); r++) {
+		QModelIndex index = sModel->index(r, 0);
+		int hvgx_id = index.siblingAtColumn(1).data().toInt();
+		if (close_indices.contains(hvgx_id))
+		{
+			setBackgroundColor(index, reset_color);
+		}
+		int parentID = m_datacontainer->getObject(hvgx_id)->getParentID();
+		if (m_datacontainer->hasSemanticSkeleton(parentID))
+		{
+			setBackgroundColor(index, skeletonColor);
+		}
+
+	}
+	close_indices.clear();
 }
 
 void TreeModel::resetCloseColor(const QModelIndex& index, QColor close_color, QColor reset_color)
 {
-    QList<QStandardItem*> items;
+	QList<QStandardItem*> items;
 
-    QModelIndex c0 = index.sibling(index.row(), 0);
-    QModelIndex c1 = index.sibling(index.row(), 1);
+	QModelIndex c0 = index.sibling(index.row(), 0);
+	QModelIndex c1 = index.sibling(index.row(), 1);
 
-    QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
-    QStandardItem* col0 = sModel->itemFromIndex(c0);
-    QStandardItem* col1 = sModel->itemFromIndex(c1);
+	QStandardItemModel* sModel = qobject_cast<QStandardItemModel*>(this->model());
+	QStandardItem* col0 = sModel->itemFromIndex(c0);
+	QStandardItem* col1 = sModel->itemFromIndex(c1);
 
-    if (col0->background() == close_color)
-    {
-        col0->setBackground(reset_color);
-    }
-    if (col1->background() == close_color)
-    {
-        col1->setBackground(reset_color);
-    }
+	if (col0->background() == close_color)
+	{
+		col0->setBackground(reset_color);
+	}
+	if (col1->background() == close_color)
+	{
+		col1->setBackground(reset_color);
+	}
 
-    items.append(col0);
-    items.append(col1);
+	items.append(col0);
+	items.append(col1);
 }
 
