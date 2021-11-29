@@ -32,12 +32,12 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var dend_identifier = "Mito_D";
     var axon_identifier = "Mito_A";
 
-    var dend_color = '#8c77ff';
-    var axon_color = '#ff8267';
+    var dend_color = '#cd15e8';
+    var axon_color = '#e7d80e';
     var selected_color = "#358500";
 
     var selected_opacity = 1.0;
-    var unselected_opacity = 0.3;
+    var unselected_opacity = 0.5;
 
     var colorScale = d3.scale.ordinal()
         .domain([dendrite, axon, selected])
