@@ -10,7 +10,7 @@
 
 <div id="teaser" align="center">
   
-  ![UI](doc/teaser.png)
+  ![UI](doc/images/teaser.png)
   
 </div>
 
