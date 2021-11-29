@@ -183,8 +183,3 @@ CameraSettings Camera::getCameraSettings()
 
 	return settings;
 }
-
-QMatrix4x4& Camera::getProjectionMatrix()
-{
-	return this->projection;
-}

@@ -26,7 +26,6 @@ in flat int     frag_is_overview;
 in flat int     frag_currently_hovered_id;
 
 uniform bool          color_code;
-uniform bool          show_silhouette;  
 uniform int           main_mito;
 uniform sampler1D	  mito_colormap;
 

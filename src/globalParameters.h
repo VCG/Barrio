@@ -11,7 +11,7 @@
 
 #define CONSIDER_CLOSE 1.0
 
-#define PATH        QString("C:/Users/jakobtroidl/Desktop/NeuroKit/")
+#define PATH        QString("C:/Users/jakobtroidl/Desktop/Barrio/")
 
 #define RECOMPUTE_DATA FALSE
 

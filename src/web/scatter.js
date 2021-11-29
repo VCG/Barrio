@@ -11,9 +11,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     let yUnit = jsobject.y_unit;
 
     let data = JSON.parse(json_string);
-
-    console.log(data);
-
     let selected_structures = JSON.parse(selected_structures_string);
 
     var margin = {top: 50, right: 200, bottom: 50, left: 200},
@@ -28,8 +25,8 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var y = d3.scale.linear()
         .range([height, 0]).nice();
 
-    var mouse2 = "Mouse 2 (24 months)";
-    var mouse3 = "Mouse 3 (4 months)";
+    var dendrite = "Dendrite";
+    var axon = "Axon";
     var selected = "Selected";
 
     var dend_identifier = "Mito_D";
@@ -39,17 +36,15 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     var axon_color = '#e7d80e';
     var selected_color = "#358500";
 
-    var radius = 3;
-
     var selected_opacity = 1.0;
     var unselected_opacity = 0.5;
 
     var colorScale = d3.scale.ordinal()
-        .domain([mouse2, mouse3, selected])
+        .domain([dendrite, axon, selected])
         .range([dend_color, axon_color, selected_color]);
 
     var opacityScale = d3.scale.ordinal()
-        .domain([mouse2, mouse3, selected])
+        .domain([dendrite, axon, selected])
         .range([unselected_opacity, unselected_opacity, selected_opacity]);
 
     var xAttrName = "x",
@@ -159,7 +154,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         .data(data)
         .enter().append("circle")
         .classed("dot", true)
-        .attr("r", radius)
+        .attr("r", 5)
         .attr("transform", transform)
         .style("fill", function (d) {
             return colorScale(decide_type(d.name));
@@ -223,10 +218,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
     {
         if (selected_structures.includes(name)) {
             return selected;
-        } else if (name.endsWith("_2")) {
-            return mouse2;
-        } else if (name.endsWith("_3")) {
-            return mouse3;
+        } else if (name.includes(dend_identifier)) {
+            return dendrite;
+        } else if (name.includes(axon_identifier)) {
+            return axon;
         }
     }
 

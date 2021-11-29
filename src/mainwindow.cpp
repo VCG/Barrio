@@ -115,13 +115,6 @@ void MainWindow::initializeColorCodeCheckBox()
 	connect(color_coding_checkbox, SIGNAL(stateChanged(int)), this, SLOT(on_color_code_checkbox_changed(int)));
 }
 
-void MainWindow::initializeSilhouetteCheckBox()
-{
-    QCheckBox* silhouette_checkbox = mainwindow_ui->checkBox_2;
-    silhouette_checkbox->setChecked(true);
-    connect(silhouette_checkbox, SIGNAL(stateChanged(int)), this, SLOT(on_silhouette_checkbox_changed(int)));
-}
-
 void MainWindow::initializeColormapComboBox()
 {
 	QDir dir = QDir::currentPath();
@@ -347,11 +340,6 @@ void MainWindow::on_colormap_changed(QString text)
 void MainWindow::on_color_code_checkbox_changed(int state)
 {
 	m_main_widget->setColorcodingEnabled((bool)state);
-}
-
-void MainWindow::on_silhouette_checkbox_changed(int state)
-{
-    m_main_widget->setSilhouetteEnabled((bool)state);
 }
 
 void MainWindow::on_number_of_bins_input_changed(int value)

@@ -19,7 +19,7 @@ Object::Object()
 }
 
 
-Object::Object(std::string name, int ID, int mouse_id)
+Object::Object(std::string name, int ID)
 {
 	if (name[name.size() - 1] == '\n') {
 		name.erase(name.size() - 1, name.size() - 1);
@@ -319,16 +319,6 @@ void Object::addSynapse(Object* synapse_object)
 
 	//m_synapses.push_back(synapse_object);
 	m_synapse_ids.push_back(synapse_object->getHVGXID());
-}
-
-std::vector<Object*>* Object::getSynapses()
-{
-  return &m_synapses;
-}
-
-std::vector<int>* Object::getSynapseIDs()
-{
-  return &m_synapse_ids;
 }
 
 float Object::getAstroCoverage()

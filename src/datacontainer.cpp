@@ -203,7 +203,7 @@ QList<int> DataContainer::getMitosOfCell(int cell_id)
 	return mitos;
 }
 
-bool DataContainer::importObj(QString path, int mouse_id)
+bool DataContainer::importObj(QString path)
 {
 	int vertexCounter = 0;
 	int normalCounter = 0;
@@ -309,136 +309,6 @@ bool DataContainer::importObj(QString path, int mouse_id)
 	qDebug() << normalCounter << " normals";
 
 	return true;
-}
-
-int DataContainer::importObjTest(QString path, int mouse_id)
-{
-  int vertexCounter = 0;
-  int normalCounter = 0;
-  int vertexIdx = 0;
-
-  QFile inputFile(path);
-  if (!inputFile.open(QIODevice::ReadOnly))
-  {
-    qDebug() << "Cant open " << path;
-  }
-
-  //int hvgxID = 0;
-  Object* obj = NULL;
-  std::vector< struct VertexData >* meshVertexList = m_mesh->getVerticesList();
-
-  QTextStream in(&inputFile);
-  while (!in.atEnd()) {
-
-    QString line = in.readLine();
-    QList<QString> elements = line.split(" ");
-
-    // parse object names
-    if (!strcmp(elements[0].toStdString().c_str(), "o"))
-    {
-      QString name = getName(elements[1]);
-      name += "_" + QString::number(mouse_id);
-
-      qDebug() << "Reading " << name;
-
-      m_hvgx++;
-
-      obj = new Object(name.toUtf8().constData(), m_hvgx, mouse_id);
-
-
-      m_objects[m_hvgx] = obj;
-      m_objectsByType[obj->getObjectType()].push_back(obj);
-    }
-
-    // parse vertices
-    else if (!strcmp(elements[0].toStdString().c_str(), "v")) { // read vertices
-
-      float x = abs(elements[1].toFloat());
-      float y = abs(elements[2].toFloat());
-      float z = abs(elements[3].toFloat());
-
-      vertexCounter++;
-
-      QVector4D mesh_vertex(x, y, z, float(m_hvgx));
-
-      meshVertexList->emplace_back();
-      vertexIdx = (int)meshVertexList->size() - 1;
-      struct VertexData* v = &meshVertexList->at(vertexIdx);
-
-      v->vertex = mesh_vertex;
-      v->distance_to_cell = 0.0; // first init all distances with the default value
-      v->hvgxID = m_hvgx;
-      v->structure_type = (int)obj->getObjectType();
-      v->is_skeleton = false;
-    }
-
-    // parse faces
-    else if (!strcmp(elements[0].toStdString().c_str(), "f")) // read triangulated faces
-    {
-      int vertexIndex[3];
-
-      vertexIndex[0] = elements[1].toInt() + m_vertex_offset;
-      vertexIndex[1] = elements[2].toInt() + m_vertex_offset;
-      vertexIndex[2] = elements[3].toInt() + m_vertex_offset;
-
-      if (!m_mesh->isValidFaces(vertexIndex[0], vertexIndex[1], vertexIndex[2])) {
-        qDebug() << "Error in obj file! - invalid faces";
-        return false;
-      }
-
-      // safe indices counter clockwise
-      obj->addTriangleIndex(vertexIndex[0] - 1);
-      obj->addTriangleIndex(vertexIndex[2] - 1);
-      obj->addTriangleIndex(vertexIndex[1] - 1);
-
-      // safe indices counter clockwise
-      m_mesh->addFace(vertexIndex[0] - 1, vertexIndex[2] - 1, vertexIndex[1] - 1);
-      m_indices_size += 3;
-
-      if (m_indices_size_byType.find(obj->getObjectType()) == m_indices_size_byType.end()) {
-        m_indices_size_byType[obj->getObjectType()] = 0;
-      }
-      m_indices_size_byType[obj->getObjectType()] += 3;
-    }
-  }
-  inputFile.close();
-
-  m_mesh->computeNormalsPerVertex();
-  processParentChildStructure(mouse_id);
-
-  qDebug() << "Done reading .obj file";
-  qDebug() << vertexCounter << " vertices";
-  qDebug() << normalCounter << " normals";
-
-  return meshVertexList->size();
-
-}
-
-QString DataContainer::getName(QString name)
-{
-  QList<QString> list = name.split('_');
-
-  if (list[0].contains("dendrite", Qt::CaseInsensitive)) 
-  {
-    return list[0];
-  }
-  else if (list[0].contains("axon", Qt::CaseInsensitive))
-  {
-    return list[0];
-  }
-  else if(list[0].contains("mito", Qt::CaseInsensitive))
-  {
-    return list[0] + "_" + list[1] + "_" + list[2];
-  }
-  else if(list[0].contains("syn", Qt::CaseInsensitive))
-  {
-    return list[0] + "_" + list[1] + "_" + list[2];
-  }
-  else if (list[0].contains("spine", Qt::CaseInsensitive))
-  {
-    return list[0]; //+ "_" + list[1] + "_" + list[2];
-  }
-  return QString();
 }
 
 bool DataContainer::importSemanticSkeleton(QString path)
@@ -732,7 +602,7 @@ void DataContainer::findPermutations(QMap<int, MyBranch>* b)
 	} while (std::next_permutation(branches.begin(), branches.end()));
 }
 
-void DataContainer::processParentChildStructure(int mouse_id)
+void DataContainer::processParentChildStructure()
 {
 	std::vector<Object*> mitos = getObjectsByType(Object_t::MITO);
 	for (auto const& mito : mitos)
@@ -894,7 +764,7 @@ void DataContainer::compute_synapse_distances(Object* mito)
 	}
 }
 
-void DataContainer::compute_mito_distances(Object* object)
+void DataContainer::compute_mito_distances(Object* synapse)
 {
 	std::vector<Object*> mitos = m_objectsByType.at(Object_t::MITO);
 	for (Object* mito : mitos)
@@ -967,21 +837,6 @@ Object* DataContainer::getObjectByName(QString name)
 		}
 	}
 	return nullptr;
-}
-
-bool DataContainer::isWithinDistance(int from, int to, float threshold)
-{
-    Object* from_object = m_objects.at(from);
-    std::map<int, double>* distances = from_object->get_distance_map_ptr();
-
-    if (distances->count(to))
-    {
-        if (distances->at(to) <= threshold)
-        {
-            return true;
-        }
-    }
-    return false;
 }
 
 void DataContainer::addSliceVertices()
