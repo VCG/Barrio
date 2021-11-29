@@ -3,7 +3,31 @@
     "scenario": "Mitochondria Analysis",
     "datasets": ["mouse_3"],
     "scenario_subtasks": [
-      
+      {
+        "name": "Task 1: synapses",
+        "low_cardinality_vis": {
+          "id": 0,
+          "target-structure": "mitochondria",
+          "name": "distance-tree",
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
+        },
+        "medium_cardinality_vis": {
+          "id": 1,
+          "target-structure": "mitochondria",
+          "name": "grouped-bar-chart",
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
+        },
+        "high_cardinality_vis": {
+          "id": 2,
+          "target-structure": "mitochondria",
+          "name": "distance-matrix",
+          "params": "surrounding-synapses",
+          "comment": "related-synapses"
+
+        }
+      },
       {
         "name": "ST2: mito placement",
         "low_cardinality_vis": {
