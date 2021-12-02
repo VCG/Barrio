@@ -368,6 +368,8 @@ void MainWindow::addSubTask(QGroupBox* ui_element, QJsonObject subtask)
 	QString name = subtask.value("name").toString();
 	ui_element->setTitle(name);
 
+	m_target_types.insert(name, subtask.value("target_type").toString());
+
 	QString low_cardinality_name = "low_cardinality_vis";
 	QString medium_cardinality_name = "medium_cardinality_vis";
 	QString high_cardinality_name = "high_cardinality_vis";
