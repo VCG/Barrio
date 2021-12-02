@@ -5,23 +5,21 @@
     "scenario_subtasks": [
       {
         "name": "Task 1: synapses",
+        "target_type": "mitochondria",
         "low_cardinality_vis": {
           "id": 0,
-          "target-structure": "mitochondria",
           "name": "distance-tree",
           "params": "surrounding-synapses",
           "comment": "related-synapses"
         },
         "medium_cardinality_vis": {
           "id": 1,
-          "target-structure": "mitochondria",
           "name": "grouped-bar-chart",
           "params": "surrounding-synapses",
           "comment": "related-synapses"
         },
         "high_cardinality_vis": {
           "id": 2,
-          "target-structure": "mitochondria",
           "name": "distance-matrix",
           "params": "surrounding-synapses",
           "comment": "related-synapses"
@@ -30,9 +28,9 @@
       },
       {
         "name": "ST2: mito placement",
+        "target_type": "mitochondria",
         "low_cardinality_vis": {
           "id": 3,
-          "target-structure": "mitochondria",
           "name": "cumulative-histogram",
           "bins": "distance-to-cell-membrane",
           "normalized": true,
@@ -40,14 +38,12 @@
         },
         "medium_cardinality_vis": {
           "id": 4,
-          "target-structure": "mitochondria",
           "name": "violin-plot",
           "bins": "distance-to-cell-membrane",
           "normalized": true
         },
         "high_cardinality_vis": {
           "id": 5,
-          "target-structure": "mitochondria",
           "name": "scatter-plot",
           "x-axis": {
             "label": "% of mito closer than 50 nm to cell membrane",
@@ -59,28 +55,26 @@
             "attribute": "mito-volume"
           }
         }
-      }, 
+      },
       {
         "name": "ST3: spine coverage",
+        "target_type": "mitochondria",
         "low_cardinality_vis": {
           "id": 6,
-          "target_type": "mitochondria", 
           "name": "dendrite-abstraction-1"
         },
         "medium_cardinality_vis": {
           "id": 7,
-          "target_type": "mitochondria",
           "name": "dendrite-abstraction-2"
         },
         "high_cardinality_vis": {
           "id": 8,
-          "target_type": "mitochondria",
           "name": "scatter-plot",
-          "x-axis":{
+          "x-axis": {
             "label": "number of spines covered by mitochondrion",
             "attribute": "mito-spine-coverage"
           },
-          "y-axis":{
+          "y-axis": {
             "label": "mitochondria volume in cubic microns",
             "attribute": "mito-volume"
           }
