@@ -20,11 +20,11 @@ High-resolution electron microscopy imaging allows neuroscientists to reconstruc
 ## Installation
 Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki/Getting-Started).
 
+## Documentation
+Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki).
+
 ## Datasets
 Please reach out via [e-mail](mailto:jtroidl@g.harvard.edu) if you are interested in the datasets.
-
-## FAQs
-Check out the FAQs for further development and more [here](https://github.com/jakobtroidl/NeuroKit/wiki/FAQs). 
 
 
 
