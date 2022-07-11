@@ -1,1 +1,2 @@
-Please reach out via [e-mail](mailto:jtroidl@g.harvard.edu) if you are interested in getting the dataset. 
+Request view access to the data [here ](https://drive.google.com/drive/folders/1TLP3baEEqj4fjBwCXE6WSKHmaPgFeMJ_?usp=sharing). 
+The `cache_m3` file must be pasted here. 
