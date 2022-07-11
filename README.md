@@ -24,18 +24,16 @@ Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki/01---Getting-Sta
 Checkout this [page](https://github.com/jakobtroidl/Barrio/wiki).
 
 ## Datasets
-Please reach out via [e-mail](mailto:jtroidl@g.harvard.edu) if you are interested in the datasets.
+Request viewing access to the data [here ](https://drive.google.com/drive/folders/1TLP3baEEqj4fjBwCXE6WSKHmaPgFeMJ_?usp=sharing).
 
 ## Cite Barrio
 ```bibtex
-@article{Troidl2022Barrio,
-  title = {Barrio: Customizable Spatial Neighborhood Analysis and Comparison for Nanoscale Brain Structures},
-  author = {Troidl, Jakob and Cali, Corrado and Gr{\"o}ller, Eduard and Pfister, Hanspeter and Hadwiger, Markus and Beyer, Johanna},
-  journal = {Computer Graphics Forum (Proceedings Eurographics/IEEE Symposium on Visualization, Eurovis 2022},
-  year = {2022},
-  volume = {41},
-  number = {3},
-  pages = {to appear}
+@inproceedings{troidl2022barrio,
+  title={Barrio: Customizable Spatial Neighborhood Analysis and Comparison for Nanoscale Brain Structures},
+  author={Troidl, Jakob and Cali, Corrado and Gr{\"o}ller, Eduard and Pfister, Hanspeter and Hadwiger, Markus and Beyer, Johanna},
+  booktitle={Computer Graphics Forum (Proceedings Eurographics/IEEE Symposium on Visualization, Eurovis 2022},
+  volume={41},
+  year={2022}
 }
 ```
 
